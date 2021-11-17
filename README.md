@@ -10,7 +10,7 @@
 
 |     |   后端源码  |   前端源码  |
 |---  |--- | --- |
-|  github   |  https://github.com/xianhc/apevolo-api-master   |  https://github.com/xianhc/apevolo-web-master   |
+|  github   |  https://github.com/xianhc/apevolo-api   |  https://github.com/xianhc/apevolo-web   |
 
 ## 模块说明
 
