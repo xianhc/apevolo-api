@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1306054134645919764",
+    "name": "job_status",
+    "description": "岗位状态",
+    "createBy": "apevolo",
+    "createTime": "\/Date(1609430400000+0800)\/",
+    "updateBy": null,
+    "updateTime": null,
+    "isDeleted": 0
+  },
+  {
+    "id": "1306054134645919765",
+    "name": "dept_status",
+    "description": "部门状态",
+    "createBy": "apevolo",
+    "createTime": "\/Date(1609430400000+0800)\/",
+    "updateBy": null,
+    "updateTime": null,
+    "isDeleted": 0
+  },
+  {
+    "id": "1306054134645919766",
+    "name": "user_status",
+    "description": "用户状态",
+    "createBy": "apevolo",
+    "createTime": "\/Date(1609430400000+0800)\/",
+    "updateBy": null,
+    "updateTime": null,
+    "isDeleted": 0
+  },
+  {
+    "id": "1380547002701451264",
+    "name": "email_message_template_status",
+    "description": "邮件消息模板状态",
+    "createBy": "apevolo",
+    "createTime": "\/Date(1609430400000+0800)\/",
+    "updateBy": null,
+    "updateTime": null,
+    "isDeleted": 0
+  }
+]

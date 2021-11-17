@@ -1,0 +1,24 @@
+[
+  {
+    "id": "1306054134645919755",
+    "Name": "全栈开发",
+    "Sort": 1,
+    "enabled": 1,
+    "createBy": "apevolo",
+    "createTime": "\/Date(1609430400000+0800)\/",
+    "updateBy": null,
+    "updateTime": null,
+    "isDeleted": 0
+  },
+  {
+    "id": "1306054134645919756",
+    "Name": "软件测试",
+    "Sort": 1,
+    "enabled": 1,
+    "createBy": "apevolo",
+    "createTime": "\/Date(1609430400000+0800)\/",
+    "updateBy": null,
+    "updateTime": null,
+    "isDeleted": 0
+  }
+]

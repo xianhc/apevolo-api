@@ -1,0 +1,3889 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ApeVolo.Common</name>
+    </assembly>
+    <members>
+        <member name="T:ApeVolo.Common.AttributeExt.ApeVoloAuthorizeAttribute">
+            <summary>
+            自定义鉴权特性
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.AttributeExt.ApeVoloAuthorizeAttribute.Roles">
+            <summary>
+            角色代码
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.AttributeExt.ApeVoloOnlineAttribute">
+            <summary>
+            自定义鉴权特性，在线则可通行
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.AttributeExt.ApeVoloRequiredAttribute">
+            <summary>
+            自定义校验特性
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.AttributeExt.ApeVoloRequiredAttribute.Message">
+            <summary>
+            验证失败说明内容
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.AttributeExt.AutoMappingAttribute">
+            <summary>
+            dto映射属性
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.AttributeExt.AutoMappingAttribute.SourceType">
+            <summary>
+            源对象
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.AttributeExt.AutoMappingAttribute.TargetType">
+            <summary>
+            目标对象
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.AttributeExt.InitTableAttribute">
+            <summary>
+            初始种子数据特性，标有该特性的实体表示程序则生成数据库表数据
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.AttributeExt.InitTableAttribute.SourceType">
+            <summary>
+            源对象
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.AttributeExt.RedisCachingAttribute">
+            <summary>
+            Redis特性  AOP拦截使用
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.AttributeExt.RedisCachingAttribute.Expiration">
+            <summary>
+            过期时间（分钟）
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.AttributeExt.RedisCachingAttribute.KeyPrefix">
+            <summary>
+            缓存key前缀
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.AttributeExt.RedisCachingAttribute.RedisExpireType">
+            <summary>
+            缓存类型（默认绝对过期）
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.AttributeExt.UseTranAttribute">
+            <summary>
+            事务特性 AOP拦截使用
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Caches.MemoryCache.ICaching">
+            <summary>
+            缓存接口
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Caches.MemoryCache.MemoryCaching">
+            <summary>
+            实例化缓存接口ICaching
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Caches.Redis.Abstractions.TopicAttribute">
+            <inheritdoc />
+            <summary>
+            An abstract attribute that for kafka attribute or rabbit mq attribute
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Abstractions.TopicAttribute.Name">
+            <summary>
+            Topic or exchange route key name.
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Abstractions.TopicAttribute.Group">
+            <summary>
+            Default group name is CapOptions setting.(Assembly name)
+            kafka --> groups.id
+            rabbit MQ --> queue.name
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Caches.Redis.Extensions.RedisHelper">
+            <summary>
+            Redis帮助类
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Caches.Redis.Models.RedisChannels">
+            <summary>
+            通道名称
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Caches.Redis.Models.RedisChannels.ChangeMailbox">
+            <summary>
+             更换邮箱
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Caches.Redis.Models.RedisConfig">
+            <summary>
+            缓存数据库模型
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisConfig.RedisHost">
+            <summary>
+            数据库地址
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisConfig.RedisName">
+            <summary>
+            数据库用户名
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisConfig.RedisPass">
+            <summary>
+            数据库密码
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisConfig.RedisIndex">
+            <summary>
+            库
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Caches.Redis.Models.RedisData`1">
+            <summary>
+            缓存数据模型
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisData`1.Value">
+            <summary>
+            值
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Caches.Redis.Models.RedisOptions">
+            <summary>
+            Redis配置项
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.RedisHost">
+            <summary>
+            数据库地址
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.Port">
+            <summary>
+            端口
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.RedisName">
+            <summary>
+            数据库用户名
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.RedisPass">
+            <summary>
+            数据库密码
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.RedisIndex">
+            <summary>
+            库
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.ConnectTimeout">
+            <summary>
+            异步连接等待时间
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.SyncTimeout">
+            <summary>
+            同步连接等待时间
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.KeepAlive">
+            <summary>
+            最大连接数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.ConnectRetry">
+            <summary>
+            连接重试次数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.AbortOnConnectFail">
+            <summary>
+            获取或设置是否应显式通知连接/配置超时通过TimeoutException
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.AllowAdmin">
+            <summary>
+            是否允许管理员操作
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.SuspendTime">
+            <summary>
+            没消息时挂起时长(毫秒)
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.IntervalTime">
+            <summary>
+            每次消费消息间隔时间(毫秒)
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.ShowLog">
+            <summary>
+            是否显示日志
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Models.RedisOptions.ListSubscribe">
+            <summary>
+            需要注入的类型
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.GetCacheStrAsync``1(System.String)">
+            <summary>
+            获取缓存
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.GetCacheAsync``1(System.String)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.GetCacheStrAsync(System.String)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <param name="key">键</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.GetCacheAsync(System.String)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <param name="key">键</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.ExpireAsync(System.String,System.TimeSpan)">
+            <summary>
+            设置过期时间
+            </summary>
+            <param name="key">键</param>
+            <param name="expire">过期时间</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.SetCacheAsync(System.String,System.Object)">
+            <summary>
+            添加缓存
+            </summary>
+            <param name="key">键</param>
+            <param name="value">值</param>
+            <returns>添加结果</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.SetCacheAsync(System.String,System.Object,System.TimeSpan)">
+            <summary>
+            添加缓存
+            </summary>
+            <param name="key">键</param>
+            <param name="value">值</param>
+            <param name="timeout">过期时间</param>
+            <returns>添加结果</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.SetCacheAsync(System.String,System.Object,System.TimeSpan,ApeVolo.Common.Global.RedisExpireType)">
+            <summary>
+            添加缓存
+            </summary>
+            <param name="key">键</param>
+            <param name="value">值</param>
+            <param name="timeout">过期时间</param>
+            <param name="redisExpireType">过期类型</param>
+            <returns>添加结果</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.InsertCacheAsync(System.String,System.Object,System.Nullable{System.TimeSpan},System.Nullable{ApeVolo.Common.Global.RedisExpireType})">
+            <summary>
+            添加缓存
+            </summary>
+            <param name="key">键</param>
+            <param name="value">值</param>
+            <param name="timeout">过期时间</param>
+            <param name="redisExpireType">过期类型</param>
+            <returns>添加结果</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.RemoveAsync(System.String)">
+            <summary>
+            移除缓存
+            </summary>
+            <param name="key">键</param>
+            <returns>移除结果</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.ScriptEvaluateKeys(System.String)">
+            <summary>
+            模糊查询key的集合
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.ListLeftPushAsync(System.String,System.String)">
+            <summary>
+            入列
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.ListLeftPopAsync``1(System.String)">
+            <summary>
+            出列
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.ListLengthAsync(System.String)">
+            <summary>
+            获取队列长度
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.Publish(System.String,System.String)">
+            <summary>
+            通道广播
+            </summary>
+            <param name="key"></param>
+            <param name="msg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.PublishAsync(System.String,System.String)">
+            <summary>
+            通道广播
+            </summary>
+            <param name="key"></param>
+            <param name="msg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.Subscribe(System.String,System.Action{StackExchange.Redis.RedisChannel,StackExchange.Redis.RedisValue})">
+            <summary>
+            订阅通道
+            </summary>
+            <param name="key"></param>
+            <param name="action"></param>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.SubscribeAsync(System.String,System.Action{StackExchange.Redis.RedisChannel,StackExchange.Redis.RedisValue})">
+            <summary>
+            订阅通道
+            </summary>
+            <param name="key"></param>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.SortedSetAddAsync(System.String,System.String,System.Double)">
+            <summary>
+            插入zset
+            </summary>
+            <param name="key">key</param>
+            <param name="msg">消息</param>
+            <param name="score">序号</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.SortedSetAddAsync(System.String,System.String,System.DateTime)">
+            <summary>
+            插入zset
+            </summary>
+            <param name="key">key</param>
+            <param name="msg">消息</param>
+            <param name="time">延迟执行时间</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.SortedSetRangeByScoreAsync(System.String,System.Double,System.Double,StackExchange.Redis.Exclude,StackExchange.Redis.Order)">
+            <summary>
+            查询zset
+            </summary>
+            <param name="key">key</param>
+            <param name="start">序号开始</param>
+            <param name="stop">序号结束</param>
+            <param name="exclude"></param>
+            <param name="order">排序</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.SortedSetRangeByScoreAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},StackExchange.Redis.Exclude,StackExchange.Redis.Order)">
+            <summary>
+            查询zset
+            </summary>
+            <param name="key">key</param>
+            <param name="startTime">延迟执行时间开始</param>
+            <param name="stopTime">延迟执行时间结束</param>
+            <param name="exclude"></param>
+            <param name="order">排序</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.SortedSetRemoveRangeByScoreAsync(StackExchange.Redis.RedisKey,System.Double,System.Double)">
+            <summary>
+            删除zset元素
+            </summary>
+            <param name="key">key</param>
+            <param name="start">序号开始</param>
+            <param name="stop">序号结束</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.IRedisCacheService.SortedSetRemoveRangeByScoreAsync(StackExchange.Redis.RedisKey,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            删除zset元素
+            </summary>
+            <param name="key">key</param>
+            <param name="startTime">延迟执行时间开始</param>
+            <param name="stopTime">延迟执行时间结束</param>
+            <returns></returns>
+        </member>
+        <member name="P:ApeVolo.Common.Caches.Redis.Service.MessageQueue.InitBuilder.Services">
+            <summary>
+            Gets the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> where MVC services are configured.
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.MessageQueue.InitBuilder.AddScoped(System.Type,System.Type)">
+            <summary>
+            Adds a scoped service of the type specified in serviceType with an implementation
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.MessageQueue.InitBuilder.AddSingleton(System.Type,System.Type)">
+            <summary>
+            Adds a singleton service of the type specified in serviceType with an implementation
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Caches.Redis.Service.MessageQueue.MqTopicNameKey.MailboxQueue">
+            <summary>
+             邮件队列/// </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Caches.Redis.Service.MessageQueue.ServiceCollectionExtensions">
+            <summary>
+            redis消息队列中间件
+            https://github.com/wmowm/InitQ
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.MessageQueue.ServiceCollectionExtensions.AddRedisMq(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{ApeVolo.Common.Caches.Redis.Models.RedisOptions})">
+            <summary>
+            Adds and configures the consistence services for the consistency.
+            </summary>
+            <param name="services">The services available in the application.</param>
+            <param name="setupAction">An action to configure the <see cref="!:CapOptions" />.</param>
+            <returns>An <see cref="!:CapBuilder" /> for application services.</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.GetRedisOptions">
+            <summary>
+            获取redis配置
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.GetCacheStrAsync``1(System.String)">
+            <summary>
+            获取缓存
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.GetCacheAsync``1(System.String)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.GetCacheStrAsync(System.String)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <param name="key">键</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.GetCacheAsync(System.String)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <param name="key">键</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.ExpireAsync(System.String,System.TimeSpan)">
+            <summary>
+            设置过期时间
+            </summary>
+            <param name="key">键</param>
+            <param name="expire">过期时间</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.SetCacheAsync(System.String,System.Object)">
+            <summary>
+            添加缓存
+            </summary>
+            <param name="key">键</param>
+            <param name="value">值</param>
+            <returns>添加结果</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.SetCacheAsync(System.String,System.Object,System.TimeSpan)">
+            <summary>
+            添加缓存
+            </summary>
+            <param name="key">键</param>
+            <param name="value">值</param>
+            <param name="timeout">过期时间</param>
+            <returns>添加结果</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.SetCacheAsync(System.String,System.Object,System.TimeSpan,ApeVolo.Common.Global.RedisExpireType)">
+            <summary>
+            添加缓存
+            </summary>
+            <param name="key">键</param>
+            <param name="value">值</param>
+            <param name="timeout">过期时间</param>
+            <param name="redisExpireType">过期类型</param>
+            <returns>添加结果</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.InsertCacheAsync(System.String,System.Object,System.Nullable{System.TimeSpan},System.Nullable{ApeVolo.Common.Global.RedisExpireType})">
+            <summary>
+            添加缓存
+            </summary>
+            <param name="key">键</param>
+            <param name="value">值</param>
+            <param name="timeout">过期时间</param>
+            <param name="redisExpireType">过期类型</param>
+            <returns>添加结果</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.RemoveAsync(System.String)">
+            <summary>
+            移除缓存
+            </summary>
+            <param name="key">键</param>
+            <returns>移除结果</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.ScriptEvaluateKeys(System.String)">
+            <summary>
+            模糊查询key的集合
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.ClassLibrary.UsingLock`1">
+            <summary>
+            使用using代替lock操作的对象,可指定写入和读取锁定模式
+            参考:https://www.cnblogs.com/blqw/p/3475734.html
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:ApeVolo.Common.ClassLibrary.UsingLock`1.Lock">
+            <summary> 利用IDisposable的using语法糖方便的释放锁定操作
+            <para>内部类</para>
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.ClassLibrary.UsingLock`1.Lock._Lock">
+            <summary> 读写锁对象
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.ClassLibrary.UsingLock`1.Lock._IsWrite">
+            <summary> 是否为写入模式
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.ClassLibrary.UsingLock`1.Lock.#ctor(System.Threading.ReaderWriterLockSlim,System.Boolean)">
+            <summary> 利用IDisposable的using语法糖方便的释放锁定操作
+            <para>构造函数</para>
+            </summary>
+            <param name="rwl">读写锁</param>
+            <param name="isWrite">写入模式为true,读取模式为false</param>
+        </member>
+        <member name="M:ApeVolo.Common.ClassLibrary.UsingLock`1.Lock.Dispose">
+            <summary> 释放对象时退出指定锁定模式
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.ClassLibrary.UsingLock`1.Disposable">
+            <summary> 空的可释放对象,免去了调用时需要判断是否为null的问题
+            <para>内部类</para>
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.ClassLibrary.UsingLock`1.Disposable.Empty">
+            <summary> 空的可释放对象
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.ClassLibrary.UsingLock`1.Disposable.Dispose">
+            <summary> 空的释放方法
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.ClassLibrary.UsingLock`1._LockSlim">
+            <summary> 读写锁
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.ClassLibrary.UsingLock`1._Data">
+            <summary> 保存数据
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.ClassLibrary.UsingLock`1.#ctor">
+            <summary> 使用using代替lock操作的对象,可指定写入和读取锁定模式
+            <para>构造函数</para>
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.ClassLibrary.UsingLock`1.Data">
+            <summary> 获取或设置当前对象中保存数据的值
+            </summary>
+            <exception cref="T:System.MemberAccessException">获取数据时未进入读取或写入锁定模式</exception>
+            <exception cref="T:System.MemberAccessException">设置数据时未进入写入锁定模式</exception>
+        </member>
+        <member name="P:ApeVolo.Common.ClassLibrary.UsingLock`1.Enabled">
+            <summary> 是否启用,当该值为false时,Read()和Write()方法将返回 Disposable.Empty
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.ClassLibrary.UsingLock`1.Read">
+            <summary> 进入读取锁定模式,该模式下允许多个读操作同时进行
+            <para>退出读锁请将返回对象释放,建议使用using语块</para>
+            <para>Enabled为false时,返回Disposable.Empty;</para>
+            <para>在读取或写入锁定模式下重复执行,返回Disposable.Empty;</para>
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.ClassLibrary.UsingLock`1.Write">
+            <summary> 进入写入锁定模式,该模式下只允许同时执行一个读操作
+            <para>退出读锁请将返回对象释放,建议使用using语块</para>
+            <para>Enabled为false时,返回Disposable.Empty;</para>
+            <para>在写入锁定模式下重复执行,返回Disposable.Empty;</para>
+            </summary>
+            <exception cref="T:System.NotImplementedException">读取模式下不能进入写入锁定状态</exception>
+        </member>
+        <member name="T:ApeVolo.Common.DB.DatabaseEntry">
+            <summary>
+            数据库入口
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.DB.DatabaseEntry.CurrentDbConnId">
+            <summary>
+            系统当前默认的数据库connID
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.DB.DataBaseOperate">
+            <summary>
+            数据库操作
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.DI.AutofacHelper">
+            <summary>
+            AutoFac帮助
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.DI.AutofacHelper.GetService``1">
+            <summary>
+            获取全局服务
+            </summary>
+            <typeparam name="T">接口类型</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.DI.AutofacHelper.GetScopeService``1">
+            <summary>
+            获取当前请求为生命周期的服务
+            </summary>
+            <typeparam name="T">接口类型</typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.DI.IDependencyRepository">
+            <summary>
+            注入标记
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.DI.IDependencyService">
+            <summary>
+            注入标记
+            允许使用拦截器服务
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.DI.IFilter">
+            <summary>
+            过滤器
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.DI.IFilter.OnActionExecuting(Castle.DynamicProxy.IInvocation)">
+            <summary>
+            执行前
+            </summary>
+            <param name="invocation">执行信息</param>
+        </member>
+        <member name="M:ApeVolo.Common.DI.IFilter.OnActionExecuted(Castle.DynamicProxy.IInvocation)">
+            <summary>
+            执行后
+            </summary>
+            <param name="invocation">执行信息</param>
+        </member>
+        <member name="T:ApeVolo.Common.Exception.BadRequestException">
+            <summary>
+            请求错误
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Extention.ExtObject">
+            <summary>
+            过滤器上下文扩展
+            </summary>
+            <summary>
+            字节扩展
+            </summary>
+            <summary>
+            DataTable扩展
+            </summary>
+            <summary>
+            时间扩展
+            </summary>
+            <summary>
+            委托扩展
+            </summary>
+            <summary>
+            GUID扩展
+            </summary>
+            <summary>
+            HTTP上下文扩展
+            </summary>
+            <summary>
+            INT扩展
+            </summary>
+            <summary>
+            Stream扩展
+            </summary>
+            <summary>
+            字符串扩展
+            </summary>
+            <summary>
+            Uri扩展
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ContainsFilter``1(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext)">
+            <summary>
+            是否拥有某过滤器
+            </summary>
+            <typeparam name="T">过滤器类型</typeparam>
+            <param name="actionExecutingContext">上下文</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToString(System.Byte[])">
+            <summary>
+            byte[]转string
+            注：默认使用UTF8编码
+            </summary>
+            <param name="bytes">byte[]数组</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToString(System.Byte[],System.Text.Encoding)">
+            <summary>
+            byte[]转string
+            </summary>
+            <param name="bytes">byte[]数组</param>
+            <param name="encoding">指定编码</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToBase64String(System.Byte[])">
+            <summary>
+            将byte[]转为Base64字符串
+            </summary>
+            <param name="bytes">字节数组</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToBinString(System.Byte)">
+            <summary>
+            转为二进制字符串
+            </summary>
+            <param name="aByte">字节</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToBinString(System.Byte[])">
+            <summary>
+            转为二进制字符串
+            注:一个字节转为8位二进制
+            </summary>
+            <param name="bytes">字节数组</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.To0XString(System.Byte[])">
+            <summary>
+            Byte数组转为对应的16进制字符串
+            </summary>
+            <param name="bytes">Byte数组</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.To0XString(System.Byte)">
+            <summary>
+            Byte数组转为对应的16进制字符串
+            </summary>
+            <param name="aByte">一个Byte</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToAsciiString(System.Byte[])">
+            <summary>
+            转为ASCII字符串（一个字节对应一个字符）
+            </summary>
+            <param name="bytes">字节数组</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToAsciiString(System.Byte)">
+            <summary>
+            转为ASCII字符串（一个字节对应一个字符）
+            </summary>
+            <param name="aByte">字节数组</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.GetXor(System.Byte[])">
+            <summary>
+            获取异或值
+            注：每个字节异或
+            </summary>
+            <param name="bytes">字节数组</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToInt(System.Byte[])">
+            <summary>
+            将字节数组转为Int类型
+            </summary>
+            <param name="bytes">字节数组</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToObject(System.Byte[])">
+            <summary> 
+            将一个序列化后的byte[]数组还原
+            </summary>
+            <param name="bytes"></param>         
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToObject``1(System.Byte[])">
+            <summary>
+            将一个序列化后的byte[]数组还原
+            </summary>
+            <typeparam name="T">返回类型</typeparam>
+            <param name="bytes">字节数组</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToFile(System.Byte[],System.String)">
+            <summary>
+            将字节数组保存为文件
+            </summary>
+            <param name="bytes">字节数组</param>
+            <param name="path">文件完成路径</param>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToList``1(System.Data.DataTable)">
+            <summary>
+            DataTable转List
+            </summary>
+            <typeparam name="T">转换类型</typeparam>
+            <param name="dt">数据源</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToCsvStr(System.Data.DataTable)">
+             <summary>
+            将DataTable转换为标准的CSV字符串
+             </summary>
+             <param name="dt">数据表</param>
+             <returns>返回标准的CSV</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.GetWeekOfYear(System.DateTime)">
+              <summary> 
+             获取某一日期是该年中的第几周
+              </summary> 
+              <param name="dateTime"> 日期 </param> 
+              <returns> 该日期在该年中的周数 </returns> 
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToJsTimestamp(System.DateTime)">
+            <summary>
+            获取Js格式的timestamp
+            </summary>
+            <param name="dateTime">日期</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.JsGetTime(System.DateTime)">
+            <summary>
+            获取js中的getTime()
+            </summary>
+            <param name="dt">日期</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Default(System.DateTime)">
+            <summary>
+            返回默认时间1970-01-01
+            </summary>
+            <param name="dt">时间日期</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToCstTime(System.DateTime)">
+            <summary>
+            转为标准时间（北京时间，解决Linux时区问题）
+            </summary>
+            <param name="dt">当前时间</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToLocalTime(System.DateTime)">
+            <summary>
+            转为本地时间
+            </summary>
+            <param name="time">时间</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToUnixTimeStampSecond(System.DateTime)">
+            <summary>
+            转为转换为Unix时间戳格式(精确到秒)
+            </summary>
+            <param name="time">时间</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToUnixTimeStampMillisecond(System.DateTime)">
+            <summary>
+            转为转换为Unix时间戳格式(精确到毫秒)
+            </summary>
+            <param name="time">时间</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Done(System.Action,System.Action)">
+            <summary>
+            异步，按顺序执行第一个方法和第二个方法
+            </summary>
+            <param name="firstFunc">第一个方法</param>
+            <param name="next">下一个方法</param>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Done(System.Func{System.Object},System.Action{System.Object})">
+            <summary>
+            异步，按顺序执行第一个方法和下一个方法
+            </summary>
+            <param name="firstFunc">第一个方法</param>
+            <param name="next">下一个方法</param>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.AddProperty(System.Dynamic.ExpandoObject,System.String,System.Object)">
+            <summary>
+            添加属性
+            </summary>
+            <param name="expandoObj">动态对象</param>
+            <param name="propertyName">属性名</param>
+            <param name="value">属性值</param>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.SetProperty(System.Dynamic.ExpandoObject,System.String,System.Object)">
+            <summary>
+            设置属性
+            </summary>
+            <param name="expandoObj">动态对象</param>
+            <param name="propertyName">属性名</param>
+            <param name="value">属性值</param>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.GetProperty(System.Dynamic.ExpandoObject,System.String)">
+            <summary>
+            获取属性
+            </summary>
+            <param name="expandoObj">动态对象</param>
+            <param name="propertyName">属性名</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.GetProperties(System.Dynamic.ExpandoObject)">
+            <summary>
+            获取所有属性
+            </summary>
+            <param name="expandoObj">动态对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.RemoveProperty(System.Dynamic.ExpandoObject,System.String)">
+            <summary>
+            删除属性
+            </summary>
+            <param name="expandoObj">动态对象</param>
+            <param name="propertyName">属性名</param>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToDataTable(System.Collections.Generic.IEnumerable{System.Dynamic.ExpandoObject})">
+            <summary>
+            将动态属性对象ExpandoObject列表转为DataTable
+            </summary>
+            <param name="dataList">数据源</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.BuildExtendSelectExpre``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>
+            组合继承属性选择表达式树,无拓展参数
+            TResult将继承TBase的所有属性
+            </summary>
+            <typeparam name="TBase">原数据类型</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="expression">拓展表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.BuildExtendSelectExpre``3(System.Linq.Expressions.Expression{System.Func{``0,``1,``2}})">
+            <summary>
+            组合继承属性选择表达式树,1个拓展参数
+            TResult将继承TBase的所有属性
+            </summary>
+            <typeparam name="TBase">原数据类型</typeparam>
+            <typeparam name="T1">拓展类型1</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="expression">拓展表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.BuildExtendSelectExpre``4(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3}})">
+            <summary>
+            组合继承属性选择表达式树,2个拓展参数
+            TResult将继承TBase的所有属性
+            </summary>
+            <typeparam name="TBase">原数据类型</typeparam>
+            <typeparam name="T1">拓展类型1</typeparam>
+            <typeparam name="T2">拓展类型2</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="expression">拓展表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.BuildExtendSelectExpre``5(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4}})">
+            <summary>
+            组合继承属性选择表达式树,3个拓展参数
+            TResult将继承TBase的所有属性
+            </summary>
+            <typeparam name="TBase">原数据类型</typeparam>
+            <typeparam name="T1">拓展类型1</typeparam>
+            <typeparam name="T2">拓展类型2</typeparam>
+            <typeparam name="T3">拓展类型3</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="expression">拓展表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.BuildExtendSelectExpre``6(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5}})">
+            <summary>
+            组合继承属性选择表达式树,4个拓展参数
+            TResult将继承TBase的所有属性
+            </summary>
+            <typeparam name="TBase">原数据类型</typeparam>
+            <typeparam name="T1">拓展类型1</typeparam>
+            <typeparam name="T2">拓展类型2</typeparam>
+            <typeparam name="T3">拓展类型3</typeparam>
+            <typeparam name="T4">拓展类型4</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="expression">拓展表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.BuildExtendSelectExpre``7(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5,``6}})">
+            <summary>
+            组合继承属性选择表达式树,5个拓展参数
+            TResult将继承TBase的所有属性
+            </summary>
+            <typeparam name="TBase">原数据类型</typeparam>
+            <typeparam name="T1">拓展类型1</typeparam>
+            <typeparam name="T2">拓展类型2</typeparam>
+            <typeparam name="T3">拓展类型3</typeparam>
+            <typeparam name="T4">拓展类型4</typeparam>
+            <typeparam name="T5">拓展类型5</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="expression">拓展表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.BuildExtendSelectExpre``8(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5,``6,``7}})">
+            <summary>
+            组合继承属性选择表达式树,6个拓展参数
+            TResult将继承TBase的所有属性
+            </summary>
+            <typeparam name="TBase">原数据类型</typeparam>
+            <typeparam name="T1">拓展类型1</typeparam>
+            <typeparam name="T2">拓展类型2</typeparam>
+            <typeparam name="T3">拓展类型3</typeparam>
+            <typeparam name="T4">拓展类型4</typeparam>
+            <typeparam name="T5">拓展类型5</typeparam>
+            <typeparam name="T6">拓展类型6</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="expression">拓展表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.BuildExtendSelectExpre``9(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5,``6,``7,``8}})">
+            <summary>
+            组合继承属性选择表达式树,7个拓展参数
+            TResult将继承TBase的所有属性
+            </summary>
+            <typeparam name="TBase">原数据类型</typeparam>
+            <typeparam name="T1">拓展类型1</typeparam>
+            <typeparam name="T2">拓展类型2</typeparam>
+            <typeparam name="T3">拓展类型3</typeparam>
+            <typeparam name="T4">拓展类型4</typeparam>
+            <typeparam name="T5">拓展类型5</typeparam>
+            <typeparam name="T6">拓展类型6</typeparam>
+            <typeparam name="T7">拓展类型7</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="expression">拓展表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.BuildExtendSelectExpre``10(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5,``6,``7,``8,``9}})">
+            <summary>
+            组合继承属性选择表达式树,8个拓展参数
+            TResult将继承TBase的所有属性
+            </summary>
+            <typeparam name="TBase">原数据类型</typeparam>
+            <typeparam name="T1">拓展类型1</typeparam>
+            <typeparam name="T2">拓展类型2</typeparam>
+            <typeparam name="T3">拓展类型3</typeparam>
+            <typeparam name="T4">拓展类型4</typeparam>
+            <typeparam name="T5">拓展类型5</typeparam>
+            <typeparam name="T6">拓展类型6</typeparam>
+            <typeparam name="T7">拓展类型7</typeparam>
+            <typeparam name="T8">拓展类型8</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="expression">拓展表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.BuildExtendSelectExpre``11(System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5,``6,``7,``8,``9,``10}})">
+            <summary>
+            组合继承属性选择表达式树,9个拓展参数
+            TResult将继承TBase的所有属性
+            </summary>
+            <typeparam name="TBase">原数据类型</typeparam>
+            <typeparam name="T1">拓展类型1</typeparam>
+            <typeparam name="T2">拓展类型2</typeparam>
+            <typeparam name="T3">拓展类型3</typeparam>
+            <typeparam name="T4">拓展类型4</typeparam>
+            <typeparam name="T5">拓展类型5</typeparam>
+            <typeparam name="T6">拓展类型6</typeparam>
+            <typeparam name="T7">拓展类型7</typeparam>
+            <typeparam name="T8">拓展类型8</typeparam>
+            <typeparam name="T9">拓展类型9</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="expression">拓展表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.And``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            连接表达式与运算
+            </summary>
+            <typeparam name="T">参数</typeparam>
+            <param name="one">原表达式</param>
+            <param name="another">新的表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Or``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            连接表达式或运算
+            </summary>
+            <typeparam name="T">参数</typeparam>
+            <param name="one">原表达式</param>
+            <param name="another">新表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.GetConstantValue(System.Linq.Expressions.Expression)">
+            <summary>
+            获取表达式中的固定值
+            </summary>
+            <param name="expression">表达式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToSequentialGuid(System.Guid)">
+            <summary>
+            转为有序的GUID
+            注：长度为50字符
+            </summary>
+            <param name="guid">新的GUID</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Copy``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32)">
+            <summary>
+            复制序列中的数据
+            </summary>
+            <typeparam name="T">泛型</typeparam>
+            <param name="iEnumberable">原数据</param>
+            <param name="startIndex">原数据开始复制的起始位置</param>
+            <param name="length">需要复制的数据长度</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+            给IEnumerable拓展ForEach方法
+            </summary>
+            <typeparam name="T">模型类</typeparam>
+            <param name="iEnumberable">数据源</param>
+            <param name="func">方法</param>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0,System.Int32})">
+            <summary>
+            给IEnumerable拓展ForEach方法
+            </summary>
+            <typeparam name="T">模型类</typeparam>
+            <param name="iEnumberable">数据源</param>
+            <param name="func">方法</param>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.CastToList``1(System.Collections.IEnumerable)">
+            <summary>
+            IEnumerable转换为List'T'
+            </summary>
+            <typeparam name="T">参数</typeparam>
+            <param name="source">数据源</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToDataTable``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            将IEnumerable'T'转为对应的DataTable
+            </summary>
+            <typeparam name="T">数据模型</typeparam>
+            <param name="iEnumberable">数据源</param>
+            <returns>DataTable</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToAscllStr(System.Int32)">
+            <summary>
+            int转Ascll字符
+            </summary>
+            <param name="ascllCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToDateTime_From_JsGetTime(System.Int64)">
+            <summary>
+            jsGetTime转为DateTime
+            </summary>
+            <param name="jsGetTime">js中Date.getTime()</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToBytes(System.Object)">
+            <summary>
+            将一个object对象序列化，返回一个byte[]         
+            </summary> 
+            <param name="obj">能序列化的对象</param>
+            <returns></returns> 
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.IsNullOrEmpty(System.Object)">
+            <summary>
+            判断是否为Null或者空
+            </summary>
+            <param name="obj">对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.IsNotNull(System.Object)">
+            <summary>
+            不等于NULL？
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.IsNull(System.Object)">
+            <summary>
+            等于NULL？
+            </summary>
+            <param name="obj">对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToJson(System.Object)">
+            <summary>
+            将对象序列化成Json字符串
+            </summary>
+            <param name="obj">需要序列化的对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToRedisJson(System.Object)">
+            <summary>
+            将对象序列化成Json字符串
+            </summary>
+            <param name="obj">需要序列化的对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToJsonByIgnore(System.Object)">
+            <summary>
+            将对象序列化成Json字符串,同时忽略null字段
+            </summary>
+            <param name="obj">需要序列化的对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.EntityToJson(System.Object)">
+            <summary>
+            实体类转json数据，速度快
+            </summary>
+            <param name="t">实体类</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.DeepClone``1(``0)">
+            <summary>
+            深复制
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="obj">对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToXmlStr``1(``0)">
+            <summary>
+            将对象序列化为XML字符串
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="obj">对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToXmlStr``1(``0,System.String)">
+            <summary>
+            将对象序列化为XML字符串
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="obj">对象</param>
+            <param name="rootNodeName">根节点名(建议设为xml)</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToInt(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToInt(System.Object,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="thisValue"></param>
+            <param name="errorValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToMoney(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToMoney(System.Object,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="thisValue"></param>
+            <param name="errorValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToString(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToString(System.Object,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="thisValue"></param>
+            <param name="errorValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToDecimal(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToDecimal(System.Object,System.Decimal)">
+            <summary>
+            
+            </summary>
+            <param name="thisValue"></param>
+            <param name="errorValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToDate(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToDate(System.Object,System.DateTime)">
+            <summary>
+            
+            </summary>
+            <param name="thisValue"></param>
+            <param name="errorValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToBool(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ContainsProperty(System.Object,System.String)">
+            <summary>
+            是否拥有某属性
+            </summary>
+            <param name="obj">对象</param>
+            <param name="propertyName">属性名</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.GetPropertyValue(System.Object,System.String)">
+            <summary>
+            获取某属性值
+            </summary>
+            <param name="obj">对象</param>
+            <param name="propertyName">属性名</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.SetPropertyValue(System.Object,System.String,System.Object)">
+            <summary>
+            设置某属性值
+            </summary>
+            <param name="obj">对象</param>
+            <param name="propertyName">属性名</param>
+            <param name="value">值</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ContainsField(System.Object,System.String)">
+            <summary>
+            是否拥有某字段
+            </summary>
+            <param name="obj">对象</param>
+            <param name="fieldName">字段名</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.GetGetFieldValue(System.Object,System.String)">
+            <summary>
+            获取某字段值
+            </summary>
+            <param name="obj">对象</param>
+            <param name="fieldName">字段名</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.SetFieldValue(System.Object,System.String,System.Object)">
+            <summary>
+            设置某字段值
+            </summary>
+            <param name="obj">对象</param>
+            <param name="fieldName">字段名</param>
+            <param name="value">值</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ChangeType(System.Object,System.Type)">
+            <summary>
+            改变实体类型
+            </summary>
+            <param name="obj">对象</param>
+            <param name="targetType">目标类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ChangeType``1(System.Object)">
+            <summary>
+            改变实体类型
+            </summary>
+            <typeparam name="T">目标泛型</typeparam>
+            <param name="obj">对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ChangeType_ByConvert(System.Object,System.Type)">
+            <summary>
+            改变类型
+            </summary>
+            <param name="obj">原对象</param>
+            <param name="targetType">目标类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.InitEntity(System.Object)">
+            <summary>
+            初始实体信息
+            </summary>
+            <param name="entity"></param>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.EditEntity(System.Object)">
+            <summary>
+            编辑实体信息
+            </summary>
+            <param name="entity"></param>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.DelEntity(System.Object)">
+            <summary>
+            编辑实体信息
+            </summary>
+            <param name="entity"></param>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ReadToBytes(System.IO.Stream)">
+            <summary>
+            将流Stream转为byte数组
+            </summary>
+            <param name="stream"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ReadToString(System.IO.Stream)">
+            <summary>
+            将流读为字符串
+            注：默认使用UTF-8编码
+            </summary>
+            <param name="stream">流</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ReadToString(System.IO.Stream,System.Text.Encoding)">
+            <summary>
+            将流读为字符串
+            注：使用指定编码
+            </summary>
+            <param name="stream">流</param>
+            <param name="encoding">指定编码</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToBytes_FromBase64Str(System.String)">
+            <summary>
+            转为字节数组
+            </summary>
+            <param name="base64Str">base64字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToMd5String(System.String)">
+            <summary>
+            转换为MD5加密后的字符串（默认加密为32位）
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToMd5String16(System.String)">
+            <summary>
+            转换为MD5加密后的字符串（16位）
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Base64Encode(System.String)">
+            <summary>
+            Base64加密
+            注:默认采用UTF8编码
+            </summary>
+            <param name="source">待加密的明文</param>
+            <returns>加密后的字符串</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Base64Encode(System.String,System.Text.Encoding)">
+            <summary>
+            Base64加密
+            </summary>
+            <param name="source">待加密的明文</param>
+            <param name="encoding">加密采用的编码方式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Base64Decode(System.String)">
+            <summary>
+            Base64解密
+            注:默认使用UTF8编码
+            </summary>
+            <param name="result">待解密的密文</param>
+            <returns>解密后的字符串</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Base64Decode(System.String,System.Text.Encoding)">
+            <summary>
+            Base64解密
+            </summary>
+            <param name="result">待解密的密文</param>
+            <param name="encoding">解密采用的编码方式，注意和加密时采用的方式一致</param>
+            <returns>解密后的字符串</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Base64UrlEncode(System.String)">
+            <summary>
+            Base64Url编码
+            </summary>
+            <param name="text">待编码的文本字符串</param>
+            <returns>编码的文本字符串</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Base64UrlDecode(System.String)">
+            <summary>
+            Base64Url解码
+            </summary>
+            <param name="base64UrlStr">使用Base64Url编码后的字符串</param>
+            <returns>解码后的内容</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToSHA1Bytes(System.String)">
+            <summary>
+            计算SHA1摘要
+            注：默认使用UTF8编码
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToSHA1Bytes(System.String,System.Text.Encoding)">
+            <summary>
+            计算SHA1摘要
+            </summary>
+            <param name="str">字符串</param>
+            <param name="encoding">编码</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToSHA1String(System.String)">
+            <summary>
+            转为SHA1哈希加密字符串
+            注：默认使用UTF8编码
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToSHA1String(System.String,System.Text.Encoding)">
+            <summary>
+            转为SHA1哈希
+            </summary>
+            <param name="str">字符串</param>
+            <param name="encoding">编码</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToSHA256String(System.String)">
+            <summary>
+            SHA256加密
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToHmacsha256String(System.String,System.String)">
+            <summary>
+            HMACSHA256算法
+            </summary>
+            <param name="text">内容</param>
+            <param name="secret">密钥</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToInt(System.String)">
+            <summary>
+            string转int
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToLong(System.String)">
+            <summary>
+            string转long
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToInt_FromBinString(System.String)">
+            <summary>
+            二进制字符串转为Int
+            </summary>
+            <param name="str">二进制字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToInt0X(System.String)">
+            <summary>
+            将16进制字符串转为Int
+            </summary>
+            <param name="str">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToDouble(System.String)">
+            <summary>
+            转换为double
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToBytes(System.String)">
+            <summary>
+            string转byte[]
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToBytes(System.String,System.Text.Encoding)">
+            <summary>
+            string转byte[]
+            </summary>
+            <param name="str">字符串</param>
+            <param name="theEncoding">需要的编码</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.To0XBytes(System.String)">
+            <summary>
+            将16进制字符串转为Byte数组
+            </summary>
+            <param name="str">16进制字符串(2个16进制字符表示一个Byte)</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToASCIIBytes(System.String)">
+            <summary>
+            将ASCII码形式的字符串转为对应字节数组
+            注：一个字节一个ASCII码字符
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToDateTime(System.String)">
+            <summary>
+            转换为日期格式
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToObject``1(System.String)">
+            <summary>
+            将Json字符串反序列化为对象
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="jsonStr">Json字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.RemoveAt(System.String)">
+            <summary>
+            删除Json字符串中键中的@符号
+            </summary>
+            <param name="jsonStr">json字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToObject(System.String,System.Type)">
+            <summary>
+            将Json字符串反序列化为对象
+            </summary>
+            <param name="jsonStr">json字符串</param>
+            <param name="type">对象类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.XmlStrToObject``1(System.String)">
+            <summary>
+            将XML字符串反序列化为对象
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="xmlStr">XML字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.XmlStrToJObject(System.String)">
+            <summary>
+            将XML字符串反序列化为对象
+            </summary>
+            <param name="xmlStr">XML字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToList``1(System.String)">
+            <summary>
+            将Json字符串转为List'T'
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="jsonStr"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToDataTable(System.String)">
+            <summary>
+            将Json字符串转为DataTable
+            </summary>
+            <param name="jsonStr">Json字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToJObject(System.String)">
+            <summary>
+            将Json字符串转为JObject
+            </summary>
+            <param name="jsonStr">Json字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToJArray(System.String)">
+            <summary>
+            将Json字符串转为JArray
+            </summary>
+            <param name="jsonStr">Json字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToEntity``1(System.String)">
+            <summary>
+            json数据转实体类,仅仅应用于单个实体类，速度非常快
+            </summary>
+            <typeparam name="T">泛型参数</typeparam>
+            <param name="json">json字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToFirstUpperStr(System.String)">
+            <summary>
+            转为首字母大写
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToFirstLowerStr(System.String)">
+            <summary>
+            转为首字母小写
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToIPEndPoint(System.String)">
+            <summary>
+            转为网络终结点IPEndPoint
+            </summary>=
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToEnum``1(System.String)">
+            <summary>
+            将枚举类型的文本转为枚举类型
+            </summary>
+            <typeparam name="T">枚举类型</typeparam>
+            <param name="enumText">枚举文本</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToMurmurHash(System.String)">
+            <summary>
+            转为MurmurHash
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.IsWeakPwd(System.String)">
+            <summary>
+            是否为弱密码
+            注:密码必须包含数字、小写字母、大写字母和其他符号中的两种并且长度大于8
+            </summary>
+            <param name="pwd">密码</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.IsEmail(System.String)">
+            <summary>
+            判断是否邮箱
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.ExtObject.Scrpit(Microsoft.AspNetCore.Mvc.IUrlHelper,System.String)">
+            <summary>
+            获取最新的s文件或css文件
+            注：解决缓存问题，只有文件修改后才会获取最新版
+            </summary>
+            <param name="helper"></param>
+            <param name="scriptVirtualPath"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Extention.ParameterReplaceVisitor">
+            <summary>
+            继承ExpressionVisitor类，实现参数替换统一
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Extention.OsInfoTo">
+            <summary>
+            系统信息
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.Is64BitOperatingSystem">
+            <summary>
+            确定当前操作系统是否为64位操作系统
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.MachineName">
+            <summary>
+            获取此本地计算机的NetBIOS名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.OsVersion">
+            <summary>
+            获取当前平台标识符和版本号
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.NumberOfCores">
+            <summary>
+            获取当前计算机上的物理处理器核心数量
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.PhysicalProcessorCount">
+            <summary>
+            获取当前计算机上的物理处理器数量
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.LogicProcessorCount">
+            <summary>
+            获取当前计算机上的逻辑处理器数量
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.ProcessorName">
+            <summary>
+            处理器名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.SystemDirectory">
+            <summary>
+            获取系统目录的标准路径
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.SystemPageSize">
+            <summary>
+            获取操作系统的内存页面中的字节数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.TickCount">
+            <summary>
+            获取自系统启动以来经过的毫秒数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.UserDomainName">
+            <summary>
+            获取与当前用户关联的网络域名
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.UserName">
+            <summary>
+            获取当前登录到操作系统的用户的用户名
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.Version">
+            <summary>
+            获取公共语言运行时的主要，次要，内部和修订版本号
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.FrameworkDescription">
+            <summary>
+            获取运行应用程序的.NET安装的名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.OsDescription">
+            <summary>
+            获取描述应用程序正在运行的操作系统的字符串
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.OS">
+            <summary>
+            代表操作系统平台
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.TotalPhysicalMemory">
+            <summary>
+            总物理内存 B
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.FreePhysicalMemory">
+            <summary>
+            可用物理内存 B
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.SwapTotal">
+            <summary>
+            总交换空间（Linux）B
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.SwapFree">
+            <summary>
+            可用交换空间（Linux）B
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.LogicalDisk">
+            <summary>
+            逻辑磁盘
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Extention.OsInfoTo.LocalIp">
+            <summary>
+            本机IP
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.#ctor">
+            <summary>
+            构造
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Extention.OsInfoTo.PlatformForWindows">
+            <summary>
+            WINDOWS
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForWindows.TotalPhysicalMemory">
+            <summary>
+            获取物理内存 B
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForWindows.FreePhysicalMemory">
+            <summary>
+            获取可用内存 B
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForWindows.LogicalDisk">
+            <summary>
+            获取磁盘信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForWindows.ProcessorName">
+            <summary>
+            获取处理器名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForWindows.RunTime">
+            <summary>
+            运行时长
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForWindows.PhysicalProcessorCount">
+            <summary>
+            物理CPU数量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForWindows.LogicProcessorCount">
+            <summary>
+            逻辑CPU数量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForWindows.NumberOfCores">
+            <summary>
+            物理处理器核心数量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Extention.OsInfoTo.PlatformForLinux">
+            <summary>
+            Linux系统
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForLinux.MemInfo(System.String)">
+            <summary>
+            获取 /proc/meminfo
+            </summary>
+            <param name="pkey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForLinux.CpuInfo(System.String)">
+            <summary>
+            获取 /proc/cpuinfo
+            </summary>
+            <param name="pkey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForLinux.LogicalDisk">
+            <summary>
+            获取磁盘信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForLinux.CPULoad">
+            <summary>
+            获取CPU使用率 %
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForLinux.RunTime">
+            <summary>
+            运行时长
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForLinux.PhysicalProcessorCount">
+            <summary>
+            物理CPU数量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForLinux.LogicProcessorCount">
+            <summary>
+            逻辑CPU数量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Extention.OsInfoTo.PlatformForLinux.NumberOfCores">
+            <summary>
+            物理处理器核心数量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Extention.UnixDateTimeConvertor">
+            <summary>
+            时间转换器 全局序列化使用
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Global.AppSettings">
+            <summary>
+            配置文件帮助类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Global.AppSettings.GetValue(System.String)">
+            <summary>
+            从AppSettings获取key的值
+            </summary>
+            <param name="key">key</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Global.AppSettings.GetValue(System.String[])">
+            <summary>
+            从AppSettings获取key的值
+            </summary>
+            <param name="keys"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Global.AppSettings.GetConnectionString(System.String)">
+            <summary>
+            获取连接字符串
+            </summary>
+            <param name="nameOfCon">连接字符串名</param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Global.CacheType">
+            <summary>
+            缓存类型
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.CacheType.SystemCache">
+            <summary>
+            系统缓存
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.CacheType.RedisCache">
+            <summary>
+            Redis缓存
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Global.DataBaseType">
+            <summary>
+            数据库类型
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Global.RedisExpireType">
+            <summary>
+            过期类型
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RedisExpireType.Absolute">
+            <summary>
+            绝对过期
+            注：即自创建一段时间后就过期
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RedisExpireType.Relative">
+            <summary>
+            相对过期
+            注：即该键未被访问后一段时间后过期，若此键一直被访问则过期时间自动延长
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Global.GlobalData">
+            <summary>
+            DI全局
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.GlobalData.FxAllTypes">
+            <summary>
+            框架所有自定义类
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.GlobalData.EntityTypes">
+            <summary>
+            所有实体类
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.GlobalSwitch.AuthPolicysName">
+            <summary>
+            权限策略名称
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.GlobalSwitch.RoutePrefixName">
+            <summary>
+            路由前缀
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Global.LoggerType">
+            <summary>
+            日志类型
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.LoggerType.Console">
+            <summary>
+            输出到控制台
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.LoggerType.File">
+            <summary>
+            使用txt文件记录日志
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.LoggerType.Rdbms">
+            <summary>
+            使用关系型数据库记录日志,例如SQlServer、MySQL、Oracle等
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.LoggerType.ElasticSearch">
+            <summary>
+            使用ElasticSearch记录日志
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.MenuType.Catalog">
+            <summary>
+            目录
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.MenuType.Menu">
+            <summary>
+            菜单
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.MenuType.Button">
+            <summary>
+            按钮
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.QueuedEmailPriority.Low">
+            <summary>
+            低
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.QueuedEmailPriority.High">
+            <summary>
+            高
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Global.RedisKey">
+            <summary>
+            redis相关的KEY
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RedisKey.RedisTime">
+            <summary>
+            redis默认缓存时间
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RedisKey.OnlineKey">
+            <summary>
+            在线
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RedisKey.CodeKey">
+            <summary>
+            验证码
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RedisKey.EmailCaptchaKey">
+            <summary>
+            邮箱验证码
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RedisKey.UserInfoByName">
+            <summary>
+            加载用户信息
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RsaType.Rsa">
+            <summary>
+            SHA1
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RsaType.Rsa2">
+            <summary>
+            RSA2 密钥长度至少为2048
+            SHA256
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Global.RunMode">
+            <summary>
+            运行模式
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RunMode.LocalTest">
+            <summary>
+            本地测试
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RunMode.Demo">
+            <summary>
+            演示模式
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Global.RunMode.Publish">
+            <summary>
+            发布
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.AsyncHelper">
+            <summary>
+            异步转同步,防止ASP.NET中死锁
+            https://cpratt.co/async-tips-tricks/
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.AsyncHelper.RunSync(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            同步执行
+            </summary>
+            <param name="func">任务</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.AsyncHelper.RunSync``1(System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            同步执行
+            </summary>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="func">任务</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.CmdHelper.Run(System.String,System.String)">
+            <summary>  
+            Windows操作系统，执行cmd命令
+            多命令请使用批处理命令连接符：  
+            <![CDATA[  
+            &:同时执行两个命令  
+            |:将上一个命令的输出,作为下一个命令的输入  
+            &&：当&&前的命令成功时,才执行&&后的命令  
+            ||：当||前的命令失败时,才执行||后的命令
+            ]]>
+            </summary>  
+        </member>
+        <member name="M:ApeVolo.Common.Helper.CmdHelper.Shell(System.String)">
+            <summary>
+            Linux操作系统，执行Shell
+            【 using https://github.com/phil-harmoniq/Shell.NET 】
+            </summary>
+            <param name="cmd"></param>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.CmdHelper.BashResult">
+            <summary>
+            返回结果
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.CmdHelper.BashResult.Output">
+            <summary>
+            The command's standard output as a string. (if redirected)</summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.CmdHelper.BashResult.ErrorMsg">
+            <summary>
+            The command's error output as a string. (if redirected)</summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.CmdHelper.BashResult.ExitCode">
+            <summary>
+            The command's exit code as an integer.</summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.CmdHelper.BashResult.Lines">
+            <summary>
+            An array of the command's output split by newline characters. (if redirected)</summary>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.CmdHelper.Bash">
+            <summary>
+            执行
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.CmdHelper.Bash.Native">
+            <summary>Determines whether bash is running in a native OS (Linux/MacOS).</summary>
+            <returns>True if in *nix, else false.</returns>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.CmdHelper.Bash.Subsystem">
+            <summary>Determines if using Windows and if Linux subsystem is installed.</summary>
+            <returns>True if in Windows and bash detected.</returns>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.CmdHelper.Bash.Output">
+            <summary>Stores output of the previous command if redirected.</summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.CmdHelper.Bash.Lines">
+            <summary>
+            Gets an array of the command output split by newline characters if redirected. </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.CmdHelper.Bash.ExitCode">
+            <summary>Stores the exit code of the previous command.</summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.CmdHelper.Bash.ErrorMsg">
+            <summary>Stores the error message of the previous command if redirected.</summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.CmdHelper.Bash.Command(System.String,System.Boolean)">
+            <summary>Execute a new Bash command.</summary>
+            <param name="input">The command to execute.</param>
+            <param name="redirect">Print output to terminal if false.</param>
+            <returns>A `BashResult` containing the command's output information.</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ConsoleHelper.WriteLine(System.String,System.ConsoleColor)">
+            <summary>
+            打印控制台信息
+            </summary>
+            <param name="str">待打印的字符串</param>
+            <param name="color">想要打印的颜色</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.DateTimeHelper.FormatLongToTime(System.Int64)">
+            <summary>
+            格式化时间
+            </summary>
+            <param name="time"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.DelegateHelper">
+            <summary>
+            委托帮助类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.DelegateHelper.RunAsync(System.Action,System.Action)">
+            <summary>
+            异步执行方法
+            </summary>
+            <param name="firstFunc">首先执行的方法</param>
+            <param name="next">接下来执行的方法</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.DelegateHelper.RunAsync(System.Func{System.Object},System.Action{System.Object})">
+            <summary>
+            异步执行方法
+            </summary>
+            <param name="firstFunc">首先执行的方法</param>
+            <param name="next">接下来执行的方法</param>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.Excel.ExcelHelper">
+            <summary>
+            Excel操作类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.ExportData(System.Collections.Generic.List{ApeVolo.Common.Helper.Excel.ExportRowModel},System.String,System.Boolean,System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Boolean)">
+            <summary>
+            导出-泛型
+            </summary>
+            <param name="exportRows">列对应标题</param>
+            <param name="fileName">导出文件名</param>
+            <param name="isSerialNumber">是否显示序号</param>
+            <param name="dateFormat">日期格式</param> 
+            <param name="rowMerge">合并行</param> 
+            <param name="isColDatasConvert">是否通过列数据源转换数据</param> 
+            <returns>绝对路径</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.ExportDataToTable(System.Data.DataTable,System.Collections.Generic.List{ApeVolo.Common.Helper.Excel.ExportColumnModel},System.Data.DataRow,System.String@,System.String,System.Boolean,System.String,System.Boolean,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}})">
+            <summary>
+            导出 -table
+            </summary> 
+            <param name="listData">数据集</param>
+            <param name="columns">列对应标题</param>
+            <param name="sumData">合计行</param>
+            <param name="relativePath">相对路径</param>
+            <param name="fileName">导出文件名</param>
+            <param name="isSerialNumber">是否显示序号</param>
+            <param name="dateFormat"></param>
+            <param name="boolToText"></param>
+            <param name="rowMerge"></param>
+            <returns>绝对路径</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.ExportDataToTableMergeColumn(System.Data.DataTable,System.Collections.Generic.List{ApeVolo.Common.Helper.Excel.ExportColumnModel},System.String@,System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.Dictionary{System.String,System.String}},System.Boolean,System.String,System.Boolean)">
+            <summary>
+            导出 -table 列合并
+            </summary>
+            <param name="listData">数据集</param>
+            <param name="columns">第一列 demo : {"area":"地区"}</param>
+            <param name="relativePath">相对路径</param>
+            <param name="fileName">导出文件名</param>
+            <param name="isSerialNumber">是否加序号</param>
+            <param name="dateFormat">时间格式</param>
+            <param name="boolToText">布尔转换为中文</param>
+            <param name="rowMerge">子列 demo:{"area" : [{"CS":"长沙"},{"CD":"常德"}]}</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.ExportDataToTableLargeData(System.Data.DataTable,System.Collections.Generic.List{ApeVolo.Common.Helper.Excel.ExportColumnModel},System.Data.DataRow,System.String@,System.String,System.Boolean,System.String,System.Boolean)">
+             <summary>
+            导出-table(大数据导出)
+             </summary> 
+             <param name="listData">数据集</param>
+             <param name="columns">列对应标题</param>
+             <param name="sumData">合计行</param>
+             <param name="relativePath">相对路径</param>
+             <param name="fileName">导出文件名</param>
+             <param name="isSerialNumber">是否显示序号</param>
+             <param name="dateFormat">日期格式</param>
+             <param name="boolToText">布尔转换为中文</param>
+             <returns>绝对路径</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.GetHeaderStyle(Aspose.Cells.Workbook)">
+            <summary>
+            头部样式
+            </summary>
+            <param name="workbook"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.GetContentStyle(Aspose.Cells.Workbook)">
+            <summary>
+            内容样式
+            </summary>
+            <param name="workbook"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.GetFootStyle(Aspose.Cells.Workbook)">
+            <summary>
+            尾行样式
+            </summary>
+            <param name="workbook"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.SetCell(System.Data.DataRow,Aspose.Cells.Cell,System.String,System.String)">
+            <summary>
+            设置列值
+            </summary>
+            <param name="data">行数据</param>
+            <param name="cell">列</param>
+            <param name="cloumnName">列名称</param>
+            <param name="dateFormat">日期格式</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.GetCell(System.Data.DataRow,System.String,System.String)">
+            <summary>
+            获取列值
+            </summary>
+            <param name="data">行数据</param>
+            <param name="cloumnName">列名称</param>
+            <param name="dateFormat">日期格式</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.ImportData``1(System.String,System.Collections.Generic.Dictionary{System.String,System.String},System.Int32,System.Int32)">
+            <summary>
+            导入数据
+            </summary>
+            <typeparam name="T">实体</typeparam>
+            <param name="excelfile">文件名</param>
+            <param name="columDictionary">列集合</param>
+            <param name="firstRow">起始行</param>
+            <param name="firstColumn">起始列</param>
+            <returns>数据集</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.ImportDataByOne``1(System.String@,System.String,System.Collections.Generic.List{ApeVolo.Common.Helper.Excel.ImportColumnModel},System.Int32,System.Int32)">
+            <summary>
+            导入数据(只读取第一个工作簿数据)
+            </summary> 
+            <typeparam name="T">实体</typeparam>
+            <param name="errorMessage">错误信息</param>
+            <param name="excelfile">文件名</param>
+            <param name="columDictionary">列集合</param>
+            <param name="firstRow">起始行</param>
+            <param name="firstColumn">起始列</param>
+            <returns>数据集</returns>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.ImportData``1(System.String@,System.String,System.Collections.Generic.List{ApeVolo.Common.Helper.Excel.ImportColumnModel},System.String,System.Int32,System.Int32)">
+            <summary>
+            导入数据(通过工作簿名称读取数据)
+            </summary>
+            <typeparam name="T">实体</typeparam>
+            <param name="errorMessage">错误信息</param>
+            <param name="excelfile">文件名</param>
+            <param name="columDictionary">列集合</param>
+            <param name="firstRow">起始行</param>
+            <param name="firstColumn">起始列</param>
+            <param name="sheetName">工作薄名称</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.ImportTable(System.String@,System.String,System.Int32,System.Int32)">
+            <summary>
+            导入数据
+            </summary>
+            <param name="errorMessage">错误信息</param>
+            <param name="excelfile">文件名</param> 
+            <param name="firstRow">起始行</param>
+            <param name="firstColumn">起始列</param>
+            <returns>DataTable</returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.GetImportData``1(System.String@,System.Collections.Generic.List{ApeVolo.Common.Helper.Excel.ImportColumnModel},System.Int32,System.Int32,Aspose.Cells.Cells)">
+            <summary>
+            获取导入数据
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="errorMessage">错误信息</param>
+            <param name="columDictionary">列集合</param>
+            <param name="firstRow">起始行</param>
+            <param name="firstColumn">起始列</param>
+            <param name="cells">列</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.RemoveEmpty(System.Data.DataTable)">
+            <summary>
+            循环去除datatable中的空行
+            </summary>
+            <param name="dt"></param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.AddError(System.Collections.Generic.Dictionary{System.String,System.Text.StringBuilder},System.String,System.Object,System.String)">
+            <summary>
+            错误信息
+            </summary>
+            <param name="messageBuilder"></param>
+            <param name="key"></param>
+            <param name="objString"></param>
+            <param name="separate"></param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.Excel.ExcelHelper.GetParseValue(System.Type,System.Object)">
+            <summary>
+            获取转换数据
+            </summary>
+            <param name="type"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString">
+            <summary>
+            数据类型字符串
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.DataTime">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.NullableDateTime">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.NullableInt">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.NullableDecimal">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.Int">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.Int64">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.String">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.Decimal">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.Single">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.Boolean">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.NullableBoolean">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.Double">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.Guid">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.NullableGuid">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.EnumerableString">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.Byte">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.Excel.ExcelHelper.DataTypeString.NullByte">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.Excel.ExportColumnModel">
+            <summary>
+            导出数据
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.Excel.ExportColumnModel.Key">
+            <summary>
+            列
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.Excel.ExportColumnModel.Value">
+            <summary>
+            值
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.Excel.ExportColumnModel.Point">
+            <summary>
+            列位置
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.Excel.ImportColumnModel">
+            <summary>
+            导入列实体
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.Excel.ImportColumnModel.PropertyName">
+            <summary>
+            属性名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.Excel.ImportColumnModel.ColumnName">
+            <summary>
+            Excel 列名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.Excel.ImportColumnModel.IsRequired">
+            <summary>
+            是否必填
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.Excel.ImportColumnModel.DataSource">
+            <summary>
+            数据源
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.Excel.ImportColumnModel.ExistList">
+            <summary>
+            已经存在
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.Excel.ImportColumnModel.ExistListErrorMessage">
+            <summary>
+            已经存在错误提示
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.Excel.ImportColumnModel.ShortCut">
+            <summary>
+            快捷编码
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.Excel.ImportColumnModel.DateType">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.ExceptionHelper">
+            <summary>
+            异常处理帮助类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ExceptionHelper.GetExceptionAddr(System.Exception)">
+            <summary>
+            获取异常位置
+            </summary>
+            <param name="e">异常</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ExceptionHelper.GetExceptionAllMsg(System.Exception,System.Int32)">
+            <summary>
+            获取异常消息
+            </summary>
+            <param name="ex">捕捉的异常</param>
+            <param name="level">内部异常层级</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ExceptionHelper.GetExceptionAllMsg(System.Exception)">
+            <summary>
+            获取异常消息
+            </summary>
+            <param name="ex">捕捉的异常</param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.FileHelper">
+            <summary>
+            文件操作帮助类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.Exists(System.String)">
+            <summary>
+            判断文件是否存在
+            </summary>
+            <param name="path">文件目录</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.GetCurrentDir">
+            <summary>
+            获取当前程序根目录
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.WriteTxt(System.String,System.String)">
+            <summary>
+            输出字符串到文件
+            注：使用系统默认编码;若文件不存在则创建新的,若存在则覆盖
+            </summary>
+            <param name="content">内容</param>
+            <param name="path">文件路径</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.WriteTxt(System.String,System.String,System.Text.Encoding)">
+            <summary>
+            输出字符串到文件
+            注：使用自定义编码;若文件不存在则创建新的,若存在则覆盖
+            </summary>
+            <param name="content">内容</param>
+            <param name="path">文件路径</param>
+            <param name="encoding">编码</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.WriteTxt(System.String,System.String,System.IO.FileMode)">
+            <summary>
+            输出字符串到文件
+            注：使用自定义模式,使用UTF-8编码
+            </summary>
+            <param name="content">内容</param>
+            <param name="path">文件路径</param>
+            <param name="fileModel">输出方法</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.WriteTxt(System.String,System.String,System.Text.Encoding,System.IO.FileMode)">
+            <summary>
+            输出字符串到文件
+            注：使用自定义编码以及写入模式
+            </summary>
+            <param name="content">内容</param>
+            <param name="path">文件路径</param>
+            <param name="encoding">字符编码</param>
+            <param name="fileModel">写入模式</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.WriteTxt(System.String,System.String,System.Text.Encoding,System.Nullable{System.IO.FileMode})">
+            <summary>
+            输出字符串到文件
+            注：使用自定义编码以及写入模式
+            </summary>
+            <param name="content">内容</param>
+            <param name="path">文件路径</param>
+            <param name="encoding">字符编码</param>
+            <param name="fileModel">写入模式</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.WriteLog(System.String,System.String)">
+            <summary>
+            输出日志到指定文件
+            </summary>
+            <param name="msg">日志消息</param>
+            <param name="path">日志文件位置（默认为D:\测试\a.log）</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.WriteText(System.String,System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            流写入
+            </summary>
+            <param name="content">内容</param>
+            <param name="fileFullPath">文件完整物理路径</param>
+            <param name="e">编码</param>
+            <param name="isAppend">默认追加，false覆盖</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.ReadText(System.String,System.Text.Encoding)">
+            <summary>
+            读取
+            </summary>
+            <param name="fileFullPath">文件完整物理路径</param>
+            <param name="e">编码 默认UTF8</param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.GuidHelper">
+            <summary>
+            GUID帮助类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.GuidHelper.GenerateKey">
+            <summary>
+            生成主键
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.HttpHelper">
+            <summary>
+            Http请求操作帮助类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.HttpHelper.#cctor">
+            <summary>
+            静态构造函数
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.HttpHelper.GetData(System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.Collections.Generic.Dictionary{System.String,System.String},System.Security.Cryptography.X509Certificates.X509Certificate)">
+            <summary>
+            发起GET请求
+            注：若使用证书,推荐使用X509Certificate2的pkcs12证书
+            </summary>
+            <param name="url">地址</param>
+            <param name="paramters">参数</param>
+            <param name="headers">请求头</param>
+            <param name="cerFile">证书</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.HttpHelper.PostData(System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.Collections.Generic.Dictionary{System.String,System.String},ApeVolo.Common.Helper.ContentType,System.Security.Cryptography.X509Certificates.X509Certificate)">
+            <summary>
+            发起POST请求
+            注：若使用证书,推荐使用X509Certificate2的pkcs12证书
+            </summary>
+            <param name="url">地址</param>
+            <param name="paramters">参数</param>
+            <param name="headers">请求头</param>
+            <param name="contentType">请求的ContentType</param>
+            <param name="cerFile">证书</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.HttpHelper.PostData(System.String,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.String},System.Security.Cryptography.X509Certificates.X509Certificate)">
+            <summary>
+            发起POST请求
+            注：若使用证书,推荐使用X509Certificate2的pkcs12证书
+            </summary>
+            <param name="url">地址</param>
+            <param name="body">请求体</param>
+            <param name="contentType">请求的ContentType</param>
+            <param name="headers">请求头</param>
+            <param name="cerFile">证书</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.HttpHelper.RequestData(ApeVolo.Common.Helper.HttpMethod,System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.Collections.Generic.Dictionary{System.String,System.String},ApeVolo.Common.Helper.ContentType,System.Security.Cryptography.X509Certificates.X509Certificate)">
+            <summary>
+            请求数据
+            注：若使用证书,推荐使用X509Certificate2的pkcs12证书
+            </summary>
+            <param name="method">请求方法</param>
+            <param name="url">URL地址</param>
+            <param name="paramters">参数</param>
+            <param name="headers">请求头信息</param>
+            <param name="contentType">请求数据类型</param>
+            <param name="cerFile">证书</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.HttpHelper.RequestData(System.String,System.String,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.String},System.Security.Cryptography.X509Certificates.X509Certificate)">
+            <summary>
+            请求数据
+            注：若使用证书,推荐使用X509Certificate2的pkcs12证书
+            </summary>
+            <param name="method">请求方法</param>
+            <param name="url">请求地址</param>
+            <param name="body">请求的body内容</param>
+            <param name="contentType">请求数据类型</param>
+            <param name="headers">请求头</param>
+            <param name="cerFile">证书</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.HttpHelper.GetAllRequestParams(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            获取所有请求的参数（包括get参数和post参数）
+            </summary>
+            <param name="context">请求上下文</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.HttpHelper.BuildGetFullUrl(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            构建完全Url
+            </summary>
+            <param name="url">Url</param>
+            <param name="parameters">参数</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.HttpHelper.GetHtml(System.String)">
+            <summary>
+            从URL获取html文档
+            </summary>
+            <param name="url"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.HttpHelper.SafeSignRequest(System.String,System.String,System.String,System.String)">
+            <summary>
+            发起安全签名请求
+            注：使用本框架签名算法,ContentType为application/json
+            </summary>
+            <param name="url">地址</param>
+            <param name="body">请求body</param>
+            <param name="appId">应用Id</param>
+            <param name="appSecret">应用密钥</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.HttpHelper.BuildApiSign(System.String,System.String,System.String,System.DateTime,System.String)">
+            <summary>
+            生成接口签名sign
+            注：md5(appId+time+guid+body+appSecret)
+            </summary>
+            <param name="appId">应用Id</param>
+            <param name="appSecret">应用密钥</param>
+            <param name="guid">唯一GUID</param>
+            <param name="time">时间</param>
+            <param name="body">请求体</param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.HttpMethod">
+            <summary>
+            Http请求方法定义
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.ContentType.Form">
+            <summary>
+            传统Form表单,即application/x-www-form-urlencoded
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.ContentType.Json">
+            <summary>
+            使用Json,即application/json
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.ImgHelper">
+            <summary>
+            图片操作帮助类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgHelper.GetImgFromFile(System.String)">
+            <summary>
+            从文件获取图片
+            </summary>
+            <param name="fileName">文件名</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgHelper.GetImgFromBase64(System.String)">
+            <summary>
+            从base64字符串读入图片
+            </summary>
+            <param name="base64">base64字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgHelper.GetImgFromBase64Url(System.String)">
+            <summary>
+            从URL格式的Base64图片获取真正的图片
+            即去掉data:image/jpg;base64,这样的格式
+            </summary>
+            <param name="base64Url">图片Base64的URL形式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgHelper.CompressImg(System.Drawing.Image,System.Int32)">
+            <summary>
+            压缩图片
+            注:等比压缩
+            </summary>
+            <param name="img">原图片</param>
+            <param name="width">压缩后宽度</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgHelper.CompressImg(System.Drawing.Image,System.Int32,System.Int32)">
+            <summary>
+            压缩图片
+            </summary>
+            <param name="img">原图片</param>
+            <param name="width">压缩后宽度</param>
+            <param name="height">压缩后高度</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgHelper.ToBase64String(System.Drawing.Image)">
+            <summary>
+            将图片转为base64字符串
+            默认使用jpg格式
+            </summary>
+            <param name="img">图片对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgHelper.ToBase64String(System.Drawing.Image,System.Drawing.Imaging.ImageFormat)">
+            <summary>
+            将图片转为base64字符串
+            使用指定格式
+            </summary>
+            <param name="img">图片对象</param>
+            <param name="imageFormat">指定格式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgHelper.ToBase64StringUrl(System.Drawing.Image)">
+            <summary>
+            将图片转为base64字符串
+            默认使用jpg格式,并添加data:image/jpg;base64,前缀
+            </summary>
+            <param name="img">图片对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgHelper.ToBase64StringUrl(System.Drawing.Image,System.Drawing.Imaging.ImageFormat)">
+            <summary>
+            将图片转为base64字符串
+            使用指定格式,并添加data:image/jpg;base64,前缀
+            </summary>
+            <param name="img">图片对象</param>
+            <param name="imageFormat">指定格式</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgHelper.GetBase64String(System.String)">
+            <summary>
+            获取真正的图片base64数据
+            即去掉data:image/jpg;base64,这样的格式
+            </summary>
+            <param name="base64UrlStr">带前缀的base64图片字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgHelper.GetImgUrl(System.String)">
+            <summary>
+            将图片的URL或者Base64字符串转为图片并上传到服务器，返回上传后的完整图片URL
+            </summary>
+            <param name="imgBase64OrUrl">URL地址或者Base64字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgVerifyCodeHelper.BuildVerifyCode(System.Int32)">
+            <summary>
+            生成图片验证码
+            </summary>
+            <param name="length">验证码字符数</param>
+            <returns>图片byte[]和code</returns>
+        </member>
+        <member name="F:ApeVolo.Common.Helper.ImgVerifyCodeHelper.VerifyCodeFactory._character">
+            <summary>  
+            验证码的字符集，去掉了一些容易混淆的字符  
+            </summary>  
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgVerifyCodeHelper.VerifyCodeFactory.CreateValidateCode(System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="codeType">验证码类型(0-字母数字混合,1-数字,2-字母)</param>
+            <param name="codeCount">验证码字符个数</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgVerifyCodeHelper.VerifyCodeFactory.CreateValidateCode(System.Int32)">
+            <summary>     
+            生成验证码     
+            </summary>     
+            <param name="length">指定验证码的长度</param>     
+            <returns></returns>     
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgVerifyCodeHelper.VerifyCodeFactory.CreateValidateGraphic(System.String,System.Single,System.Int32)">
+            <summary>     
+            创建验证码的图片     
+            </summary>        
+            <param name="validateCode">验证码</param>  
+            <param name="fontsize"></param>
+            <param name="height"></param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgVerifyCodeHelper.VerifyCodeFactory.GetImageWidth(System.Int32)">
+            <summary>     
+            得到验证码图片的长度     
+            </summary>     
+            <param name="validateNumLength">验证码的长度</param>     
+            <returns></returns>     
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgVerifyCodeHelper.VerifyCodeFactory.GetImageHeight">
+            <summary>     
+            得到验证码的高度     
+            </summary>     
+            <returns></returns>     
+        </member>
+        <member name="M:ApeVolo.Common.Helper.ImgVerifyCodeHelper.BuildVerifyCode">
+            <summary>
+            生成图片验证码 运算符模式
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.IocHelper">
+            <summary>
+            Ioc容器帮助类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IocHelper.RegisterType``2">
+            <summary>
+            注册类型
+            </summary>
+            <typeparam name="TFrom">定义类型</typeparam>
+            <typeparam name="TTo">实现类型</typeparam>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IocHelper.RegisterType``2(System.String)">
+            <summary>
+            注册类型
+            </summary>
+            <param name="name">注册名</param>
+            <typeparam name="TFrom">定义类型</typeparam>
+            <typeparam name="TTo">实现类型</typeparam>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IocHelper.RegisterType(System.Type,System.Type,System.String)">
+            <summary>
+            注册类型
+            </summary>
+            <param name="typeFrom">定义类型</param>
+            <param name="typeTo">实现类型</param>
+            <param name="name">注册名</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IocHelper.Resolve``1">
+            <summary>
+            获取对象
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IocHelper.Resolve``1(System.Object[])">
+            <summary>
+            获取对象
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="paramters">构造参数</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IocHelper.Resolve``1(System.String)">
+            <summary>
+            获取对象
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="name">注册名</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IocHelper.Resolve``1(System.String,System.Object[])">
+            <summary>
+            获取对象
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="name">注册名</param>
+            <param name="paramters">构造参数</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IocHelper.Resolve(System.Type,System.String,System.Object[])">
+            <summary>
+            获取对象
+            </summary>
+            <param name="typeFrom">对象类型</param>
+            <param name="name">注册名</param>
+            <param name="paramters">构造参数</param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.IpHelper">
+            <summary>
+            Ip地址帮助类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IpHelper.GetLocalIp">
+            <summary>
+            获取本地IP地址
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IpHelper.GetFirstAvailablePort">
+            <summary>
+            获取第一个可用的端口号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IpHelper.PortIsAvailable(System.Int32)">
+            <summary>
+            检查指定端口是否已用
+            </summary>
+            <param name="port"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IpHelper.GetIp">
+            <summary>
+            获取客户端IP地址
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IpHelper.GetIpAddress">
+            <summary>
+            获取IP详细地址
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IpHelper.GetBrowserName">
+            <summary>
+            获取端浏览器名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IpHelper.GetBrowser">
+            <summary>
+            获取浏览器对象 包括类型 浏览器 版本 系统
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.IpHelper.PortIsUsed">
+            <summary>
+            获取操作系统已用的端口号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.JobHelper">
+            <summary>
+            时间帮助类
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.JsEncryptHelper">
+            <summary>
+            JSEncrypt
+            http://travistidwell.com/jsencrypt/#
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.LinqHelper">
+            <summary>
+            Linq操作帮助类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.LinqHelper.True``1">
+            <summary>
+            创建初始条件为True的表达式
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.LinqHelper.False``1">
+            <summary>
+            创建初始条件为False的表达式
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.LogHelper">
+            <summary>
+            日志操作类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.LogHelper.WriteError(System.String,System.String[])">
+            <summary>
+            写日志文件数据库日志文件
+            </summary>
+            <param name="folder">文件夹</param>
+            <param name="message">消息</param>   
+        </member>
+        <member name="M:ApeVolo.Common.Helper.LogHelper.WriteLog(System.String,System.String[])">
+            <summary>
+            写日志文件数据库日志文件
+            </summary>
+            <param name="folder">文件夹</param>
+            <param name="message">消息</param> 
+        </member>
+        <member name="M:ApeVolo.Common.Helper.LogHelper.AddLog(System.String,System.String[])">
+            <summary>
+            写日志文件数据库日志文件
+            </summary>
+            <param name="folder">文件夹</param>
+            <param name="message">日志存储目录名称</param>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.RandomHelper">
+            <summary>
+            Random随机数帮助类
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.RandomHelper.Next(System.Int32,System.Int32)">
+            <summary>
+            下一个随机数
+            </summary>
+            <param name="minValue">最小值</param>
+            <param name="maxValue">最大值</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.RandomHelper.Next``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            下一个随机值
+            </summary>
+            <typeparam name="T">值类型</typeparam>
+            <param name="source">值的集合</param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.RsaHelper">
+            <summary>
+            RSA加解密 使用OpenSSL的公钥加密/私钥解密
+            
+            公私钥请使用openssl生成  ssh-keygen -t rsa 命令生成的公钥私钥是不行的
+            
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.RsaHelper.#ctor(ApeVolo.Common.Global.RsaType,System.Text.Encoding,System.String,System.String)">
+            <summary>
+            实例化RSAHelper
+            </summary>
+            <param name="rsaType">加密算法类型 RSA SHA1;RSA2 SHA256 密钥长度至少为2048</param>
+            <param name="encoding">编码类型</param>
+            <param name="privateKey">私钥</param>
+            <param name="publicKey">公钥</param>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.RsaHelper.Sign(System.String)">
+            <summary>
+            使用私钥签名
+            </summary>
+            <param name="data">原始数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.RsaHelper.Verify(System.String,System.String)">
+            <summary>
+            使用公钥验证签名
+            </summary>
+            <param name="data">原始数据</param>
+            <param name="sign">签名</param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.SaltKeyHelper">
+            <summary>
+            随机盐
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.SaltKeyHelper.CreateSalt(System.Int32)">
+            <summary>
+            Creates a salt
+            </summary>
+            <param name="size">A salt size</param>
+            <returns>A salt</returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.TaskHelper">
+            <summary>
+            异步转同步,防止ASP.NET中死锁
+            https://stackoverflow.com/questions/5095183/how-would-i-run-an-async-taskt-method-synchronously
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.TreeHelper`1">
+            <summary>
+            构建树
+            </summary>
+            <typeparam name="T">泛型</typeparam>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.TreeHelper`1.ListToTrees(System.Collections.Generic.List{`0},System.String,System.String,System.String,System.String)">
+            <summary>
+            构建树结构
+            </summary>
+            <param name="lists">数据源</param>
+            <param name="code">ID编码</param>
+            <param name="parentCode">父级编码</param>
+            <param name="value">父级编码值</param>
+            <param name="childNodeName">子节点属性名称</param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.TypeBuilderHelper">
+            <summary>
+            运行时创建类型
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.TypeBuilderHelper.BuildType(ApeVolo.Common.Helper.TypeConfig)">
+            <summary>
+            创建类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.TypeBuilderHelper.GetConfig(System.Type)">
+            <summary>
+            获取配置
+            </summary>
+            <param name="type">原类型</param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.TypeConfig">
+            <summary>
+            类型配置
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.TypeConfig.FullName">
+            <summary>
+            类型名
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.TypeConfig.AssemblyName">
+            <summary>
+            程序集名
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.TypeConfig.Properties">
+            <summary>
+            拥有的属性
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.TypeConfig.Attributes">
+            <summary>
+            拥有的特性
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.PropertyConfig">
+            <summary>
+            属性配置
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.PropertyConfig.PropertyName">
+            <summary>
+            属性名
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.PropertyConfig.PropertyType">
+            <summary>
+            属性类型
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.PropertyConfig.Attributes">
+            <summary>
+            属性包含的自定义特性
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Helper.AttributeConfig">
+            <summary>
+            特性配置
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.AttributeConfig.Attribute">
+            <summary>
+            特性类型
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.AttributeConfig.ConstructorArgs">
+            <summary>
+            构造函数参数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Helper.AttributeConfig.Properties">
+            <summary>
+            初始化属性
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Model.ActionResultVm">
+            <summary>
+            请求响应结果
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ActionResultVm.Status">
+            <summary>
+            状态码
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ActionResultVm.Error">
+            <summary>
+            错误
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ActionResultVm.Message">
+            <summary>
+            返回消息
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ActionResultVm.Timestamp">
+            <summary>
+            Timestamp
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ActionResultVm.Path">
+            <summary>
+            请求路径
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Model.ActionResultVm`1">
+            <summary>
+            请求响应结果 泛型
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ActionResultVm`1.Content">
+            <summary>
+            返回数据
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ActionResultVm`1.TotalElements">
+            <summary>
+            总数据量
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Model.DbTableInfo">
+            <summary>
+            数据库所有表的信息
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.DbTableInfo.TableName">
+            <summary>
+            表名
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.DbTableInfo.Description">
+            <summary>
+            表描述说明
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Model.PageModel`1">
+            <summary>
+            通用分页信息类
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.PageModel`1.Page">
+            <summary>
+            当前页标
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.PageModel`1.PageCount">
+            <summary>
+            总页数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.PageModel`1.DataCount">
+            <summary>
+            数据总数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.PageModel`1.PageSize">
+            <summary>
+            每页大小
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.PageModel`1.Data">
+            <summary>
+            返回数据
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Model.Pagination">
+            <summary>
+            分页
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.Pagination.PageIndex">
+            <summary>
+            当前页码
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.Pagination.PageSize">
+            <summary>
+            每页行数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.Pagination.SortFields">
+            <summary>
+            排序列
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.Pagination.TotalElements">
+            <summary>
+            总记录数
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Model.SelectOption">
+            <summary>
+            前端SelectOption
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Cpu.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Cpu.Package">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Cpu.Core">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Cpu.CoreNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Cpu.Logic">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Cpu.Used">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Cpu.Idle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Disk.Total">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Disk.Available">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Disk.Used">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Disk.UsageRate">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Memory.Total">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Memory.Available">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Memory.Used">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Memory.UsageRate">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.ResultsVm.Time">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.ResultsVm.Sys">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.ResultsVm.Cpu">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.ResultsVm.Memory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.ResultsVm.Swap">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.ResultsVm.Disk">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Swap.Total">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Swap.Used">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Swap.Available">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Swap.UsageRate">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Sys.Os">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Sys.Day">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.ServerMonitor.Sys.Ip">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.Model.TableInfo">
+            <summary>
+            数据库表信息
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TableInfo.ColumnId">
+            <summary>
+            字段Id
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TableInfo.Name">
+            <summary>
+            字段名
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TableInfo.Type">
+            <summary>
+            字段类型
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TableInfo.IsKey">
+            <summary>
+            是否为主键
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TableInfo.IsNullable">
+            <summary>
+            是否为空
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TableInfo.Description">
+            <summary>
+            字段描述说明
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TaskInfoVo.JobId">
+            <summary>
+            任务ID
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TaskInfoVo.JobName">
+            <summary>
+            任务名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TaskInfoVo.JobGroup">
+            <summary>
+            任务分组
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TaskInfoVo.TriggerId">
+            <summary>
+            触发器ID
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TaskInfoVo.TriggerName">
+            <summary>
+            触发器名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TaskInfoVo.TriggerGroup">
+            <summary>
+            触发器分组
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Model.TaskInfoVo.TriggerStatus">
+            <summary>
+            触发器状态
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.SnowflakeIdHelper.IdHelper">
+            <summary>
+            雪花ID生成工具
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.SnowflakeIdHelper.IdHelper.GetId">
+            <summary>
+            获取String型雪花Id
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.SnowflakeIdHelper.IdHelper.GetLongId">
+            <summary>
+            获取long型雪花Id
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Common.SnowflakeIdHelper.IdHelperBootstrapper">
+            <summary>
+            配置引导
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.SnowflakeIdHelper.IdHelperBootstrapper._worderId">
+            <summary>
+            机器Id
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Common.SnowflakeIdHelper.IdHelperBootstrapper.GetWorkerId">
+            <summary>
+            获取机器Id
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.SnowflakeIdHelper.IdHelperBootstrapper.SetWorkderId(System.Int64)">
+            <summary>
+            设置机器Id
+            </summary>
+            <param name="workderId">机器Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.SnowflakeIdHelper.IdHelperBootstrapper.Boot">
+            <summary>
+            完成配置
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.SnowflakeIdHelper.SnowflakeIdWorker">
+            tweeter的snowflake 移植到Java翻译成Net:
+              (a) id构成: 42位的时间前缀 + 10位的节点标识 + 12位的sequence避免并发的数字(12位不够用时强制得到新的时间前缀)
+                  注意这里进行了小改动: snowkflake是5位的datacenter加5位的机器id; 这里变成使用10位的机器id
+              (b) 对系统时间的依赖性非常强，需关闭ntp的时间同步功能。当检测到ntp时间调整后，将会拒绝分配id
+        </member>
+        <member name="M:ApeVolo.Common.SnowflakeIdHelper.SnowflakeIdWorker.TilNextMillis(System.Int64)">
+            等待下一个毫秒的到来, 保证返回的毫秒数在参数lastTimestamp之后
+        </member>
+        <member name="M:ApeVolo.Common.SnowflakeIdHelper.SnowflakeIdWorker.TimeGen">
+            获得系统当前毫秒数
+        </member>
+        <member name="T:ApeVolo.Common.WebApp.HttpContextCore">
+            <summary>
+            Http请求上下文
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.WebApp.HttpContextCore.CurrentHttpContext">
+            <summary>
+            当前上下文
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Common.WebApp.HttpContextCore.WebRootPath">
+            <summary>
+            网站文件根路径
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Common.WebApp.ICurrentUser">
+            <summary>
+            当前用户
+            </summary>
+        </member>
+    </members>
+</doc>

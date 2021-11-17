@@ -1,0 +1,15 @@
+[
+  {
+    "id": "1306054134645919752",
+    "name": "内置管理员",
+    "level": 1,
+    "description": "-",
+    "dataScope": "全部",
+    "permission": "admin",
+    "createBy": "apevolo",
+    "createTime": "\/Date(1609430400000+0800)\/",
+    "updateBy": null,
+    "updateTime": null,
+    "isDeleted": 0
+  }
+]

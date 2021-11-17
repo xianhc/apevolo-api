@@ -1,0 +1,34 @@
+﻿using ApeVolo.IBusiness.Interface.Email;
+using ApeVolo.IBusiness.Interface.Tasks;
+using Quartz;
+using System.Threading.Tasks;
+using ApeVolo.QuartzNetService.service;
+
+namespace ApeVolo.QuartzNetService
+{
+    public class SendEmailJobService : JobBase, IJob
+    {
+        private readonly IEmailScheduleTask _emailScheduleTask;
+
+        public SendEmailJobService(ISchedulerCenterService schedulerCenterService, IQuartzNetService quartzNetService,
+            IQuartzNetLogService quartzNetLogService, IEmailScheduleTask emailScheduleTask)
+        {
+            _quartzNetService = quartzNetService;
+            _quartzNetLogService = quartzNetLogService;
+            _emailScheduleTask = emailScheduleTask;
+            _schedulerCenterService = schedulerCenterService;
+        }
+
+        public async Task Execute(IJobExecutionContext context)
+        {
+            await ExecuteJob(context, async () => await Run(context));
+        }
+
+        private async Task Run(IJobExecutionContext context)
+        {
+            await _emailScheduleTask.ExecuteAsync();
+            //获取传递参数
+            //JobDataMap data = context.JobDetail.JobDataMap;
+        }
+    }
+}

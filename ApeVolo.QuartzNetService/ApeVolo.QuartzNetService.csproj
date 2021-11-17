@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApeVolo.Common\ApeVolo.Common.csproj" />
+    <ProjectReference Include="..\ApeVolo.IBusiness\ApeVolo.IBusiness.csproj" />
+  </ItemGroup>
+
+</Project>

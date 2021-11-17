@@ -1,0 +1,73 @@
+{
+  "IpRateLimiting": {
+    "EnableEndpointRateLimiting": true,
+    "StackBlockedRequests": false,
+    "RealIpHeader": "X-Real-IP",
+    "ClientIdHeader": "X-ClientId",
+    "HttpStatusCode": 429,
+    //"IpWhitelist": [ "127.0.0.1", "::1/10", "192.168.0.0/24" ],
+    "QuotaExceededResponse": {
+      "Content": "{{\"status\":429,\"error\":\"429TooManyRequests\",\"message\":\"访问过于频繁，请稍后重试！\"}}",
+      "ContentType": "application/json",
+      "StatusCode": 429
+    },
+    "EndpointWhitelist": [ "get:/api/license", "*:/api/status" ],
+    "ClientWhitelist": [ "dev-id-1", "dev-id-2" ],
+    "GeneralRules": [
+      {
+        "Endpoint": "get:/auth/code*",
+        "Period": "10s",
+        "Limit": 5
+      },
+      {
+        "Endpoint": "*/auth/*",
+        "Period": "10s",
+        "Limit": 5
+      },
+      {
+        "Endpoint": "*/api/*",
+        "Period": "10s",
+        "Limit": 15
+      }
+    ]
+  },
+  "IpRateLimitPolicies": {
+    "IpRules": [
+      {
+        "Ip": "127.0.0.1",
+        "Rules": [
+          {
+            "Endpoint": "*",
+            "Period": "10s",
+            "Limit": 10
+          },
+          {
+            "Endpoint": "*",
+            "Period": "15m",
+            "Limit": 200
+          }
+        ]
+      },
+      {
+        "Ip": "127.0.0.1",
+        "Rules": [
+          {
+            "Endpoint": "*",
+            "Period": "1s",
+            "Limit": 5
+          },
+          {
+            "Endpoint": "*",
+            "Period": "15m",
+            "Limit": 150
+          },
+          {
+            "Endpoint": "*",
+            "Period": "12h",
+            "Limit": 500
+          }
+        ]
+      }
+    ]
+  }
+}
