@@ -10,11 +10,14 @@ namespace ApeVolo.Common.DB
 {
     public static class BaseDbConfig
     {
-        public static DataBaseOperate GetDataBaseOperate => InitDataBaseConn();
+        public static (DataBaseOperate MasterDb, List<DataBaseOperate> SlaveDbs) GetDataBaseOperate =>
+            InitDataBaseConn();
 
-        private static DataBaseOperate InitDataBaseConn()
+        private static (DataBaseOperate, List<DataBaseOperate>) InitDataBaseConn()
         {
-            DataBaseOperate dataBase = null;
+            DataBaseOperate masterDb = null;
+            var slaveDbs = new List<DataBaseOperate>();
+            var allDbs = new List<DataBaseOperate>();
             string path = "appsettings.json";
             using var file = new StreamReader(path);
             using var reader = new JsonTextReader(file);
@@ -27,25 +30,44 @@ namespace ApeVolo.Common.DB
                     for (int i = 0; i < secJt.Count(); i++)
                     {
                         // ReSharper disable once PossibleNullReferenceException
-                        if (!secJt[i]["Enabled"].ToBool() ||
-                            secJt[i]["ConnId"]?.ToString() != DatabaseEntry.CurrentDbConnId) continue;
-                        dataBase = new DataBaseOperate()
+                        if (!secJt[i]["Enabled"]
+                            .ToBool()) //|| secJt[i]["ConnId"]?.ToString() != DatabaseEntry.CurrentDbConnId)
+                            continue;
+                        allDbs.Add(new DataBaseOperate()
                         {
                             ConnId = secJt[i]["ConnId"]?.ToString(),
-                            Conn = secJt[i]["Connection"]?.ToString(),
-                            DbType = (DataBaseType) secJt[i]["DBType"].ToInt(),
-                        };
-                        break;
+                            HitRate = secJt[i]["HitRate"].ToInt(),
+                            ConnectionString = secJt[i]["ConnectionString"]?.ToString(),
+                            DbType = (DataBaseType) secJt[i]["DBType"].ToInt()
+                        });
                     }
                 }
             }
 
-            if (dataBase.IsNull())
+            if (allDbs.Count < 1)
             {
                 throw new System.Exception("请确保appsettings.json中配置连接字符串,并设置Enabled为true;");
             }
 
-            return dataBase;
+            masterDb = allDbs.FirstOrDefault(x => x.ConnId == GlobalVar.CurrentDbConnId);
+            if (masterDb.IsNull())
+            {
+                throw new System.Exception($"请确保主库ID:{GlobalVar.CurrentDbConnId}的Enabled为true;");
+            }
+
+            //如果开启读写分离
+            if (AppSettings.GetValue("CQRSEnabled").ToBool())
+            {
+                slaveDbs = allDbs.Where(x => x.DbType == masterDb.DbType && x.ConnId != GlobalVar.CurrentDbConnId)
+                    .ToList();
+                if (slaveDbs.Count < 1)
+                {
+                    throw new System.Exception($"请确保主库ID:{GlobalVar.CurrentDbConnId}对应的从库的Enabled为true;");
+                }
+            }
+
+
+            return (masterDb, slaveDbs);
         }
     }
 }

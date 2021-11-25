@@ -6,12 +6,12 @@
     public enum RunMode
     {
         /// <summary>
-        /// 本地测试
+        /// 本地开发
         /// </summary>
-        LocalTest,
+        Dev,
 
         /// <summary>
-        /// 演示模式
+        /// 演示环境
         /// </summary>
         Demo,
 

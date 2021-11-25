@@ -2,7 +2,6 @@ using ApeVolo.Api.Aop;
 using ApeVolo.Api.Extensions;
 using ApeVolo.Api.Filter;
 using ApeVolo.Api.Middleware;
-using ApeVolo.Common.Caches.Redis.Extensions;
 using ApeVolo.Common.DI;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
@@ -29,7 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
+using ApeVolo.Entity.Seed;
 
 namespace ApeVolo.Api
 {
@@ -132,7 +133,8 @@ namespace ApeVolo.Api
             #endregion
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IQuartzNetService quartzNetService,
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MyContext myContext,
+            IQuartzNetService quartzNetService,
             ISchedulerCenterService schedulerCenter, ILoggerFactory loggerFactory)
         {
             app.UseMiddleware<RealIpMiddleware>();
@@ -181,8 +183,11 @@ namespace ApeVolo.Api
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
             app.UseHttpMethodOverride();
+
+            app.UseSeedDataMildd(myContext, env.WebRootPath);
             //作业调度
             app.UseQuartzNetJobMiddleware(quartzNetService, schedulerCenter);
+
             //雪花ID器
             new IdHelperBootstrapper().SetWorkderId(1).Boot();
 

@@ -30,30 +30,6 @@ namespace ApeVolo.Api
             var host = CreateHostBuilder(args)
                 .ConfigureAppConfiguration(r => r.AddJsonFile("IpRateLimit.json"))
                 .Build();
-
-            //Microsoft.Extensions.DependencyInjection.IServiceScope
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
-
-                try
-                {
-                    var configuration = services.GetRequiredService<IConfiguration>();
-                    if (true)
-                    {
-                        var myContext = services.GetRequiredService<MyContext>();
-                        var env = services.GetRequiredService<IWebHostEnvironment>();
-                        SeedData.InitSystemDataAsync(myContext, env.ContentRootPath).Wait();
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log.Error($"Error occured seeding the Database.\n{e.Message}");
-                    throw;
-                }
-            }
-
             host.Run();
         }
 

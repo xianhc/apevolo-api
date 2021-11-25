@@ -8,7 +8,8 @@ namespace ApeVolo.Common.DB
     public class DataBaseOperate
     {
         public string ConnId { get; set; }
-        public string Conn { get; set; }
+        public int HitRate { get; set; }
+        public string ConnectionString { get; set; }
         public DataBaseType DbType { get; set; }
     }
 }

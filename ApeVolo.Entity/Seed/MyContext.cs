@@ -33,7 +33,7 @@ namespace ApeVolo.Entity.Seed
         /// <summary>
         /// 连接字符串 
         /// </summary>
-        public static string ConnectionString { get; set; } = ConnectObject.Conn;
+        public static string ConnectionString { get; set; } = ConnectObject.ConnectionString;
 
         /// <summary>
         /// 数据库类型 
@@ -55,7 +55,7 @@ namespace ApeVolo.Entity.Seed
         /// </summary>
         private static DataBaseOperate GetCurrentConnectionDb()
         {
-            return BaseDbConfig.GetDataBaseOperate;
+            return BaseDbConfig.GetDataBaseOperate.MasterDb;
         }
 
         #region 实例方法

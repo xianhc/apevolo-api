@@ -649,16 +649,6 @@
             </summary>
             <exception cref="T:System.NotImplementedException">读取模式下不能进入写入锁定状态</exception>
         </member>
-        <member name="T:ApeVolo.Common.DB.DatabaseEntry">
-            <summary>
-            数据库入口
-            </summary>
-        </member>
-        <member name="F:ApeVolo.Common.DB.DatabaseEntry.CurrentDbConnId">
-            <summary>
-            系统当前默认的数据库connID
-            </summary>
-        </member>
         <member name="T:ApeVolo.Common.DB.DataBaseOperate">
             <summary>
             数据库操作
@@ -2141,12 +2131,12 @@
             所有实体类
             </summary>
         </member>
-        <member name="F:ApeVolo.Common.Global.GlobalSwitch.AuthPolicysName">
+        <member name="F:ApeVolo.Common.Global.GlobalVar.AuthPolicysName">
             <summary>
             权限策略名称
             </summary>
         </member>
-        <member name="F:ApeVolo.Common.Global.GlobalSwitch.RoutePrefixName">
+        <member name="F:ApeVolo.Common.Global.GlobalVar.RoutePrefixName">
             <summary>
             路由前缀
             </summary>
@@ -2247,14 +2237,14 @@
             运行模式
             </summary>
         </member>
-        <member name="F:ApeVolo.Common.Global.RunMode.LocalTest">
+        <member name="F:ApeVolo.Common.Global.RunMode.Dev">
             <summary>
-            本地测试
+            本地开发
             </summary>
         </member>
         <member name="F:ApeVolo.Common.Global.RunMode.Demo">
             <summary>
-            演示模式
+            演示环境
             </summary>
         </member>
         <member name="F:ApeVolo.Common.Global.RunMode.Publish">

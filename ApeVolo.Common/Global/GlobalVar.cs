@@ -1,17 +1,18 @@
 ﻿namespace ApeVolo.Common.Global
 {
-    public class GlobalSwitch
+    public class GlobalVar
     {
 
-        static GlobalSwitch()
+        static GlobalVar()
         {
         }
 
 
         #region 运行
 
-
-
+        public static readonly string CurrentDbConnId = AppSettings.GetValue(new[] {"MainDB"});
+        
+        
 
         #endregion
 

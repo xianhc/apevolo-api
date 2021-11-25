@@ -81,7 +81,7 @@ namespace ApeVolo.Entity.Seed
                         setting.NullValueHandling = NullValueHandling.Ignore;
                         return setting;
                     };
-                    string seedDataFolder = "wwwroot/resources/db/{0}.tsv";
+                    string seedDataFolder = "resources/db/{0}.tsv";
                     seedDataFolder = Path.Combine(webRootPath, seedDataFolder);
 
                     #region 用户

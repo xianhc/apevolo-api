@@ -50,7 +50,7 @@ namespace ApeVolo.Api.Extensions
             // 自定义策略授权
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(GlobalSwitch.AuthPolicysName,
+                options.AddPolicy(GlobalVar.AuthPolicysName,
                     policy => policy.Requirements.Add(permissionRequirement));
             });
 

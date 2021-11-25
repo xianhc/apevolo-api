@@ -58,16 +58,6 @@ namespace ApeVolo.Api.Filter
             {
                 statusCode = StatusCodes.Status400BadRequest;
             }
-            // else if (exceptionType == typeof(EntityNotFoundException)) //实体不存在
-            // {
-            //     var ex = (EntityNotFoundException)context.Exception;
-            //     statusCode = ex.StatusCode;
-            // }
-            // else if (exceptionType == typeof(EntityExistException)) //实体已存在
-            // {
-            //     var ex = (EntityExistException)context.Exception;
-            //     statusCode = ex.StatusCode;
-            // }
 
             string throwMsg = context.Exception.Message; //错误信息
             context.Result = new ContentResult
@@ -89,7 +79,8 @@ namespace ApeVolo.Api.Filter
 
             //记录日志
             Log.Error(WriteLog(context));
-            if ((await _settingService.FindSettingByName("IsExceptionLogSaveDB")).Value.ToBool())
+            if ((await _settingService.FindSettingByName("IsExceptionLogSaveDB")).Value.ToBool() &&
+                exceptionType != typeof(DemoRequestException))
             {
                 //记录日志到数据库
                 try
@@ -143,7 +134,7 @@ namespace ApeVolo.Api.Filter
         {
             var routeValues = context.ActionDescriptor.RouteValues;
             Attribute desc =
-                ((ControllerActionDescriptor) context.ActionDescriptor).MethodInfo.GetCustomAttribute(
+                ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.GetCustomAttribute(
                     typeof(DescriptionAttribute), true);
 
             //var dics = context.ActionArguments;
@@ -160,13 +151,13 @@ namespace ApeVolo.Api.Filter
                     Controller = routeValues["controller"],
                     Action = routeValues["action"],
                     Method = context.HttpContext.Request.Method,
-                    Description = desc == null ? "" : ((DescriptionAttribute) desc).Description,
+                    Description = desc == null ? "" : ((DescriptionAttribute)desc).Description,
                     RequestUrl = HttpContextCore.CurrentHttpContext.Request.GetDisplayUrl() ?? "",
                     RequestParameters = discs.ToJson(),
                     BrowserInfo = IpHelper.GetBrowserName(),
                     RequestIp = IpHelper.GetIp(),
                     IpAddress = IpHelper.GetIpAddress(),
-                    LogLevel = (int) Common.Global.LogLevel.Debug,
+                    LogLevel = (int)Common.Global.LogLevel.Debug,
                     ExceptionMessage = context.Exception.Message,
                     ExceptionMessageFull = ExceptionHelper.GetExceptionAllMsg(context.Exception),
                     ExceptionStack = context.Exception.StackTrace

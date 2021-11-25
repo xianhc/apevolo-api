@@ -23,19 +23,28 @@ namespace ApeVolo.Api.Extensions
                 throw new ArgumentNullException(nameof(services));
 
             // 默认添加主数据库连接
-            DatabaseEntry.CurrentDbConnId = AppSettings.GetValue(new[] {"MainDB"});
+            //DatabaseEntry.CurrentDbConnId = AppSettings.GetValue(new[] {"MainDB"});
 
             // 把多个连接对象注入服务，这里必须采用Scope，因为有事务操作
             services.AddScoped<ISqlSugarClient>(_ =>
             {
-                ConnectionConfig dbConfig = null;
-                if (BaseDbConfig.GetDataBaseOperate.IsNotNull())
+                ConnectionConfig masterDb = null; //主库
+                var slaveDbs = new List<SlaveConnectionConfig>(); //从库列表
+                BaseDbConfig.GetDataBaseOperate.SlaveDbs.ForEach(db =>
                 {
-                    dbConfig = new ConnectionConfig()
+                    slaveDbs.Add(new SlaveConnectionConfig
                     {
-                        ConfigId = BaseDbConfig.GetDataBaseOperate.ConnId.ToString().ToLower(),
-                        ConnectionString = BaseDbConfig.GetDataBaseOperate.Conn,
-                        DbType = (DbType) BaseDbConfig.GetDataBaseOperate.DbType,
+                        HitRate = db.HitRate,
+                        ConnectionString = db.ConnectionString
+                    });
+                });
+                if (BaseDbConfig.GetDataBaseOperate.MasterDb.IsNotNull())
+                {
+                    masterDb = new ConnectionConfig()
+                    {
+                        ConfigId = BaseDbConfig.GetDataBaseOperate.MasterDb.ConnId.ToLower(),
+                        ConnectionString = BaseDbConfig.GetDataBaseOperate.MasterDb.ConnectionString,
+                        DbType = (DbType) BaseDbConfig.GetDataBaseOperate.MasterDb.DbType,
                         IsAutoCloseConnection = true,
                         IsShardSameThread = false,
                         AopEvents = new AopEvents
@@ -62,11 +71,13 @@ namespace ApeVolo.Api.Extensions
                         MoreSettings = new ConnMoreSettings()
                         {
                             IsAutoRemoveDataCache = true
-                        }
+                        },
+                        // 从库
+                        SlaveConnectionConfigs = slaveDbs
                     };
                 }
 
-                return new SqlSugarClient(dbConfig);
+                return new SqlSugarClient(masterDb);
             });
         }
 
