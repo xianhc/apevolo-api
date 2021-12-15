@@ -1,11 +1,9 @@
 using System.Threading.Tasks;
-using ApeVolo.Business.Impl.Email;
 using ApeVolo.Common.Caches.Redis.Attributes;
 using ApeVolo.Common.Caches.Redis.Models;
 using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
 using ApeVolo.Common.Helper;
 using ApeVolo.IBusiness.Interface.Email;
-using log4net;
 
 namespace ApeVolo.Api.MQ.Redis
 {
@@ -27,7 +25,7 @@ namespace ApeVolo.Api.MQ.Redis
         #endregion
 
         [Subscribe(MqTopicNameKey.MailboxQueue)]
-        private async Task DoSub(string emailId)
+        private async Task DoSub(long emailId)
         {
             var text = $"EmailRedisSubscribe订阅者==》从Redis消息队列:{RedisChannels.ChangeMailbox}==》得到消费信息:{emailId}";
             LogHelper.WriteLog(text, new[] { "EmailRedisSubscribe订阅" });

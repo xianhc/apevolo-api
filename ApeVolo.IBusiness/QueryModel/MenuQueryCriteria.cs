@@ -9,6 +9,6 @@ namespace ApeVolo.IBusiness.QueryModel
 
         public List<DateTime> CreateTime { get; set; }
 
-        public string PId { get; set; }
+        public long? PId { get; set; }
     }
 }

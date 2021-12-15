@@ -1,13 +1,13 @@
-﻿using SqlSugar;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
-using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Global;
 using ApeVolo.Entity.Do.Core;
+using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Vo;
 using ApeVolo.IRepository.Core;
+using SqlSugar;
 
 namespace ApeVolo.Business.Impl.Core
 {
@@ -34,7 +34,7 @@ namespace ApeVolo.Business.Impl.Core
         /// <param name="userId"></param>
         /// <returns></returns>
         [RedisCaching(Expiration = 30, KeyPrefix = RedisKey.UserPermissionById)]
-        public async Task<List<PermissionVO>> QueryUserPermissionAsync(string userId)
+        public async Task<List<PermissionVO>> QueryUserPermissionAsync(long userId)
         {
             var permissionLists = await _baseDal.QueryMuchAsync<Menu, RoleMenu, UserRoles, PermissionVO>(
                 (m, rm, ur) => new object[]
@@ -42,7 +42,7 @@ namespace ApeVolo.Business.Impl.Core
                     JoinType.Left, m.Id == rm.MenuId,
                     JoinType.Left, rm.RoleId == ur.RoleId
                 },
-                (m, rm, ur) => new PermissionVO()
+                (m, rm, ur) => new PermissionVO
                 {
                     LinkUrl = m.LinkUrl,
                     Permission = m.Permission

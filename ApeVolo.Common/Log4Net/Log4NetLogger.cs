@@ -1,9 +1,11 @@
-﻿using log4net;
-using log4net.Repository;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Reflection;
 using System.Xml;
+using log4net;
+using log4net.Config;
+using log4net.Repository;
+using log4net.Repository.Hierarchy;
+using Microsoft.Extensions.Logging;
 
 namespace ApeVolo.Common.Log4Net
 {
@@ -18,9 +20,9 @@ namespace ApeVolo.Common.Log4Net
             _name = name;
             _xmlElement = xmlElement;
             _loggerRepository = LogManager.CreateRepository(
-                Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+                Assembly.GetEntryAssembly(), typeof(Hierarchy));
             _log = LogManager.GetLogger(_loggerRepository.Name, name);
-            log4net.Config.XmlConfigurator.Configure(_loggerRepository, xmlElement);
+            XmlConfigurator.Configure(_loggerRepository, xmlElement);
         }
         public IDisposable BeginScope<TState>(TState state)
         {

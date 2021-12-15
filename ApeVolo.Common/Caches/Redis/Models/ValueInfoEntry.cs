@@ -1,5 +1,5 @@
-﻿using ApeVolo.Common.Global;
-using System;
+﻿using System;
+using ApeVolo.Common.Global;
 
 namespace ApeVolo.Common.Caches.Redis.Models
 {

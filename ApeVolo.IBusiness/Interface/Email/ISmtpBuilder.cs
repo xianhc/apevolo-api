@@ -1,8 +1,8 @@
-﻿using MailKit.Net.Smtp;
-using System.Net.Security;
+﻿using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using ApeVolo.Entity.Do.Email;
+using MailKit.Net.Smtp;
 
 namespace ApeVolo.IBusiness.Interface.Email
 {

@@ -4,9 +4,9 @@ using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Model;
 using ApeVolo.Entity.Do.Dictionary;
-using ApeVolo.IBusiness.Interface.Dictionary;
 using ApeVolo.IBusiness.Dto.Dictionary;
 using ApeVolo.IBusiness.EditDto.Dict;
+using ApeVolo.IBusiness.Interface.Dictionary;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.Dictionary;
 using AutoMapper;
@@ -82,7 +82,7 @@ namespace ApeVolo.Business.Impl.Dictionary
                 (d, dd) => d.IsDeleted == false && dd.IsDeleted == false && d.Name == dictDetailQueryCriteria.DictName
             );
             var dictDetailDtos = _mapper.Map<List<DictDetailDto>>(list);
-            dictDetailDtos.ForEach(dd => dd.Dict = new DictDto2() {Id = dd.DictId});
+            dictDetailDtos.ForEach(dd => dd.Dict = new DictDto2 {Id = dd.DictId});
             return dictDetailDtos;
         }
 

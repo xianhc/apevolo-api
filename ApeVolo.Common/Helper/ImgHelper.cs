@@ -59,7 +59,7 @@ namespace ApeVolo.Common.Helper
         /// <returns></returns>
         public static Image CompressImg(Image img, int width)
         {
-            return CompressImg(img, width, (int) (((double) width) / img.Width * img.Height));
+            return CompressImg(img, width, (int)((double)width / img.Width * img.Height));
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace ApeVolo.Common.Helper
         {
             if (imgBase64OrUrl.Contains("data:image"))
             {
-                Image img = ImgHelper.GetImgFromBase64Url(imgBase64OrUrl);
+                Image img = GetImgFromBase64Url(imgBase64OrUrl);
                 string fileName = $"{GuidHelper.GenerateKey()}.jpg";
 
                 string dir = Path.Combine(HttpContextCore.WebRootPath, "Upload", "Img");
@@ -170,8 +170,8 @@ namespace ApeVolo.Common.Helper
 
                 return $"{HttpContextCore.WebRootPath}/Upload/Img/{fileName}";
             }
-            else
-                return imgBase64OrUrl;
+
+            return imgBase64OrUrl;
         }
     }
 }

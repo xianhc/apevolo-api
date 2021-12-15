@@ -24,7 +24,7 @@ namespace ApeVolo.Common.Extention
             //确认参数有效,若无效则返回Null
             if (dt == null)
                 return list;
-            else if (dt.Rows.Count == 0)
+            if (dt.Rows.Count == 0)
                 return list;
 
             Dictionary<string, string> dicField = new Dictionary<string, string>();
@@ -107,7 +107,7 @@ namespace ApeVolo.Common.Extention
                     {
                         sb.Append("\"" + row[colum].ToString().Replace("\"", "\"\"") + "\"");
                     }
-                    else sb.Append(row[colum].ToString());
+                    else sb.Append(row[colum]);
                 }
                 sb.AppendLine();
             }

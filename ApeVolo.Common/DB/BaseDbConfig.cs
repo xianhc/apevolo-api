@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ApeVolo.Common.DB
 {
@@ -33,7 +33,7 @@ namespace ApeVolo.Common.DB
                         if (!secJt[i]["Enabled"]
                             .ToBool()) //|| secJt[i]["ConnId"]?.ToString() != DatabaseEntry.CurrentDbConnId)
                             continue;
-                        allDbs.Add(new DataBaseOperate()
+                        allDbs.Add(new DataBaseOperate
                         {
                             ConnId = secJt[i]["ConnId"]?.ToString(),
                             HitRate = secJt[i]["HitRate"].ToInt(),

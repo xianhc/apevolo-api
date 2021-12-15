@@ -11,9 +11,9 @@ namespace ApeVolo.Entity.Do
         /// <summary>
         /// 主键
         /// </summary>
-        [SugarColumn(ColumnName = "id", ColumnDataType = "char", IsNullable = false, Length = 19,
+        [SugarColumn(ColumnName = "id", ColumnDataType = "bigint", IsNullable = false, Length = 19,
             IsPrimaryKey = true, ColumnDescription = "ID主键")]
-        public string Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 创建者名称

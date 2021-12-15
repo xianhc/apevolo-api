@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Common.Caches.Redis.Extensions;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
@@ -144,7 +143,7 @@ namespace ApeVolo.Api.Controllers
                     Key = "登录时间", Value = onlineUser.LoginTime.ToString(CultureInfo.InvariantCulture), Point = point++
                 });
                 exportColumnModels.Add(new ExportColumnModel {Key = "在线Key", Value = onlineUser.Key, Point = point++});
-                exportRowModels.Add(new ExportRowModel() {exportColumnModels = exportColumnModels});
+                exportRowModels.Add(new ExportRowModel {exportColumnModels = exportColumnModels});
             });
 
             var filepath = ExcelHelper.ExportData(exportRowModels, "在线用户列表");

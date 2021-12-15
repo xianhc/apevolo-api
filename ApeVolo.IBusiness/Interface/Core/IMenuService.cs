@@ -1,13 +1,13 @@
-﻿using ApeVolo.Common.Helper.Excel;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IBusiness.Vo;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ApeVolo.Entity.Do.Core;
 
 namespace ApeVolo.IBusiness.Interface.Core
 {
@@ -16,7 +16,7 @@ namespace ApeVolo.IBusiness.Interface.Core
         #region 基础接口
         Task<bool> CreateAsync(CreateUpdateMenuDto createUpdateMenuDto);
         Task<bool> UpdateAsync(CreateUpdateMenuDto createUpdateMenuDto);
-        Task<bool> DeleteAsync(HashSet<string> ids);
+        Task<bool> DeleteAsync(HashSet<long> ids);
         Task<List<MenuDto>> QueryAsync(MenuQueryCriteria menuQueryCriteria, Pagination pagination);
         Task<List<ExportRowModel>> DownloadAsync(MenuQueryCriteria menuQueryCriteria);
         #endregion
@@ -33,32 +33,32 @@ namespace ApeVolo.IBusiness.Interface.Core
         /// </summary>
         /// <param name="pid"></param>
         /// <returns></returns>
-        Task<List<MenuDto>> FindByPIdAsync(string pid = "0");
+        Task<List<MenuDto>> FindByPIdAsync(long pid = 0);
         /// <summary>
         /// 根据角色ID获取菜单
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        Task<List<MenuDto>> FindByRoleIdAsync(string roleId);
+        Task<List<MenuDto>> FindByRoleIdAsync(long roleId);
 
         /// <summary>
         /// 构建前端菜单树
         /// </summary>
         /// <param name="userId">用户ID</param>
         /// <returns></returns>
-        Task<List<MenuTreeVo>> BuildTreeAsync(string userId);
+        Task<List<MenuTreeVo>> BuildTreeAsync(long userId);
         /// <summary>
         /// 获取所有同级或父级菜单
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<List<MenuDto>> FindSuperiorAsync(string id);
+        Task<List<MenuDto>> FindSuperiorAsync(long id);
         /// <summary>
         /// 获取所有子菜单ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<List<string>> FindChildAsync(string id);
+        Task<List<long>> FindChildAsync(long id);
         #endregion
     }
 }

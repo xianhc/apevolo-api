@@ -41,10 +41,7 @@ namespace ApeVolo.Common.Helper
                                                Convert.ToDecimal(os.TotalPhysicalMemory - os.FreePhysicalMemory) /
                                                1073741824, 1), 2).ToString("0.00")
                 },
-                Swap = new Swap
-                {
-
-                }
+                Swap = new Swap()
             };
             if (os.LogicalDisk != null && os.LogicalDisk.Count > 0)
             {

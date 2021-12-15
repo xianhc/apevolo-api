@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using ApeVolo.Common.Extention;
 using ApeVolo.Entity.Seed;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ApeVolo.Api.Extensions
 {

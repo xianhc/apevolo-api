@@ -9,7 +9,7 @@ namespace ApeVolo.Common.WebApp
     public interface ICurrentUser
     {
         string Name { get; }
-        string Id { get; }
+        long Id { get; }
         bool IsAuthenticated();
         IEnumerable<Claim> GetClaimsIdentity();
         List<string> GetClaimValueByType(string claimType);

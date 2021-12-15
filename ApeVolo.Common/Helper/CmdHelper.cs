@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace ApeVolo.Common.Helper
 {
@@ -26,7 +28,7 @@ namespace ApeVolo.Common.Helper
 
             //说明：不管命令是否成功均执行exit命令，否则当调用ReadToEnd()方法时，会处于假死状态  
             var cmd = cmdText + " &exit";
-            using (var p = new System.Diagnostics.Process())
+            using (var p = new Process())
             {
                 p.StartInfo.FileName = cmdPath;
                 p.StartInfo.UseShellExecute = false; //是否使用操作系统shell启动  
@@ -120,12 +122,9 @@ namespace ApeVolo.Common.Helper
 
             static Bash()
             {
-                Plinux = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
-                    .OSPlatform.Linux);
-                Pmac = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
-                    .OSPlatform.OSX);
-                Pwindows = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
-                    .OSPlatform.Windows);
+                Plinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+                Pmac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+                Pwindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
                 Native = Plinux || Pmac ? true : false;
                 PbashPath = Native ? "bash" : "bash.exe";
@@ -140,7 +139,7 @@ namespace ApeVolo.Common.Helper
                 if (!Native && !Subsystem)
                     throw new PlatformNotSupportedException();
 
-                using (var bash = new System.Diagnostics.Process {StartInfo = BashInfo(input, redirect)})
+                using (var bash = new Process {StartInfo = BashInfo(input, redirect)})
                 {
                     bash.Start();
 
@@ -164,13 +163,12 @@ namespace ApeVolo.Common.Helper
 
                 if (redirect)
                     return new BashResult(Output, ErrorMsg, ExitCode);
-                else
-                    return new BashResult(null, null, ExitCode);
+                return new BashResult(null, null, ExitCode);
             }
 
-            private System.Diagnostics.ProcessStartInfo BashInfo(string input, bool redirectOutput)
+            private ProcessStartInfo BashInfo(string input, bool redirectOutput)
             {
-                return new System.Diagnostics.ProcessStartInfo
+                return new ProcessStartInfo
                 {
                     FileName = PbashPath,
                     Arguments = $"-c \"{input}\"",

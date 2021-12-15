@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -12,6 +10,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using ApeVolo.Common.ClassLibrary;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ApeVolo.Common.Extention
 {
@@ -267,7 +267,7 @@ namespace ApeVolo.Common.Extention
         public static bool ToBool(this string str)
         {
             bool reval = false;
-            if (!string.IsNullOrEmpty(str) && bool.TryParse(str.ToString(), out reval))
+            if (!string.IsNullOrEmpty(str) && bool.TryParse(str, out reval))
             {
                 return reval;
             }
@@ -606,8 +606,7 @@ namespace ApeVolo.Common.Extention
             string pattern = "(^[0-9]+$)|(^[a-z]+$)|(^[A-Z]+$)|(^.{0,8}$)";
             if (Regex.IsMatch(pwd, pattern))
                 return true;
-            else
-                return false;
+            return false;
         }
 
         /// <summary>

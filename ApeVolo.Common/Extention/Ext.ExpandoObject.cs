@@ -18,8 +18,7 @@ namespace ApeVolo.Common.Extention
             var obj = (IDictionary<string, object>)expandoObj;
             if (obj.ContainsKey(propertyName))
                 throw new System.Exception("已存在该属性！");
-            else
-                obj.Add(propertyName, value);
+            obj.Add(propertyName, value);
         }
 
         /// <summary>
@@ -48,8 +47,7 @@ namespace ApeVolo.Common.Extention
             var obj = (IDictionary<string, object>)expandoObj;
             if (!obj.ContainsKey(propertyName))
                 throw new System.Exception("不存在该属性！");
-            else
-                return obj[propertyName];
+            return obj[propertyName];
         }
 
         /// <summary>
@@ -73,8 +71,7 @@ namespace ApeVolo.Common.Extention
             var obj = (IDictionary<string, object>)expandoObj;
             if (!obj.ContainsKey(propertyName))
                 throw new System.Exception("不存在该属性！");
-            else
-                obj.Remove(propertyName);
+            obj.Remove(propertyName);
         }
 
         /// <summary>
@@ -87,25 +84,22 @@ namespace ApeVolo.Common.Extention
             DataTable dt = new DataTable();
             if (dataList.IsNullOrEmpty())
                 return null;
-            else if (dataList.Count() == 0)
+            if (dataList.Count() == 0)
                 return dt;
-            else
+            var aEntity = dataList.FirstOrDefault();
+            var properties = aEntity.GetProperties();
+            properties.ForEach(aProperty =>
             {
-                var aEntity = dataList.FirstOrDefault();
-                var properties = aEntity.GetProperties();
+                dt.Columns.Add(aProperty);
+            });
+            dataList.ForEach((aData, index) =>
+            {
+                dt.Rows.Add(dt.NewRow());
                 properties.ForEach(aProperty =>
                 {
-                    dt.Columns.Add(aProperty);
+                    dt.Rows[index][aProperty] = aData.GetProperty(aProperty);
                 });
-                dataList.ForEach((aData, index) =>
-                {
-                    dt.Rows.Add(dt.NewRow());
-                    properties.ForEach(aProperty =>
-                    {
-                        dt.Rows[index][aProperty] = aData.GetProperty(aProperty);
-                    });
-                });
-            }
+            });
 
             return dt;
         }

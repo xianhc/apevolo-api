@@ -64,7 +64,7 @@ namespace ApeVolo.Entity.Seed
                         }
                     }
                 });
-                ConsoleHelper.WriteLine($"初始化数据表成功！", ConsoleColor.Green);
+                ConsoleHelper.WriteLine("初始化数据表成功！", ConsoleColor.Green);
                 Console.WriteLine();
                 //添加初始数据
 
@@ -336,12 +336,12 @@ namespace ApeVolo.Entity.Seed
 
                     #endregion
 
-                    ConsoleHelper.WriteLine($"初始化数据完成！", ConsoleColor.Green);
+                    ConsoleHelper.WriteLine("初始化数据完成！", ConsoleColor.Green);
                 }
 
                 #endregion
 
-                ConsoleHelper.WriteLine($"程序已启动！", ConsoleColor.Green);
+                ConsoleHelper.WriteLine("程序已启动！", ConsoleColor.Green);
                 // return Task.CompletedTask;
             }
             catch (Exception ex)

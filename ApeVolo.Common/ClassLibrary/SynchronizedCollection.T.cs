@@ -1,11 +1,12 @@
 ﻿
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace ApeVolo.Common.ClassLibrary
 {
-    public class SynchronizedCollection<T> : IEnumerable<T>, System.IDisposable
+    public class SynchronizedCollection<T> : IEnumerable<T>, IDisposable
     {
         #region 外部接口
 

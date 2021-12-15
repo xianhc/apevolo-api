@@ -1,4 +1,3 @@
-using ApeVolo.Common.Extention;
 using Microsoft.AspNetCore.Http;
 
 namespace ApeVolo.Common.Exception

@@ -213,8 +213,7 @@ namespace ApeVolo.Common.Caches.Redis.Service
             string theValue = entry.ToRedisJson();
             if (timeout == null)
                 return await _database.StringSetAsync(key, theValue);
-            else
-                return await _database.StringSetAsync(key, theValue, timeout);
+            return await _database.StringSetAsync(key, theValue, timeout);
         }
 
         #endregion
@@ -244,7 +243,7 @@ namespace ApeVolo.Common.Caches.Redis.Service
             var redisResult = await _database.ScriptEvaluateAsync(LuaScript.Prepare(
                 //Redis的keys模糊查询：
                 " local res = redis.call('KEYS', @keypattern) " +
-                " return res "), new {@keypattern = pattern});
+                " return res "), new {keypattern = pattern});
             string[] preSult = (string[]) redisResult; //将返回的结果集转为数组
             return preSult;
         }

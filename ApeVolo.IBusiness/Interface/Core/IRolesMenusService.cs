@@ -1,7 +1,7 @@
-using ApeVolo.IBusiness.Base;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Entity.Do.Core;
+using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Interface.Core
 {
@@ -14,7 +14,7 @@ namespace ApeVolo.IBusiness.Interface.Core
         
         Task<bool> CreateAsync(List<RoleMenu> roleMenu);
         
-        Task<bool> DeleteAsync(List<string> roleIds);
+        Task<bool> DeleteAsync(List<long> roleIds);
 
         #endregion
     }

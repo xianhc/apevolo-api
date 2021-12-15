@@ -1,6 +1,4 @@
-﻿using ApeVolo.IBusiness.Interface.Logs;
-using ApeVolo.IRepository.Logs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -9,7 +7,9 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
 using ApeVolo.Entity.Do.Logs;
 using ApeVolo.IBusiness.Dto.Logs;
+using ApeVolo.IBusiness.Interface.Logs;
 using ApeVolo.IBusiness.QueryModel;
+using ApeVolo.IRepository.Logs;
 using AutoMapper;
 
 namespace ApeVolo.Business.Impl.Logs
@@ -39,7 +39,7 @@ namespace ApeVolo.Business.Impl.Logs
 
         public async Task<List<LogDto>> QueryAsync(LogQueryCriteria logQueryCriteria, Pagination pagination)
         {
-            Expression<Func<Log, bool>> whereLambda = l => (l.IsDeleted == false);
+            Expression<Func<Log, bool>> whereLambda = l => l.IsDeleted == false;
             if (!logQueryCriteria.KeyWords.IsNullOrEmpty())
             {
                 whereLambda = whereLambda.And(l => l.Description.Contains(logQueryCriteria.KeyWords));

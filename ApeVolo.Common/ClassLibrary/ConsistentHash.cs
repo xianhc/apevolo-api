@@ -10,7 +10,7 @@ namespace ApeVolo.Common.ClassLibrary
     {
         SortedDictionary<int, T> circle { get; set; } = new SortedDictionary<int, T>();
         int _replicate = 100;    //default _replicate count
-        int[] ayKeys = null;    //cache the ordered keys for better performance
+        int[] ayKeys;    //cache the ordered keys for better performance
 
         //it's better you override the GetHashCode() of T.
         //we will use GetHashCode() to identify different node.
@@ -25,7 +25,7 @@ namespace ApeVolo.Common.ClassLibrary
 
             foreach (T node in nodes)
             {
-                this.Add(node, false);
+                Add(node, false);
             }
             ayKeys = circle.Keys.ToArray();
         }

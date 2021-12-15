@@ -231,11 +231,11 @@ namespace ApeVolo.Common.Helper.Excel
                     var columnNames = rowMerge.FirstOrDefault().Value;
                     var propvalue = item[rowValue] == null ? "" : item[rowValue].ToString();
                     var rows = rowMeageValue.Split(',');
-                    if (rows[0] != propvalue || (listData.Rows.Count == index + 1 && rows[0] == propvalue))
+                    if (rows[0] != propvalue || listData.Rows.Count == index + 1 && rows[0] == propvalue)
                     {
                         if (rows.Length == 2)
                         {
-                            var totalRow = (headRow + index) - int.Parse(rows[1]);
+                            var totalRow = headRow + index - int.Parse(rows[1]);
                             if (listData.Rows.Count == index + 1 && rows[0] == propvalue)
                                 totalRow = totalRow + 1;
                             if (totalRow > 1)
@@ -343,7 +343,7 @@ namespace ApeVolo.Common.Helper.Excel
 
             if (rowMerge != null)
             {
-                var totalColNum = (rowMerge.Count * 2) +
+                var totalColNum = rowMerge.Count * 2 +
                                   columns.Count(t => !rowMerge.Select(m => m.Key).ToList().Contains(t.Key));
                 Range headRange = sheet.Cells.CreateRange(0, 0, 2, //列为两行
                     isSerialNumber ? totalColNum + startColumn : totalColNum);
@@ -519,7 +519,7 @@ namespace ApeVolo.Common.Helper.Excel
                 for (int i = 0; i < listProp.Count; i++)
                 {
                     var value = GetCell(item, listProp[i], dateFormat);
-                    datas[index, isSerialNumber ? (i + 1) : i] = value; //在obj.ToString()前加单引号是为了防止自动转化格式  
+                    datas[index, isSerialNumber ? i + 1 : i] = value; //在obj.ToString()前加单引号是为了防止自动转化格式  
                 }
             }
 

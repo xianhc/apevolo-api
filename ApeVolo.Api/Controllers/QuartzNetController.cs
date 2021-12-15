@@ -1,23 +1,23 @@
-﻿using ApeVolo.Api.Controllers.Base;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Threading.Tasks;
+using ApeVolo.Api.ActionExtension.Json;
+using ApeVolo.Api.Controllers.Base;
+using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Entity.Do.Tasks;
 using ApeVolo.IBusiness.Dto.Tasks;
 using ApeVolo.IBusiness.EditDto.Tasks;
-using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IBusiness.Interface.Tasks;
+using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.QuartzNetService.service;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
-using System.IO;
-using ApeVolo.Api.ActionExtension.Json;
 using Microsoft.AspNetCore.StaticFiles;
-using ApeVolo.Common.AttributeExt;
-using ApeVolo.Entity.Do.Tasks;
 
 namespace ApeVolo.Api.Controllers
 {
@@ -121,7 +121,7 @@ namespace ApeVolo.Api.Controllers
         [Route("delete")]
         [Description("删除作业")]
         [NoJsonParamter]
-        public async Task<ActionResult<object>> Delete([FromBody] HashSet<string> ids)
+        public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
         {
             if (ids == null || ids.Count < 1)
                 return Error("ids异常");
@@ -159,7 +159,7 @@ namespace ApeVolo.Api.Controllers
 
             quartzNetList.ForEach(async m => { m.TriggerStatus = await _schedulerCenterService.GetTriggerStatus(m); });
 
-            return new ActionResultVm<QuartzNetDto>()
+            return new ActionResultVm<QuartzNetDto>
             {
                 Content = quartzNetList,
                 TotalElements = pagination.TotalElements
@@ -197,8 +197,8 @@ namespace ApeVolo.Api.Controllers
         [HttpPut]
         [Description("执行作业")]
         [Route("execute/{id}")]
-        [ApeVoloAuthorize(new[] {"admin"})]
-        public async Task<ActionResult<object>> Execute(string id)
+        [ApeVoloAuthorize(new[] { "admin" })]
+        public async Task<ActionResult<object>> Execute(long id)
         {
             var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.IsDeleted == false && x.Id == id);
             if (quartzNet.IsNull())
@@ -236,8 +236,8 @@ namespace ApeVolo.Api.Controllers
         [HttpPut]
         [Description("暂停作业")]
         [Route("pause/{id}")]
-        [ApeVoloAuthorize(new[] {"admin"})]
-        public async Task<ActionResult<object>> Pause(string id)
+        [ApeVoloAuthorize(new[] { "admin" })]
+        public async Task<ActionResult<object>> Pause(long id)
         {
             var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.IsDeleted == false && x.Id == id);
             if (quartzNet.IsNull())
@@ -274,8 +274,8 @@ namespace ApeVolo.Api.Controllers
         [HttpPut]
         [Description("恢复作业")]
         [Route("resume/{id}")]
-        [ApeVoloAuthorize(new[] {"admin"})]
-        public async Task<ActionResult<object>> Resume(string id)
+        [ApeVoloAuthorize(new[] { "admin" })]
+        public async Task<ActionResult<object>> Resume(long id)
         {
             var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.IsDeleted == false && x.Id == id);
             if (quartzNet.IsNull())
@@ -294,10 +294,8 @@ namespace ApeVolo.Api.Controllers
                     {
                         return NoContent();
                     }
-                    else
-                    {
-                        return Error("恢复失败，请重试！");
-                    }
+
+                    return Error("恢复失败，请重试！");
                 }
 
                 return Error("恢复失败，作业未启动！");
@@ -316,13 +314,13 @@ namespace ApeVolo.Api.Controllers
         [HttpGet]
         [Route("logs/list/{id}")]
         [Description("作业调度执行日志")]
-        [ApeVoloAuthorize(new[] {"admin"})]
+        [ApeVoloAuthorize(new[] { "admin" })]
         public async Task<ActionResult<object>> QueryLog(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria,
             Pagination pagination)
         {
             var quartzNetLogList = await _quartzNetLogService.QueryAsync(quartzNetLogQueryCriteria, pagination);
 
-            return new ActionResultVm<QuartzNetLogDto>()
+            return new ActionResultVm<QuartzNetLogDto>
             {
                 Content = quartzNetLogList,
                 TotalElements = pagination.TotalElements

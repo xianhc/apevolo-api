@@ -4,6 +4,7 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using ApeVolo.Common.DI;
+using ApeVolo.Common.Extention;
 using ApeVolo.Entity.Do.Email;
 using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Interface.Email;
@@ -50,7 +51,7 @@ namespace ApeVolo.Business.Impl.Email
             {
                 //var defaultEmailAccountId = AppSettings.GetValue("DefaultEmailAccountId");//系统默认发送邮箱ID
                 var settingDto = await _settingService.FindSettingByName("DefaultEmailAccountId");
-                var defaultEmailAccountId = settingDto?.Value;
+                var defaultEmailAccountId = settingDto?.Value.ToLong();
                 emailAccount =
                     await _emailAccountService.QueryFirstAsync(x =>
                         x.IsDeleted == false && x.Id == defaultEmailAccountId)

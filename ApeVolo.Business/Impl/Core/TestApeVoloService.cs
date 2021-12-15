@@ -24,7 +24,7 @@ namespace ApeVolo.Business.Impl.Core
 
         public async Task<List<TestApeVolo>> QueryAsync(Pagination pagination)
         {
-            Expression<Func<TestApeVolo, bool>> whereExpression = x => (x.IsDeleted == false);
+            Expression<Func<TestApeVolo, bool>> whereExpression = x => x.IsDeleted == false;
             return _mapper.Map<List<TestApeVolo>>(await _baseDal.QueryPageListAsync(whereExpression, pagination));
         }
     }

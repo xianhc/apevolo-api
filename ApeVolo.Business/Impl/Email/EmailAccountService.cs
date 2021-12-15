@@ -1,19 +1,19 @@
-﻿using ApeVolo.Business.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Entity.Do.Email;
 using ApeVolo.IBusiness.Dto.Email;
 using ApeVolo.IBusiness.EditDto.Email;
 using ApeVolo.IBusiness.Interface.Email;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.Email;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using ApeVolo.Entity.Do.Email;
 
 namespace ApeVolo.Business.Impl.Email
 {
@@ -74,11 +74,11 @@ namespace ApeVolo.Business.Impl.Email
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public async Task<bool> DeleteAsync(HashSet<string> ids)
+        public async Task<bool> DeleteAsync(HashSet<long> ids)
         {
             var emailAccounts = await QueryByIdsAsync(ids);
             if (emailAccounts.Count < 1)
-                throw new BadRequestException($"无可删除数据!");
+                throw new BadRequestException("无可删除数据!");
 
             return await DeleteEntityListAsync(emailAccounts);
         }
@@ -92,7 +92,7 @@ namespace ApeVolo.Business.Impl.Email
         public async Task<List<EmailAccountDto>> QueryAsync(EmailAccountQueryCriteria emailAccountQueryCriteria,
             Pagination pagination)
         {
-            Expression<Func<EmailAccount, bool>> whereExpression = x => (x.IsDeleted == false);
+            Expression<Func<EmailAccount, bool>> whereExpression = x => x.IsDeleted == false;
             if (!emailAccountQueryCriteria.Username.IsNullOrEmpty())
             {
                 whereExpression = whereExpression.And(x => x.Username.Contains(emailAccountQueryCriteria.Username));
@@ -117,7 +117,7 @@ namespace ApeVolo.Business.Impl.Email
         public async Task<List<ExportRowModel>> DownloadAsync(EmailAccountQueryCriteria emailAccountQueryCriteria)
         {
             var emailAccountDtos =
-                await QueryAsync(emailAccountQueryCriteria, new Pagination() {PageSize = 9999});
+                await QueryAsync(emailAccountQueryCriteria, new Pagination { PageSize = 9999 });
             List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
             List<ExportColumnModel> exportColumnModels;
             int point;
@@ -125,29 +125,30 @@ namespace ApeVolo.Business.Impl.Email
             {
                 point = 0;
                 exportColumnModels = new List<ExportColumnModel>();
-                exportColumnModels.Add(new ExportColumnModel {Key = "ID", Value = emailAccountDto.Id, Point = point++});
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "邮箱地址", Value = emailAccountDto.Email, Point = point++});
+                    { Key = "ID", Value = emailAccountDto.Id.ToString(), Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "显示名称", Value = emailAccountDto.DisplayName, Point = point++});
+                    { Key = "邮箱地址", Value = emailAccountDto.Email, Point = point++ });
+                exportColumnModels.Add(new ExportColumnModel
+                    { Key = "显示名称", Value = emailAccountDto.DisplayName, Point = point++ });
                 exportColumnModels.Add(
-                    new ExportColumnModel {Key = "主机", Value = emailAccountDto.Host, Point = point++});
+                    new ExportColumnModel { Key = "主机", Value = emailAccountDto.Host, Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "端口", Value = emailAccountDto.Port.ToString(), Point = point++});
+                    { Key = "端口", Value = emailAccountDto.Port.ToString(), Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "用户名", Value = emailAccountDto.Username, Point = point++});
+                    { Key = "用户名", Value = emailAccountDto.Username, Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "是否SSL", Value = emailAccountDto.EnableSsl ? "是" : "否", Point = point++});
+                    { Key = "是否SSL", Value = emailAccountDto.EnableSsl ? "是" : "否", Point = point++ });
                 ;
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "发送系统票据", Value = emailAccountDto.UseDefaultCredentials ? "是" : "否", Point = point++});
+                    { Key = "发送系统票据", Value = emailAccountDto.UseDefaultCredentials ? "是" : "否", Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "创建人", Value = emailAccountDto.CreateBy, Point = point++});
+                    { Key = "创建人", Value = emailAccountDto.CreateBy, Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
                 {
                     Key = "创建时间", Value = emailAccountDto.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
                 });
-                exportRowModels.Add(new ExportRowModel() {exportColumnModels = exportColumnModels});
+                exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
             });
             return exportRowModels;
         }

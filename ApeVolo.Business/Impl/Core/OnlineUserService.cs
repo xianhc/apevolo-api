@@ -1,15 +1,14 @@
-﻿using ApeVolo.Common.Caches.Redis.Extensions;
-using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
-using ApeVolo.Common.Helper;
-using ApeVolo.IBusiness.Dto.Core;
-using ApeVolo.IBusiness.Interface.Core;
-using ApeVolo.IBusiness.Vo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Common.Caches.Redis.Service;
+using ApeVolo.Common.Extention;
+using ApeVolo.Common.Global;
+using ApeVolo.Common.Helper;
 using ApeVolo.Entity.Do.Other;
+using ApeVolo.IBusiness.Dto.Core;
+using ApeVolo.IBusiness.Interface.Core;
+using ApeVolo.IBusiness.Vo;
 
 namespace ApeVolo.Business.Impl.Core
 {
@@ -46,7 +45,7 @@ namespace ApeVolo.Business.Impl.Core
             string browser = IpHelper.GetBrowserName();
             string address = IpHelper.GetIpAddress();
 
-            OnlineUser onlineUser = new OnlineUser()
+            OnlineUser onlineUser = new OnlineUser
             {
                 UserId = jwtUserVo.User.Id,
                 UserName = jwtUserVo.User.Username,
@@ -57,8 +56,7 @@ namespace ApeVolo.Business.Impl.Core
                 Address = address,
                 Key = token.ToHmacsha256String(AppSettings.GetValue("HmacSecret")),
                 LoginTime = DateTime.Now,
-                currentPermission = new CurrentPermission()
-                    {Roles = jwtUserVo.User.Authorizes, Urls = jwtUserVo.User.PermissionUrl}
+                currentPermission = new CurrentPermission {Roles = jwtUserVo.User.Authorizes, Urls = jwtUserVo.User.PermissionUrl}
             };
             return await _redisCacheService.SetCacheAsync(RedisKey.OnlineKey + onlineUser.Key, onlineUser,
                 TimeSpan.FromMinutes(30), RedisExpireType.Relative);
@@ -66,7 +64,7 @@ namespace ApeVolo.Business.Impl.Core
 
         public async Task<JwtUserVo> FindJwtUserAsync(UserDto userDto)
         {
-            var jwtUser = new JwtUserVo()
+            var jwtUser = new JwtUserVo
             {
                 User = userDto,
                 DataScopes = new List<string>(),

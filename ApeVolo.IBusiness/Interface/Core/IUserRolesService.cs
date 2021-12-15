@@ -1,8 +1,8 @@
-﻿using ApeVolo.IBusiness.Base;
-using ApeVolo.IBusiness.EditDto.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Entity.Do.Core;
+using ApeVolo.IBusiness.Base;
+using ApeVolo.IBusiness.EditDto.Core;
 
 namespace ApeVolo.IBusiness.Interface.Core
 {
@@ -13,9 +13,9 @@ namespace ApeVolo.IBusiness.Interface.Core
     {
         #region 基础接口
         Task<int> CreateAsync(List<CreateUpdateUserRolesDto> createUpdateUserRoleDtos);
-        Task<bool> DeleteByUserIdAsync(string userId);
-        Task<List<UserRoles>> QueryAsync(string userId);
-        Task<List<UserRoles>> QueryByRoleIdsAsync(HashSet<string> roleIds);
+        Task<bool> DeleteByUserIdAsync(long userId);
+        Task<List<UserRoles>> QueryAsync(long userId);
+        Task<List<UserRoles>> QueryByRoleIdsAsync(HashSet<long> roleIds);
         #endregion
     }
 }

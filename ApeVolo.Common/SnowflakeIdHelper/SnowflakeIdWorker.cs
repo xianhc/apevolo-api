@@ -23,7 +23,7 @@ namespace ApeVolo.Common.SnowflakeIdHelper
         public const int TimestampLeftShift = SequenceBits + WorkerIdBits + DatacenterIdBits;
         private const long SequenceMask = -1L ^ (-1L << SequenceBits);
 
-        private long _sequence = 0L;
+        private long _sequence;
         private long _lastTimestamp = -1L;
 
 

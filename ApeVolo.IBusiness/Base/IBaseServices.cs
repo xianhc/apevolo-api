@@ -70,7 +70,7 @@ namespace ApeVolo.IBusiness.Base
         /// <param name="ids">列值</param>
         /// <param name="columnName">列名 默认ID</param>
         /// <returns></returns>
-        Task<List<TEntity>> QueryByIdsAsync(List<string> ids, string columnName = "id");
+        Task<List<TEntity>> QueryByIdsAsync(List<long> ids, string columnName = "id");
 
         /// <summary>
         /// 批量查询实体
@@ -78,7 +78,7 @@ namespace ApeVolo.IBusiness.Base
         /// <param name="ids">列值</param>
         /// <param name="columnName">列名 默认ID</param>
         /// <returns></returns>
-        Task<List<TEntity>> QueryByIdsAsync(HashSet<string> ids, string columnName = "id");
+        Task<List<TEntity>> QueryByIdsAsync(HashSet<long> ids, string columnName = "id");
 
         /// <summary>
         /// 对象是否存在

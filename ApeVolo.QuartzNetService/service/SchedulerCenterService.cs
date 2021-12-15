@@ -1,15 +1,15 @@
-﻿using ApeVolo.Common.Extention;
+﻿using System;
+using System.Collections.Specialized;
+using System.Reflection;
+using System.Threading.Tasks;
+using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
+using ApeVolo.Entity.Do.Tasks;
 using ApeVolo.IBusiness.Dto.Tasks;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Impl.Triggers;
 using Quartz.Spi;
-using System;
-using System.Collections.Specialized;
-using System.Reflection;
-using System.Threading.Tasks;
-using ApeVolo.Entity.Do.Tasks;
 
 namespace ApeVolo.QuartzNetService.service
 {
@@ -30,17 +30,14 @@ namespace ApeVolo.QuartzNetService.service
         private Task<IScheduler> GetSchedulerAsync()
         {
             if (_scheduler != null)
-                return this._scheduler;
-            else
+                return _scheduler;
+            // 从Factory中获取Scheduler实例
+            NameValueCollection collection = new NameValueCollection
             {
-                // 从Factory中获取Scheduler实例
-                NameValueCollection collection = new NameValueCollection
-                {
-                    {"quartz.serializer.type", "binary"},
-                };
-                StdSchedulerFactory factory = new StdSchedulerFactory(collection);
-                return _scheduler = factory.GetScheduler();
-            }
+                {"quartz.serializer.type", "binary"},
+            };
+            StdSchedulerFactory factory = new StdSchedulerFactory(collection);
+            return _scheduler = factory.GetScheduler();
         }
 
         /// <summary>
@@ -52,17 +49,15 @@ namespace ApeVolo.QuartzNetService.service
             var isTrue = true;
             try
             {
-                this._scheduler.Result.JobFactory = this._iocjobFactory;
-                if (!this._scheduler.Result.IsStarted)
+                _scheduler.Result.JobFactory = _iocjobFactory;
+                if (!_scheduler.Result.IsStarted)
                 {
                     //等待任务运行完成
-                    await this._scheduler.Result.Start();
+                    await _scheduler.Result.Start();
                     return isTrue;
                 }
-                else
-                {
-                    isTrue = false;
-                }
+
+                isTrue = false;
             }
             catch (Exception ex)
             {
@@ -82,16 +77,14 @@ namespace ApeVolo.QuartzNetService.service
             var isTrue = true;
             try
             {
-                if (!this._scheduler.Result.IsShutdown)
+                if (!_scheduler.Result.IsShutdown)
                 {
                     //等待任务运行完成
-                    await this._scheduler.Result.Shutdown();
+                    await _scheduler.Result.Shutdown();
                     return isTrue;
                 }
-                else
-                {
-                    isTrue = false;
-                }
+
+                isTrue = false;
             }
             catch (Exception ex)
             {
@@ -208,7 +201,7 @@ namespace ApeVolo.QuartzNetService.service
                 JobKey jobKey = new JobKey(taskQuartz.Id.ToString(), taskQuartz.TaskGroup);
                 if (await _scheduler.Result.CheckExists(jobKey))
                 {
-                    await this._scheduler.Result.DeleteJob(jobKey);
+                    await _scheduler.Result.DeleteJob(jobKey);
                     return isTrue;
                 }
             }
@@ -234,7 +227,7 @@ namespace ApeVolo.QuartzNetService.service
                 JobKey jobKey = new JobKey(taskQuartz.Id.ToString(), taskQuartz.TaskGroup);
                 if (await _scheduler.Result.CheckExists(jobKey))
                 {
-                    await this._scheduler.Result.ResumeJob(jobKey);
+                    await _scheduler.Result.ResumeJob(jobKey);
                     return isTrue;
                 }
             }
@@ -260,7 +253,7 @@ namespace ApeVolo.QuartzNetService.service
                 JobKey jobKey = new JobKey(taskQuartz.Id.ToString(), taskQuartz.TaskGroup);
                 if (await _scheduler.Result.CheckExists(jobKey))
                 {
-                    await this._scheduler.Result.PauseJob(jobKey);
+                    await _scheduler.Result.PauseJob(jobKey);
                     return isTrue;
                 }
             }
@@ -279,13 +272,13 @@ namespace ApeVolo.QuartzNetService.service
         {
             string triggerStatus = "不存在";
             JobKey jobKey = new JobKey(taskQuartzDto.Id.ToString(), taskQuartzDto.TaskGroup);
-            IJobDetail job = await this._scheduler.Result.GetJobDetail(jobKey);
+            IJobDetail job = await _scheduler.Result.GetJobDetail(jobKey);
             if (job == null)
             {
                 return triggerStatus;
             }
 
-            var triggers = await this._scheduler.Result.GetTriggersOfJob(jobKey);
+            var triggers = await _scheduler.Result.GetTriggersOfJob(jobKey);
             if (triggers == null || triggers.Count == 0)
             {
                 return triggerStatus;
@@ -295,7 +288,7 @@ namespace ApeVolo.QuartzNetService.service
             {
                 if (((JobDetailImpl) job).Name == ((AbstractTrigger) trigger).Name)
                 {
-                    var tStatus = await this._scheduler.Result.GetTriggerState(trigger.Key);
+                    var tStatus = await _scheduler.Result.GetTriggerState(trigger.Key);
                     triggerStatus = GetTriggerState(tStatus.ToString());
                     break;
                 }

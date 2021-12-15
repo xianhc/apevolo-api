@@ -1,6 +1,6 @@
-﻿using ApeVolo.Common.ClassLibrary;
+﻿using System;
+using ApeVolo.Common.ClassLibrary;
 using ApeVolo.Common.Extention;
-using System;
 
 namespace ApeVolo.Common.DI
 {

@@ -1,10 +1,11 @@
-﻿using ApeVolo.QuartzNetService.service;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using ApeVolo.QuartzNetService.service;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Spi;
-using System;
-using System.Linq;
-using System.Reflection;
 
 namespace ApeVolo.Api.Extensions
 {
@@ -23,7 +24,7 @@ namespace ApeVolo.Api.Extensions
             //任务注入
             var baseType = typeof(IJob);
             var path = AppDomain.CurrentDomain.RelativeSearchPath ?? AppDomain.CurrentDomain.BaseDirectory;
-            var referencedAssemblies = System.IO.Directory.GetFiles(path, "ApeVolo.QuartzNetService.dll").Select(Assembly.LoadFrom).ToArray();
+            var referencedAssemblies = Directory.GetFiles(path, "ApeVolo.QuartzNetService.dll").Select(Assembly.LoadFrom).ToArray();
             var types = referencedAssemblies
                 .SelectMany(a => a.DefinedTypes)
                 .Select(type => type.AsType())

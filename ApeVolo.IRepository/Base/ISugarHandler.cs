@@ -283,7 +283,7 @@ namespace ApeVolo.IRepository.Base
         /// <param name="values">主键集合</param>
         /// <param name="columnName">列名 默认ID</param>
         /// <returns>实体列表</returns>
-        Task<List<TEntity>> QueryListInAsync(List<string> values, string columnName = "id");
+        Task<List<TEntity>> QueryListInAsync(List<long> values, string columnName = "id");
 
         /// <summary>
         /// DataTable数据源

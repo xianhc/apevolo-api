@@ -5,7 +5,7 @@ namespace ApeVolo.IBusiness.QueryModel
 {
     public class QueuedEmailQueryCriteria
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
         public int MaxTries { get; set; }
 
         public string Form { get; set; }

@@ -10,7 +10,7 @@ namespace ApeVolo.Entity.Do.Other
         /// <summary>
         /// 用户ID
         /// </summary>
-        public string UserId { get; set; }
+        public long UserId { get; set; }
         /// <summary>
         /// 用户名
         /// </summary>

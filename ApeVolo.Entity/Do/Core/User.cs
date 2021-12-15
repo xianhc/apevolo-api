@@ -51,8 +51,8 @@ namespace ApeVolo.Entity.Do.Core
         /// <summary>
         /// 部门
         /// </summary>
-        [SugarColumn(ColumnName = "dept_id", ColumnDataType = "char", Length = 19, IsNullable = false, ColumnDescription = "部门ID")]
-        public string DeptId { get; set; }
+        [SugarColumn(ColumnName = "dept_id", ColumnDataType = "bigint", Length = 19, IsNullable = false, ColumnDescription = "部门ID")]
+        public long DeptId { get; set; }
 
         /// <summary>
         /// 电话

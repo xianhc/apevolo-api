@@ -1,11 +1,11 @@
-﻿using ApeVolo.Common.Model;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using ApeVolo.Common.Model;
+using ApeVolo.Entity.Do.Email;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.Email;
 using ApeVolo.IBusiness.EditDto.Email;
 using ApeVolo.IBusiness.QueryModel;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ApeVolo.Entity.Do.Email;
 
 namespace ApeVolo.IBusiness.Interface.Email
 {
@@ -20,7 +20,7 @@ namespace ApeVolo.IBusiness.Interface.Email
         Task<bool> UpdateTriesAsync(QueuedEmailDto queuedEmailDto);
         Task<bool> UpdateAsync(CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto);
 
-        Task<bool> DeleteAsync(HashSet<string> ids);
+        Task<bool> DeleteAsync(HashSet<long> ids);
 
         Task<List<QueuedEmailDto>> QueryAsync(QueuedEmailQueryCriteria queuedEmailQueryCriteria, Pagination pagination);
         #endregion

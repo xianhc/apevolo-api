@@ -1,4 +1,9 @@
-﻿using ApeVolo.Api.Controllers.Base;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Threading.Tasks;
+using ApeVolo.Api.ActionExtension.Json;
+using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
@@ -9,11 +14,6 @@ using ApeVolo.IBusiness.Interface.Email;
 using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Threading.Tasks;
-using ApeVolo.Api.ActionExtension.Json;
 
 namespace ApeVolo.Api.Controllers.Email
 {
@@ -73,7 +73,7 @@ namespace ApeVolo.Api.Controllers.Email
         [Route("delete")]
         [Description("删除邮箱账户")]
         [NoJsonParamter]
-        public async Task<ActionResult<object>> Delete([FromBody] HashSet<string> ids)
+        public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
         {
             if (ids.IsNull() || ids.Count <= 0)
                 return Error("ids is null");
@@ -96,7 +96,7 @@ namespace ApeVolo.Api.Controllers.Email
             var emailAccountList = await _emailAccountService.QueryAsync(emailAccountQueryCriteria, pagination);
 
 
-            return new ActionResultVm<EmailAccountDto>()
+            return new ActionResultVm<EmailAccountDto>
             {
                 Content = emailAccountList,
                 TotalElements = pagination.TotalElements

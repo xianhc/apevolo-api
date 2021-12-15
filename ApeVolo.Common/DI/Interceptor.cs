@@ -1,6 +1,6 @@
-﻿using Castle.DynamicProxy;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
+using Castle.DynamicProxy;
 
 namespace ApeVolo.Common.DI
 {

@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
@@ -6,9 +9,6 @@ using ApeVolo.IBusiness.Dto.Logs;
 using ApeVolo.IBusiness.Interface.Logs;
 using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading.Tasks;
 
 namespace ApeVolo.Api.Controllers
 {
@@ -50,7 +50,7 @@ namespace ApeVolo.Api.Controllers
         {
             var auditInfos = await _logService.QueryAsync(logQueryCriteria, pagination);
 
-            return new ActionResultVm<LogDto>()
+            return new ActionResultVm<LogDto>
             {
                 Content = auditInfos,
                 TotalElements = pagination.TotalElements

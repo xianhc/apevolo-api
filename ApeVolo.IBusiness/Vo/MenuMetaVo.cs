@@ -6,9 +6,9 @@ namespace ApeVolo.IBusiness.Vo
         public MenuMetaVO() { }
         public MenuMetaVO(string title, string icon, bool noCache)
         {
-            this.Title = title;
-            this.Icon = icon;
-            this.NoCache = noCache;
+            Title = title;
+            Icon = icon;
+            NoCache = noCache;
         }
         public string Title { get; set; }
 

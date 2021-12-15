@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Common.Caches.Redis.Extensions;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
@@ -65,7 +64,7 @@ namespace ApeVolo.Business.Impl.Core
             }
 
             if (oldSetting.Name != createUpdateSettingDto.Name && await IsExistAsync(x => x.IsDeleted == false
-                && x.Name == createUpdateSettingDto.Name))
+                    && x.Name == createUpdateSettingDto.Name))
             {
                 throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在！");
             }
@@ -75,7 +74,7 @@ namespace ApeVolo.Business.Impl.Core
             return await UpdateEntityAsync(setting);
         }
 
-        public async Task<bool> DeleteAsync(HashSet<string> ids)
+        public async Task<bool> DeleteAsync(HashSet<long> ids)
         {
             var settings = await QueryByIdsAsync(ids);
             settings.ForEach(async x =>
@@ -87,7 +86,7 @@ namespace ApeVolo.Business.Impl.Core
 
         public async Task<List<SettingDto>> QueryAsync(SettingQueryCriteria settingQueryCriteria, Pagination pagination)
         {
-            Expression<Func<Setting, bool>> whereLambda = r => (r.IsDeleted == false);
+            Expression<Func<Setting, bool>> whereLambda = r => r.IsDeleted == false;
             if (!settingQueryCriteria.KeyWords.IsNullOrEmpty())
             {
                 whereLambda = whereLambda.And(r =>
@@ -112,7 +111,7 @@ namespace ApeVolo.Business.Impl.Core
 
         public async Task<List<ExportRowModel>> DownloadAsync(SettingQueryCriteria settingQueryCriteria)
         {
-            var settingDtos = await QueryAsync(settingQueryCriteria, new Pagination() {PageSize = 9999});
+            var settingDtos = await QueryAsync(settingQueryCriteria, new Pagination { PageSize = 9999 });
 
             List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
             List<ExportColumnModel> exportColumnModels;
@@ -122,11 +121,11 @@ namespace ApeVolo.Business.Impl.Core
                 point = 0;
                 exportColumnModels = new List<ExportColumnModel>
                 {
-                    new() {Key = "ID", Value = setting.Id, Point = point++},
-                    new() {Key = "名称", Value = setting.Name, Point = point++},
-                    new() {Key = "值", Value = setting.Value.ToString(), Point = point++},
-                    new() {Key = "状态", Value = setting.Enabled ? "启用" : "停用", Point = point++},
-                    new() {Key = "描述", Value = setting.Description, Point = point++},
+                    new() { Key = "ID", Value = setting.Id.ToString(), Point = point++ },
+                    new() { Key = "名称", Value = setting.Name, Point = point++ },
+                    new() { Key = "值", Value = setting.Value.ToString(), Point = point++ },
+                    new() { Key = "状态", Value = setting.Enabled ? "启用" : "停用", Point = point++ },
+                    new() { Key = "描述", Value = setting.Description, Point = point++ },
                     new()
                     {
                         Key = "创建时间", Value = setting.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
@@ -135,10 +134,10 @@ namespace ApeVolo.Business.Impl.Core
                     {
                         Key = "更新时间", Value = setting.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
                     },
-                    new() {Key = "创建人", Value = setting.CreateBy, Point = point++},
-                    new() {Key = "更新人", Value = setting.UpdateBy, Point = point++},
+                    new() { Key = "创建人", Value = setting.CreateBy, Point = point++ },
+                    new() { Key = "更新人", Value = setting.UpdateBy, Point = point++ },
                 };
-                exportRowModels.Add(new ExportRowModel() {exportColumnModels = exportColumnModels});
+                exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
             });
             return exportRowModels;
         }
@@ -148,14 +147,14 @@ namespace ApeVolo.Business.Impl.Core
         {
             if (settingName.IsNullOrEmpty())
             {
-                throw new BadRequestException($"请输入合法的设置键名称!");
+                throw new BadRequestException("请输入合法的设置键名称!");
             }
 
             var setting =
                 _mapper.Map<SettingDto>(await QueryFirstAsync(x => x.IsDeleted == false && x.Name == settingName));
             if (setting.IsNull())
             {
-                throw new BadRequestException($"请输入正确的设置键名称!");
+                throw new BadRequestException("请输入正确的设置键名称!");
             }
 
             return setting;

@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Spi;
-using System;
 
 namespace ApeVolo.QuartzNetService.service
 {
@@ -31,17 +31,9 @@ namespace ApeVolo.QuartzNetService.service
         /// <returns></returns>
         public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
         {
-            try
-            {
-                var serviceScope = _serviceProvider.CreateScope();
-                var job = serviceScope.ServiceProvider.GetService(bundle.JobDetail.JobType) as IJob;
-                return job;
-
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var serviceScope = _serviceProvider.CreateScope();
+            var job = serviceScope.ServiceProvider.GetService(bundle.JobDetail.JobType) as IJob;
+            return job;
         }
 
         public void ReturnJob(IJob job)

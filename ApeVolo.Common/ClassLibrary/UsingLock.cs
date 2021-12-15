@@ -130,11 +130,9 @@ namespace ApeVolo.Common.ClassLibrary
             {
                 return Disposable.Empty;
             }
-            else
-            {
-                _LockSlim.EnterReadLock();
-                return new Lock(_LockSlim, false);
-            }
+
+            _LockSlim.EnterReadLock();
+            return new Lock(_LockSlim, false);
         }
 
         /// <summary> 进入写入锁定模式,该模式下只允许同时执行一个读操作
@@ -149,15 +147,14 @@ namespace ApeVolo.Common.ClassLibrary
             {
                 return Disposable.Empty;
             }
-            else if (_LockSlim.IsReadLockHeld)
+
+            if (_LockSlim.IsReadLockHeld)
             {
                 throw new NotImplementedException("读取模式下不能进入写入锁定状态");
             }
-            else
-            {
-                _LockSlim.EnterWriteLock();
-                return new Lock(_LockSlim, true);
-            }
+
+            _LockSlim.EnterWriteLock();
+            return new Lock(_LockSlim, true);
         }
 
         public void Dispose()

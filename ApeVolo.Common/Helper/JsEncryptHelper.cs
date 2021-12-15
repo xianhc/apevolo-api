@@ -1,8 +1,8 @@
-using ApeVolo.Common.Global;
 using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using ApeVolo.Common.Global;
 
 namespace ApeVolo.Common.Helper
 {
@@ -17,8 +17,8 @@ namespace ApeVolo.Common.Helper
 
         public JsEncryptHelper()
         {
-            string privateKey = AppSettings.GetValue(new[] {"RsaKeys", "PrivateKey"});
-            string publicKey = AppSettings.GetValue(new[] {"RsaKeys", "publicKey"});
+            string privateKey = AppSettings.GetValue("RsaKeys", "PrivateKey");
+            string publicKey = AppSettings.GetValue("RsaKeys", "publicKey");
             if (!string.IsNullOrEmpty(privateKey))
             {
                 _privateKeyRsaProvider = CreateRsaProviderFromPrivateKey(privateKey);

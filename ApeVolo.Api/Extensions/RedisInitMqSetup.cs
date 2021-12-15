@@ -29,7 +29,7 @@ namespace ApeVolo.Api.Extensions
                     //显示日志
                     m.ShowLog = AppSettings.GetValue("RedisConfig", "ShowLog").ToBool();
                     //订阅者类
-                    m.ListSubscribe = new List<Type>()
+                    m.ListSubscribe = new List<Type>
                     {
                         typeof(EmailRedisSubscribe)
                         //多个类继续往下加

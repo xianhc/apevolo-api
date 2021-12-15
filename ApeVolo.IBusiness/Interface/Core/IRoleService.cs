@@ -1,12 +1,12 @@
-﻿using ApeVolo.Common.Helper.Excel;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
 using ApeVolo.IBusiness.QueryModel;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ApeVolo.Entity.Do.Core;
 
 namespace ApeVolo.IBusiness.Interface.Core
 {
@@ -18,7 +18,7 @@ namespace ApeVolo.IBusiness.Interface.Core
         #region 基础接口
         Task<bool> CreateAsync(CreateUpdateRoleDto createUpdateRoleDto);
         Task<bool> UpdateAsync(CreateUpdateRoleDto createUpdateRoleDto);
-        Task<bool> DeleteAsync(HashSet<string> ids);
+        Task<bool> DeleteAsync(HashSet<long> ids);
         Task<List<RoleDto>> QueryAsync(RoleQueryCriteria roleQueryCriteria, Pagination pagination);
         Task<List<ExportRowModel>> DownloadAsync(RoleQueryCriteria userQueryCriteria);
         #endregion
@@ -29,13 +29,13 @@ namespace ApeVolo.IBusiness.Interface.Core
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        Task<List<RoleDto>> QuerySingleAsync(string roleId);
+        Task<List<RoleDto>> QuerySingleAsync(long roleId);
         /// <summary>
         /// 根据用户ID获取角色
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<List<RoleSmallDto>> QueryByUserIdAsync(string id);
+        Task<List<RoleSmallDto>> QueryByUserIdAsync(long id);
 
         /// <summary>
         /// 获取全部角色
@@ -48,7 +48,7 @@ namespace ApeVolo.IBusiness.Interface.Core
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        Task<int> QueryUserRoleLevelAsync(HashSet<string> ids);
+        Task<int> QueryUserRoleLevelAsync(HashSet<long> ids);
 
         /// <summary>
         /// 验证角色等级

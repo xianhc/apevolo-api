@@ -1,24 +1,26 @@
-﻿using ApeVolo.Common.Exception;
+﻿using System;
+using System.ComponentModel;
+using System.Reflection;
+using System.Threading.Tasks;
+using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
+using ApeVolo.Entity.Do.Logs;
+using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Interface.Logs;
+using log4net;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using StackExchange.Profiling;
-using System;
-using System.ComponentModel;
-using System.Reflection;
-using System.Threading.Tasks;
-using ApeVolo.Entity.Do.Logs;
-using ApeVolo.IBusiness.Interface.Core;
-using Microsoft.AspNetCore.Http.Extensions;
+using LogLevel = ApeVolo.Common.Global.LogLevel;
 
 namespace ApeVolo.Api.Filter
 {
@@ -30,8 +32,8 @@ namespace ApeVolo.Api.Filter
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISettingService _settingService;
 
-        private static readonly log4net.ILog Log =
-            log4net.LogManager.GetLogger(typeof(GlobalExceptionFilter));
+        private static readonly ILog Log =
+            LogManager.GetLogger(typeof(GlobalExceptionFilter));
 
 
         public GlobalExceptionFilter(ILogger<GlobalExceptionFilter> loggerHelper, ICurrentUser currentUser,
@@ -144,8 +146,8 @@ namespace ApeVolo.Api.Filter
                 var discs = HttpHelper.GetAllRequestParams(context.HttpContext);
                 log = new Log
                 {
-                    Id = IdHelper.GetId(),
-                    CreateBy = _currentUser.Id,
+                    Id = IdHelper.GetLongId(),
+                    CreateBy = _currentUser.Name ?? "",
                     CreateTime = DateTime.Now,
                     Area = routeValues["area"],
                     Controller = routeValues["controller"],
@@ -157,7 +159,7 @@ namespace ApeVolo.Api.Filter
                     BrowserInfo = IpHelper.GetBrowserName(),
                     RequestIp = IpHelper.GetIp(),
                     IpAddress = IpHelper.GetIpAddress(),
-                    LogLevel = (int)Common.Global.LogLevel.Debug,
+                    LogLevel = (int)LogLevel.Debug,
                     ExceptionMessage = context.Exception.Message,
                     ExceptionMessageFull = ExceptionHelper.GetExceptionAllMsg(context.Exception),
                     ExceptionStack = context.Exception.StackTrace

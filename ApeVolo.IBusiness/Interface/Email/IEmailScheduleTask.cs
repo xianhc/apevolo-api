@@ -9,6 +9,6 @@ namespace ApeVolo.IBusiness.Interface.Email
         /// </summary>
         /// <param name="emailId">邮件队列ID</param>
         /// <returns></returns>
-        Task ExecuteAsync(string emailId = "");
+        Task ExecuteAsync(long emailId = 0);
     }
 }

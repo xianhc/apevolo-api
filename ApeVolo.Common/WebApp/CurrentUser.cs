@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Security.Claims;
-using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using ApeVolo.Common.Extention;
 
 namespace ApeVolo.Common.WebApp
 {
@@ -11,7 +12,7 @@ namespace ApeVolo.Common.WebApp
             ? HttpContextCore.CurrentHttpContext.User.Identity.Name
             : null;
 
-        public string Id => GetClaimValueByType("jti").FirstOrDefault();
+        public long Id => GetClaimValueByType("jti").FirstOrDefault().ToLong();
 
         public bool IsAuthenticated()
         {

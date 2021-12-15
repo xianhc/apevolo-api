@@ -23,7 +23,7 @@ namespace ApeVolo.Business.Impl.Core
 
         #region 基础方法
 
-        public async Task<bool> DeleteAsync(List<string> roleIds)
+        public async Task<bool> DeleteAsync(List<long> roleIds)
         {
             return await _baseDal.DeleteAsync(rm => roleIds.Contains(rm.RoleId)) > 0;
         }

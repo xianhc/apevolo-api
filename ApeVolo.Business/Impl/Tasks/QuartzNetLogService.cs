@@ -1,17 +1,17 @@
-﻿using ApeVolo.Business.Base;
-using ApeVolo.Common.Extention;
-using ApeVolo.Common.Model;
-using ApeVolo.IBusiness.Dto.Tasks;
-using ApeVolo.IBusiness.QueryModel;
-using ApeVolo.IBusiness.Interface.Tasks;
-using ApeVolo.IRepository.Tasks;
-using AutoMapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using ApeVolo.Business.Base;
+using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Model;
 using ApeVolo.Entity.Do.Tasks;
+using ApeVolo.IBusiness.Dto.Tasks;
+using ApeVolo.IBusiness.Interface.Tasks;
+using ApeVolo.IBusiness.QueryModel;
+using ApeVolo.IRepository.Tasks;
+using AutoMapper;
 
 namespace ApeVolo.Business.Impl.Tasks
 {
@@ -40,7 +40,7 @@ namespace ApeVolo.Business.Impl.Tasks
         public async Task<List<QuartzNetLogDto>> QueryAsync(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria,
             Pagination pagination)
         {
-            Expression<Func<QuartzNetLog, bool>> whereExpression = x => (x.IsDeleted == false);
+            Expression<Func<QuartzNetLog, bool>> whereExpression = x => x.IsDeleted == false;
 
             if (!quartzNetLogQueryCriteria.Id.IsNullOrEmpty())
             {
@@ -65,7 +65,7 @@ namespace ApeVolo.Business.Impl.Tasks
         public async Task<List<ExportRowModel>> DownloadAsync(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria)
         {
             var quartzNetLogList =
-                await QueryAsync(quartzNetLogQueryCriteria, new Pagination() {PageSize = 9999});
+                await QueryAsync(quartzNetLogQueryCriteria, new Pagination { PageSize = 9999 });
             List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
             List<ExportColumnModel> exportColumnModels;
             int point = 0;
@@ -74,19 +74,19 @@ namespace ApeVolo.Business.Impl.Tasks
                 point = 0;
                 exportColumnModels = new List<ExportColumnModel>();
                 exportColumnModels.Add(
-                    new ExportColumnModel {Key = "任务ID", Value = quartzNetLogDto.TaskId, Point = point++});
+                    new ExportColumnModel { Key = "任务ID", Value = quartzNetLogDto.TaskId, Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "任务名称", Value = quartzNetLogDto.TaskName, Point = point++});
+                    { Key = "任务名称", Value = quartzNetLogDto.TaskName, Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "任务分组", Value = quartzNetLogDto.TaskGroup, Point = point++});
+                    { Key = "任务分组", Value = quartzNetLogDto.TaskGroup, Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "程序集", Value = quartzNetLogDto.Cron, Point = point++});
+                    { Key = "程序集", Value = quartzNetLogDto.Cron, Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "执行类", Value = quartzNetLogDto.AssemblyName, Point = point++});
+                    { Key = "执行类", Value = quartzNetLogDto.AssemblyName, Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "cron表达式", Value = quartzNetLogDto.Cron, Point = point++});
+                    { Key = "cron表达式", Value = quartzNetLogDto.Cron, Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "执行参数", Value = quartzNetLogDto.RunParams, Point = point++});
+                    { Key = "执行参数", Value = quartzNetLogDto.RunParams, Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
                 {
                     Key = "异常详情",
@@ -96,14 +96,14 @@ namespace ApeVolo.Business.Impl.Tasks
                     Point = point++
                 });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "耗时(毫秒)", Value = quartzNetLogDto.ExecutionDuration.ToString(), Point = point++});
+                    { Key = "耗时(毫秒)", Value = quartzNetLogDto.ExecutionDuration.ToString(), Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "状态", Value = quartzNetLogDto.IsSuccess ? "成功" : "失败", Point = point++});
+                    { Key = "状态", Value = quartzNetLogDto.IsSuccess ? "成功" : "失败", Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
                 {
                     Key = "执行时间", Value = quartzNetLogDto.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
                 });
-                exportRowModels.Add(new ExportRowModel() {exportColumnModels = exportColumnModels});
+                exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
             });
             return exportRowModels;
         }

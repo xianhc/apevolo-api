@@ -1,7 +1,7 @@
-﻿using ApeVolo.Common.DI;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Linq;
+using ApeVolo.Common.DI;
+using Microsoft.Extensions.Configuration;
 
 namespace ApeVolo.Common.Global
 {

@@ -1,8 +1,8 @@
-﻿using ApeVolo.Common.Extention;
+﻿using System;
+using System.IO;
+using ApeVolo.Common.Extention;
 using log4net;
 using Microsoft.AspNetCore.Builder;
-using System;
-using System.IO;
 
 namespace ApeVolo.Api.Middleware
 {
@@ -21,7 +21,7 @@ namespace ApeVolo.Api.Middleware
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint($"/swagger/v1/swagger.json", "1.0.0");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "1.0.0");
 
                 if (streamHtml.Invoke() == null)
                 {

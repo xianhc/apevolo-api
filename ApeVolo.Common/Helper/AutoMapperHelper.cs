@@ -1,7 +1,7 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace ApeVolo.Common.Helper
 {

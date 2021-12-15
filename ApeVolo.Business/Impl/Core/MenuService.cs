@@ -1,11 +1,18 @@
-﻿using ApeVolo.Business.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using ApeVolo.Business.Base;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Common.Caches.Redis.Extensions;
+using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
 using ApeVolo.IBusiness.Interface.Core;
@@ -14,14 +21,6 @@ using ApeVolo.IBusiness.Vo;
 using ApeVolo.IRepository.Core;
 using AutoMapper;
 using SqlSugar;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using ApeVolo.Common.Caches.Redis.Service;
-using ApeVolo.Common.Global;
-using ApeVolo.Entity.Do.Core;
 
 namespace ApeVolo.Business.Impl.Core
 {
@@ -67,41 +66,41 @@ namespace ApeVolo.Business.Impl.Core
                 throw new BadRequestException($"菜单组件=》{createUpdateMenuDto.ComponentName}=》已存在");
             }
 
-            if (createUpdateMenuDto.Type != (int) MenuType.Catalog)
+            if (createUpdateMenuDto.Type != (int)MenuType.Catalog)
             {
                 if (createUpdateMenuDto.LinkUrl.IsNullOrEmpty())
                 {
-                    throw new BadRequestException($"URL不能为空！");
+                    throw new BadRequestException("URL不能为空！");
                 }
 
                 if (createUpdateMenuDto.Permission.IsNullOrEmpty())
                 {
-                    throw new BadRequestException($"权限标识不能为空！");
+                    throw new BadRequestException("权限标识不能为空！");
                 }
             }
 
             if (createUpdateMenuDto.IFrame)
             {
-                String http = $"http://", https = "https://";
+                String http = "http://", https = "https://";
                 if (!(createUpdateMenuDto.Path.ToLower().StartsWith(http) ||
                       createUpdateMenuDto.Path.ToLower().StartsWith(https)))
                 {
-                    throw new BadRequestException($"外链菜单必须以http://或者https://开头");
+                    throw new BadRequestException("外链菜单必须以http://或者https://开头");
                 }
             }
 
-            if (createUpdateMenuDto.PId.IsNullOrEmpty() || createUpdateMenuDto.PId == "0")
-            {
-                createUpdateMenuDto.PId = null;
-            }
+            //if (createUpdateMenuDto.PId==0 || createUpdateMenuDto.PId == 0)
+            //{
+            //    createUpdateMenuDto.PId = 0;
+            //}
 
             Menu menu = _mapper.Map<Menu>(createUpdateMenuDto);
 
             await AddEntityAsync(menu);
-            if (!createUpdateMenuDto.PId.IsNullOrEmpty())
+            if (createUpdateMenuDto.PId.IsNotNull())
             {
                 //清理缓存
-                await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + menu.PId.ToMd5String());
+                await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + menu.PId.ToString().ToMd5String());
                 var tmpMenu = await _baseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == menu.PId);
                 if (tmpMenu.IsNotNull())
                 {
@@ -126,14 +125,14 @@ namespace ApeVolo.Business.Impl.Core
             }
 
             if (oldMenu.Title != createUpdateMenuDto.Title && await IsExistAsync(x => x.IsDeleted == false
-                && x.Title == createUpdateMenuDto.Title))
+                    && x.Title == createUpdateMenuDto.Title))
             {
                 throw new BadRequestException($"菜单标题=>{createUpdateMenuDto.Title}=>已存在！");
             }
 
             if (oldMenu.Permission != createUpdateMenuDto.Permission && await IsExistAsync(x =>
-                x.IsDeleted == false
-                && x.Permission == createUpdateMenuDto.Permission))
+                    x.IsDeleted == false
+                    && x.Permission == createUpdateMenuDto.Permission))
             {
                 throw new BadRequestException($"角色代码=>{createUpdateMenuDto.Permission}=>已存在！");
             }
@@ -141,7 +140,7 @@ namespace ApeVolo.Business.Impl.Core
 
             if (createUpdateMenuDto.IFrame)
             {
-                String http = "http://", https = "https://";
+                string http = "http://", https = "https://";
                 if (!(createUpdateMenuDto.Path.ToLower().StartsWith(http) ||
                       createUpdateMenuDto.Path.ToLower().StartsWith(https)))
                 {
@@ -149,10 +148,10 @@ namespace ApeVolo.Business.Impl.Core
                 }
             }
 
-            if (createUpdateMenuDto.PId.IsNullOrEmpty() || createUpdateMenuDto.PId == "0")
-            {
-                createUpdateMenuDto.PId = null;
-            }
+            //if (createUpdateMenuDto.PId.IsNullOrEmpty() || createUpdateMenuDto.PId == "0")
+            //{
+            //    createUpdateMenuDto.PId = null;
+            //}
 
 
             var menu = await _baseDal.QueryFirstAsync(m =>
@@ -174,17 +173,17 @@ namespace ApeVolo.Business.Impl.Core
 
             var menu2 = _mapper.Map<Menu>(createUpdateMenuDto);
             //清理缓存
-            await _redisCacheService.RemoveAsync(RedisKey.LoadMenusById + menu2.Id.ToMd5String());
-            if (!menu2.PId.IsNullOrEmpty())
+            await _redisCacheService.RemoveAsync(RedisKey.LoadMenusById + menu2.Id.ToString().ToMd5String());
+            if (menu2.PId.IsNotNull())
             {
-                await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + menu2.PId.ToMd5String());
+                await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + menu2.PId.ToString().ToMd5String());
             }
 
             await UpdateEntityAsync(menu2);
             //重新计算子节点个数
             if (oldMenu.PId != menu2.PId)
             {
-                if (!menu2.PId.IsNullOrEmpty())
+                if (menu2.PId.IsNotNull())
                 {
                     var tmpMenu = await _baseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == menu2.PId);
                     if (tmpMenu.IsNotNull())
@@ -195,7 +194,7 @@ namespace ApeVolo.Business.Impl.Core
                         await UpdateEntityAsync(tmpMenu);
                     }
 
-                    if (!oldMenu.PId.IsNullOrEmpty())
+                    if (oldMenu.PId.IsNotNull())
                     {
                         var tmpMenu2 = await _baseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == oldMenu.PId);
                         if (tmpMenu2.IsNotNull())
@@ -212,9 +211,9 @@ namespace ApeVolo.Business.Impl.Core
             return true;
         }
 
-        public async Task<bool> DeleteAsync(HashSet<string> ids)
+        public async Task<bool> DeleteAsync(HashSet<long> ids)
         {
-            List<string> idList = new List<string>();
+            List<long> idList = new List<long>();
             ids.ForEach(async id =>
             {
                 if (!idList.Contains(id))
@@ -233,8 +232,8 @@ namespace ApeVolo.Business.Impl.Core
                 //清除缓存
                 idList.ForEach(async id =>
                 {
-                    await _redisCacheService.RemoveAsync(RedisKey.LoadMenusById + id.ToMd5String());
-                    await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + id.ToMd5String());
+                    await _redisCacheService.RemoveAsync(RedisKey.LoadMenusById + id.ToString().ToMd5String());
+                    await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + id.ToString().ToMd5String());
                 });
             }
 
@@ -243,24 +242,24 @@ namespace ApeVolo.Business.Impl.Core
 
         public async Task<List<MenuDto>> QueryAsync(MenuQueryCriteria menuQueryCriteria, Pagination pagination)
         {
-            Expression<Func<Menu, bool>> whereLambda = m => (m.IsDeleted == false);
+            Expression<Func<Menu, bool>> whereLambda = m => m.IsDeleted == false;
             if (!menuQueryCriteria.Title.IsNullOrEmpty())
             {
                 whereLambda = whereLambda.And(m =>
                     m.Title.Contains(menuQueryCriteria.Title));
             }
 
-            whereLambda = menuQueryCriteria.PId.IsNullOrEmpty()
+            whereLambda = menuQueryCriteria.PId.IsNull()
                 ? whereLambda.And(m => m.PId == null)
                 : whereLambda.And(m => m.PId == menuQueryCriteria.PId);
 
-            pagination.SortFields = new List<string>() {"menu_sort asc"};
+            pagination.SortFields = new List<string> { "menu_sort asc" };
             var menus = await _baseDal.QueryMapperPageListAsync(async (it, cache) =>
             {
                 var childrenList = await cache.Get(list =>
                 {
                     var ids = list.Select(i => i.Id).ToList();
-                    return _baseDal.QueryListAsync(m => m.IsDeleted == false && ids.Contains(m.PId));
+                    return _baseDal.QueryListAsync(m => m.IsDeleted == false && ids.Contains(Convert.ToInt64(m.PId)));
                 });
                 it.Children = childrenList.Where(m => m.PId == it.Id).ToList();
             }, whereLambda, pagination);
@@ -273,7 +272,7 @@ namespace ApeVolo.Business.Impl.Core
 
         public async Task<List<ExportRowModel>> DownloadAsync(MenuQueryCriteria menuQueryCriteria)
         {
-            var menus = await QueryAsync(menuQueryCriteria, new Pagination() {PageSize = 9999});
+            var menus = await QueryAsync(menuQueryCriteria, new Pagination { PageSize = 9999 });
             List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
             List<ExportColumnModel> exportColumnModels;
             int point;
@@ -282,26 +281,26 @@ namespace ApeVolo.Business.Impl.Core
                 point = 0;
                 exportColumnModels = new List<ExportColumnModel>
                 {
-                    new() {Key = "菜单标题", Value = menu.Title, Point = point++},
-                    new() {Key = "api路径", Value = menu.LinkUrl, Point = point++},
-                    new() {Key = "路径", Value = menu.Path, Point = point++},
-                    new() {Key = "权限代码", Value = menu.Permission, Point = point++},
-                    new() {Key = "IFrame", Value = menu.IFrame ? "是" : "否", Point = point++},
-                    new() {Key = "组件", Value = menu.Component, Point = point++},
-                    new() {Key = "组件名称", Value = menu.ComponentName, Point = point++},
-                    new() {Key = "父级ID", Value = menu.PId, Point = point++},
-                    new() {Key = "排序", Value = menu.MenuSort.ToString(), Point = point++},
-                    new() {Key = "Icon", Value = menu.Icon, Point = point++},
-                    new() {Key = "类型", Value = GetMenuTypeName(menu.Type), Point = point++},
-                    new() {Key = "缓存", Value = menu.Cache ? "是" : "否", Point = point++},
-                    new() {Key = "显示", Value = menu.Hidden ? "否" : "是", Point = point++},
-                    new() {Key = "子菜单数量", Value = menu.SubCount.ToString(), Point = point++},
+                    new() { Key = "菜单标题", Value = menu.Title, Point = point++ },
+                    new() { Key = "api路径", Value = menu.LinkUrl, Point = point++ },
+                    new() { Key = "路径", Value = menu.Path, Point = point++ },
+                    new() { Key = "权限代码", Value = menu.Permission, Point = point++ },
+                    new() { Key = "IFrame", Value = menu.IFrame ? "是" : "否", Point = point++ },
+                    new() { Key = "组件", Value = menu.Component, Point = point++ },
+                    new() { Key = "组件名称", Value = menu.ComponentName, Point = point++ },
+                    new() { Key = "父级ID", Value = menu.PId.IsNull() ? "null" : menu.PId.ToString(), Point = point++ },
+                    new() { Key = "排序", Value = menu.MenuSort.ToString(), Point = point++ },
+                    new() { Key = "Icon", Value = menu.Icon, Point = point++ },
+                    new() { Key = "类型", Value = GetMenuTypeName(menu.Type), Point = point++ },
+                    new() { Key = "缓存", Value = menu.Cache ? "是" : "否", Point = point++ },
+                    new() { Key = "显示", Value = menu.Hidden ? "否" : "是", Point = point++ },
+                    new() { Key = "子菜单数量", Value = menu.SubCount.ToString(), Point = point++ },
                     new()
                     {
                         Key = "创建时间", Value = menu.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
                     }
                 };
-                exportRowModels.Add(new ExportRowModel() {exportColumnModels = exportColumnModels});
+                exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
             });
             return exportRowModels;
         }
@@ -334,16 +333,16 @@ namespace ApeVolo.Business.Impl.Core
         /// <param name="userId">用户ID</param>
         /// <returns></returns>
         [RedisCaching(KeyPrefix = RedisKey.UserBuildMenuById)]
-        public async Task<List<MenuTreeVo>> BuildTreeAsync(string userId)
+        public async Task<List<MenuTreeVo>> BuildTreeAsync(long userId)
         {
             var userRoles = await _userRolesService.QueryAsync(userId);
-            List<string> roleIds = new List<string>();
+            List<long> roleIds = new List<long>();
             roleIds.AddRange(userRoles.Select(r => r.RoleId));
             var menuList = await _baseDal.QueryMuchAsync<Menu, RoleMenu, MenuDto>(
                 (m, rm) => new object[]
                 {
                     JoinType.Left, m.Id == rm.MenuId
-                }, (m, rm) => new MenuDto()
+                }, (m, rm) => new MenuDto
                 {
                     Title = m.Title,
                     LinkUrl = m.LinkUrl,
@@ -361,8 +360,8 @@ namespace ApeVolo.Business.Impl.Core
                     CreateTime = m.CreateTime,
                     CreateBy = m.CreateBy
                 },
-                (m, rm) => m.IsDeleted == false && roleIds.Contains(rm.RoleId) && m.Type != (int) MenuType.Button
-                , (m, rm) => new {m.Title, m.LinkUrl, m.Path, m.Permission, m.IFrame, m.Component, m.ComponentName, m.PId, m.MenuSort, m.Icon, m.Type, m.IsDeleted, m.Id, m.CreateBy, m.CreateTime},
+                (m, rm) => m.IsDeleted == false && roleIds.Contains(rm.RoleId) && m.Type != (int)MenuType.Button
+                , (m, rm) => new { m.Title, m.LinkUrl, m.Path, m.Permission, m.IFrame, m.Component, m.ComponentName, m.PId, m.MenuSort, m.Icon, m.Type, m.IsDeleted, m.Id, m.CreateBy, m.CreateTime },
                 "menu_sort asc");
             var menuListChild = TreeHelper<MenuDto>.ListToTrees(menuList, "Id", "PId", null);
             return await BuildAsync(menuListChild);
@@ -370,12 +369,12 @@ namespace ApeVolo.Business.Impl.Core
 
 
         [RedisCaching(Expiration = 30, KeyPrefix = RedisKey.LoadMenusById)]
-        public async Task<List<MenuDto>> FindSuperiorAsync(string id)
+        public async Task<List<MenuDto>> FindSuperiorAsync(long id)
         {
-            Expression<Func<Menu, bool>> whereLambda = m => (m.IsDeleted == false);
+            Expression<Func<Menu, bool>> whereLambda = m => m.IsDeleted == false;
             var menu = await QuerySingleAsync(id);
             List<MenuDto> menuDtoList;
-            if (menu.PId.IsNullOrEmpty())
+            if (menu.PId.IsNull())
             {
                 whereLambda = whereLambda.And(m => m.PId == null);
                 var menus = await _baseDal.QueryMapperAsync(async (it, cache) =>
@@ -419,14 +418,14 @@ namespace ApeVolo.Business.Impl.Core
             else
             {
                 //查出同级菜单ID
-                List<string> parentIds = new List<string>();
-                parentIds.Add(menu.PId);
+                List<long> parentIds = new List<long>();
+                parentIds.Add(Convert.ToInt64(menu.PId));
                 await GetParentIds(menu, parentIds);
-                whereLambda = whereLambda.And(m => parentIds.Contains(m.PId) || m.PId == null);
+                whereLambda = whereLambda.And(m => parentIds.Contains(Convert.ToInt64(m.PId)) || m.PId == null);
 
                 var menus = await _baseDal.QueryMapperAsync(async (it, cache) =>
                 {
-                    if (parentIds.Contains(it.Id) && it.PId.IsNullOrEmpty())
+                    if (parentIds.Contains(it.Id) && it.PId.IsNull())
                     {
                         var childrenList = await cache.Get(list =>
                         {
@@ -487,19 +486,19 @@ namespace ApeVolo.Business.Impl.Core
             //List<MenuDTO> MenuDTOs = await FindMenuListByRoles(roles);
 
 
-            menuDtOs.ForEach(async (item) =>
+            menuDtOs.ForEach(async item =>
             {
                 menuDtoList = item.Children;
                 menuVo = new MenuTreeVo
                 {
                     Name = item.ComponentName.IsNullOrEmpty() ? item.Title : item.ComponentName,
-                    Path = item.PId.IsNullOrEmpty() ? "/" + item.Path : item.Path,
+                    Path = item.PId.IsNull() ? "/" + item.Path : item.Path,
                     Hidden = item.Hidden
                 };
 
                 if (!item.IFrame)
                 {
-                    if (item.PId.IsNullOrEmpty())
+                    if (item.PId.IsNull())
                     {
                         menuVo.Component = item.Component.IsNullOrEmpty() ? "Layout" : item.Component;
                     }
@@ -517,7 +516,7 @@ namespace ApeVolo.Business.Impl.Core
                     menuVo.Children = await BuildAsync(menuDtoList);
                     // 处理是一级菜单并且没有子菜单的情况
                 }
-                else if (item.PId.IsNullOrEmpty())
+                else if (item.PId.IsNull())
                 {
                     MenuTreeVo menuVo1 = new MenuTreeVo();
                     menuVo1.Meta = menuVo.Meta;
@@ -549,11 +548,11 @@ namespace ApeVolo.Business.Impl.Core
         }
 
         [RedisCaching(Expiration = 30, KeyPrefix = RedisKey.LoadMenusByPId)]
-        public async Task<List<MenuDto>> FindByPIdAsync(string pid = "0")
+        public async Task<List<MenuDto>> FindByPIdAsync(long pid = 0)
         {
             List<MenuDto> menuDtos = null;
-            Expression<Func<Menu, bool>> whereLambda = m => (m.IsDeleted == false);
-            whereLambda = pid != "0" ? whereLambda.And(m => m.PId == pid) : whereLambda.And(m => m.PId == null);
+            Expression<Func<Menu, bool>> whereLambda = m => m.IsDeleted == false;
+            whereLambda = pid == 0 ? whereLambda.And(m => m.PId == null) : whereLambda.And(m => m.PId == pid);
 
             menuDtos = _mapper.Map<List<MenuDto>>(await _baseDal.QueryListAsync(whereLambda, o => o.MenuSort,
                 OrderByType.Asc));
@@ -565,13 +564,13 @@ namespace ApeVolo.Business.Impl.Core
             return menuDtos;
         }
 
-        public async Task<List<MenuDto>> FindByRoleIdAsync(string roleId)
+        public async Task<List<MenuDto>> FindByRoleIdAsync(long roleId)
         {
             var menuList = await _baseDal.QueryMuchAsync<Menu, RoleMenu, MenuDto>(
                 (m, rm) => new object[]
                 {
                     JoinType.Left, m.Id == rm.MenuId
-                }, (m, rm) => new MenuDto()
+                }, (m, rm) => new MenuDto
                 {
                     Title = m.Title,
                     LinkUrl = m.LinkUrl,
@@ -595,7 +594,7 @@ namespace ApeVolo.Business.Impl.Core
             // return TreeHelper<MenuDto>.SetLeafProperty(menuList, "Id", "PId", null);
         }
 
-        private async Task<List<string>> GetParentIds(Menu m, List<string> parentIds)
+        private async Task<List<long>> GetParentIds(Menu m, List<long> parentIds)
         {
             //if (m.PId.IsNullOrEmpty())
             //{
@@ -604,13 +603,13 @@ namespace ApeVolo.Business.Impl.Core
             //}
 
             var menu = await _baseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == m.PId);
-            if (menu.IsNullOrEmpty() || menu.PId.IsNullOrEmpty())
+            if (menu.IsNullOrEmpty() || menu.PId.IsNull())
             {
                 //parentIds.Add(menu.PId);
                 return await Task.FromResult(parentIds);
             }
 
-            parentIds.Add(menu.PId);
+            parentIds.Add(Convert.ToInt64(menu.PId));
             return await GetParentIds(menu, parentIds);
         }
 
@@ -620,7 +619,7 @@ namespace ApeVolo.Business.Impl.Core
         /// <param name="menuList"></param>
         /// <param name="ids"></param>
         /// <returns></returns>
-        private async Task FindChildIds(List<Menu> menuList, List<string> ids)
+        private async Task FindChildIds(List<Menu> menuList, List<long> ids)
         {
             menuList.ForEach(async ml =>
             {
@@ -639,9 +638,9 @@ namespace ApeVolo.Business.Impl.Core
             await Task.FromResult(ids);
         }
 
-        public async Task<List<string>> FindChildAsync(string id)
+        public async Task<List<long>> FindChildAsync(long id)
         {
-            List<string> ids = new List<string> {id};
+            List<long> ids = new List<long> { id };
             var menus = await QueryAllAsync();
             if (menus.Count > 0)
             {
@@ -651,7 +650,7 @@ namespace ApeVolo.Business.Impl.Core
                     var ids2 = menus2.Select(x => x.Id).ToList();
                     ids.AddRange(ids2);
 
-                    var menus3 = menus.Where(x => ids2.Contains(x.PId)).ToList();
+                    var menus3 = menus.Where(x => ids2.Contains(Convert.ToInt64(x.PId))).ToList();
                     if (menus3.Count > 0)
                     {
                         ids.AddRange(menus3.Select(x => x.Id).ToList());
@@ -661,7 +660,7 @@ namespace ApeVolo.Business.Impl.Core
                 return ids;
             }
 
-            return new List<string>();
+            return new List<long>();
         }
 
         #endregion

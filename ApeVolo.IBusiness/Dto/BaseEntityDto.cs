@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace ApeVolo.IBusiness.Dto
 {
@@ -11,7 +11,7 @@ namespace ApeVolo.IBusiness.Dto
         /// <summary>
         /// 主键
         /// </summary>
-        public string Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 创建者名称

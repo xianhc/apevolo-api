@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -122,7 +121,7 @@ namespace ApeVolo.Common.Helper
                 using var search = new DbSearcher(filePath);
                 var address = search.MemorySearch(ip).Region.Replace("0|", "");
 
-                return (address.Substring(address.Length - 4, 4)) == "内网IP" ? "局域网IP" : address;
+                return address.Substring(address.Length - 4, 4) == "内网IP" ? "局域网IP" : address;
             }
             catch
             {

@@ -3,6 +3,6 @@
     //[AutoInject(typeof(Dict), typeof(DictDTO2))]
     public class DictDto2
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
     }
 }

@@ -92,7 +92,7 @@ namespace ApeVolo.Entity.Do.Email
         /// <summary>
         /// 发件邮箱ID
         /// </summary>
-        [SugarColumn(ColumnName = "email_account_id", ColumnDataType = "varchar", Length = 19, IsNullable = false, ColumnDescription = "发件邮箱ID")]
-        public string EmailAccountId { get; set; }
+        [SugarColumn(ColumnName = "email_account_id", ColumnDataType = "bigint", Length = 19, IsNullable = false, ColumnDescription = "发件邮箱ID")]
+        public long EmailAccountId { get; set; }
     }
 }

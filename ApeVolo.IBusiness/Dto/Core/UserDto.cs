@@ -51,7 +51,7 @@ namespace ApeVolo.IBusiness.Dto.Core
         /// <summary>
         /// 部门
         /// </summary>
-        public string DeptId { get; set; }
+        public long DeptId { get; set; }
 
         /// <summary>
         /// 电话

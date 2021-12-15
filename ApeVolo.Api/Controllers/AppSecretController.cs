@@ -79,7 +79,7 @@ namespace ApeVolo.Api.Controllers
         [Route("delete")]
         [Description("删除应用秘钥")]
         [NoJsonParamter]
-        public async Task<ActionResult<object>> Delete([FromBody] HashSet<string> ids)
+        public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
         {
             if (ids == null || ids.Count < 1)
             {
@@ -104,7 +104,7 @@ namespace ApeVolo.Api.Controllers
         {
             var appSecretList = await _appSecretService.QueryAsync(appsecretQueryCriteria, pagination);
 
-            return new ActionResultVm<AppSecretDto>()
+            return new ActionResultVm<AppSecretDto>
             {
                 Content = appSecretList,
                 TotalElements = pagination.TotalElements

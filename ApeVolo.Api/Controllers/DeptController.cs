@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Threading.Tasks;
+using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
+using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
-using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
+using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Mvc;
-using ApeVolo.Common.AttributeExt;
-using ApeVolo.Common.Helper.Excel;
 using Microsoft.AspNetCore.StaticFiles;
-using System.IO;
-using ApeVolo.Api.ActionExtension.Json;
-using ApeVolo.Common.Helper;
 
 namespace ApeVolo.Api.Controllers
 {
@@ -25,14 +25,6 @@ namespace ApeVolo.Api.Controllers
     [Route("/api/dept")]
     public class DeptController : BaseApiController
     {
-        #region 字段
-
-        private readonly IDepartmentService _departmentService;
-        private readonly IRoleDeptService _roleDeptService;
-        private readonly IUserService _userService;
-
-        #endregion
-
         #region 构造函数
 
         public DeptController(IDepartmentService departmentService, IRoleDeptService roleDeptService,
@@ -42,6 +34,14 @@ namespace ApeVolo.Api.Controllers
             _roleDeptService = roleDeptService;
             _userService = userService;
         }
+
+        #endregion
+
+        #region 字段
+
+        private readonly IDepartmentService _departmentService;
+        private readonly IRoleDeptService _roleDeptService;
+        private readonly IUserService _userService;
 
         #endregion
 
@@ -90,37 +90,26 @@ namespace ApeVolo.Api.Controllers
         [Route("delete")]
         [Description("删除部门")]
         [NoJsonParamter]
-        public async Task<ActionResult<object>> Delete([FromBody] HashSet<string> ids)
+        public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
         {
             if (ids == null || ids.Count < 1)
-            {
                 return Error("ids is null");
-            }
 
-            List<string> deptIds = new List<string>();
-            ids.ForEach(async (id) =>
+            var deptIds = new List<long>();
+            ids.ForEach(async id =>
             {
                 deptIds.Add(id);
                 var deptDtolist = await _departmentService.QueryByPIdAsync(id);
-                deptDtolist.ForEach((deptDto) =>
+                deptDtolist.ForEach(deptDto =>
                 {
-                    if (!deptIds.Contains(deptDto.Id))
-                    {
-                        deptIds.Add(deptDto.Id);
-                    }
+                    if (!deptIds.Contains(deptDto.Id)) deptIds.Add(deptDto.Id);
                 });
             });
             var depts = await _roleDeptService.QueryByDeptIdsAsync(deptIds);
-            if (depts.Count > 0)
-            {
-                return Error("所选部门存在角色关联，请解除后再试！");
-            }
+            if (depts.Count > 0) return Error("所选部门存在角色关联，请解除后再试！");
 
             var users = await _userService.QueryByDeptIdsAsync(deptIds);
-            if (users.Count > 0)
-            {
-                return Error("所选部门存在用户关联，请解除后再试！");
-            }
+            if (users.Count > 0) return Error("所选部门存在用户关联，请解除后再试！");
 
             await _departmentService.DeleteAsync(ids);
             return Success();
@@ -142,7 +131,7 @@ namespace ApeVolo.Api.Controllers
             var deptList = await _departmentService.QueryAsync(deptQueryCriteria, pagination);
 
 
-            return new ActionResultVm<DepartmentDto>()
+            return new ActionResultVm<DepartmentDto>
             {
                 Content = deptList,
                 TotalElements = pagination.TotalElements
@@ -164,7 +153,7 @@ namespace ApeVolo.Api.Controllers
             var filepath = ExcelHelper.ExportData(exportRowModels, "部门列表");
 
             var provider = new FileExtensionContentTypeProvider();
-            FileInfo fileInfo = new FileInfo(filepath);
+            var fileInfo = new FileInfo(filepath);
             var ext = fileInfo.Extension;
             new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
             return File(await System.IO.File.ReadAllBytesAsync(filepath), contently ?? "application/octet-stream",
@@ -180,17 +169,14 @@ namespace ApeVolo.Api.Controllers
         [HttpPost]
         [Route("superior")]
         [Description("获取同级、父级部门")]
-        [ApeVoloAuthorize(new[] {"admin", "dept:list"})]
-        public async Task<ActionResult<object>> GetSuperior([FromBody] List<string> ids)
+        [ApeVoloAuthorize(new[] { "admin", "dept:list" })]
+        public async Task<ActionResult<object>> GetSuperior([FromBody] List<long> ids)
         {
-            if (ids == null || ids.Count < 1)
-            {
-                return Error("ids is null");
-            }
+            if (ids == null || ids.Count < 1) return Error("ids is null");
 
             var deptList = await _departmentService.QuerySuperiorDeptAsync(ids);
 
-            return new ActionResultVm<DepartmentDto>()
+            return new ActionResultVm<DepartmentDto>
             {
                 Content = deptList,
                 TotalElements = deptList.Count

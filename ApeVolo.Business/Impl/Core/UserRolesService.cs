@@ -1,7 +1,4 @@
-﻿using ApeVolo.IBusiness.Interface.Core;
-using ApeVolo.IRepository.Core;
-using AutoMapper;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.AttributeExt;
@@ -10,6 +7,9 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.EditDto.Core;
+using ApeVolo.IBusiness.Interface.Core;
+using ApeVolo.IRepository.Core;
+using AutoMapper;
 using SqlSugar;
 
 namespace ApeVolo.Business.Impl.Core
@@ -37,7 +37,7 @@ namespace ApeVolo.Business.Impl.Core
             return await _baseDal.AddAsync(userRoles);
         }
 
-        public async Task<bool> DeleteByUserIdAsync(string userId)
+        public async Task<bool> DeleteByUserIdAsync(long userId)
         {
             if (userId.IsNullOrEmpty())
             {
@@ -48,12 +48,12 @@ namespace ApeVolo.Business.Impl.Core
         }
 
         [RedisCaching(KeyPrefix = RedisKey.UserRolesById)]
-        public async Task<List<UserRoles>> QueryAsync(string userId)
+        public async Task<List<UserRoles>> QueryAsync(long userId)
         {
             return await _baseDal.QueryListAsync(ur => ur.UserId == userId);
         }
 
-        public async Task<List<UserRoles>> QueryByRoleIdsAsync(HashSet<string> roleIds)
+        public async Task<List<UserRoles>> QueryByRoleIdsAsync(HashSet<long> roleIds)
         {
             var list = await _baseDal.QueryMuchAsync<UserRoles, User, UserRoles>(
                 (ur, u) => new object[]

@@ -1,18 +1,18 @@
-﻿using ApeVolo.Business.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
+using ApeVolo.Entity.Do.Email;
 using ApeVolo.IBusiness.Dto.Email;
 using ApeVolo.IBusiness.EditDto.Email;
 using ApeVolo.IBusiness.Interface.Email;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.Email;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using ApeVolo.Entity.Do.Email;
 
 namespace ApeVolo.Business.Impl.Email
 {
@@ -66,11 +66,11 @@ namespace ApeVolo.Business.Impl.Email
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public async Task<bool> DeleteAsync(HashSet<string> ids)
+        public async Task<bool> DeleteAsync(HashSet<long> ids)
         {
             var messageTemplateList = await QueryByIdsAsync(ids);
             if (messageTemplateList.Count <= 0)
-                throw new BadRequestException($"无可删除数据!");
+                throw new BadRequestException("无可删除数据!");
             return await DeleteEntityListAsync(messageTemplateList);
         }
 
@@ -83,7 +83,7 @@ namespace ApeVolo.Business.Impl.Email
         public async Task<List<MessageTemplateDto>> QueryAsync(
             MessageTemplateQueryCriteria messageTemplateQueryCriteria, Pagination pagination)
         {
-            Expression<Func<MessageTemplate, bool>> whereExpression = x => (x.IsDeleted == false);
+            Expression<Func<MessageTemplate, bool>> whereExpression = x => x.IsDeleted == false;
             if (!messageTemplateQueryCriteria.Name.IsNullOrEmpty())
             {
                 whereExpression = whereExpression.And(x => x.Name.Contains(messageTemplateQueryCriteria.Name));

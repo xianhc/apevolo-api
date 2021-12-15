@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
@@ -8,17 +7,17 @@ using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
-using ApeVolo.IBusiness.Interface.Core;
+using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
+using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.Core;
 using AutoMapper;
 using Castle.Core.Internal;
 using SqlSugar;
-using ApeVolo.Common.Helper.Excel;
-using ApeVolo.Entity.Do.Core;
 
 namespace ApeVolo.Business.Impl.Core
 {
@@ -119,9 +118,9 @@ namespace ApeVolo.Business.Impl.Core
         }
 
         [UseTran]
-        public async Task<bool> DeleteAsync(HashSet<string> ids)
+        public async Task<bool> DeleteAsync(HashSet<long> ids)
         {
-            List<string> idList = new List<string>();
+            List<long> idList = new List<long>();
             ids.ForEach(async id =>
             {
                 if (!idList.Contains(id))
@@ -135,13 +134,13 @@ namespace ApeVolo.Business.Impl.Core
             var departmentList = await QueryByIdsAsync(idList);
             await DeleteEntityListAsync(departmentList);
 
-            List<string> uPIds = new List<string>();
+            HashSet<long> uPIds = new HashSet<long>();
 
             departmentList.ForEach(d =>
             {
-                if (!uPIds.Contains(d.PId) && !d.PId.IsNullOrEmpty())
+                if (d.PId.IsNotNull())
                 {
-                    uPIds.Add(d.PId);
+                    uPIds.Add(Convert.ToInt64(d.PId));
                 }
             });
 
@@ -164,15 +163,13 @@ namespace ApeVolo.Business.Impl.Core
         public async Task<List<DepartmentDto>> QueryAsync(DeptQueryCriteria deptQueryCriteria,
             Pagination pagination)
         {
-            Expression<Func<Department, bool>> whereExpression = x => (x.IsDeleted == false);
+            Expression<Func<Department, bool>> whereExpression = x => x.IsDeleted == false;
+            whereExpression = deptQueryCriteria.PId.IsNotNull()
+                ? whereExpression.And(x => x.PId == deptQueryCriteria.PId)
+                : whereExpression.And(x => x.PId == null);
             if (!deptQueryCriteria.DeptName.IsNullOrEmpty())
             {
                 whereExpression = whereExpression.And(x => x.Name.Contains(deptQueryCriteria.DeptName));
-            }
-
-            if (!deptQueryCriteria.PId.IsNullOrEmpty())
-            {
-                whereExpression = whereExpression.And(x => x.PId == deptQueryCriteria.PId);
             }
 
             if (!deptQueryCriteria.Enabled.IsNullOrEmpty())
@@ -182,10 +179,10 @@ namespace ApeVolo.Business.Impl.Core
 
             var deptList = await _baseDal.QueryPageListAsync(whereExpression, pagination);
             var deptDatalist = _mapper.Map<List<DepartmentDto>>(deptList);
-            if (deptQueryCriteria.PId.IsNullOrEmpty())
-            {
-                deptDatalist = deptDatalist.Where(x => x.PId == null).ToList();
-            }
+            // if (deptQueryCriteria.PId.IsNull())
+            // {
+            //     deptDatalist = deptDatalist.Where(x => x.PId == null).ToList();
+            // }
 
             pagination.TotalElements = deptDatalist.Count;
             return deptDatalist;
@@ -193,7 +190,7 @@ namespace ApeVolo.Business.Impl.Core
 
         public async Task<List<ExportRowModel>> DownloadAsync(DeptQueryCriteria deptQueryCriteria)
         {
-            var deptList = await QueryAsync(deptQueryCriteria, new Pagination() {PageSize = 9999});
+            var deptList = await QueryAsync(deptQueryCriteria, new Pagination { PageSize = 9999 });
             List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
             List<ExportColumnModel> exportColumnModels;
             int point = 0;
@@ -201,18 +198,20 @@ namespace ApeVolo.Business.Impl.Core
             {
                 point = 0;
                 exportColumnModels = new List<ExportColumnModel>();
-                exportColumnModels.Add(new ExportColumnModel {Key = "ID", Value = dept.Id, Point = point++});
-                exportColumnModels.Add(new ExportColumnModel {Key = "部门名称", Value = dept.Name, Point = point++});
-                exportColumnModels.Add(new ExportColumnModel {Key = "父级ID", Value = dept.PId, Point = point++});
                 exportColumnModels.Add(
-                    new ExportColumnModel {Key = "排序", Value = dept.Sort.ToString(), Point = point++});
+                    new ExportColumnModel { Key = "ID", Value = dept.Id.ToString(), Point = point++ });
+                exportColumnModels.Add(new ExportColumnModel { Key = "部门名称", Value = dept.Name, Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "状态", Value = dept.Enabled ? "正常" : "停用", Point = point++});
+                    { Key = "父级ID", Value = dept.PId.ToString(), Point = point++ });
+                exportColumnModels.Add(
+                    new ExportColumnModel { Key = "排序", Value = dept.Sort.ToString(), Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "子部门数量", Value = dept.SubCount.ToString(), Point = point++});
+                    { Key = "状态", Value = dept.Enabled ? "正常" : "停用", Point = point++ });
                 exportColumnModels.Add(new ExportColumnModel
-                    {Key = "创建时间", Value = dept.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++});
-                exportRowModels.Add(new ExportRowModel() {exportColumnModels = exportColumnModels});
+                    { Key = "子部门数量", Value = dept.SubCount.ToString(), Point = point++ });
+                exportColumnModels.Add(new ExportColumnModel
+                    { Key = "创建时间", Value = dept.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++ });
+                exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
             });
             return exportRowModels;
         }
@@ -221,7 +220,7 @@ namespace ApeVolo.Business.Impl.Core
 
         #region 扩展方法
 
-        public async Task<List<DepartmentDto>> QuerySuperiorDeptAsync(List<string> ids)
+        public async Task<List<DepartmentDto>> QuerySuperiorDeptAsync(List<long> ids)
         {
             DepartmentDto departmentDto = null;
             List<DepartmentDto> departmentDtos = new List<DepartmentDto>();
@@ -238,20 +237,20 @@ namespace ApeVolo.Business.Impl.Core
             return await Task.FromResult(departmentDtos);
         }
 
-        public async Task<List<DepartmentDto>> QueryByPIdAsync(string id)
+        public async Task<List<DepartmentDto>> QueryByPIdAsync(long id)
         {
             return _mapper.Map<List<DepartmentDto>>(await _baseDal.QueryListAsync(x =>
                 x.IsDeleted == false && x.PId == id && x.Enabled == true));
         }
 
-        public async Task<DepartmentSmallDto> QueryByIdAsync(string id)
+        public async Task<DepartmentSmallDto> QueryByIdAsync(long id)
         {
             return _mapper.Map<DepartmentSmallDto>(await _baseDal.QueryFirstAsync(x =>
                 x.IsDeleted == false && x.Id == id && x.Enabled));
         }
 
 
-        public async Task<List<DepartmentDto>> QueryByRoleIdAsync(string roleId)
+        public async Task<List<DepartmentDto>> QueryByRoleIdAsync(long roleId)
         {
             var departments = await _baseDal.QueryMuchAsync<Department, RolesDepartments, Department>(
                 (d, rd) => new object[]
@@ -260,11 +259,11 @@ namespace ApeVolo.Business.Impl.Core
                 }, (d, rd) => d,
                 (d, rd) => d.IsDeleted == false && roleId == rd.RoleId
             );
-            departments = TreeHelper<Department>.SetLeafProperty(departments, "Id", "PId", "0");
+            departments = TreeHelper<Department>.SetLeafProperty(departments, "Id", "PId", null);
             return _mapper.Map<List<DepartmentDto>>(departments);
         }
 
-        public async Task<List<string>> FindChildIds(List<string> deptIds, List<DepartmentDto> departmentDtos)
+        public async Task<List<long>> FindChildIds(List<long> deptIds, List<DepartmentDto> departmentDtos)
         {
             departmentDtos.ForEach(async dept =>
             {
@@ -310,13 +309,13 @@ namespace ApeVolo.Business.Impl.Core
         {
             while (true)
             {
-                if (departmentDto.PId.IsNullOrEmpty())
+                if (departmentDto.PId.IsNull())
                 {
                     departmentDtoList.AddRange(await FindByPIdIsNullAsync());
                     return departmentDtoList;
                 }
 
-                departmentDtoList.AddRange(await QueryByPIdAsync(departmentDto.PId));
+                departmentDtoList.AddRange(await QueryByPIdAsync(Convert.ToInt64(departmentDto.PId)));
                 departmentDto =
                     _mapper.Map<DepartmentDto>(await QueryFirstAsync(x =>
                         x.IsDeleted == false && x.Id == departmentDto.PId));
@@ -329,7 +328,7 @@ namespace ApeVolo.Business.Impl.Core
         /// <param name="departmentList"></param>
         /// <param name="ids"></param>
         /// <returns></returns>
-        private async Task FindChildIds(List<Department> departmentList, List<string> ids)
+        private async Task FindChildIds(List<Department> departmentList, List<long> ids)
         {
             departmentList.ForEach(async ml =>
             {
@@ -340,7 +339,7 @@ namespace ApeVolo.Business.Impl.Core
 
                 List<Department> departments =
                     await _baseDal.QueryListAsync(m => m.IsDeleted == false && m.PId == ml.Id);
-                if (departments is {Count: > 0})
+                if (departments is { Count: > 0 })
                 {
                     await FindChildIds(departments, ids);
                 }

@@ -29,8 +29,8 @@ namespace ApeVolo.Entity.Do.Core
         [SugarColumn(ColumnName = "component_name", ColumnDataType = "varchar", Length = 255, IsNullable = true, ColumnDescription = "组件名称")]
         public string ComponentName { get; set; }
 
-        [SugarColumn(ColumnName = "parent_id", ColumnDataType = "char", Length = 19, IsNullable = true, ColumnDescription = "父级ID")]
-        public string PId { get; set; }
+        [SugarColumn(ColumnName = "parent_id", ColumnDataType = "bigint", Length = 19, IsNullable = true, ColumnDescription = "父级ID")]
+        public long? PId { get; set; }
 
         [SugarColumn(ColumnName = "menu_sort", IsNullable = true, ColumnDescription = "排序标识符 越小越靠前")]
         public int MenuSort { get; set; }

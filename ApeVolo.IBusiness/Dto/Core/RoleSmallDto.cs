@@ -14,7 +14,7 @@ namespace ApeVolo.IBusiness.Dto.Core
         //    Level = r.Level;
         //    DataScope = r.DataScope;
         //}
-        public string Id { get; set; }
+        public long Id { get; set; }
 
         public string Name { get; set; }
 

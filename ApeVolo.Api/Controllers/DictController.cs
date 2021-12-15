@@ -1,18 +1,18 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Threading.Tasks;
+using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
-using ApeVolo.IBusiness.Interface.Dictionary;
 using ApeVolo.IBusiness.Dto.Dictionary;
 using ApeVolo.IBusiness.EditDto.Dict;
+using ApeVolo.IBusiness.Interface.Dictionary;
 using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Mvc;
-using ApeVolo.Common.Helper.Excel;
 using Microsoft.AspNetCore.StaticFiles;
-using System.IO;
-using ApeVolo.Api.ActionExtension.Json;
 
 namespace ApeVolo.Api.Controllers
 {
@@ -78,7 +78,7 @@ namespace ApeVolo.Api.Controllers
         [Route("delete")]
         [Description("删除字典")]
         [NoJsonParamter]
-        public async Task<ActionResult<object>> Delete([FromBody] HashSet<string> ids)
+        public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
         {
             if (ids == null || ids.Count < 1)
             {
@@ -103,7 +103,7 @@ namespace ApeVolo.Api.Controllers
         {
             var list = await _dictService.QueryAsync(dictQueryCriteria, pagination);
 
-            return new ActionResultVm<DictDto>()
+            return new ActionResultVm<DictDto>
             {
                 Content = list,
                 TotalElements = pagination.TotalElements

@@ -1,30 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using ApeVolo.Common.Extention;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using ApeVolo.Business.Base;
-using AutoMapper;
-using ApeVolo.IBusiness.Interface.Core;
-using SqlSugar;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Common.Caches.Redis.Extensions;
+using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Exception;
-using ApeVolo.Common.Model;
+using ApeVolo.Common.Extention;
+using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Model;
 using ApeVolo.Common.WebApp;
+using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
+using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.Core;
-using ApeVolo.Common.Global;
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using ApeVolo.Common.Caches.Redis.Service;
+using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
-using ApeVolo.Common.Helper.Excel;
-using ApeVolo.Entity.Do.Core;
+using Microsoft.AspNetCore.Http;
+using SqlSugar;
 
 namespace ApeVolo.Business.Impl.Core
 {
@@ -96,7 +95,7 @@ namespace ApeVolo.Business.Impl.Core
             //设置用户密码
             user.SaltKey = SaltKeyHelper.CreateSalt(6);
             user.Password =
-                ("123456" + user.SaltKey).ToHmacsha256String(AppSettings.GetValue(new[] {"HmacSecret"}));
+                ("123456" + user.SaltKey).ToHmacsha256String(AppSettings.GetValue(new[] { "HmacSecret" }));
             user.DeptId = user.Dept.Id;
             //用户
             await AddEntityAsync(user);
@@ -136,19 +135,19 @@ namespace ApeVolo.Business.Impl.Core
             }
 
             if (oldUser.Username != createUpdateUserDto.Username && await IsExistAsync(x => x.IsDeleted == false
-                && x.Username == createUpdateUserDto.Username))
+                    && x.Username == createUpdateUserDto.Username))
             {
                 throw new BadRequestException($"用户名称=>{createUpdateUserDto.Username}=>已存在！");
             }
 
             if (oldUser.Email != createUpdateUserDto.Email && await IsExistAsync(x => x.IsDeleted == false
-                && x.Email == createUpdateUserDto.Email))
+                    && x.Email == createUpdateUserDto.Email))
             {
                 throw new BadRequestException($"邮箱=>{createUpdateUserDto.Email}=>已存在！");
             }
 
             if (oldUser.Phone != createUpdateUserDto.Phone && await IsExistAsync(x => x.IsDeleted == false
-                && x.Phone == createUpdateUserDto.Phone))
+                    && x.Phone == createUpdateUserDto.Phone))
             {
                 throw new BadRequestException($"电话=>{createUpdateUserDto.Phone}=>已存在！");
             }
@@ -159,7 +158,7 @@ namespace ApeVolo.Business.Impl.Core
             var user = _mapper.Map<User>(createUpdateUserDto);
             user.DeptId = user.Dept.Id;
             //更新用户
-            await UpdateEntityAsync(user, new List<string> {"password", "salt_key", "avatar_name", "avatar_path"});
+            await UpdateEntityAsync(user, new List<string> { "password", "salt_key", "avatar_name", "avatar_path" });
             //角色
             if (user.Roles.Count < 1)
             {
@@ -183,16 +182,16 @@ namespace ApeVolo.Business.Impl.Core
             await _userJobsService.CreateAsync(userJobs);
 
             //清理缓存
-            await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + user.Id.ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + user.Id.ToString().ToMd5String());
             await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + user.Username.ToMd5String());
-            await _redisCacheService.RemoveAsync(RedisKey.UserRolesById + user.Id.ToMd5String());
-            await _redisCacheService.RemoveAsync(RedisKey.UserJobsById + user.Id.ToMd5String());
-            await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById + user.Id.ToMd5String());
-            await _redisCacheService.RemoveAsync(RedisKey.UserBuildMenuById + user.Id.ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserRolesById + user.Id.ToString().ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserJobsById + user.Id.ToString().ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById + user.Id.ToString().ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserBuildMenuById + user.Id.ToString().ToMd5String());
             return true;
         }
 
-        public async Task<bool> DeleteAsync(HashSet<string> ids)
+        public async Task<bool> DeleteAsync(HashSet<long> ids)
         {
             //验证角色等级
             await _roleService.VerificationUserRoleLevelAsync(await _roleService.QueryUserRoleLevelAsync(ids));
@@ -209,8 +208,8 @@ namespace ApeVolo.Business.Impl.Core
         /// <returns></returns>
         public async Task<List<UserDto>> QueryAsync(UserQueryCriteria userQueryCriteria, Pagination pagination)
         {
-            Expression<Func<User, bool>> whereExpression = u => (u.IsDeleted == false);
-            if (!userQueryCriteria.Id.IsNullOrEmpty())
+            Expression<Func<User, bool>> whereExpression = u => u.IsDeleted == false;
+            if (userQueryCriteria.Id > 0)
             {
                 whereExpression = whereExpression.And(u => u.Id == userQueryCriteria.Id);
             }
@@ -220,10 +219,10 @@ namespace ApeVolo.Business.Impl.Core
                 whereExpression = whereExpression.And(u => u.Enabled == userQueryCriteria.Enabled);
             }
 
-            if (!userQueryCriteria.DeptId.IsNullOrEmpty())
+            if (userQueryCriteria.DeptId > 0)
             {
                 var depts = await _departmentService.QueryByPIdAsync(userQueryCriteria.DeptId);
-                userQueryCriteria.DeptIds = new List<string> {userQueryCriteria.DeptId};
+                userQueryCriteria.DeptIds = new List<long> { userQueryCriteria.DeptId };
                 userQueryCriteria.DeptIds.AddRange(depts.Select(d => d.Id));
                 whereExpression = whereExpression.And(u => userQueryCriteria.DeptIds.Contains(u.DeptId));
             }
@@ -244,7 +243,7 @@ namespace ApeVolo.Business.Impl.Core
             //数据权限 
             if (!_currentUser.Id.IsNullOrEmpty())
             {
-                List<string> deptIds = await _dataScopeService.GetDeptIds(await QueryByIdAsync(_currentUser.Id));
+                List<long> deptIds = await _dataScopeService.GetDeptIds(await QueryByIdAsync(_currentUser.Id));
                 if (deptIds.Count > 0)
                 {
                     whereExpression = whereExpression.And(u => deptIds.Contains(u.DeptId));
@@ -269,7 +268,7 @@ namespace ApeVolo.Business.Impl.Core
                 it.Dept = department.FirstOrDefault(d => d.Id == it.DeptId);
                 it.Jobs = jobs;
                 it.Roles = roles;
-                it.DeptId = null;
+                it.DeptId = 0;
             }, whereExpression, pagination);
 
             return _mapper.Map<List<UserDto>>(users);
@@ -278,39 +277,39 @@ namespace ApeVolo.Business.Impl.Core
 
         public async Task<List<ExportRowModel>> DownloadAsync(UserQueryCriteria userQueryCriteria)
         {
-            var users = await QueryAsync(userQueryCriteria, new Pagination() {PageSize = 9999});
+            var users = await QueryAsync(userQueryCriteria, new Pagination { PageSize = 9999 });
             List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
             foreach (var item in users)
             {
                 var point = 0;
                 var exportColumnModels = new List<ExportColumnModel>
                 {
-                    new() {Key = "ID", Value = item.Id, Point = point++},
-                    new() {Key = "用户名", Value = item.Username, Point = point++},
+                    new() { Key = "ID", Value = item.Id.ToString(), Point = point++ },
+                    new() { Key = "用户名", Value = item.Username, Point = point++ },
                     new()
                     {
                         Key = "角色",
                         Value = string.Join(",", item.Roles.Select(x => x.Name).ToArray()),
                         Point = point++
                     },
-                    new() {Key = "昵称", Value = item.NickName, Point = point++},
-                    new() {Key = "电话", Value = item.Phone, Point = point++},
-                    new() {Key = "邮箱", Value = item.Email, Point = point++},
-                    new() {Key = "状态", Value = item.Enabled ? "激活" : "停用", Point = point++},
-                    new() {Key = "部门", Value = item.Dept.Name, Point = point++},
+                    new() { Key = "昵称", Value = item.NickName, Point = point++ },
+                    new() { Key = "电话", Value = item.Phone, Point = point++ },
+                    new() { Key = "邮箱", Value = item.Email, Point = point++ },
+                    new() { Key = "状态", Value = item.Enabled ? "激活" : "停用", Point = point++ },
+                    new() { Key = "部门", Value = item.Dept.Name, Point = point++ },
                     new()
                     {
                         Key = "岗位",
                         Value = string.Join(",", item.Jobs.Select(x => x.Name).ToArray()),
                         Point = point++
                     },
-                    new() {Key = "性别", Value = item.Gender, Point = point++},
+                    new() { Key = "性别", Value = item.Gender, Point = point++ },
                     new()
                     {
                         Key = "创建时间", Value = item.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point
                     }
                 };
-                exportRowModels.Add(new ExportRowModel() {exportColumnModels = exportColumnModels});
+                exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
             }
 
             return exportRowModels;
@@ -321,7 +320,7 @@ namespace ApeVolo.Business.Impl.Core
         #region 扩展方法
 
         [RedisCaching(Expiration = 30, KeyPrefix = RedisKey.UserInfoById)]
-        public async Task<UserDto> QueryByIdAsync(string userId)
+        public async Task<UserDto> QueryByIdAsync(long userId)
         {
             UserDto userDto = null;
             var user = await QuerySingleAsync(userId);
@@ -357,7 +356,7 @@ namespace ApeVolo.Business.Impl.Core
         }
 
 
-        public async Task<List<UserDto>> QueryByRoleIdAsync(string roleId)
+        public async Task<List<UserDto>> QueryByRoleIdAsync(long roleId)
         {
             var users = await _baseDal.QueryMuchAsync<User, UserRoles, User>(
                 (u, ur) => new object[]
@@ -375,7 +374,7 @@ namespace ApeVolo.Business.Impl.Core
         /// </summary>
         /// <param name="deptIds"></param>
         /// <returns></returns>
-        public async Task<List<UserDto>> QueryByDeptIdsAsync(List<string> deptIds)
+        public async Task<List<UserDto>> QueryByDeptIdsAsync(List<long> deptIds)
         {
             return _mapper.Map<List<UserDto>>(
                 await _baseDal.QueryListAsync(u => u.IsDeleted == false && deptIds.Contains(u.DeptId)));
@@ -423,7 +422,7 @@ namespace ApeVolo.Business.Impl.Core
                 throw new BadRequestException(nameof(curUser) + " does not exist");
             if (curUser.Password !=
                 (oldPassword + curUser.SaltKey).ToHmacsha256String(
-                    AppSettings.GetValue(new[] {"HmacSecret"})))
+                    AppSettings.GetValue(new[] { "HmacSecret" })))
             {
                 throw new BadRequestException("修改失败，旧密码错误！");
             }
@@ -432,13 +431,13 @@ namespace ApeVolo.Business.Impl.Core
             curUser.SaltKey = SaltKeyHelper.CreateSalt(6);
             curUser.Password =
                 (newPassword + curUser.SaltKey).ToHmacsha256String(
-                    AppSettings.GetValue(new[] {"HmacSecret"}));
+                    AppSettings.GetValue(new[] { "HmacSecret" }));
             curUser.PasswordReSetTime = DateTime.Now;
             var isTrue = await UpdateEntityAsync(curUser);
             if (isTrue)
             {
                 //清理缓存
-                await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + curUser.Id.ToMd5String());
+                await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + curUser.Id.ToString().ToMd5String());
                 await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + curUser.Username.ToMd5String());
 
                 //退出当前用户
@@ -501,7 +500,7 @@ namespace ApeVolo.Business.Impl.Core
             //curUser.AvatarPath = avatarPath;
             curUser.AvatarPath = "/images/avatar/";
             curUser.AvatarName = avatarName;
-            await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + curUser.Id.ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + curUser.Id.ToString().ToMd5String());
             return await UpdateEntityAsync(curUser);
         }
 
@@ -519,7 +518,7 @@ namespace ApeVolo.Business.Impl.Core
             userDto.Roles.AddRange(await _roleService.QueryByUserIdAsync(userDto.Id));
         }
 
-        private async Task<List<JobSmallDto>> GetJobListAsync(string userId)
+        private async Task<List<JobSmallDto>> GetJobListAsync(long userId)
         {
             var jobs = await _baseDal.QueryMuchAsync<User, UserJobs, Job, Job>(
                 (u, uj, j) => new object[]
@@ -532,17 +531,17 @@ namespace ApeVolo.Business.Impl.Core
             );
             return _mapper.Map<List<JobSmallDto>>(jobs);
         }
-        
-        
+
+
         private async void ClearUserCache(User user)
         {
             //清理缓存
-            await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + user.Id.ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + user.Id.ToString().ToMd5String());
             await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + user.Username.ToMd5String());
-            await _redisCacheService.RemoveAsync(RedisKey.UserRolesById + user.Id.ToMd5String());
-            await _redisCacheService.RemoveAsync(RedisKey.UserJobsById + user.Id.ToMd5String());
-            await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById + user.Id.ToMd5String());
-            await _redisCacheService.RemoveAsync(RedisKey.UserBuildMenuById + user.Id.ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserRolesById + user.Id.ToString().ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserJobsById + user.Id.ToString().ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById + user.Id.ToString().ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserBuildMenuById + user.Id.ToString().ToMd5String());
         }
 
         #endregion

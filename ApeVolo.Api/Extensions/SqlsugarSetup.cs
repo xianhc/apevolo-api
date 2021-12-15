@@ -1,14 +1,14 @@
-﻿using ApeVolo.Common.DB;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using ApeVolo.Common.DB;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using Microsoft.Extensions.DependencyInjection;
 using SqlSugar;
 using StackExchange.Profiling;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ApeVolo.Api.Extensions
 {
@@ -40,7 +40,7 @@ namespace ApeVolo.Api.Extensions
                 });
                 if (BaseDbConfig.GetDataBaseOperate.MasterDb.IsNotNull())
                 {
-                    masterDb = new ConnectionConfig()
+                    masterDb = new ConnectionConfig
                     {
                         ConfigId = BaseDbConfig.GetDataBaseOperate.MasterDb.ConnId.ToLower(),
                         ConnectionString = BaseDbConfig.GetDataBaseOperate.MasterDb.ConnectionString,
@@ -68,7 +68,7 @@ namespace ApeVolo.Api.Extensions
                             }
                             //OnLogExecuted = //执行完毕
                         },
-                        MoreSettings = new ConnMoreSettings()
+                        MoreSettings = new ConnMoreSettings
                         {
                             IsAutoRemoveDataCache = true
                         },

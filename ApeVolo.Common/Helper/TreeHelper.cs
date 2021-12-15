@@ -20,13 +20,13 @@ namespace ApeVolo.Common.Helper
         /// <param name="value">父级编码值</param>
         /// <param name="childNodeName">子节点属性名称</param>
         /// <returns></returns>
-        public static List<T> ListToTrees(List<T> lists, string code, string parentCode, string? value,
+        public static List<T> ListToTrees(List<T> lists, string code, string parentCode, long? value,
             string childNodeName = "Children")
         {
             if (lists.Count > 0)
             {
                 var tempLists = lists
-                    .Where(m => (string?) m?.GetType().GetProperty(parentCode)?.GetValue(m, null) == value).ToList();
+                    .Where(m => (long?)m?.GetType().GetProperty(parentCode)?.GetValue(m, null) == value).ToList();
                 if (tempLists.Count > 0)
                 {
                     var treeDatas = new List<T>();
@@ -38,7 +38,7 @@ namespace ApeVolo.Common.Helper
                         type = obj?.GetType();
 
                         var childs = ListToTrees(lists, code, parentCode,
-                            type?.GetProperty(code)?.GetValue(t, null)?.ToString());
+                            (long)(type?.GetProperty(code)?.GetValue(t, null) ?? 0));
                         if (childs.Count > 0)
                         {
                             type?.GetProperty(childNodeName)?.SetValue(t, childs, null);
@@ -56,7 +56,7 @@ namespace ApeVolo.Common.Helper
             return new List<T>();
         }
 
-        public static List<T> SetLeafProperty(List<T> lists, string code, string parentCode, string value,
+        public static List<T> SetLeafProperty(List<T> lists, string code, string parentCode, long? value,
             string childNodeName = "Children")
         {
             if (lists.Count > 0)

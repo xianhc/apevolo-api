@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
+using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
+using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
-using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
+using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.QueryModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.AspNetCore.Http;
-using ApeVolo.Api.ActionExtension.Json;
-using ApeVolo.Common.AttributeExt;
 
 namespace ApeVolo.Api.Controllers
 {
@@ -83,7 +83,7 @@ namespace ApeVolo.Api.Controllers
         [Route("delete")]
         [Description("删除用户")]
         [NoJsonParamter]
-        public async Task<ActionResult<object>> Delete([FromBody] HashSet<string> ids)
+        public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
         {
             if (ids == null || ids.Count < 1)
             {

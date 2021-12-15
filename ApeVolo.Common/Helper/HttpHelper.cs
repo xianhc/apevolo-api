@@ -1,17 +1,15 @@
-﻿using ApeVolo.Common.Extention;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
-using ApeVolo.Common.Exception;
+using ApeVolo.Common.Extention;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace ApeVolo.Common.Helper
 {
@@ -34,7 +32,7 @@ namespace ApeVolo.Common.Helper
 
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
             ServicePointManager.ServerCertificateValidationCallback =
-                new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
+                (sender, certificate, chain, sslPolicyErrors) => true;
         }
 
         #endregion
@@ -133,7 +131,7 @@ namespace ApeVolo.Common.Helper
                     paramBuilder.Append($@"{head}{key}={value}");
                 }
 
-                newUrl = url + paramBuilder.ToString();
+                newUrl = url + paramBuilder;
             }
 
             string body = BuildBody(paramters, contentType);
@@ -305,7 +303,7 @@ namespace ApeVolo.Common.Helper
                 paramBuilder.Append($@"{head}{key}={value}");
             }
 
-            return url + paramBuilder.ToString();
+            return url + paramBuilder;
         }
 
         /// <summary>
@@ -359,14 +357,11 @@ namespace ApeVolo.Common.Helper
                             {
                                 if (match.Groups[1].ToString().ToLower() == "utf-8")
                                     break;
-                                else
-                                {
-                                    encoding = Encoding.GetEncoding(match.Groups[1].ToString().ToLower());
-                                    ms.Seek(0, SeekOrigin.Begin); //设置流的初始位置
-                                    var zipStream2 = new GZipStream(ms, CompressionMode.Decompress);
-                                    StreamReader sr2 = new StreamReader(zipStream2, encoding);
-                                    htmlCode = sr2.ReadToEnd();
-                                }
+                                encoding = Encoding.GetEncoding(match.Groups[1].ToString().ToLower());
+                                ms.Seek(0, SeekOrigin.Begin); //设置流的初始位置
+                                var zipStream2 = new GZipStream(ms, CompressionMode.Decompress);
+                                StreamReader sr2 = new StreamReader(zipStream2, encoding);
+                                htmlCode = sr2.ReadToEnd();
                             }
                         }
                     }
@@ -465,7 +460,6 @@ namespace ApeVolo.Common.Helper
                 }
                     ;
                     break;
-                default: break;
             }
 
             return bodyBuilder.ToString();
@@ -487,7 +481,6 @@ namespace ApeVolo.Common.Helper
                 case ContentType.Json:
                     contentTypeStr = "application/json";
                     break;
-                default: break;
             }
 
             return contentTypeStr;

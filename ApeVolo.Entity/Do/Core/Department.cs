@@ -11,9 +11,9 @@ namespace ApeVolo.Entity.Do.Core
             ColumnDescription = "部门名称")]
         public string Name { get; set; }
 
-        [SugarColumn(ColumnName = "parent_id", ColumnDataType = "char", Length = 19, IsNullable = true,
+        [SugarColumn(ColumnName = "parent_id", ColumnDataType = "bigint", Length = 19, IsNullable = true,
             ColumnDescription = "父级部门")]
-        public string PId { get; set; }
+        public long? PId { get; set; }
 
         [SugarColumn(ColumnName = "sort", IsNullable = true, ColumnDescription = "排序")]
         public int Sort { get; set; }

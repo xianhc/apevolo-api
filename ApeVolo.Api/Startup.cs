@@ -1,12 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using ApeVolo.Api.Aop;
 using ApeVolo.Api.Extensions;
 using ApeVolo.Api.Filter;
 using ApeVolo.Api.Middleware;
+using ApeVolo.Common.ClassLibrary;
 using ApeVolo.Common.DI;
+using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
+using ApeVolo.Entity.Seed;
 using ApeVolo.IBusiness.Interface.Tasks;
 using ApeVolo.QuartzNetService.service;
 using Autofac;
@@ -24,13 +31,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
-using ApeVolo.Entity.Seed;
 
 namespace ApeVolo.Api
 {
@@ -59,7 +59,6 @@ namespace ApeVolo.Api
             services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
             services.Configure<IISServerOptions>(options => { options.AllowSynchronousIO = true; });
             services.AddMemoryCacheSetup();
-            //services.AddRedisCacheService(_ => RedisHelper.GetRedisOptions());
             services.AddRedisCacheSetup();
             services.AddSqlsugarSetup();
             services.AddDbSetup();
@@ -89,6 +88,7 @@ namespace ApeVolo.Api
                         options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                         //options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                         options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                        options.SerializerSettings.ContractResolver = new CustomContractResolver();
                     }
                 );
         }
@@ -137,6 +137,7 @@ namespace ApeVolo.Api
             IQuartzNetService quartzNetService,
             ISchedulerCenterService schedulerCenter, ILoggerFactory loggerFactory)
         {
+            //获取远程真实ip,如果不是nginx代理部署可以不要
             app.UseMiddleware<RealIpMiddleware>();
             //IP限流
             app.UseIpLimitMiddleware();

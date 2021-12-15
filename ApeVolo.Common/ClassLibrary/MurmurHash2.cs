@@ -59,8 +59,6 @@ namespace ApeVolo.Common.ClassLibrary
                     h ^= data[currentIndex];
                     h *= m;
                     break;
-                default:
-                    break;
             }
 
             // Do a few final mixes of the hash to ensure the last few

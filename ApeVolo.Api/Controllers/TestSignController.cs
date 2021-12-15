@@ -14,7 +14,7 @@ namespace ApeVolo.Api.Controllers
         [VerifySignature]
         public async Task<ActionResult<object>> TestSecret()
         {
-            var text = new List<string>() {"AAA", "BBB"};
+            var text = new List<string> {"AAA", "BBB"};
             await Task.CompletedTask;
             return text.ToJson();
         }

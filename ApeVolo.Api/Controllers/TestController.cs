@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
-using ApeVolo.Common.Caches.Redis.Extensions;
-using ApeVolo.Common.Caches.Redis.Models;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
 using ApeVolo.Common.Extention;
@@ -53,7 +51,7 @@ namespace ApeVolo.Api.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<object>> TestUserLevel()
         {
-            var isTrue = await _userRolesService.DeleteByUserIdAsync("789739052218716160");
+            var isTrue = await _userRolesService.DeleteByUserIdAsync(789739052218716160);
 
 
             var level = await _roleService.QueryUserRoleLevelAsync(null);
@@ -66,7 +64,7 @@ namespace ApeVolo.Api.Controllers
         public async Task<ActionResult<object>> TestSecret()
         {
             await _emailScheduleTask.ExecuteAsync();
-            var text = await _appSecretService.CreateAsync(new CreateUpdateAppSecretDto() {AppName = "test"});
+            var text = await _appSecretService.CreateAsync(new CreateUpdateAppSecretDto {AppName = "test"});
             return text.ToJson();
         }
 
@@ -74,7 +72,7 @@ namespace ApeVolo.Api.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<object>> AddApeVolo()
         {
-            await _testApeVoloService.CreateAsync(new TestApeVolo()
+            await _testApeVoloService.CreateAsync(new TestApeVolo
             {
                 Label = "test",
                 Content = "test",
@@ -97,13 +95,13 @@ namespace ApeVolo.Api.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<object>> TestConModels()
         {
-            HashSet<string> ids = new HashSet<string>();
-            ids.Add("1306054134645919750");
-            ids.Add("asdf");
+            HashSet<long> ids = new HashSet<long>();
+            ids.Add(1306054134645919750);
+            ids.Add(123456);
 
-            List<string> ids2 = new List<string>();
-            ids2.Add("1306054134645919750");
-            ids2.Add("asdf");
+            List<long> ids2 = new List<long>();
+            ids2.Add(1306054134645919750);
+            ids2.Add(123456);
 
             var user = await _userService.QueryByIdsAsync(ids);
             var user2 = await _userService.QueryByIdsAsync(ids2);

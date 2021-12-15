@@ -1,9 +1,11 @@
-﻿using ApeVolo.Common.DI;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using ApeVolo.Common.DI;
+using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Interface.Email;
-using log4net;
-using System;
 using ApeVolo.IBusiness.QueryModel;
-using Castle.Core.Internal;
+using log4net;
 
 namespace ApeVolo.Business.Impl.Email
 {
@@ -39,23 +41,23 @@ namespace ApeVolo.Business.Impl.Email
         /// <summary>
         /// Executes a task
         /// </summary>
-        public virtual async System.Threading.Tasks.Task ExecuteAsync(string emailId = "")
+        public virtual async Task ExecuteAsync(long emailId = 0)
         {
             var maxTries = 3;
             QueuedEmailQueryCriteria queuedEmailQueryCriteria = new QueuedEmailQueryCriteria();
             queuedEmailQueryCriteria.MaxTries = maxTries;
             queuedEmailQueryCriteria.IsSend = false;
-            if (!emailId.IsNullOrEmpty())
+            if (emailId > 0)
             {
                 queuedEmailQueryCriteria.Id = emailId;
             }
 
             var queuedEmails = await _queuedEmailService.QueryAsync(
                 queuedEmailQueryCriteria,
-                new Common.Model.Pagination()
+                new Pagination
                 {
                     PageIndex = 1, PageSize = 100,
-                    SortFields = new System.Collections.Generic.List<string>() { "priority asc", "create_time asc" }
+                    SortFields = new List<string> { "priority asc", "create_time asc" }
                 });
             foreach (var queuedEmail in queuedEmails)
             {

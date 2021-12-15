@@ -1,5 +1,5 @@
-﻿using ApeVolo.Common.AttributeExt;
-using System;
+﻿using System;
+using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.Do.Email;
 
 namespace ApeVolo.IBusiness.Dto.Email
@@ -74,6 +74,6 @@ namespace ApeVolo.IBusiness.Dto.Email
         /// <summary>
         /// 发件邮箱ID
         /// </summary>
-        public string EmailAccountId { get; set; }
+        public long EmailAccountId { get; set; }
     }
 }

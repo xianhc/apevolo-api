@@ -1,13 +1,13 @@
-﻿using ApeVolo.Common.DI;
-using ApeVolo.IBusiness.Interface.Email;
-using MimeKit;
-using MimeKit.Text;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ApeVolo.Common.DI;
 using ApeVolo.Entity.Do.Email;
+using ApeVolo.IBusiness.Interface.Email;
+using MimeKit;
+using MimeKit.Text;
 
 namespace ApeVolo.Business.Impl.Email
 {

@@ -1,11 +1,11 @@
-﻿using ApeVolo.Api.Controllers.Base;
+﻿using System;
+using System.ComponentModel;
+using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model.ServerMonitor;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.ComponentModel;
 using Disk = ApeVolo.Common.Model.ServerMonitor.Disk;
 
 namespace ApeVolo.Api.Controllers
@@ -39,10 +39,10 @@ namespace ApeVolo.Api.Controllers
                 Cpu = new Cpu
                 {
                     Name = os.ProcessorName,
-                    Package = os.PhysicalProcessorCount.ToString() + "个物理CPU",
+                    Package = os.PhysicalProcessorCount + "个物理CPU",
                     Core = os.NumberOfCores + "个物理核心",
                     CoreNumber = os.NumberOfCores,
-                    Logic = os.LogicProcessorCount.ToString() + "个逻辑CPU",
+                    Logic = os.LogicProcessorCount + "个逻辑CPU",
                     Used = os.ProcessorUtilizationRate.ToString(),
                     Idle = (100 - os.ProcessorUtilizationRate).ToString()
                 },

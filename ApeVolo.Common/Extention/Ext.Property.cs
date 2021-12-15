@@ -1,7 +1,7 @@
-﻿using ApeVolo.Common.DI;
+﻿using System;
+using ApeVolo.Common.DI;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
-using System;
 
 namespace ApeVolo.Common.Extention
 {
@@ -16,7 +16,7 @@ namespace ApeVolo.Common.Extention
             var curUser = AutofacHelper.GetScopeService<ICurrentUser>();
 
             if (entity.ContainsProperty("Id"))
-                entity.SetPropertyValue("Id", IdHelper.GetId());
+                entity.SetPropertyValue("Id", IdHelper.GetLongId());
             if (entity.ContainsProperty("CreateTime"))
                 entity.SetPropertyValue("CreateTime", DateTime.Now);
             //if (entity.ContainsProperty("UpdateTime"))

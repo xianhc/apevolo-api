@@ -1,4 +1,4 @@
-﻿using TopicAttribute = ApeVolo.Common.Caches.Redis.Abstractions.TopicAttribute;
+﻿using ApeVolo.Common.Caches.Redis.Abstractions;
 
 namespace ApeVolo.Common.Caches.Redis.Attributes
 {

@@ -1,7 +1,7 @@
-﻿using ApeVolo.Common.AttributeExt;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.Do.Core;
+using Newtonsoft.Json;
 
 namespace ApeVolo.IBusiness.Dto.Core
 {
@@ -9,7 +9,7 @@ namespace ApeVolo.IBusiness.Dto.Core
     public class DepartmentDto : BaseEntityDto
     {
         public string Name { get; set; }
-        public string PId { get; set; }
+        public long? PId { get; set; }
 
         public int Sort { get; set; }
         public bool Enabled { get; set; }

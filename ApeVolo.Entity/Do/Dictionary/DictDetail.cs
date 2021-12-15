@@ -7,8 +7,8 @@ namespace ApeVolo.Entity.Do.Dictionary
     [SugarTable("sys_dict_detail", "字典详细表")]
     public class DictDetail : BaseEntity
     {
-        [SugarColumn(ColumnName = "dict_id", ColumnDataType = "char", Length = 19, IsNullable = false)]
-        public string DictId { get; set; }
+        [SugarColumn(ColumnName = "dict_id", ColumnDataType = "bigint", Length = 19, IsNullable = false)]
+        public long DictId { get; set; }
 
         [SugarColumn(ColumnName = "label", ColumnDataType = "varchar", Length = 255, IsNullable = false)]
         public string Label { get; set; }

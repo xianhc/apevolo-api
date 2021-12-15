@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using ApeVolo.Api.Authentication;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Common.Caches.Redis.Extensions;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
@@ -19,7 +18,6 @@ using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Interface.Email;
 using ApeVolo.IBusiness.QueryModel;
-using ApeVolo.IBusiness.Vo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,18 +33,6 @@ namespace ApeVolo.Api.Controllers
     [Route("[controller]/[action]")]
     public class AuthorizationController : BaseApiController
     {
-        #region 字段
-
-        private readonly IUserService _userService;
-        private readonly IPermissionService _permissionService;
-        private readonly PermissionRequirement _requirement;
-        private readonly IOnlineUserService _onlineUserService;
-        private readonly ICurrentUser _currentUser;
-        private readonly IQueuedEmailService _queuedEmailService;
-        private readonly IRedisCacheService _redisCacheService;
-
-        #endregion
-
         #region 构造函数
 
         public AuthorizationController(IUserService userService, IPermissionService permissionService,
@@ -64,6 +50,18 @@ namespace ApeVolo.Api.Controllers
 
         #endregion
 
+        #region 字段
+
+        private readonly IUserService _userService;
+        private readonly IPermissionService _permissionService;
+        private readonly PermissionRequirement _requirement;
+        private readonly IOnlineUserService _onlineUserService;
+        private readonly ICurrentUser _currentUser;
+        private readonly IQueuedEmailService _queuedEmailService;
+        private readonly IRedisCacheService _redisCacheService;
+
+        #endregion
+
         #region 内部接口
 
         /// <summary>
@@ -78,32 +76,21 @@ namespace ApeVolo.Api.Controllers
         public async Task<ActionResult<object>> Login(LoginAuthUser authUser)
         {
             RequiredHelper.IsValid(authUser);
-            string code = await _redisCacheService.GetCacheAsync<string>(authUser.Uuid);
+            var code = await _redisCacheService.GetCacheAsync<string>(authUser.Uuid);
             await _redisCacheService.RemoveAsync(authUser.Uuid);
-            if (code.IsNullOrEmpty())
-            {
-                return Error("验证码不存在或已过期！");
-            }
+            if (code.IsNullOrEmpty()) return Error("验证码不存在或已过期！");
 
-            if (!code.Equals(authUser.Code))
-            {
-                return Error("验证码错误！");
-            }
+            if (!code.Equals(authUser.Code)) return Error("验证码错误！");
 
             var userDto = await _userService.QueryByNameAsync(authUser.Username);
             if (userDto == null) return Error("用户不存在！");
-            string password = new JsEncryptHelper().Decrypt(authUser.Password);
+            var password = new JsEncryptHelper().Decrypt(authUser.Password);
             if (!userDto.Password.Equals(
-                (password + userDto.SaltKey).ToHmacsha256String(
-                    AppSettings.GetValue(new[] {"HmacSecret"}))))
-            {
+                    (password + userDto.SaltKey).ToHmacsha256String(
+                        AppSettings.GetValue(new[] { "HmacSecret" }))))
                 return Error("密码错误！");
-            }
 
-            if (!userDto.Enabled)
-            {
-                return Error("账号未激活！");
-            }
+            if (!userDto.Enabled) return Error("账号未激活！");
 
             var netUser = await _userService.QueryByIdAsync(userDto.Id);
 
@@ -114,9 +101,9 @@ namespace ApeVolo.Api.Controllers
             netUser.PermissionUrl.AddRange(permissionList.Select(s => s.LinkUrl).Where(s => !s.IsNullOrEmpty()));
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, netUser.Username),
-                new Claim(JwtRegisteredClaimNames.Jti, netUser.Id),
-                new Claim(ClaimTypes.Expiration,
+                new(ClaimTypes.Name, netUser.Username),
+                new(JwtRegisteredClaimNames.Jti, netUser.Id.ToString()),
+                new(ClaimTypes.Expiration,
                     DateTime.Now.AddSeconds(_requirement.Expiration.TotalSeconds)
                         .ToString(CultureInfo.InvariantCulture))
             };
@@ -127,14 +114,14 @@ namespace ApeVolo.Api.Controllers
 
             var token = JwtToken.BuildJwtToken(claims.ToArray(), _requirement);
 
-            JwtUserVo jwtUserVo = await _onlineUserService.FindJwtUserAsync(netUser);
+            var jwtUserVo = await _onlineUserService.FindJwtUserAsync(netUser);
 
             // 保存在线信息
             bool isTrue =
                 await _onlineUserService.SaveAsync(jwtUserVo, token.ToString().Replace("Bearer ", ""));
 
 
-            Dictionary<string, object> dic = new Dictionary<string, object> {{"user", jwtUserVo}, {"token", token}};
+            var dic = new Dictionary<string, object> { { "user", jwtUserVo }, { "token", token } };
 
             return dic.ToJson();
         }
@@ -150,7 +137,7 @@ namespace ApeVolo.Api.Controllers
             var permissionList = await _permissionService.QueryUserPermissionAsync(_currentUser.Id);
             netUser.Authorizes.AddRange(permissionList.Select(s => s.Permission).Where(s => !s.IsNullOrEmpty()));
             netUser.Authorizes.AddRange(netUser.Roles.Select(r => r.Permission));
-            JwtUserVo jwtUserVo = await _onlineUserService.FindJwtUserAsync(netUser);
+            var jwtUserVo = await _onlineUserService.FindJwtUserAsync(netUser);
             return jwtUserVo.ToJson();
         }
 
@@ -165,12 +152,12 @@ namespace ApeVolo.Api.Controllers
         public async Task<ActionResult<object>> GetCode()
         {
             var (imgBytes, code) = ImgVerifyCodeHelper.BuildVerifyCode();
-            string imgUrl = ImgHelper.ToBase64StringUrl(imgBytes);
-            string uuid = RedisKey.CodeKey + GuidHelper.GenerateKey();
+            var imgUrl = ImgHelper.ToBase64StringUrl(imgBytes);
+            var uuid = RedisKey.CodeKey + GuidHelper.GenerateKey();
 
             await _redisCacheService.SetCacheAsync(uuid, code, TimeSpan.FromMinutes(2));
 
-            Dictionary<string, string> dic = new Dictionary<string, string> {{"img", imgUrl}, {"uuid", uuid}};
+            var dic = new Dictionary<string, string> { { "img", imgUrl }, { "uuid", uuid } };
             return dic.ToJson();
         }
 
@@ -184,12 +171,9 @@ namespace ApeVolo.Api.Controllers
         [ApeVoloOnline]
         public async Task<ActionResult<object>> ResetEmail(string email)
         {
-            if (!email.IsEmail())
-            {
-                throw new BadRequestException("请输入正确的邮箱！");
-            }
+            if (!email.IsEmail()) throw new BadRequestException("请输入正确的邮箱！");
 
-            bool isTrue = await _queuedEmailService.ResetEmail(email, "EmailVerificationCode");
+            var isTrue = await _queuedEmailService.ResetEmail(email, "EmailVerificationCode");
             return isTrue ? Success() : Error();
         }
 
@@ -209,7 +193,7 @@ namespace ApeVolo.Api.Controllers
             await _redisCacheService.RemoveAsync(RedisKey.OnlineKey +
                                                  _currentUser.GetToken()
                                                      .ToHmacsha256String(AppSettings.GetValue("HmacSecret")));
-            await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + _currentUser.Id.ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + _currentUser.Id.ToString().ToMd5String());
             await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + _currentUser.Name.ToMd5String());
 
             return Success();

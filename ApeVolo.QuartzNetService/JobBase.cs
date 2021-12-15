@@ -1,13 +1,13 @@
-﻿using ApeVolo.Common.Helper;
-using ApeVolo.Common.SnowflakeIdHelper;
-using ApeVolo.IBusiness.Interface.Tasks;
-using Quartz;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Helper;
+using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Entity.Do.Tasks;
+using ApeVolo.IBusiness.Interface.Tasks;
 using ApeVolo.QuartzNetService.service;
+using Quartz;
 
 namespace ApeVolo.QuartzNetService
 {
@@ -93,7 +93,7 @@ namespace ApeVolo.QuartzNetService
                         //记录任务日志
                         QuartzNetLog quartzNetLog = new QuartzNetLog
                         {
-                            Id = IdHelper.GetId(),
+                            Id = IdHelper.GetLongId(),
                             TaskId = quartzNet.Id,
                             TaskName = quartzNet.TaskName,
                             TaskGroup = quartzNet.TaskGroup,

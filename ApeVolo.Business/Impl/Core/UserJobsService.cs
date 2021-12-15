@@ -1,15 +1,15 @@
-﻿using ApeVolo.Common.Extention;
-using ApeVolo.IBusiness.Interface.Core;
-using ApeVolo.IBusiness.EditDto.Core;
-using ApeVolo.IRepository.Core;
-using AutoMapper;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Exception;
+using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Entity.Do.Core;
+using ApeVolo.IBusiness.EditDto.Core;
+using ApeVolo.IBusiness.Interface.Core;
+using ApeVolo.IRepository.Core;
+using AutoMapper;
 
 namespace ApeVolo.Business.Impl.Core
 {
@@ -36,7 +36,7 @@ namespace ApeVolo.Business.Impl.Core
             return await _baseDal.AddAsync(userJobs);
         }
 
-        public async Task<bool> DeleteByUserIdAsync(string userId)
+        public async Task<bool> DeleteByUserIdAsync(long userId)
         {
             if (userId.IsNullOrEmpty())
             {
@@ -47,7 +47,7 @@ namespace ApeVolo.Business.Impl.Core
         }
 
         [RedisCaching(KeyPrefix = RedisKey.UserJobsById)]
-        public async Task<List<UserJobs>> QueryByUserIdAsync(string userId)
+        public async Task<List<UserJobs>> QueryByUserIdAsync(long userId)
         {
             return await _baseDal.QueryListAsync(uj => uj.UserId == userId);
         }

@@ -36,12 +36,13 @@ namespace ApeVolo.Common.Helper
                 var dtlType = pi.PropertyType.Name;
                 if (dtlType == "Int32")
                 {
-                    if (((dynamic)value) < 0)
+                    if ((dynamic)value < 0)
                     {
                         isTrue = false;
                         break;
                     }
                 }
+
                 if (dtlType == "List`1")
                 {
                     var list = (dynamic)value;
@@ -51,6 +52,7 @@ namespace ApeVolo.Common.Helper
                         break;
                     }
                 }
+
                 if (value.IsNullOrEmpty())
                 {
                     isTrue = false;
@@ -63,6 +65,5 @@ namespace ApeVolo.Common.Helper
                 throw new BadRequestException(message);
             }
         }
-
     }
 }

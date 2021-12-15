@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
-using System;
+﻿using System;
 using System.IO;
 using ApeVolo.Common.Extention;
+using log4net;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace ApeVolo.Api.Extensions
 {
@@ -12,8 +13,8 @@ namespace ApeVolo.Api.Extensions
     /// </summary>
     public static class SwaggerSetup
     {
-        private static readonly log4net.ILog Log =
-            log4net.LogManager.GetLogger(typeof(SwaggerSetup));
+        private static readonly ILog Log =
+            LogManager.GetLogger(typeof(SwaggerSetup));
 
         public static void AddSwaggerSetup(this IServiceCollection services)
         {

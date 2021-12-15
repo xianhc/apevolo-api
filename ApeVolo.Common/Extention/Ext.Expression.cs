@@ -362,8 +362,7 @@ namespace ApeVolo.Common.Extention
         {
             if (p.Type == _parameter.Type)
                 return _parameter;
-            else
-                return p;
+            return p;
         }
     }
 

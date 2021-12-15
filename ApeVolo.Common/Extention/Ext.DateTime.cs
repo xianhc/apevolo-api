@@ -1,6 +1,6 @@
-﻿using NodaTime;
-using System;
+﻿using System;
 using System.Globalization;
+using NodaTime;
 
 namespace ApeVolo.Common.Extention
 {
@@ -28,7 +28,7 @@ namespace ApeVolo.Common.Extention
         public static long ToJsTimestamp(this DateTime dateTime)
         {
             var startTime = new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime();
-            long result = (dateTime.Ticks - startTime.Ticks) / 10000;   //除10000调整为13位
+            long result = (dateTime.Ticks - startTime.Ticks) / 10000; //除10000调整为13位
             return result;
         }
 
@@ -41,7 +41,7 @@ namespace ApeVolo.Common.Extention
         {
             Int64 retval = 0;
             var st = new DateTime(1970, 1, 1);
-            TimeSpan t = (dt.ToUniversalTime() - st);
+            TimeSpan t = dt.ToUniversalTime() - st;
             retval = (Int64)(t.TotalMilliseconds + 0.5);
             return retval;
         }

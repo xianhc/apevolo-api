@@ -9,18 +9,18 @@ namespace ApeVolo.Entity.Seed
         public MyContext()
         {
             if (string.IsNullOrEmpty(ConnectionString))
-                throw new ArgumentNullException($"数据库连接字符串为空");
-            Db = new SqlSugarClient(new ConnectionConfig()
+                throw new ArgumentNullException("数据库连接字符串为空");
+            Db = new SqlSugarClient(new ConnectionConfig
             {
                 ConnectionString = ConnectionString,
                 DbType = DbType,
                 IsAutoCloseConnection = true,
                 InitKeyType = InitKeyType.Attribute, //mark
-                ConfigureExternalServices = new ConfigureExternalServices()
+                ConfigureExternalServices = new ConfigureExternalServices
                 {
                     //DataInfoCacheService = new HttpRuntimeCache()
                 },
-                MoreSettings = new ConnMoreSettings()
+                MoreSettings = new ConnMoreSettings
                 {
                     //IsWithNoLockQuery = true,
                     IsAutoRemoveDataCache = true

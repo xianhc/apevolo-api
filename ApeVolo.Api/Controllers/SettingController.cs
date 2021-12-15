@@ -79,7 +79,7 @@ namespace ApeVolo.Api.Controllers
         [Route("delete")]
         [Description("删除设置")]
         [NoJsonParamter]
-        public async Task<ActionResult<object>> Delete([FromBody] HashSet<string> ids)
+        public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
         {
             if (ids == null || ids.Count < 1)
             {
@@ -103,7 +103,7 @@ namespace ApeVolo.Api.Controllers
         {
             var settingList = await _settingService.QueryAsync(settingQueryCriteria, pagination);
 
-            return new ActionResultVm<SettingDto>()
+            return new ActionResultVm<SettingDto>
             {
                 Content = settingList,
                 TotalElements = pagination.TotalElements

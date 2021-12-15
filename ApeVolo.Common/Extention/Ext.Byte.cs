@@ -51,7 +51,7 @@ namespace ApeVolo.Common.Extention
         /// <returns></returns>
         public static string ToBinString(this byte aByte)
         {
-            return new[] {aByte}.ToBinString();
+            return new[] { aByte }.ToBinString();
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace ApeVolo.Common.Extention
         /// <returns></returns>
         public static string To0XString(this byte aByte)
         {
-            return new[] {aByte}.To0XString();
+            return new[] { aByte }.To0XString();
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace ApeVolo.Common.Extention
         public static string ToAsciiString(this byte[] bytes)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            bytes.ToList().ForEach(aByte => { stringBuilder.Append((char) aByte); });
+            bytes.ToList().ForEach(aByte => { stringBuilder.Append((char)aByte); });
 
             return stringBuilder.ToString();
         }
@@ -114,7 +114,7 @@ namespace ApeVolo.Common.Extention
         /// <returns></returns>
         public static string ToAsciiString(this byte aByte)
         {
-            return new[] {aByte}.ToAsciiString();
+            return new[] { aByte }.ToAsciiString();
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace ApeVolo.Common.Extention
                 value = value ^ bytes[i];
             }
 
-            return (byte) value;
+            return (byte)value;
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace ApeVolo.Common.Extention
             int num = 0;
             for (int i = 0; i < bytes.Length; i++)
             {
-                num += bytes[i] * ((int) Math.Pow(256, bytes.Length - i - 1));
+                num += bytes[i] * (int)Math.Pow(256, bytes.Length - i - 1);
             }
 
             return num;
@@ -172,7 +172,7 @@ namespace ApeVolo.Common.Extention
         /// <returns></returns>
         public static T ToObject<T>(this byte[] bytes)
         {
-            return (T) ToObject(bytes);
+            return (T)ToObject(bytes);
         }
 
         /// <summary>

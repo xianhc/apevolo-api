@@ -6,13 +6,13 @@ namespace ApeVolo.IBusiness.EditDto.Core
     [AutoMapping(typeof(UserJobs), typeof(CreateUpdateUserJobsDto))]
     public class CreateUpdateUserJobsDto
     {
-        public CreateUpdateUserJobsDto(string userId, string jobId)
+        public CreateUpdateUserJobsDto(long userId, long jobId)
         {
             UserId = userId;
             JobId = jobId;
         }
-        public string UserId { get; set; }
+        public long UserId { get; set; }
 
-        public string JobId { get; set; }
+        public long JobId { get; set; }
     }
 }

@@ -33,7 +33,11 @@ namespace ApeVolo.Common.Helper
             /// <summary>  
             /// 验证码的字符集，去掉了一些容易混淆的字符  
             /// </summary>  
-            private readonly char[] _character = { '2', '3', '4', '5', '6', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'T', 'W', 'X', 'Y' };
+            private readonly char[] _character =
+            {
+                '2', '3', '4', '5', '6', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P',
+                'R', 'S', 'T', 'W', 'X', 'Y'
+            };
 
             /// <summary>
             /// 
@@ -45,7 +49,7 @@ namespace ApeVolo.Common.Helper
             {
                 char code;
                 string checkCode = String.Empty;
-                System.Random random = new Random();
+                Random random = new Random();
 
                 for (int i = 0; i < codeCount; i++)
                 {
@@ -54,7 +58,7 @@ namespace ApeVolo.Common.Helper
                     // 要求全为数字或字母  
                     if (codeType == 1)
                     {
-                        if ((int)code < 48 || (int)code > 57)
+                        if (code < 48 || code > 57)
                         {
                             i--;
                             continue;
@@ -62,12 +66,13 @@ namespace ApeVolo.Common.Helper
                     }
                     else if (codeType == 2)
                     {
-                        if ((int)code < 65 || (int)code > 90)
+                        if (code < 65 || code > 90)
                         {
                             i--;
                             continue;
                         }
                     }
+
                     checkCode += code;
                 }
 
@@ -87,13 +92,14 @@ namespace ApeVolo.Common.Helper
                 //生成起始序列值     
                 int seekSeek = unchecked((int)DateTime.Now.Ticks);
                 Random seekRand = new Random(seekSeek);
-                int beginSeek = (int)seekRand.Next(0, Int32.MaxValue - length * 10000);
+                int beginSeek = seekRand.Next(0, Int32.MaxValue - length * 10000);
                 int[] seeks = new int[length];
                 for (int i = 0; i < length; i++)
                 {
                     beginSeek += 10000;
                     seeks[i] = beginSeek;
                 }
+
                 //生成随机数字     
                 for (int i = 0; i < length; i++)
                 {
@@ -101,6 +107,7 @@ namespace ApeVolo.Common.Helper
                     int pownum = 1 * (int)Math.Pow(10, length);
                     randMembers[i] = rand.Next(pownum, Int32.MaxValue);
                 }
+
                 //抽取随机数字     
                 for (int i = 0; i < length; i++)
                 {
@@ -110,11 +117,13 @@ namespace ApeVolo.Common.Helper
                     int numPosition = rand.Next(0, numLength - 1);
                     validateNums[i] = Int32.Parse(numStr.Substring(numPosition, 1));
                 }
+
                 //生成验证码     
                 for (int i = 0; i < length; i++)
                 {
                     validateNumberStr += validateNums[i].ToString();
                 }
+
                 return validateNumberStr;
             }
 
@@ -148,11 +157,14 @@ namespace ApeVolo.Common.Helper
                         int y2 = random.Next(image.Height);
                         g.DrawLine(new Pen(Color.Silver), x1, y1, x2, y2);
                     }
+
                     //画图片验证码
                     Rectangle layoutRectange = new Rectangle(0, 0, image.Width, image.Height);
-                    Font font = new Font("Arial", fontsize, (FontStyle.Bold | FontStyle.Italic));
-                    LinearGradientBrush brush = new LinearGradientBrush(layoutRectange, Color.Blue, Color.DarkRed, 1.2f, true);
-                    StringFormat format = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+                    Font font = new Font("Arial", fontsize, FontStyle.Bold | FontStyle.Italic);
+                    LinearGradientBrush brush =
+                        new LinearGradientBrush(layoutRectange, Color.Blue, Color.DarkRed, 1.2f, true);
+                    StringFormat format = new StringFormat
+                        { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
                     g.DrawString(validateCode, font, brush, layoutRectange, format);
 
                     //画图片的前景干扰点     
@@ -162,6 +174,7 @@ namespace ApeVolo.Common.Helper
                         int y = random.Next(image.Height);
                         image.SetPixel(x, y, Color.FromArgb(random.Next()));
                     }
+
                     //画图片的边框线     
                     g.DrawRectangle(new Pen(Color.Silver), 0, 0, image.Width - 1, image.Height - 1);
                     //保存图片数据     
@@ -203,7 +216,7 @@ namespace ApeVolo.Common.Helper
         /// <returns></returns>
         public static (byte[] imgBytes, string code) BuildVerifyCode()
         {
-            int mathResult = 0;//结果
+            int mathResult = 0; //结果
             byte[] bytes = null;
             Bitmap bmp = new Bitmap(111, 36);
             Graphics graph = Graphics.FromImage(bmp);
@@ -233,6 +246,7 @@ namespace ApeVolo.Common.Helper
                         expression = $"{operator1} x {operator2} = ?";
                         break;
                 }
+
                 graph.Clear(Color.FromArgb(255, 255, 255)); ////背景色，可自行设置
 
                 ////画噪点
@@ -240,10 +254,10 @@ namespace ApeVolo.Common.Helper
                 {
                     graph.DrawRectangle(
                         new Pen(Color.FromArgb(rnd.Next(0, 255), rnd.Next(0, 255), rnd.Next(0, 255))),
-                        (float)rnd.Next(2, 128),
-                        (float)rnd.Next(2, 38),
+                        rnd.Next(2, 128),
+                        rnd.Next(2, 38),
                         0.2F, //噪点的粒度
-                        0.2F);//噪点的粒度，可以调节这两个值，到认为自己满意
+                        0.2F); //噪点的粒度，可以调节这两个值，到认为自己满意
                 }
 
                 ////输出表达式

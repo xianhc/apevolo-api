@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ApeVolo.Api.Extensions
 {
@@ -21,11 +21,11 @@ namespace ApeVolo.Api.Extensions
                 if (AppSettings.GetValue("Cors", "EnableAllIPs").ToBool())
                 {
                     //允许任意跨域请求
-                    c.AddPolicy(AppSettings.GetValue(new[] {"Cors", "PolicyName"}),
+                    c.AddPolicy(AppSettings.GetValue("Cors", "PolicyName"),
                         policy =>
                         {
                             policy
-                                .SetIsOriginAllowed((host) => true)
+                                .SetIsOriginAllowed(host => true)
                                 .AllowAnyMethod()
                                 .AllowAnyHeader()
                                 .AllowCredentials();

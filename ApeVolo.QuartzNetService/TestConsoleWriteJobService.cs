@@ -1,8 +1,8 @@
-﻿using ApeVolo.IBusiness.Interface.Tasks;
-using Quartz;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using ApeVolo.IBusiness.Interface.Tasks;
 using ApeVolo.QuartzNetService.service;
+using Quartz;
 
 namespace ApeVolo.QuartzNetService
 {

@@ -21,7 +21,7 @@ namespace ApeVolo.IBusiness.EditDto.Core
 
         public string ComponentName { get; set; }
 
-        public string PId { get; set; }
+        public long? PId { get; set; }
 
         public int MenuSort { get; set; }
 

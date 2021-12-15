@@ -8,7 +8,7 @@ namespace ApeVolo.IBusiness.EditDto.Core
     {
         [ApeVoloRequired(Message = "部门名称不能为空！")]
         public string Name { get; set; }
-        public string PId { get; set; }
+        public long? PId { get; set; }
         public int Sort { get; set; }
         public bool Enabled { get; set; }
         //public int SubCount { get; set; }

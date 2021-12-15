@@ -50,7 +50,7 @@ namespace ApeVolo.Api.Aop
                     }
 
                     dynamic result = cacheValue.ToObject(returnType);
-                    invocation.ReturnValue = (typeof(Task).IsAssignableFrom(method.ReturnType))
+                    invocation.ReturnValue = typeof(Task).IsAssignableFrom(method.ReturnType)
                         ? Task.FromResult(result)
                         : result;
                     return;

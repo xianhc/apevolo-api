@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ApeVolo.Common.Helper
+﻿namespace ApeVolo.Common.Helper
 {
     public static class DateTimeHelper
     {

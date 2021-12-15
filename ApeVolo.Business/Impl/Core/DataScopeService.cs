@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Common.DI;
-using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Dto.Core;
+using ApeVolo.IBusiness.Interface.Core;
 
 namespace ApeVolo.Business.Impl.Core
 {
@@ -30,9 +30,9 @@ namespace ApeVolo.Business.Impl.Core
 
         #region 基础方法
 
-        public async Task<List<string>> GetDeptIds(UserDto userDto)
+        public async Task<List<long>> GetDeptIds(UserDto userDto)
         {
-            List<string> deptIds = new List<string>();
+            List<long> deptIds = new List<long>();
             // 查询用户角色
             List<RoleSmallDto> roleList = await _roleService.QueryByUserIdAsync(userDto.Id);
 
@@ -69,7 +69,7 @@ namespace ApeVolo.Business.Impl.Core
             return deptIds;
         }
 
-        private async Task GetCustomizeDeptIds(List<string> deptIds, RoleSmallDto role)
+        private async Task GetCustomizeDeptIds(List<long> deptIds, RoleSmallDto role)
         {
             var roleDepts = await _roleDeptService.QueryByRoleIdAsync(role.Id);
             roleDepts.ForEach(async rd =>
@@ -83,7 +83,7 @@ namespace ApeVolo.Business.Impl.Core
                 List<DepartmentDto> departmentDtos = await _departmentService.QueryByPIdAsync(rd.DeptId);
                 if (departmentDtos != null && departmentDtos.Count > 0)
                 {
-                    List<string> ids = await _departmentService.FindChildIds(deptIds, departmentDtos);
+                    List<long> ids = await _departmentService.FindChildIds(deptIds, departmentDtos);
                     ids.ForEach(id =>
                     {
                         if (!deptIds.Contains(id))

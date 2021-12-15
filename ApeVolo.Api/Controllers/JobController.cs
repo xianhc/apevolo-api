@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Threading.Tasks;
+using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
+using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
-using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
+using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Mvc;
-using ApeVolo.Common.Helper.Excel;
 using Microsoft.AspNetCore.StaticFiles;
-using System.IO;
-using ApeVolo.Api.ActionExtension.Json;
-using ApeVolo.Common.AttributeExt;
 
 namespace ApeVolo.Api.Controllers
 {
@@ -80,7 +80,7 @@ namespace ApeVolo.Api.Controllers
         [Route("delete")]
         [Description("删除岗位")]
         [NoJsonParamter]
-        public async Task<ActionResult<object>> Delete([FromBody] HashSet<string> ids)
+        public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
         {
             if (ids == null || ids.Count < 1)
             {
@@ -104,7 +104,7 @@ namespace ApeVolo.Api.Controllers
         {
             var jobList = await _jobService.QueryAsync(jobQueryCriteria, pagination);
 
-            return new ActionResultVm<JobDto>()
+            return new ActionResultVm<JobDto>
             {
                 Content = jobList,
                 TotalElements = pagination.TotalElements
@@ -118,12 +118,12 @@ namespace ApeVolo.Api.Controllers
         [HttpGet]
         [Route("queryAll")]
         [Description("获取岗位列表")]
-        [ApeVoloAuthorize(new[] {"admin", "job_list"})]
+        [ApeVoloAuthorize(new[] { "admin", "job_list" })]
         public async Task<ActionResult<object>> QueryAll()
         {
             var jobList = await _jobService.QueryAllAsync();
 
-            return new ActionResultVm<JobDto>()
+            return new ActionResultVm<JobDto>
             {
                 Content = jobList,
                 TotalElements = jobList.Count

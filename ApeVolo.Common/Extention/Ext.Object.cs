@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using ApeVolo.Common.ClassLibrary;
+using Newtonsoft.Json;
 
 namespace ApeVolo.Common.Extention
 {
@@ -38,11 +38,8 @@ namespace ApeVolo.Common.Extention
         {
             if (obj == null)
                 return true;
-            else
-            {
-                string objStr = obj.ToString();
-                return string.IsNullOrEmpty(objStr);
-            }
+            string objStr = obj.ToString();
+            return string.IsNullOrEmpty(objStr);
         }
 
         /// <summary>
@@ -75,7 +72,8 @@ namespace ApeVolo.Common.Extention
             var serializerSettings = new JsonSerializerSettings
             {
                 // 设置为驼峰命名
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                //ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                ContractResolver = new CustomContractResolver(),
                 DateFormatString = "yyyy-MM-dd HH:mm:ss",
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
@@ -94,7 +92,8 @@ namespace ApeVolo.Common.Extention
             var serializerSettings = new JsonSerializerSettings
             {
                 // 设置为驼峰命名
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                //ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                ContractResolver = new CustomContractResolver(),
                 DateFormatString = "yyyy-MM-dd HH:mm:ss",
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
@@ -111,7 +110,8 @@ namespace ApeVolo.Common.Extention
             var serializerSettings = new JsonSerializerSettings
             {
                 // 设置为驼峰命名
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                //ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                ContractResolver = new CustomContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore
             };
 
@@ -132,7 +132,7 @@ namespace ApeVolo.Common.Extention
             PropertyInfo[] infos = t.GetType().GetProperties();
             for (int i = 0; i < infos.Length; i++)
             {
-                jsonStr = jsonStr + "\"" + infos[i].Name + "\":\"" + infos[i].GetValue(t).ToString() + "\"";
+                jsonStr = jsonStr + "\"" + infos[i].Name + "\":\"" + infos[i].GetValue(t) + "\"";
                 if (i != infos.Length - 1)
                     jsonStr += ",";
             }

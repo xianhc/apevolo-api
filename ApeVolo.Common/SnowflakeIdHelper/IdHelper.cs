@@ -25,7 +25,7 @@
         /// 获取long型雪花Id
         /// </summary>
         /// <returns></returns>
-        private static long GetLongId()
+        public static long GetLongId()
         {
             return IdWorker.NextId();
         }

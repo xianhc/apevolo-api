@@ -1,10 +1,10 @@
-﻿using ApeVolo.Common.Extention;
+﻿using System;
+using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.IBusiness.Interface.Tasks;
 using ApeVolo.QuartzNetService.service;
 using log4net;
 using Microsoft.AspNetCore.Builder;
-using System;
 
 namespace ApeVolo.Api.Middleware
 {

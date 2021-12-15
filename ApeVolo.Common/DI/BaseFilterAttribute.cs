@@ -1,5 +1,5 @@
-﻿using Castle.DynamicProxy;
-using System;
+﻿using System;
+using Castle.DynamicProxy;
 
 namespace ApeVolo.Common.DI
 {

@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Threading.Tasks;
-using ApeVolo.Common.Extention;
-using ApeVolo.Common.Model;
-using ApeVolo.IBusiness.Interface.Core;
-using ApeVolo.IBusiness.Dto.Core;
-using ApeVolo.IBusiness.EditDto.Core;
-using ApeVolo.IBusiness.QueryModel;
-using Microsoft.AspNetCore.Mvc;
+using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Common.Helper.Excel;
-using Microsoft.AspNetCore.StaticFiles;
-using System.IO;
-using ApeVolo.Api.ActionExtension.Json;
+using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Model;
+using ApeVolo.IBusiness.Dto.Core;
+using ApeVolo.IBusiness.EditDto.Core;
+using ApeVolo.IBusiness.Interface.Core;
+using ApeVolo.IBusiness.QueryModel;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace ApeVolo.Api.Controllers
 {
@@ -83,7 +83,7 @@ namespace ApeVolo.Api.Controllers
         [Description("删除角色")]
         [Route("delete")]
         [NoJsonParamter]
-        public async Task<ActionResult<object>> Delete([FromBody] HashSet<string> ids)
+        public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
         {
             if (ids == null || ids.Count < 0)
             {
@@ -130,7 +130,7 @@ namespace ApeVolo.Api.Controllers
         {
             var roleList = await _roleService.QueryAsync(roleQueryCriteria, pagination);
 
-            return new ActionResultVm<RoleDto>()
+            return new ActionResultVm<RoleDto>
             {
                 Content = roleList,
                 TotalElements = pagination.TotalElements

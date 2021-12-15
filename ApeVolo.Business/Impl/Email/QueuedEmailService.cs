@@ -1,23 +1,22 @@
-﻿using ApeVolo.Business.Base;
-using ApeVolo.Common.Caches.Redis.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using ApeVolo.Business.Base;
+using ApeVolo.Common.Caches.Redis.Service;
+using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
+using ApeVolo.Entity.Do.Email;
 using ApeVolo.IBusiness.Dto.Email;
 using ApeVolo.IBusiness.EditDto.Email;
 using ApeVolo.IBusiness.Interface.Email;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.Email;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using ApeVolo.Common.Caches.Redis.Service;
-using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
-using ApeVolo.Entity.Do.Email;
 
 namespace ApeVolo.Business.Impl.Email
 {
@@ -95,11 +94,11 @@ namespace ApeVolo.Business.Impl.Email
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public async Task<bool> DeleteAsync(HashSet<string> ids)
+        public async Task<bool> DeleteAsync(HashSet<long> ids)
         {
             var emailAccounts = await QueryByIdsAsync(ids);
             if (emailAccounts.Count < 1)
-                throw new BadRequestException($"无可删除数据!");
+                throw new BadRequestException("无可删除数据!");
 
             return await DeleteEntityListAsync(emailAccounts);
         }
@@ -113,7 +112,7 @@ namespace ApeVolo.Business.Impl.Email
         public async Task<List<QueuedEmailDto>> QueryAsync(QueuedEmailQueryCriteria queuedEmailQueryCriteria,
             Pagination pagination)
         {
-            Expression<Func<QueuedEmail, bool>> whereExpression = x => (x.IsDeleted == false);
+            Expression<Func<QueuedEmail, bool>> whereExpression = x => x.IsDeleted == false;
             if (!queuedEmailQueryCriteria.Id.IsNullOrEmpty())
             {
                 whereExpression = whereExpression.And(x => x.Id == queuedEmailQueryCriteria.Id);
@@ -195,7 +194,7 @@ namespace ApeVolo.Business.Impl.Email
                 await _redisCacheService.SetCacheAsync(RedisKey.EmailCaptchaKey + queuedEmail.To.ToMd5String(), captcha,
                     TimeSpan.FromMinutes(5));
                 //进redis队列执行发送
-                await _redisCacheService.ListLeftPushAsync(MqTopicNameKey.MailboxQueue, queuedEmail.Id);
+                await _redisCacheService.ListLeftPushAsync(MqTopicNameKey.MailboxQueue, queuedEmail.Id.ToString());
             }
 
             return isTrue;

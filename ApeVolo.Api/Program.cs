@@ -1,15 +1,14 @@
-using Autofac.Extensions.DependencyInjection;
-using log4net;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
 using System.IO;
 using System.Reflection;
 using System.Xml;
-using ApeVolo.Entity.Seed;
+using Autofac.Extensions.DependencyInjection;
+using log4net;
+using log4net.Config;
+using log4net.Repository.Hierarchy;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace ApeVolo.Api
 {
@@ -22,10 +21,10 @@ namespace ApeVolo.Api
             XmlDocument log4NetConfig = new XmlDocument();
             log4NetConfig.Load(File.OpenRead("Log4net.config"));
 
-            var repo = log4net.LogManager.CreateRepository(
-                Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+            var repo = LogManager.CreateRepository(
+                Assembly.GetEntryAssembly(), typeof(Hierarchy));
 
-            log4net.Config.XmlConfigurator.Configure(repo, log4NetConfig["log4net"]);
+            XmlConfigurator.Configure(repo, log4NetConfig["log4net"]);
 
             var host = CreateHostBuilder(args)
                 .ConfigureAppConfiguration(r => r.AddJsonFile("IpRateLimit.json"))

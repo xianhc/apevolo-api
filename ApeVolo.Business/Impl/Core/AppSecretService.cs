@@ -39,6 +39,7 @@ namespace ApeVolo.Business.Impl.Core
         #endregion
 
         #region 基础方法
+
         public async Task<bool> CreateAsync(CreateUpdateAppSecretDto createUpdateAppSecretDto)
         {
             if (await IsExistAsync(r => r.IsDeleted == false
@@ -65,7 +66,7 @@ namespace ApeVolo.Business.Impl.Core
             }
 
             if (oldAppSecret.AppName != createUpdateAppSecretDto.AppName && await IsExistAsync(x => x.IsDeleted == false
-                && x.AppName == createUpdateAppSecretDto.AppName))
+                    && x.AppName == createUpdateAppSecretDto.AppName))
             {
                 throw new BadRequestException($"应用名称=>{createUpdateAppSecretDto.AppName}=>已存在！");
             }
@@ -74,7 +75,7 @@ namespace ApeVolo.Business.Impl.Core
             return await UpdateEntityAsync(appSecret);
         }
 
-        public async Task<bool> DeleteAsync(HashSet<string> ids)
+        public async Task<bool> DeleteAsync(HashSet<long> ids)
         {
             var appSecretList = await QueryByIdsAsync(ids);
             return await DeleteEntityListAsync(appSecretList);
@@ -83,7 +84,7 @@ namespace ApeVolo.Business.Impl.Core
         public async Task<List<AppSecretDto>> QueryAsync(AppsecretQueryCriteria appsecretQueryCriteria,
             Pagination pagination)
         {
-            Expression<Func<AppSecret, bool>> whereLambda = r => (r.IsDeleted == false);
+            Expression<Func<AppSecret, bool>> whereLambda = r => r.IsDeleted == false;
             if (!appsecretQueryCriteria.KeyWords.IsNullOrEmpty())
             {
                 whereLambda = whereLambda.And(r =>
@@ -104,7 +105,7 @@ namespace ApeVolo.Business.Impl.Core
 
         public async Task<List<ExportRowModel>> DownloadAsync(AppsecretQueryCriteria appsecretQueryCriteria)
         {
-            var appSecretList = await QueryAsync(appsecretQueryCriteria, new Pagination() {PageSize = 9999});
+            var appSecretList = await QueryAsync(appsecretQueryCriteria, new Pagination { PageSize = 9999 });
 
             List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
             List<ExportColumnModel> exportColumnModels;
@@ -114,11 +115,11 @@ namespace ApeVolo.Business.Impl.Core
                 point = 0;
                 exportColumnModels = new List<ExportColumnModel>
                 {
-                    new() {Key = "ID", Value = appsecret.Id, Point = point++},
-                    new() {Key = "应用ID", Value = appsecret.AppId, Point = point++},
-                    new() {Key = "应用名称", Value = appsecret.AppName, Point = point++},
-                    new() {Key = "应用秘钥", Value = appsecret.AppSecretKey, Point = point++},
-                    new() {Key = "备注", Value = appsecret.Remark, Point = point++},
+                    new() { Key = "ID", Value = appsecret.Id.ToString(), Point = point++ },
+                    new() { Key = "应用ID", Value = appsecret.AppId, Point = point++ },
+                    new() { Key = "应用名称", Value = appsecret.AppName, Point = point++ },
+                    new() { Key = "应用秘钥", Value = appsecret.AppSecretKey, Point = point++ },
+                    new() { Key = "备注", Value = appsecret.Remark, Point = point++ },
                     new()
                     {
                         Key = "创建时间", Value = appsecret.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
@@ -127,13 +128,14 @@ namespace ApeVolo.Business.Impl.Core
                     {
                         Key = "更新时间", Value = appsecret.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
                     },
-                    new() {Key = "创建人", Value = appsecret.CreateBy, Point = point++},
-                    new() {Key = "更新人", Value = appsecret.UpdateBy, Point = point++},
+                    new() { Key = "创建人", Value = appsecret.CreateBy, Point = point++ },
+                    new() { Key = "更新人", Value = appsecret.UpdateBy, Point = point++ },
                 };
-                exportRowModels.Add(new ExportRowModel() {exportColumnModels = exportColumnModels});
+                exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
             });
             return exportRowModels;
         }
+
         #endregion
     }
 }

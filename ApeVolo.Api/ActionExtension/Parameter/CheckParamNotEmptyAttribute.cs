@@ -34,8 +34,7 @@ namespace ApeVolo.Api.ActionExtension.Parameter
             {
                 if (!allParamters.ContainsKey(x))
                     return true;
-                else
-                    return allParamters[x].IsNullOrEmpty();
+                return allParamters[x].IsNullOrEmpty();
             }).ToList();
             if (needParamters.Count != 0)
             {

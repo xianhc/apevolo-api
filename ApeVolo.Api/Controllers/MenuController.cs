@@ -86,7 +86,7 @@ namespace ApeVolo.Api.Controllers
         [Route("delete")]
         [Description("删除菜单")]
         [NoJsonParamter]
-        public async Task<ActionResult<object>> Delete([FromBody] HashSet<string> ids)
+        public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
         {
             if (ids == null || ids.Count < 1)
             {
@@ -120,7 +120,7 @@ namespace ApeVolo.Api.Controllers
         [Description("获取子菜单")]
         [Route("lazy")]
         [ApeVoloAuthorize(new[] {"admin", "menu:list"})]
-        public async Task<ActionResult<object>> GetMenuLazy(string pid)
+        public async Task<ActionResult<object>> GetMenuLazy(long pid)
         {
             if (pid.IsNullOrEmpty())
             {
@@ -184,7 +184,7 @@ namespace ApeVolo.Api.Controllers
         [Route("superior")]
         [NoJsonParamter]
         [ApeVoloAuthorize(new[] {"admin", "menu:list"})]
-        public async Task<ActionResult<object>> GetSuperior([FromBody] List<string> ids)
+        public async Task<ActionResult<object>> GetSuperior([FromBody] List<long> ids)
         {
             if (ids == null || ids.Count < 1)
             {
@@ -200,7 +200,7 @@ namespace ApeVolo.Api.Controllers
         [Route("child")]
         [ApeVoloAuthorize(new[] {"admin", "menu:list"})]
         [NoJsonParamter]
-        public async Task<ActionResult<object>> GetChild(string id)
+        public async Task<ActionResult<object>> GetChild(long id)
         {
             if (id.IsNullOrEmpty())
             {

@@ -1,27 +1,26 @@
-﻿using ApeVolo.Common.Model;
-using ApeVolo.Common.WebApp;
-using ApeVolo.IBusiness.Interface.Core;
-using AutoMapper;
-using SqlSugar;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Common.Caches.Redis.Extensions;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
+using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Model;
+using ApeVolo.Common.WebApp;
+using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
+using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.Core;
+using AutoMapper;
 using Castle.Core.Internal;
-using ApeVolo.Common.Helper.Excel;
-using ApeVolo.Entity.Do.Core;
+using SqlSugar;
 
 namespace ApeVolo.Business.Impl.Core
 {
@@ -87,8 +86,8 @@ namespace ApeVolo.Business.Impl.Core
             if (!createUpdateRoleDto.Depts.IsNullOrEmpty() && createUpdateRoleDto.Depts.Count > 0)
             {
                 var roleDepts = new List<RolesDepartments>();
-                roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RolesDepartments()
-                    {RoleId = role.Id, DeptId = rd.Id}));
+                roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RolesDepartments
+                    { RoleId = role.Id, DeptId = rd.Id }));
                 await _roleDeptService.CreateAsync(roleDepts);
             }
 
@@ -106,14 +105,14 @@ namespace ApeVolo.Business.Impl.Core
             }
 
             if (oldRole.Name != createUpdateRoleDto.Name && await IsExistAsync(x => x.IsDeleted == false
-                && x.Name == createUpdateRoleDto.Name))
+                    && x.Name == createUpdateRoleDto.Name))
             {
                 throw new BadRequestException($"角色名称=>{createUpdateRoleDto.Name}=>已存在！");
             }
 
             if (oldRole.Permission != createUpdateRoleDto.Permission && await IsExistAsync(x =>
-                x.IsDeleted == false
-                && x.Permission == createUpdateRoleDto.Permission))
+                    x.IsDeleted == false
+                    && x.Permission == createUpdateRoleDto.Permission))
             {
                 throw new BadRequestException($"角色代码=>{createUpdateRoleDto.Permission}=>已存在！");
             }
@@ -127,8 +126,8 @@ namespace ApeVolo.Business.Impl.Core
             if (!createUpdateRoleDto.Depts.IsNullOrEmpty() && createUpdateRoleDto.Depts.Count > 0)
             {
                 var roleDepts = new List<RolesDepartments>();
-                roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RolesDepartments()
-                    {RoleId = role.Id, DeptId = rd.Id}));
+                roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RolesDepartments
+                    { RoleId = role.Id, DeptId = rd.Id }));
                 await _roleDeptService.CreateAsync(roleDepts);
             }
 
@@ -136,7 +135,7 @@ namespace ApeVolo.Business.Impl.Core
         }
 
         [UseTran]
-        public async Task<bool> DeleteAsync(HashSet<string> ids)
+        public async Task<bool> DeleteAsync(HashSet<long> ids)
         {
             //返回用户列表的最大角色等级
             var roles = await QueryByIdsAsync(ids);
@@ -153,7 +152,7 @@ namespace ApeVolo.Business.Impl.Core
 
         public async Task<List<RoleDto>> QueryAsync(RoleQueryCriteria roleQueryCriteria, Pagination pagination)
         {
-            Expression<Func<Role, bool>> whereLambda = r => (r.IsDeleted == false);
+            Expression<Func<Role, bool>> whereLambda = r => r.IsDeleted == false;
             if (!roleQueryCriteria.RoleName.IsNullOrEmpty())
             {
                 whereLambda = whereLambda.And(r =>
@@ -184,7 +183,7 @@ namespace ApeVolo.Business.Impl.Core
 
         public async Task<List<ExportRowModel>> DownloadAsync(RoleQueryCriteria roleQueryCriteria)
         {
-            var roles = await QueryAsync(roleQueryCriteria, new Pagination() {PageSize = 9999});
+            var roles = await QueryAsync(roleQueryCriteria, new Pagination { PageSize = 9999 });
             List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
             List<ExportColumnModel> exportColumnModels;
             int point;
@@ -193,23 +192,23 @@ namespace ApeVolo.Business.Impl.Core
                 point = 0;
                 exportColumnModels = new List<ExportColumnModel>
                 {
-                    new() {Key = "角色名称", Value = role.Name, Point = point++},
-                    new() {Key = "等级", Value = role.Level.ToString(), Point = point++},
-                    new() {Key = "描述", Value = role.Description, Point = point++},
-                    new() {Key = "权限数据", Value = role.DataScope, Point = point++},
+                    new() { Key = "角色名称", Value = role.Name, Point = point++ },
+                    new() { Key = "等级", Value = role.Level.ToString(), Point = point++ },
+                    new() { Key = "描述", Value = role.Description, Point = point++ },
+                    new() { Key = "权限数据", Value = role.DataScope, Point = point++ },
                     new()
                     {
                         Key = "权限部门",
                         Value = string.Join(",", role.DepartmentList.Select(x => x.Name).ToArray()),
                         Point = point++
                     },
-                    new() {Key = "权限代码", Value = role.Permission, Point = point++},
+                    new() { Key = "权限代码", Value = role.Permission, Point = point++ },
                     new()
                     {
                         Key = "创建时间", Value = role.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
                     }
                 };
-                exportRowModels.Add(new ExportRowModel() {exportColumnModels = exportColumnModels});
+                exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
             });
             return exportRowModels;
         }
@@ -218,7 +217,7 @@ namespace ApeVolo.Business.Impl.Core
 
         #region 扩展方法
 
-        public async Task<List<RoleDto>> QuerySingleAsync(string roleId)
+        public async Task<List<RoleDto>> QuerySingleAsync(long roleId)
         {
             var roleList = await _baseDal.QueryMapperAsync(async (it, cache) =>
             {
@@ -243,7 +242,7 @@ namespace ApeVolo.Business.Impl.Core
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<List<RoleSmallDto>> QueryByUserIdAsync(string userId)
+        public async Task<List<RoleSmallDto>> QueryByUserIdAsync(long userId)
         {
             var roleSmallList = await _baseDal.QueryMuchAsync<Role, UserRoles, Role>(
                 (r, ur) => new object[]
@@ -275,7 +274,7 @@ namespace ApeVolo.Business.Impl.Core
             return _mapper.Map<List<RoleDto>>(roleList);
         }
 
-        public async Task<int> QueryUserRoleLevelAsync(HashSet<string> ids)
+        public async Task<int> QueryUserRoleLevelAsync(HashSet<long> ids)
         {
             List<int> levels = new List<int>();
             var roles = await _baseDal.QueryMuchAsync<Role, UserRoles, Role>(
@@ -327,18 +326,19 @@ namespace ApeVolo.Business.Impl.Core
             List<RoleMenu> roleMenus = new List<RoleMenu>();
             if (!createUpdateRoleDto.Menus.IsNullOrEmpty() && createUpdateRoleDto.Menus.Count > 0)
             {
-                roleMenus.AddRange(createUpdateRoleDto.Menus.Select(rm => new RoleMenu()
-                    {RoleId = role.Id, MenuId = rm.Id}));
+                roleMenus.AddRange(createUpdateRoleDto.Menus.Select(rm => new RoleMenu
+                    { RoleId = role.Id, MenuId = rm.Id }));
 
-                await _rolesMenusService.DeleteAsync(new List<string>() {role.Id});
+                await _rolesMenusService.DeleteAsync(new List<long> { role.Id });
                 await _rolesMenusService.CreateAsync(roleMenus);
             }
 
             //获取所有用户  删除缓存
-            var userRoles = await _userRolesService.QueryByRoleIdsAsync(new HashSet<string>() {role.Id});
-            userRoles.ForEach(async (ur) =>
+            var userRoles = await _userRolesService.QueryByRoleIdsAsync(new HashSet<long> { role.Id });
+            userRoles.ForEach(async ur =>
             {
-                await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById + ur.UserId.ToMd5String());
+                await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById +
+                                                     ur.UserId.ToString().ToMd5String());
             });
             return true;
         }

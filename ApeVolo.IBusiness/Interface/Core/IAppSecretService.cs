@@ -19,7 +19,7 @@ namespace ApeVolo.IBusiness.Interface.Core
 
         Task<bool> CreateAsync(CreateUpdateAppSecretDto createUpdateAppSecretDto);
         Task<bool> UpdateAsync(CreateUpdateAppSecretDto createUpdateAppSecretDto);
-        Task<bool> DeleteAsync(HashSet<string> ids);
+        Task<bool> DeleteAsync(HashSet<long> ids);
         Task<List<AppSecretDto>> QueryAsync(AppsecretQueryCriteria appsecretQueryCriteria, Pagination pagination);
         Task<List<ExportRowModel>> DownloadAsync(AppsecretQueryCriteria appsecretQueryCriteria);
 

@@ -1,8 +1,8 @@
-﻿using ApeVolo.IBusiness.Interface.Email;
+﻿using System.Threading.Tasks;
+using ApeVolo.IBusiness.Interface.Email;
 using ApeVolo.IBusiness.Interface.Tasks;
-using Quartz;
-using System.Threading.Tasks;
 using ApeVolo.QuartzNetService.service;
+using Quartz;
 
 namespace ApeVolo.QuartzNetService
 {

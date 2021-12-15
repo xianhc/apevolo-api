@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
+using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
-using ApeVolo.IBusiness.Interface.Dictionary;
 using ApeVolo.IBusiness.Dto.Dictionary;
 using ApeVolo.IBusiness.EditDto.Dict;
+using ApeVolo.IBusiness.Interface.Dictionary;
 using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Mvc;
-using ApeVolo.Common.AttributeExt;
 
 namespace ApeVolo.Api.Controllers
 {
@@ -99,7 +99,7 @@ namespace ApeVolo.Api.Controllers
             Pagination pagination)
         {
             var list = await _dictDetailService.QueryAsync(dictDetailQueryCriteria, pagination);
-            return new ActionResultVm<DictDetailDto>()
+            return new ActionResultVm<DictDetailDto>
             {
                 Content = list,
                 TotalElements = pagination.TotalElements

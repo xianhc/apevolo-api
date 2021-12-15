@@ -1,8 +1,8 @@
-﻿using ApeVolo.Api.AutoMapper;
+﻿using System;
+using ApeVolo.Api.AutoMapper;
+using ApeVolo.Common.Extention;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using ApeVolo.Common.Extention;
 
 namespace ApeVolo.Api.Extensions
 {

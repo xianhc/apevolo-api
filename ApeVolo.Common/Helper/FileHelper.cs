@@ -1,7 +1,7 @@
-﻿using ApeVolo.Common.Extention;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
+using ApeVolo.Common.Extention;
 
 namespace ApeVolo.Common.Helper
 {
@@ -139,16 +139,18 @@ namespace ApeVolo.Common.Helper
             }
 
             //打开方式
-            var fm = (!File.Exists(fileFullPath) || !isAppend) ? FileMode.Create : FileMode.Append;
+            var fm = !File.Exists(fileFullPath) || !isAppend ? FileMode.Create : FileMode.Append;
 
             using var fs = new FileStream(fileFullPath, fm);
             //流写入
             using var sw = new StreamWriter(fs, e);
             sw.WriteLine(content);
         }
+
         #endregion
 
         #region
+
         /// <summary>
         /// 读取
         /// </summary>
@@ -187,6 +189,7 @@ namespace ApeVolo.Common.Helper
 
             return s;
         }
+
         #endregion
     }
 }

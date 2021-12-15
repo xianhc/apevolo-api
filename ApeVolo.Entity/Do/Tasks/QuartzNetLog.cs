@@ -10,8 +10,8 @@ namespace ApeVolo.Entity.Do.Tasks
         /// <summary>
         /// 任务Id
         /// </summary>
-        [SugarColumn(ColumnName = "task_id", ColumnDataType = "char", Length = 19, ColumnDescription = "任务名称")]
-        public string TaskId { get; set; }
+        [SugarColumn(ColumnName = "task_id", ColumnDataType = "bigint", Length = 19, ColumnDescription = "任务名称")]
+        public long TaskId { get; set; }
         /// <summary>
         /// 任务名称
         /// </summary>

@@ -1,16 +1,16 @@
-﻿using ApeVolo.Common.Global;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using ApeVolo.Api.Authentication;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Global;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ApeVolo.Api.Extensions
 {
@@ -24,11 +24,11 @@ namespace ApeVolo.Api.Extensions
             if (services.IsNull()) throw new ArgumentNullException(nameof(services));
 
             //读取配置文件
-            var symmetricKeyAsBase64 = AppSettings.GetValue(new[] {"Audience", "Secret"});
+            var symmetricKeyAsBase64 = AppSettings.GetValue("Audience", "Secret");
             var keyByteArray = Encoding.ASCII.GetBytes(symmetricKeyAsBase64);
             var signingKey = new SymmetricSecurityKey(keyByteArray);
-            var issuer = AppSettings.GetValue(new[] {"Audience", "Issuer"});
-            var audience = AppSettings.GetValue(new[] {"Audience", "Audience"});
+            var issuer = AppSettings.GetValue("Audience", "Issuer");
+            var audience = AppSettings.GetValue("Audience", "Audience");
 
 
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);

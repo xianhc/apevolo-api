@@ -11,7 +11,7 @@ namespace ApeVolo.Common.Model
         {
             PageIndex = 1;
             PageSize = 10;
-            SortFields = new List<string>() { "id desc" };
+            SortFields = new List<string> { "id desc" };
             TotalElements = 0;
         }
         /// <summary>

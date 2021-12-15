@@ -5,7 +5,7 @@ namespace ApeVolo.IBusiness.QueryModel
 {
     public class QuartzNetLogQueryCriteria
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
 
         public bool? IsSuccess { get; set; }
 

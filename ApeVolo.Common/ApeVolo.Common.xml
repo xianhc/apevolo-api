@@ -567,6 +567,38 @@
             <param name="key"></param>
             <returns></returns>
         </member>
+        <member name="M:ApeVolo.Common.ClassLibrary.CustomContractResolver.ResolveContractConverter(System.Type)">
+            <summary>
+            对长整型做处理
+            </summary>
+            <param name="objectType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.ClassLibrary.JsonConverterLong.CanConvert(System.Type)">
+            <summary>
+            是否可以转换
+            </summary>
+            <param name="objectType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.ClassLibrary.JsonConverterLong.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            读json
+            </summary>
+            <param name="reader"></param>
+            <param name="objectType"></param>
+            <param name="existingValue"></param>
+            <param name="serializer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.ClassLibrary.JsonConverterLong.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            写json
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="serializer"></param>
+        </member>
         <member name="T:ApeVolo.Common.ClassLibrary.UsingLock`1">
             <summary>
             使用using代替lock操作的对象,可指定写入和读取锁定模式
@@ -3373,7 +3405,7 @@
             </summary>
             <typeparam name="T">泛型</typeparam>
         </member>
-        <member name="M:ApeVolo.Common.Helper.TreeHelper`1.ListToTrees(System.Collections.Generic.List{`0},System.String,System.String,System.String,System.String)">
+        <member name="M:ApeVolo.Common.Helper.TreeHelper`1.ListToTrees(System.Collections.Generic.List{`0},System.String,System.String,System.Nullable{System.Int64},System.String)">
             <summary>
             构建树结构
             </summary>

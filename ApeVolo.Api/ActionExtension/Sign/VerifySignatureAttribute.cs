@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using ApeVolo.Common.Caches.Redis.Extensions;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.DI;
 using ApeVolo.Common.Extention;

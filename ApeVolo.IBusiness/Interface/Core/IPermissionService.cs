@@ -1,8 +1,8 @@
-﻿using ApeVolo.IBusiness.Base;
-using ApeVolo.IBusiness.Vo;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Entity.Do.Core;
+using ApeVolo.IBusiness.Base;
+using ApeVolo.IBusiness.Vo;
 
 namespace ApeVolo.IBusiness.Interface.Core
 {
@@ -11,6 +11,6 @@ namespace ApeVolo.IBusiness.Interface.Core
     /// </summary>
     public interface IPermissionService : IBaseServices<Role>
     {
-        Task<List<PermissionVO>> QueryUserPermissionAsync(string userId);
+        Task<List<PermissionVO>> QueryUserPermissionAsync(long userId);
     }
 }

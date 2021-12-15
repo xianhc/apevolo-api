@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using ApeVolo.Common.Extention;
+using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Profiling;
 
 namespace ApeVolo.Api.Extensions
 {
@@ -17,7 +18,7 @@ namespace ApeVolo.Api.Extensions
                 {
                     options.RouteBasePath = "/profiler";
                     //(options.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(10);
-                    options.PopupRenderPosition = StackExchange.Profiling.RenderPosition.Left;
+                    options.PopupRenderPosition = RenderPosition.Left;
                     options.PopupShowTimeWithChildren = true;
 
                     // 可以增加权限

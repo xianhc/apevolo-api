@@ -1,8 +1,8 @@
-﻿using ApeVolo.Common.Caches.MemoryCache;
+﻿using System;
+using ApeVolo.Common.Caches.MemoryCache;
+using ApeVolo.Common.Extention;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using ApeVolo.Common.Extention;
 
 namespace ApeVolo.Api.Extensions
 {

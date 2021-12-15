@@ -176,7 +176,7 @@ namespace ApeVolo.Repository.Base
         /// <param name="lstIgnoreColumns">忽略列</param>
         /// <param name="isLock">是否加锁</param>
         /// <returns>受影响行数</returns>
-        public async Task<int> UpdateAsync(TEntity entity, Expression<Func<TEntity, bool>> @where,
+        public async Task<int> UpdateAsync(TEntity entity, Expression<Func<TEntity, bool>> where,
             List<string> lstIgnoreColumns = null, bool isLock = true)
         {
             IUpdateable<TEntity> up = _db.Updateable(entity);
@@ -203,7 +203,7 @@ namespace ApeVolo.Repository.Base
         /// <param name="isLock">是否加锁</param>
         /// <returns>受影响行数</returns>
         public async Task<int> UpdateAsync(Expression<Func<TEntity, TEntity>> update,
-            Expression<Func<TEntity, bool>> @where = null, bool isLock = true)
+            Expression<Func<TEntity, bool>> where = null, bool isLock = true)
         {
             IUpdateable<TEntity> up = _db.Updateable<TEntity>().SetColumns(update);
             if (where != null)
@@ -228,7 +228,7 @@ namespace ApeVolo.Repository.Base
         /// <param name="isLock">是否加锁</param>
         /// <returns>受影响行数</returns>
         public async Task<int> UpdateAsync(Dictionary<string, object> keyValues,
-            Expression<Func<TEntity, bool>> @where = null, bool isLock = true)
+            Expression<Func<TEntity, bool>> where = null, bool isLock = true)
         {
             IUpdateable<TEntity> up = _db.Updateable<TEntity>(keyValues);
             if (where != null)
@@ -333,7 +333,7 @@ namespace ApeVolo.Repository.Base
         /// <param name="isLock">是否加锁</param>
         /// <returns>受影响行数</returns>
         public async Task<int> UpdateRowVerAsync(Expression<Func<TEntity, TEntity>> update,
-            Dictionary<string, object> @where, bool isLock = true)
+            Dictionary<string, object> where, bool isLock = true)
         {
             if (!where.ContainsKey("RowVer"))
             {
@@ -618,7 +618,7 @@ namespace ApeVolo.Repository.Base
         /// <param name="values">列值集合</param>
         /// <param name="columnName">列名 默认ID</param>
         /// <returns>实体列表</returns>
-        public async Task<List<TEntity>> QueryListInAsync(List<string> values, string columnName = "id")
+        public async Task<List<TEntity>> QueryListInAsync(List<long> values, string columnName = "id")
         {
             var conModels = new List<IConditionalModel>
             {

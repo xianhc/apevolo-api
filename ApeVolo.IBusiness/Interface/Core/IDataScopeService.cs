@@ -9,6 +9,6 @@ namespace ApeVolo.IBusiness.Interface.Core
     /// </summary>
     public interface IDataScopeService
     {
-        Task<List<string>> GetDeptIds(UserDto userDto);
+        Task<List<long>> GetDeptIds(UserDto userDto);
     }
 }

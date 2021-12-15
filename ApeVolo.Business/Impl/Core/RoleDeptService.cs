@@ -33,12 +33,12 @@ namespace ApeVolo.Business.Impl.Core
             return await _baseDal.AddReturnBoolAsync(rolesDepartmentses);
         }
 
-        public async Task<bool> DeleteByRoleIdAsync(string roleId)
+        public async Task<bool> DeleteByRoleIdAsync(long roleId)
         {
             return await _baseDal.DeleteAsync(rd => rd.RoleId == roleId) > 0;
         }
 
-        public async Task<List<RolesDepartments>> QueryByDeptIdsAsync(List<string> deptIds)
+        public async Task<List<RolesDepartments>> QueryByDeptIdsAsync(List<long> deptIds)
         {
             var list = await _baseDal.QueryMuchAsync<RolesDepartments, Role, RolesDepartments>(
                 (rd, r) => new object[]
@@ -51,7 +51,7 @@ namespace ApeVolo.Business.Impl.Core
             return list;
         }
 
-        public async Task<List<RolesDepartments>> QueryByRoleIdAsync(string roleId)
+        public async Task<List<RolesDepartments>> QueryByRoleIdAsync(long roleId)
         {
             return await _baseDal.QueryListAsync(x => x.RoleId == roleId);
         }

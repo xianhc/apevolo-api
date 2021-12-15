@@ -1,13 +1,4 @@
-﻿using ApeVolo.Common.Caches.Redis.Models;
-using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using StackExchange.Redis;
-using System;
-using System.Threading.Tasks;
-
-namespace ApeVolo.Common.Caches.Redis.Extensions
+﻿namespace ApeVolo.Common.Caches.Redis.Extensions
 {
     /// <summary>
     /// Redis帮助类

@@ -1,7 +1,7 @@
-﻿using ApeVolo.Common.DI;
+﻿using System.Threading.Tasks;
+using ApeVolo.Common.DI;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.Vo;
-using System.Threading.Tasks;
 
 namespace ApeVolo.IBusiness.Interface.Core
 {

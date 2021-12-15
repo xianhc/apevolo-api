@@ -9,7 +9,7 @@ namespace ApeVolo.IBusiness.Dto.Dictionary
     {
         [JsonIgnore]
         //[JsonProperty]
-        public string DictId { get; set; }
+        public long DictId { get; set; }
         
         public string Label { get; set; }
 

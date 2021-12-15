@@ -12,7 +12,7 @@ namespace ApeVolo.Api.Middleware
     {
         public static ILoggerFactory AddLog4Net(this ILoggerFactory factory)
         {
-            if (AppSettings.GetValue(new[] {"Middleware", "RecordAllLogs", "Enabled"}).ToBool())
+            if (AppSettings.GetValue("Middleware", "RecordAllLogs", "Enabled").ToBool())
             {
                 factory.AddProvider(new Log4NetProvider("Log4net.config"));
             }

@@ -1,6 +1,6 @@
-﻿using log4net.Core;
+﻿using System;
+using log4net.Core;
 using log4net.Filter;
-using System;
 
 namespace ApeVolo.Api.Filter
 {
@@ -13,8 +13,8 @@ namespace ApeVolo.Api.Filter
                 throw new ArgumentNullException(nameof(loggingEvent));
             }
 
-            if (!string.IsNullOrEmpty(this.LoggerToMatch)
-                && loggingEvent.LoggerName == this.LoggerToMatch
+            if (!string.IsNullOrEmpty(LoggerToMatch)
+                && loggingEvent.LoggerName == LoggerToMatch
             )
             {
                 if (AcceptOnMatch)

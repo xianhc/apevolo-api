@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using ApeVolo.Common.Caches.Redis.Extensions;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;

@@ -1,8 +1,8 @@
-﻿using ApeVolo.Common.Extention;
+﻿using System;
+using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
-using Microsoft.AspNetCore.Builder;
 using log4net;
-using System;
+using Microsoft.AspNetCore.Builder;
 
 namespace ApeVolo.Api.Middleware
 {

@@ -7,7 +7,6 @@ using ApeVolo.Common.Caches.Redis.Abstractions;
 using ApeVolo.Common.Caches.Redis.Attributes;
 using ApeVolo.Common.Caches.Redis.Models;
 using Microsoft.Extensions.DependencyInjection;
-using StackExchange.Redis;
 
 namespace ApeVolo.Common.Caches.Redis.Service.MessageQueue
 {
@@ -37,7 +36,7 @@ namespace ApeVolo.Common.Caches.Redis.Service.MessageQueue
                             {
                                 if (options.ShowLog)
                                 {
-                                    Console.WriteLine($"执行方法:{obj.ToString()},key:{publish},执行时间{DateTime.Now}");
+                                    Console.WriteLine($"执行方法:{obj},key:{publish},执行时间{DateTime.Now}");
                                 }
 
                                 var count = await redis.ListLengthAsync(publish);
@@ -58,7 +57,7 @@ namespace ApeVolo.Common.Caches.Redis.Service.MessageQueue
                                             }
                                             else
                                             {
-                                                object[] parameters = new object[] {res};
+                                                object[] parameters = {res};
                                                 consumerExecutorDescriptor.MethodInfo.Invoke(obj, parameters);
                                             }
                                         });
@@ -114,7 +113,7 @@ namespace ApeVolo.Common.Caches.Redis.Service.MessageQueue
                                 var keyInfo = "lockZSetTibos"; //锁名称
                                 var token = Guid.NewGuid().ToString("N"); //锁持有者
                                 var coon = await redis.GetDatabase().LockTakeAsync(keyInfo, token,
-                                    TimeSpan.FromSeconds(5), CommandFlags.None);
+                                    TimeSpan.FromSeconds(5));
                                 if (coon)
                                 {
                                     try
@@ -160,7 +159,7 @@ namespace ApeVolo.Common.Caches.Redis.Service.MessageQueue
                                 {
                                     if (options.ShowLog)
                                     {
-                                        Console.WriteLine($"执行方法:{obj.ToString()},key:{publish},执行时间{DateTime.Now}");
+                                        Console.WriteLine($"执行方法:{obj},key:{publish},执行时间{DateTime.Now}");
                                     }
 
                                     var count = await redis.ListLengthAsync(publish);
@@ -181,7 +180,7 @@ namespace ApeVolo.Common.Caches.Redis.Service.MessageQueue
                                                 }
                                                 else
                                                 {
-                                                    object[] parameters = new object[] {res};
+                                                    object[] parameters = {res};
                                                     consumerExecutorDescriptor.MethodInfo.Invoke(obj, parameters);
                                                 }
                                             });

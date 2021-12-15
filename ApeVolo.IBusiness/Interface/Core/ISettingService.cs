@@ -16,7 +16,7 @@ namespace ApeVolo.IBusiness.Interface.Core
 
         Task<bool> CreateAsync(CreateUpdateSettingDto createUpdateRoleDto);
         Task<bool> UpdateAsync(CreateUpdateSettingDto createUpdateRoleDto);
-        Task<bool> DeleteAsync(HashSet<string> ids);
+        Task<bool> DeleteAsync(HashSet<long> ids);
         Task<List<SettingDto>> QueryAsync(SettingQueryCriteria settingQueryCriteria, Pagination pagination);
         Task<List<ExportRowModel>> DownloadAsync(SettingQueryCriteria settingQueryCriteria);
 

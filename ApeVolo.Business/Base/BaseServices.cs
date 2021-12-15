@@ -9,7 +9,6 @@ using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IRepository.Base;
 using AutoMapper;
-using Quartz.Xml.JobSchedulingData20;
 
 namespace ApeVolo.Business.Base
 {
@@ -48,7 +47,7 @@ namespace ApeVolo.Business.Base
 
         public async Task<bool> AddEntityListAsync(List<TEntity> entityList)
         {
-            entityList.ForEach((u) => { u.InitEntity(); });
+            entityList.ForEach(u => { u.InitEntity(); });
             return await _baseDal.AddReturnBoolAsync(entityList);
         }
 
@@ -61,7 +60,7 @@ namespace ApeVolo.Business.Base
 
         public async Task<bool> UpdateEntityListAsync(List<TEntity> entityList)
         {
-            entityList.ForEach((u) => { u.EditEntity(); });
+            entityList.ForEach(u => { u.EditEntity(); });
             return await _baseDal.UpdateAsync(entityList) > 0;
         }
 
@@ -74,7 +73,7 @@ namespace ApeVolo.Business.Base
 
         public async Task<bool> DeleteEntityListAsync(List<TEntity> entityList)
         {
-            entityList.ForEach((u) => { u.DelEntity(); });
+            entityList.ForEach(u => { u.DelEntity(); });
             return await _baseDal.UpdateAsync(entityList) > 0;
         }
 
@@ -84,12 +83,12 @@ namespace ApeVolo.Business.Base
         }
 
 
-        public async Task<List<TEntity>> QueryByIdsAsync(List<string> ids, string columnName = "id")
+        public async Task<List<TEntity>> QueryByIdsAsync(List<long> ids, string columnName = "id")
         {
             return await _baseDal.QueryListInAsync(ids, columnName);
         }
 
-        public async Task<List<TEntity>> QueryByIdsAsync(HashSet<string> ids, string columnName = "id")
+        public async Task<List<TEntity>> QueryByIdsAsync(HashSet<long> ids, string columnName = "id")
         {
             return await QueryByIdsAsync(ids.ToList(), columnName);
         }
