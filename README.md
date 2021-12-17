@@ -1,6 +1,6 @@
 ## 系统说明
 
-- 基于 .Net 5 、SqlSugar、Vue、RBAC、前后端分离的开箱则用的企业级中后台**权限管理系统**
+- 基于 .Net 6 、SqlSugar、Vue、RBAC、前后端分离的开箱则用的企业级中后台**权限管理系统**
 - 无业务逻辑代码入侵，适用于任何 .NET/C# 应用程序。
 - 体验地址：  [https://www.apevolo.com](https://www.apevolo.com)
 - 开发文档：  [http://doc.apevolo.com](http://doc.apevolo.com)
@@ -39,6 +39,7 @@ ApeVolo.QuartzNetService -- 任务调度
 - 接口权限、数据权限
 - 自定义实体注解校验
 - 服务器性能监控
+- 系统基础数据初始化(优先CodeFirst)
 - 采用雪花ID，友好的切换各种数据库以及分库分表
 - 支持数据库读写分离
 
@@ -65,12 +66,12 @@ ApeVolo.QuartzNetService -- 任务调度
 
 ### 本地开发 运行
 
-下载项目，编译无误，确保appsetting`数据库连接`与`Redis服务`配置正确。直接运系统会自动建数据库表并初始化基础数据，系统默认使用`Mysql`与`Redis`。不想使用的自行更改。
+下载项目，编译无误，确保appsetting`数据库连接`与`Redis服务`配置正确。直接启动`ApeVolo.Api`->系统便会自动创建数据库表并初始化相关基础数据，系统默认使用`Mysql`与`Redis`。不想使用的请自行调整代码再启动。
 
 ### 本地开发 环境
 推荐使用 JetBrains `Rider`、`WebStorm`、`DataGrip`<br/>
 电脑配置一般就 `Visual Studio`、`VSCode`、`Navicat Premium`<br/>
-均在mac、linux、windows 环境运行测试通过，多系统切换开发时请注意编码格式，不然中文会乱码
+均在mac、linux、windows 环境运行测试通过，多系统切换开发时请注意编码格式，否则中文乱码
 
 ## 给个星星! ⭐️
 如果你喜欢这个项目或者它能帮助你, 请给 Star 开源不易✨。
