@@ -17,9 +17,9 @@
 ```lua
 ApeVolo.Api         -- 对外API
 ApeVolo.IRepository -- 仓储接口
-ApeVolo.IRepository -- 仓储实现
+ApeVolo.Repository -- 仓储实现
 ApeVolo.IBusiness   -- 业务接口
-ApeVolo.IBusiness   -- 业务实现
+ApeVolo.Business   -- 业务实现
 ApeVolo.Common      -- 通用工具
 ApeVolo.Entity      -- 实体
 ApeVolo.QuartzNetService -- 任务调度
@@ -32,14 +32,13 @@ ApeVolo.QuartzNetService -- 任务调度
 - 使用 仓储+服务+接口 架构模式开发；
 - 审计功能，全局异常统一处理
 - AOP切面编程，已实现Redis缓存、SQL事务处理
-- CodeFirst,项目启动后自动建表并初始化基础数据
+- CodeFirst(优先模式),项目启动后自动建库建表并初始化基础数据
 - 数据字典，方便地对一些状态进行管理
 - 全局设置，方便处理一些功能开关
 - 接口限流，避免恶意请求
 - 接口权限、数据权限
 - 自定义实体注解校验
 - 服务器性能监控
-- 系统基础数据初始化(优先CodeFirst)
 - 采用雪花ID，友好的切换各种数据库以及分库分表
 - 支持数据库读写分离
 
@@ -59,8 +58,8 @@ ApeVolo.QuartzNetService -- 任务调度
 ### 任务计划
 |          功能           | 进度          |
 | ---------------------- | ------------- |
-| 文件存储服务             |  预计12月      |
-| RabbitMQ 消息队列        |               |
+| 文件存储服务             |  预计1月      |
+| RabbitMQ 消息队列        | 预计2月      |
 
 ## 快速开始
 
