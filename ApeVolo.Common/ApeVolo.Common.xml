@@ -2789,6 +2789,14 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.ReadText(System.String,System.Text.Encoding)">
+            <summary>
+            读取
+            </summary>
+            <param name="fileFullPath">文件完整物理路径</param>
+            <param name="e">编码 默认UTF8</param>
+            <returns></returns>
+        </member>
         <member name="M:ApeVolo.Common.Helper.FileHelper.WriteTxt(System.String,System.String)">
             <summary>
             输出字符串到文件
@@ -2851,12 +2859,32 @@
             <param name="e">编码</param>
             <param name="isAppend">默认追加，false覆盖</param>
         </member>
-        <member name="M:ApeVolo.Common.Helper.FileHelper.ReadText(System.String,System.Text.Encoding)">
+        <member name="M:ApeVolo.Common.Helper.FileHelper.GetFileSize(System.Int64)">
             <summary>
-            读取
+            获取文件大小
             </summary>
-            <param name="fileFullPath">文件完整物理路径</param>
-            <param name="e">编码 默认UTF8</param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.GetExtensionName(System.String)">
+            <summary>
+            获取文件扩展名
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.GetFileTypeName(System.String)">
+            <summary>
+            获取文件类型
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Helper.FileHelper.GetFileTypeNameEn(System.String)">
+            <summary>
+            获取文件英文名称 用于存储文件路径
+            </summary>
+            <param name="fileType"></param>
             <returns></returns>
         </member>
         <member name="T:ApeVolo.Common.Helper.GuidHelper">

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace ApeVolo.Common.Helper.Excel
+namespace ApeVolo.Common.Helper.Excel;
+
+public class ExportRowModel
 {
-    public class ExportRowModel
-    {
-        public List<ExportColumnModel> exportColumnModels { get; set; }
-    }
+    public List<ExportColumnModel> exportColumnModels { get; set; }
 }
