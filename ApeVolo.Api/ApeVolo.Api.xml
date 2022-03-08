@@ -653,6 +653,48 @@
             <param name="pagination"></param>
             <returns></returns>
         </member>
+        <member name="T:ApeVolo.Api.Controllers.FileRecordController">
+            <summary>
+            文件存储管理
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.FileRecordController.Upload(System.String,Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            新增文件
+            </summary>
+            <param name="file"></param>
+            <param name="description"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.FileRecordController.Update(ApeVolo.IBusiness.EditDto.Core.CreateUpdateFileRecordDto)">
+            <summary>
+            更新文件描述
+            </summary>
+            <param name="createUpdateAppSecretDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.FileRecordController.Delete(System.Collections.Generic.HashSet{System.Int64})">
+            <summary>
+            删除文件
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.FileRecordController.Query(ApeVolo.IBusiness.QueryModel.FileRecordQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            获取文件列表
+            </summary>
+            <param name="fileRecordQueryCriteria"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.FileRecordController.Download(ApeVolo.IBusiness.QueryModel.FileRecordQueryCriteria)">
+            <summary>
+            导出文件记录
+            </summary>
+            <param name="fileRecordQueryCriteria"></param>
+            <returns></returns>
+        </member>
         <member name="T:ApeVolo.Api.Controllers.JobController">
             <summary>
             岗位管理

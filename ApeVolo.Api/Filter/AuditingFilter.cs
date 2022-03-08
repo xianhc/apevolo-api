@@ -83,6 +83,7 @@ namespace ApeVolo.Api.Filter
                             //用时
                             auditInfo.ExecutionDuration = Convert.ToInt32(sw.ElapsedMilliseconds);
                             await _auditInfoService.CreateAsync(auditInfo);
+                            //是否可以转同步方法执行
                             //Task addLgo = Task.Factory.StartNew(async () =>
                             //{
                             //    //auditInfo.ResponseData = "{}";

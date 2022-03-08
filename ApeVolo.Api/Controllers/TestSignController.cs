@@ -5,6 +5,7 @@ using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Extention;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace ApeVolo.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
@@ -14,7 +15,7 @@ namespace ApeVolo.Api.Controllers
         [VerifySignature]
         public async Task<ActionResult<object>> TestSecret()
         {
-            var text = new List<string> {"AAA", "BBB"};
+            var text = new List<string> { "AAA", "BBB" };
             await Task.CompletedTask;
             return text.ToJson();
         }

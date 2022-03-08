@@ -4,6 +4,7 @@ using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Helper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.EditDto.Core;
@@ -55,7 +56,7 @@ namespace ApeVolo.Api.Controllers
 
 
             var level = await _roleService.QueryUserRoleLevelAsync(null);
-            Dictionary<string, int> keyValuePairs = new Dictionary<string, int> {{"level", level}};
+            Dictionary<string, int> keyValuePairs = new Dictionary<string, int> { { "level", level } };
             return keyValuePairs.ToJson();
         }
 
@@ -64,7 +65,7 @@ namespace ApeVolo.Api.Controllers
         public async Task<ActionResult<object>> TestSecret()
         {
             await _emailScheduleTask.ExecuteAsync();
-            var text = await _appSecretService.CreateAsync(new CreateUpdateAppSecretDto {AppName = "test"});
+            var text = await _appSecretService.CreateAsync(new CreateUpdateAppSecretDto { AppName = "test" });
             return text.ToJson();
         }
 
@@ -106,6 +107,22 @@ namespace ApeVolo.Api.Controllers
             var user = await _userService.QueryByIdsAsync(ids);
             var user2 = await _userService.QueryByIdsAsync(ids2);
             var text = "true";
+            return text.ToJson();
+        }
+
+
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult<object> Test1111()
+        {
+            string text = "123456";
+            Task addLgo = Task.Factory.StartNew(async () =>
+            {
+                //auditInfo.ResponseData = "{}";
+                // await _auditInfoService.CreateAsync(auditInfo);
+                await Task.Delay(3000);
+                ConsoleHelper.WriteLine("sdf");
+            });
             return text.ToJson();
         }
     }

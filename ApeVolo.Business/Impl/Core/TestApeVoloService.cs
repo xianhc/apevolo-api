@@ -10,7 +10,7 @@ using ApeVolo.IRepository.Core;
 
 namespace ApeVolo.Business.Impl.Core
 {
-    public class TestApeVoloService : BaseServices<TestApeVolo>, ITestApeVoloService
+    public class  TestApeVoloService : BaseServices<TestApeVolo>, ITestApeVoloService
     {
         public TestApeVoloService(ITestApeVoloRepostiory testApeVoloRepostiory)
         {
