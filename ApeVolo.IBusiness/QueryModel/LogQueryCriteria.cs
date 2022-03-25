@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace ApeVolo.IBusiness.QueryModel
-{
-    public class LogQueryCriteria
-    {
-        public string KeyWords { get; set; }
+namespace ApeVolo.IBusiness.QueryModel;
 
-        public List<DateTime> CreateTime { get; set; }
-    }
+public class LogQueryCriteria
+{
+    public string KeyWords { get; set; }
+
+    public List<DateTime> CreateTime { get; set; }
 }

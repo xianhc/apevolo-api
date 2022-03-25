@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace ApeVolo.Common.DI
+namespace ApeVolo.Common.DI;
+
+public interface IDisposableContainer : IDisposable
 {
-    public interface IDisposableContainer : IDisposable
-    {
-        void AddDisposableObj(IDisposable disposableObj);
-    }
+    void AddDisposableObj(IDisposable disposableObj);
 }

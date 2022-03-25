@@ -5,32 +5,31 @@ using AspNetCoreRateLimit;
 using log4net;
 using Microsoft.AspNetCore.Builder;
 
-namespace ApeVolo.Api.Middleware
+namespace ApeVolo.Api.Middleware;
+
+/// <summary>
+/// IP限流策略中间件
+/// </summary>
+public static class IpLimitMiddleware
 {
-    /// <summary>
-    /// IP限流策略中间件
-    /// </summary>
-    public static class IpLimitMiddleware
+    private static readonly ILog Log = LogManager.GetLogger(typeof(IpLimitMiddleware));
+
+    public static void UseIpLimitMiddleware(this IApplicationBuilder app)
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(IpLimitMiddleware));
+        if (app.IsNull())
+            throw new ArgumentNullException(nameof(app));
 
-        public static void UseIpLimitMiddleware(this IApplicationBuilder app)
+        try
         {
-            if (app.IsNull())
-                throw new ArgumentNullException(nameof(app));
-
-            try
+            if (AppSettings.GetValue("Middleware", "IpLimit", "Enabled").ToBool())
             {
-                if (AppSettings.GetValue("Middleware", "IpLimit", "Enabled").ToBool())
-                {
-                    app.UseIpRateLimiting();
-                }
+                app.UseIpRateLimiting();
             }
-            catch (Exception e)
-            {
-                Log.Error($"Error occured limiting ip rate.\n{e.Message}");
-                throw;
-            }
+        }
+        catch (Exception e)
+        {
+            Log.Error($"Error occured limiting ip rate.\n{e.Message}");
+            throw;
         }
     }
 }

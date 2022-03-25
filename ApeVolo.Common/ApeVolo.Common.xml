@@ -469,8 +469,8 @@
             Adds and configures the consistence services for the consistency.
             </summary>
             <param name="services">The services available in the application.</param>
-            <param name="setupAction">An action to configure the <see cref="!:CapOptions" />.</param>
-            <returns>An <see cref="!:CapBuilder" /> for application services.</returns>
+            <param name="setupAction">An action to configure the <see cref="T:ApeVolo.Common.Caches.Redis.Models.RedisOptions" />.</param>
+            <returns>An <see cref="T:ApeVolo.Common.Caches.Redis.Service.MessageQueue.InitBuilder" /> for application services.</returns>
         </member>
         <member name="M:ApeVolo.Common.Caches.Redis.Service.RedisCacheService.GetRedisOptions">
             <summary>
@@ -862,21 +862,6 @@
             <param name="bytes">字节数组</param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Common.Extention.ExtObject.ToObject(System.Byte[])">
-            <summary> 
-            将一个序列化后的byte[]数组还原
-            </summary>
-            <param name="bytes"></param>         
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Common.Extention.ExtObject.ToObject``1(System.Byte[])">
-            <summary>
-            将一个序列化后的byte[]数组还原
-            </summary>
-            <typeparam name="T">返回类型</typeparam>
-            <param name="bytes">字节数组</param>
-            <returns></returns>
-        </member>
         <member name="M:ApeVolo.Common.Extention.ExtObject.ToFile(System.Byte[],System.String)">
             <summary>
             将字节数组保存为文件
@@ -1248,13 +1233,6 @@
             <param name="jsGetTime">js中Date.getTime()</param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Common.Extention.ExtObject.ToBytes(System.Object)">
-            <summary>
-            将一个object对象序列化，返回一个byte[]         
-            </summary> 
-            <param name="obj">能序列化的对象</param>
-            <returns></returns> 
-        </member>
         <member name="M:ApeVolo.Common.Extention.ExtObject.IsNullOrEmpty(System.Object)">
             <summary>
             判断是否为Null或者空
@@ -1602,7 +1580,7 @@
             <param name="str">字符串</param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Common.Extention.ExtObject.ToSHA1Bytes(System.String,System.Text.Encoding)">
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToSha1Bytes(System.String,System.Text.Encoding)">
             <summary>
             计算SHA1摘要
             </summary>
@@ -1610,7 +1588,7 @@
             <param name="encoding">编码</param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Common.Extention.ExtObject.ToSHA1String(System.String)">
+        <member name="M:ApeVolo.Common.Extention.ExtObject.ToSha1String(System.String)">
             <summary>
             转为SHA1哈希加密字符串
             注：默认使用UTF8编码

@@ -1,23 +1,21 @@
 ﻿using Castle.DynamicProxy;
 
-namespace ApeVolo.Common.DI
+namespace ApeVolo.Common.DI;
+
+/// <summary>
+/// 过滤器
+/// </summary>
+public interface IFilter
 {
     /// <summary>
-    /// 过滤器
+    /// 执行前
     /// </summary>
-    public interface IFilter
-    {
-        /// <summary>
-        /// 执行前
-        /// </summary>
-        /// <param name="invocation">执行信息</param>
-        void OnActionExecuting(IInvocation invocation);
+    /// <param name="invocation">执行信息</param>
+    void OnActionExecuting(IInvocation invocation);
 
-        /// <summary>
-        /// 执行后
-        /// </summary>
-        /// <param name="invocation">执行信息</param>
-        void OnActionExecuted(IInvocation invocation);
-
-    }
+    /// <summary>
+    /// 执行后
+    /// </summary>
+    /// <param name="invocation">执行信息</param>
+    void OnActionExecuted(IInvocation invocation);
 }

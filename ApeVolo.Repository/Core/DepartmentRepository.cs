@@ -3,12 +3,11 @@ using ApeVolo.IRepository.Core;
 using ApeVolo.IRepository.UnitOfWork;
 using ApeVolo.Repository.Base;
 
-namespace ApeVolo.Repository.Core
+namespace ApeVolo.Repository.Core;
+
+public class DepartmentRepository : SugarHandler<Department>, IDepartmentRepository
 {
-    public class DepartmentRepository : SugarHandler<Department>, IDepartmentRepository
+    public DepartmentRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
     {
-        public DepartmentRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
-        {
-        }
     }
 }

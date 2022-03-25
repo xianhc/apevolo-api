@@ -8,31 +8,30 @@ using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
 using ApeVolo.IBusiness.QueryModel;
 
-namespace ApeVolo.IBusiness.Interface.Core
+namespace ApeVolo.IBusiness.Interface.Core;
+
+/// <summary>
+/// 岗位接口
+/// </summary>
+public interface IJobService : IBaseServices<Job>
 {
+    #region 基础接口
+
+    Task<bool> CreateAsync(CreateUpdateJobDto createUpdateJobDto);
+    Task<bool> UpdateAsync(CreateUpdateJobDto createUpdateJobDto);
+    Task<bool> DeleteAsync(HashSet<long> ids);
+    Task<List<JobDto>> QueryAsync(JobQueryCriteria jobQueryCriteria, Pagination pagination);
+    Task<List<ExportRowModel>> DownloadAsync(JobQueryCriteria jobQueryCriteria);
+
+    #endregion
+
+    #region 扩展接口
+
     /// <summary>
-    /// 岗位接口
+    /// 获取所有岗位
     /// </summary>
-    public interface IJobService : IBaseServices<Job>
-    {
-        #region 基础接口
+    /// <returns></returns>
+    Task<List<JobDto>> QueryAllAsync();
 
-        Task<bool> CreateAsync(CreateUpdateJobDto createUpdateJobDto);
-        Task<bool> UpdateAsync(CreateUpdateJobDto createUpdateJobDto);
-        Task<bool> DeleteAsync(HashSet<long> ids);
-        Task<List<JobDto>> QueryAsync(JobQueryCriteria jobQueryCriteria, Pagination pagination);
-        Task<List<ExportRowModel>> DownloadAsync(JobQueryCriteria jobQueryCriteria);
-
-        #endregion
-
-        #region 扩展接口
-
-        /// <summary>
-        /// 获取所有岗位
-        /// </summary>
-        /// <returns></returns>
-        Task<List<JobDto>> QueryAllAsync();
-
-        #endregion
-    }
+    #endregion
 }

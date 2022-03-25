@@ -1,14 +1,14 @@
-﻿namespace ApeVolo.Common.Global
+﻿namespace ApeVolo.Common.Global;
+
+public enum QueuedEmailPriority
 {
-    public enum QueuedEmailPriority
-    {
-        /// <summary>
-        /// 低
-        /// </summary>
-        Low = 0,
-        /// <summary>
-        /// 高
-        /// </summary>
-        High = 1
-    }
+    /// <summary>
+    /// 低
+    /// </summary>
+    Low = 0,
+
+    /// <summary>
+    /// 高
+    /// </summary>
+    High = 1
 }

@@ -3,12 +3,11 @@ using ApeVolo.IRepository.Tasks;
 using ApeVolo.IRepository.UnitOfWork;
 using ApeVolo.Repository.Base;
 
-namespace ApeVolo.Repository.Tasks
+namespace ApeVolo.Repository.Tasks;
+
+public class QuartzNetRepository : SugarHandler<QuartzNet>, IQuartzNetRepository
 {
-    public class QuartzNetRepository : SugarHandler<QuartzNet>, IQuartzNetRepository
+    public QuartzNetRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
     {
-        public QuartzNetRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
-        {
-        }
     }
 }

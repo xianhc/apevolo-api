@@ -1,6 +1,5 @@
-﻿namespace ApeVolo.Common.Caches.Redis.Attributes
+﻿namespace ApeVolo.Common.Caches.Redis.Attributes;
+
+public interface IRedisSubscribe
 {
-    public interface IRedisSubscribe
-    {
-    }
 }

@@ -7,26 +7,29 @@ using ApeVolo.IBusiness.Dto.Email;
 using ApeVolo.IBusiness.EditDto.Email;
 using ApeVolo.IBusiness.QueryModel;
 
-namespace ApeVolo.IBusiness.Interface.Email
+namespace ApeVolo.IBusiness.Interface.Email;
+
+/// <summary>
+/// 邮件队列接口
+/// </summary>
+public interface IQueuedEmailService : IBaseServices<QueuedEmail>
 {
-    /// <summary>
-    /// 邮件队列接口
-    /// </summary>
-    public interface IQueuedEmailService : IBaseServices<QueuedEmail>
-    {
-        #region 基础接口
-        Task<bool> CreateAsync(CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto);
+    #region 基础接口
 
-        Task<bool> UpdateTriesAsync(QueuedEmailDto queuedEmailDto);
-        Task<bool> UpdateAsync(CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto);
+    Task<bool> CreateAsync(CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto);
 
-        Task<bool> DeleteAsync(HashSet<long> ids);
+    Task<bool> UpdateTriesAsync(QueuedEmailDto queuedEmailDto);
+    Task<bool> UpdateAsync(CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto);
 
-        Task<List<QueuedEmailDto>> QueryAsync(QueuedEmailQueryCriteria queuedEmailQueryCriteria, Pagination pagination);
-        #endregion
+    Task<bool> DeleteAsync(HashSet<long> ids);
 
-        #region 扩展接口
-        Task<bool> ResetEmail(string emailAddres, string messageTemplateName);
-        #endregion
-    }
+    Task<List<QueuedEmailDto>> QueryAsync(QueuedEmailQueryCriteria queuedEmailQueryCriteria, Pagination pagination);
+
+    #endregion
+
+    #region 扩展接口
+
+    Task<bool> ResetEmail(string emailAddres, string messageTemplateName);
+
+    #endregion
 }

@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ApeVolo.IBusiness.QueryModel
+namespace ApeVolo.IBusiness.QueryModel;
+
+public class DeptQueryCriteria
 {
-    public class DeptQueryCriteria
-    {
-        public string DeptName { get; set; }
+    public string DeptName { get; set; }
 
-        public bool? Enabled { get; set; }
+    public bool? Enabled { get; set; }
 
-        public long? PId { get; set; }
+    public long? PId { get; set; }
 
-        public List<DateTime> CreateTime { get; set; }
-    }
+    public List<DateTime> CreateTime { get; set; }
 }

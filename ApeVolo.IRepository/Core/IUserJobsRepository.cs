@@ -1,9 +1,8 @@
 ﻿using ApeVolo.Entity.Do.Core;
 using ApeVolo.IRepository.Base;
 
-namespace ApeVolo.IRepository.Core
+namespace ApeVolo.IRepository.Core;
+
+public interface IUserJobsRepository : ISugarHandler<UserJobs>
 {
-    public interface IUserJobsRepository : ISugarHandler<UserJobs>
-    {
-    }
 }

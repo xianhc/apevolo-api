@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace ApeVolo.IBusiness.QueryModel
+namespace ApeVolo.IBusiness.QueryModel;
+
+public class RoleQueryCriteria
 {
-    public class RoleQueryCriteria
-    {
-        public string RoleName { get; set; }
+    public string RoleName { get; set; }
 
 
-        public List<DateTime> CreateTime { get; set; }
-    }
+    public List<DateTime> CreateTime { get; set; }
 }

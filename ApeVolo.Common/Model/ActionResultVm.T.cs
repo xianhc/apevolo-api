@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
 
-namespace ApeVolo.Common.Model
+namespace ApeVolo.Common.Model;
+
+/// <summary>
+/// 请求响应结果 泛型
+/// </summary>
+/// <typeparam name="T"></typeparam>
+public class ActionResultVm<T> //: ActionResultVM
 {
     /// <summary>
-    /// 请求响应结果 泛型
+    /// 返回数据
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class ActionResultVm<T> //: ActionResultVM
-    {
-        /// <summary>
-        /// 返回数据
-        /// </summary>
-        public List<T> Content { get; set; }
+    public List<T> Content { get; set; }
 
-        /// <summary>
-        /// 总数据量
-        /// </summary>
-        public int TotalElements { get; set; }
-    }
+    /// <summary>
+    /// 总数据量
+    /// </summary>
+    public int TotalElements { get; set; }
 }

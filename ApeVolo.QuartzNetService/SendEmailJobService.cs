@@ -4,31 +4,30 @@ using ApeVolo.IBusiness.Interface.Tasks;
 using ApeVolo.QuartzNetService.service;
 using Quartz;
 
-namespace ApeVolo.QuartzNetService
+namespace ApeVolo.QuartzNetService;
+
+public class SendEmailJobService : JobBase, IJob
 {
-    public class SendEmailJobService : JobBase, IJob
+    private readonly IEmailScheduleTask _emailScheduleTask;
+
+    public SendEmailJobService(ISchedulerCenterService schedulerCenterService, IQuartzNetService quartzNetService,
+        IQuartzNetLogService quartzNetLogService, IEmailScheduleTask emailScheduleTask)
     {
-        private readonly IEmailScheduleTask _emailScheduleTask;
+        _quartzNetService = quartzNetService;
+        _quartzNetLogService = quartzNetLogService;
+        _emailScheduleTask = emailScheduleTask;
+        _schedulerCenterService = schedulerCenterService;
+    }
 
-        public SendEmailJobService(ISchedulerCenterService schedulerCenterService, IQuartzNetService quartzNetService,
-            IQuartzNetLogService quartzNetLogService, IEmailScheduleTask emailScheduleTask)
-        {
-            _quartzNetService = quartzNetService;
-            _quartzNetLogService = quartzNetLogService;
-            _emailScheduleTask = emailScheduleTask;
-            _schedulerCenterService = schedulerCenterService;
-        }
+    public async Task Execute(IJobExecutionContext context)
+    {
+        await ExecuteJob(context, async () => await Run(context));
+    }
 
-        public async Task Execute(IJobExecutionContext context)
-        {
-            await ExecuteJob(context, async () => await Run(context));
-        }
-
-        private async Task Run(IJobExecutionContext context)
-        {
-            await _emailScheduleTask.ExecuteAsync();
-            //获取传递参数
-            //JobDataMap data = context.JobDetail.JobDataMap;
-        }
+    private async Task Run(IJobExecutionContext context)
+    {
+        await _emailScheduleTask.ExecuteAsync();
+        //获取传递参数
+        //JobDataMap data = context.JobDetail.JobDataMap;
     }
 }

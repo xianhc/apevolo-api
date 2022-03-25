@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace ApeVolo.Common.AttributeExt
+namespace ApeVolo.Common.AttributeExt;
+
+public class MapFromAttribute : Attribute
 {
-    public class MapFromAttribute : Attribute
+    public MapFromAttribute(Type fromType)
     {
-        public MapFromAttribute(Type fromType)
-        {
-            FromType = fromType;
-        }
-        public Type FromType { get; }
+        FromType = fromType;
     }
+
+    public Type FromType { get; }
 }

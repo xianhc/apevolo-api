@@ -2,35 +2,33 @@
 using ApeVolo.Common.ClassLibrary;
 using ApeVolo.Common.Extention;
 
-namespace ApeVolo.Common.DI
+namespace ApeVolo.Common.DI;
+
+public class DisposableContainer : IDisposableContainer, IDisposable
 {
-    public class DisposableContainer : IDisposableContainer, IDisposable
+    SynchronizedCollection<IDisposable> _objList
+        = new SynchronizedCollection<IDisposable>();
+
+    public void AddDisposableObj(IDisposable disposableObj)
     {
-        SynchronizedCollection<IDisposable> _objList
-            = new SynchronizedCollection<IDisposable>();
+        if (!_objList.Contains(disposableObj))
+            _objList.Add(disposableObj);
+    }
 
-        public void AddDisposableObj(IDisposable disposableObj)
+    public void Dispose()
+    {
+        _objList.ForEach(x =>
         {
-            if (!_objList.Contains(disposableObj))
-                _objList.Add(disposableObj);
-        }
-
-        public void Dispose()
-        {
-            _objList.ForEach(x =>
+            try
             {
-                try
-                {
-                    x.Dispose();
-                }
-                catch
-                {
-                    // ignored
-                }
-            });
-            _objList.Dispose();
-            _objList = null;
-        }
+                x.Dispose();
+            }
+            catch
+            {
+                // ignored
+            }
+        });
+        _objList.Dispose();
+        _objList = null;
     }
 }
-

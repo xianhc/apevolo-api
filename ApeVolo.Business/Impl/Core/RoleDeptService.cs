@@ -6,56 +6,55 @@ using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IRepository.Core;
 using SqlSugar;
 
-namespace ApeVolo.Business.Impl.Core
+namespace ApeVolo.Business.Impl.Core;
+
+/// <summary>
+/// 数据权限
+/// </summary>
+public class RoleDeptService : BaseServices<RolesDepartments>, IRoleDeptService
 {
-    /// <summary>
-    /// 数据权限
-    /// </summary>
-    public class RoleDeptService : BaseServices<RolesDepartments>, IRoleDeptService
+    #region 字段
+
+    #endregion
+
+    #region 构造函数
+
+    public RoleDeptService(IRoleDeptRepository repository)
     {
-        #region 字段
-
-        #endregion
-
-        #region 构造函数
-
-        public RoleDeptService(IRoleDeptRepository repository)
-        {
-            _baseDal = repository;
-        }
-
-        #endregion
-
-        #region 基础方法
-
-        public async Task<bool> CreateAsync(List<RolesDepartments> rolesDepartmentses)
-        {
-            return await _baseDal.AddReturnBoolAsync(rolesDepartmentses);
-        }
-
-        public async Task<bool> DeleteByRoleIdAsync(long roleId)
-        {
-            return await _baseDal.DeleteAsync(rd => rd.RoleId == roleId) > 0;
-        }
-
-        public async Task<List<RolesDepartments>> QueryByDeptIdsAsync(List<long> deptIds)
-        {
-            var list = await _baseDal.QueryMuchAsync<RolesDepartments, Role, RolesDepartments>(
-                (rd, r) => new object[]
-                {
-                    JoinType.Left, rd.RoleId == r.Id
-                },
-                (rd, r) => rd,
-                (rd, r) => r.IsDeleted == false && deptIds.Contains(rd.DeptId)
-            );
-            return list;
-        }
-
-        public async Task<List<RolesDepartments>> QueryByRoleIdAsync(long roleId)
-        {
-            return await _baseDal.QueryListAsync(x => x.RoleId == roleId);
-        }
-
-        #endregion
+        _baseDal = repository;
     }
+
+    #endregion
+
+    #region 基础方法
+
+    public async Task<bool> CreateAsync(List<RolesDepartments> rolesDepartmentses)
+    {
+        return await _baseDal.AddReturnBoolAsync(rolesDepartmentses);
+    }
+
+    public async Task<bool> DeleteByRoleIdAsync(long roleId)
+    {
+        return await _baseDal.DeleteAsync(rd => rd.RoleId == roleId) > 0;
+    }
+
+    public async Task<List<RolesDepartments>> QueryByDeptIdsAsync(List<long> deptIds)
+    {
+        var list = await _baseDal.QueryMuchAsync<RolesDepartments, Role, RolesDepartments>(
+            (rd, r) => new object[]
+            {
+                JoinType.Left, rd.RoleId == r.Id
+            },
+            (rd, r) => rd,
+            (rd, r) => r.IsDeleted == false && deptIds.Contains(rd.DeptId)
+        );
+        return list;
+    }
+
+    public async Task<List<RolesDepartments>> QueryByRoleIdAsync(long roleId)
+    {
+        return await _baseDal.QueryListAsync(x => x.RoleId == roleId);
+    }
+
+    #endregion
 }

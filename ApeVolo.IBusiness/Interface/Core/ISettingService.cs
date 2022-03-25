@@ -8,20 +8,19 @@ using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
 using ApeVolo.IBusiness.QueryModel;
 
-namespace ApeVolo.IBusiness.Interface.Core
+namespace ApeVolo.IBusiness.Interface.Core;
+
+public interface ISettingService : IBaseServices<Setting>
 {
-    public interface ISettingService : IBaseServices<Setting>
-    {
-        #region 基础接口
+    #region 基础接口
 
-        Task<bool> CreateAsync(CreateUpdateSettingDto createUpdateRoleDto);
-        Task<bool> UpdateAsync(CreateUpdateSettingDto createUpdateRoleDto);
-        Task<bool> DeleteAsync(HashSet<long> ids);
-        Task<List<SettingDto>> QueryAsync(SettingQueryCriteria settingQueryCriteria, Pagination pagination);
-        Task<List<ExportRowModel>> DownloadAsync(SettingQueryCriteria settingQueryCriteria);
+    Task<bool> CreateAsync(CreateUpdateSettingDto createUpdateRoleDto);
+    Task<bool> UpdateAsync(CreateUpdateSettingDto createUpdateRoleDto);
+    Task<bool> DeleteAsync(HashSet<long> ids);
+    Task<List<SettingDto>> QueryAsync(SettingQueryCriteria settingQueryCriteria, Pagination pagination);
+    Task<List<ExportRowModel>> DownloadAsync(SettingQueryCriteria settingQueryCriteria);
 
-        Task<SettingDto> FindSettingByName(string settingName);
+    Task<SettingDto> FindSettingByName(string settingName);
 
-        #endregion
-    }
+    #endregion
 }

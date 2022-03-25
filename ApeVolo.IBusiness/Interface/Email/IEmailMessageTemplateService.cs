@@ -7,21 +7,23 @@ using ApeVolo.IBusiness.Dto.Email;
 using ApeVolo.IBusiness.EditDto.Email;
 using ApeVolo.IBusiness.QueryModel;
 
-namespace ApeVolo.IBusiness.Interface.Email
+namespace ApeVolo.IBusiness.Interface.Email;
+
+/// <summary>
+/// 邮件消息模板接口
+/// </summary>
+public interface IEmailMessageTemplateService : IBaseServices<MessageTemplate>
 {
-    /// <summary>
-    /// 邮件消息模板接口
-    /// </summary>
-    public interface IEmailMessageTemplateService : IBaseServices<MessageTemplate>
-    {
-        #region 基础接口
-        Task<bool> CreateAsync(CreateUpdateMessageTemplateDto createUpdateMessageTemplateDto);
+    #region 基础接口
 
-        Task<bool> UpdateAsync(CreateUpdateMessageTemplateDto createUpdateMessageTemplateDto);
+    Task<bool> CreateAsync(CreateUpdateMessageTemplateDto createUpdateMessageTemplateDto);
 
-        Task<bool> DeleteAsync(HashSet<long> ids);
+    Task<bool> UpdateAsync(CreateUpdateMessageTemplateDto createUpdateMessageTemplateDto);
 
-        Task<List<MessageTemplateDto>> QueryAsync(MessageTemplateQueryCriteria messageTemplateQueryCriteria, Pagination pagination);
-        #endregion
-    }
+    Task<bool> DeleteAsync(HashSet<long> ids);
+
+    Task<List<MessageTemplateDto>> QueryAsync(MessageTemplateQueryCriteria messageTemplateQueryCriteria,
+        Pagination pagination);
+
+    #endregion
 }

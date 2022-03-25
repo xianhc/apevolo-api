@@ -5,28 +5,27 @@ using ApeVolo.Entity.Seed;
 using log4net;
 using Microsoft.AspNetCore.Builder;
 
-namespace ApeVolo.Api.Middleware
-{
-    public static class InitDbMiddleware
-    {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(IpLimitMiddleware));
-        
-        public static void UseSeedDataMildd(this IApplicationBuilder app, MyContext myContext, string webRootPath)
-        {
-            if (app == null) throw new ArgumentNullException(nameof(app));
+namespace ApeVolo.Api.Middleware;
 
-            try
+public static class InitDbMiddleware
+{
+    private static readonly ILog Log = LogManager.GetLogger(typeof(IpLimitMiddleware));
+
+    public static void UseSeedDataMildd(this IApplicationBuilder app, MyContext myContext, string webRootPath)
+    {
+        if (app == null) throw new ArgumentNullException(nameof(app));
+
+        try
+        {
+            if (AppSettings.GetValue("InitDbTable").ToBool())
             {
-                if (AppSettings.GetValue("InitDbTable").ToBool())
-                {
-                    SeedData.InitSystemDataAsync(myContext, webRootPath).Wait();
-                }
+                SeedData.InitSystemDataAsync(myContext, webRootPath).Wait();
             }
-            catch (Exception e)
-            {
-                Log.Error($"Error occured seeding the Database.\n{e.Message}");
-                throw;
-            }
+        }
+        catch (Exception e)
+        {
+            Log.Error($"Error occured seeding the Database.\n{e.Message}");
+            throw;
         }
     }
 }

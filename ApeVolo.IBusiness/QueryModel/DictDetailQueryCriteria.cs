@@ -1,9 +1,8 @@
-﻿namespace ApeVolo.IBusiness.QueryModel
-{
-    public class DictDetailQueryCriteria
-    {
-        public string Label { get; set; }
+﻿namespace ApeVolo.IBusiness.QueryModel;
 
-        public string DictName { get; set; }
-    }
+public class DictDetailQueryCriteria
+{
+    public string Label { get; set; }
+
+    public string DictName { get; set; }
 }

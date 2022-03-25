@@ -157,7 +157,9 @@ public static class HttpHelper
             throw new System.Exception("请求地址不能为NULL或空！");
 
         string newUrl = url;
+#pragma warning disable CS0618
         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(newUrl);
+#pragma warning restore CS0618
         request.Method = method.ToUpper();
         request.ContentType = contentType;
         headers?.ForEach(aHeader => { request.Headers.Add(aHeader.Key, aHeader.Value); });
@@ -318,7 +320,9 @@ public static class HttpHelper
         {
             try
             {
-                HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
+#pragma warning disable CS0618
+                var webRequest = (HttpWebRequest)WebRequest.Create(url);
+#pragma warning restore CS0618
                 webRequest.Timeout = 10000;
                 webRequest.Method = "GET";
                 webRequest.UserAgent = "Mozilla/4.0";

@@ -1,6 +1,5 @@
-namespace ApeVolo.Api.Controllers.Base
+namespace ApeVolo.Api.Controllers.Base;
+
+public class BaseApieNoAuthorizeController : BaseController
 {
-    public class BaseApieNoAuthorizeController : BaseController
-    {
-    }
 }

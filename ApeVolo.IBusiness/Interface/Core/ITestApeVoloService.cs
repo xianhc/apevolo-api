@@ -4,15 +4,14 @@ using ApeVolo.Common.Model;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Base;
 
-namespace ApeVolo.IBusiness.Interface.Core
+namespace ApeVolo.IBusiness.Interface.Core;
+
+public interface ITestApeVoloService : IBaseServices<TestApeVolo>
 {
-    public interface ITestApeVoloService : IBaseServices<TestApeVolo>
-    {
-        #region 基础接口
+    #region 基础接口
 
-        Task<bool> CreateAsync(TestApeVolo testApeVolo);
-        Task<List<TestApeVolo>> QueryAsync(Pagination pagination);
+    Task<bool> CreateAsync(TestApeVolo testApeVolo);
+    Task<List<TestApeVolo>> QueryAsync(Pagination pagination);
 
-        #endregion
-    }
+    #endregion
 }

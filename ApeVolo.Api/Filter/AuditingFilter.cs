@@ -16,135 +16,136 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace ApeVolo.Api.Filter
+namespace ApeVolo.Api.Filter;
+
+/// <summary>
+/// 审计过滤器
+/// </summary>
+public class AuditingFilter : IAsyncActionFilter
 {
-    /// <summary>
-    /// 审计过滤器
-    /// </summary>
-    public class AuditingFilter : IAsyncActionFilter
+    private readonly IAuditLogService _auditInfoService;
+    private readonly ICurrentUser _currentUser;
+    private readonly ISettingService _settingService;
+
+    public AuditingFilter(IAuditLogService auditInfoService, ICurrentUser currentUser,
+        ISettingService settingService)
     {
-        private readonly IAuditLogService _auditInfoService;
-        private readonly ICurrentUser _currentUser;
-        private readonly ISettingService _settingService;
+        _auditInfoService = auditInfoService;
+        _currentUser = currentUser;
+        _settingService = settingService;
+    }
 
-        public AuditingFilter(IAuditLogService auditInfoService, ICurrentUser currentUser,
-            ISettingService settingService)
-        {
-            _auditInfoService = auditInfoService;
-            _currentUser = currentUser;
-            _settingService = settingService;
-        }
+    public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        return ExecuteAuditing(context, next);
+    }
 
-        public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    /// <summary>
+    /// 执行审计功能
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="next"></param>
+    /// <returns></returns>
+    private async Task ExecuteAuditing(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        try
         {
-            return ExecuteAuditing(context, next);
-        }
+            var sw = new Stopwatch();
+            sw.Start();
+            var resultContext = await next();
+            sw.Stop();
+            //执行结果
 
-        /// <summary>
-        /// 执行审计功能
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="next"></param>
-        /// <returns></returns>
-        private async Task ExecuteAuditing(ActionExecutingContext context, ActionExecutionDelegate next)
-        {
-            try
+            if ((await _settingService.FindSettingByName("IsAuditLogSaveDB")).Value.ToBool())
             {
-                var sw = new Stopwatch();
-                sw.Start();
-                var resultContext = await next();
-                sw.Stop();
-                //执行结果
-
-                if ((await _settingService.FindSettingByName("IsAuditLogSaveDB")).Value.ToBool())
+                var result = resultContext.Result;
+                if (HttpContextCore.CurrentHttpContext.IsNotNull() && result.IsNotNull())
                 {
-                    var result = resultContext.Result;
-                    if (HttpContextCore.CurrentHttpContext.IsNotNull() && result.IsNotNull())
+                    var reqUrlPath = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower();
+                    var settingDto = await _settingService.FindSettingByName("LgnoreAuditLogUrlPath");
+                    var lgnoreAuditLogUrlPathList = settingDto.Value.Split("|");
+                    if (!lgnoreAuditLogUrlPathList.Contains(reqUrlPath))
                     {
-                        var reqUrlPath = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower();
-                        var settingDto = await _settingService.FindSettingByName("LgnoreAuditLogUrlPath");
-                        var lgnoreAuditLogUrlPathList = settingDto.Value.Split("|");
-                        if (!lgnoreAuditLogUrlPathList.Contains(reqUrlPath))
+                        AuditLog auditInfo = CreateAuditLog(context);
+                        if (result.GetType().FullName == "Microsoft.AspNetCore.Mvc.ObjectResult")
                         {
-                            AuditLog auditInfo = CreateAuditLog(context);
-                            if (result.GetType().FullName == "Microsoft.AspNetCore.Mvc.ObjectResult")
-                            {
-                                auditInfo.ResponseData = ((ObjectResult)result).Value.ToString();
-                            }
-                            else if (result.GetType().FullName == "Microsoft.AspNetCore.Mvc.FileContentResult")
-                            {
-                                auditInfo.ResponseData = ((FileContentResult)result).FileDownloadName;
-                            }
-                            else
-                            {
-                                auditInfo.ResponseData = ((ContentResult)result).Content;
-                            }
-
-                            //用时
-                            auditInfo.ExecutionDuration = Convert.ToInt32(sw.ElapsedMilliseconds);
-                            await _auditInfoService.CreateAsync(auditInfo);
-                            //是否可以转同步方法执行
-                            //Task addLgo = Task.Factory.StartNew(async () =>
-                            //{
-                            //    //auditInfo.ResponseData = "{}";
-                            //    await _auditInfoService.CreateAsync(auditInfo);
-                            //});
+                            var value = ((ObjectResult)result).Value;
+                            if (value != null)
+                                auditInfo.ResponseData = value.ToString();
                         }
+                        else if (result.GetType().FullName == "Microsoft.AspNetCore.Mvc.FileContentResult")
+                        {
+                            auditInfo.ResponseData = ((FileContentResult)result).FileDownloadName;
+                        }
+                        else
+                        {
+                            auditInfo.ResponseData = ((ContentResult)result).Content;
+                        }
+
+                        //用时
+                        auditInfo.ExecutionDuration = Convert.ToInt32(sw.ElapsedMilliseconds);
+                        await _auditInfoService.CreateAsync(auditInfo);
+                        //是否可以转同步方法执行
+                        //Task addLgo = Task.Factory.StartNew(async () =>
+                        //{
+                        //    //auditInfo.ResponseData = "{}";
+                        //    await _auditInfoService.CreateAsync(auditInfo);
+                        //});
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLog(ex.Message,
-                    new[] { "AuditingFilter", DateTime.Now.ToString("yyyy-MM-dd") });
-                //ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
-                // ignored
-            }
         }
-
-        /// <summary>
-        /// 创建审计对象
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        private AuditLog CreateAuditLog(ActionExecutingContext context)
+        catch (Exception ex)
         {
-            var routeValues = context.ActionDescriptor.RouteValues;
-            Attribute desc =
-                ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.GetCustomAttribute(
-                    typeof(DescriptionAttribute), true);
-
-            var decs = HttpHelper.GetAllRequestParams(context.HttpContext); //context.ActionArguments;
-
-            var auditLog = new AuditLog
-            {
-                Id = IdHelper.GetLongId(),
-                CreateBy = _currentUser.Name ?? "",
-                CreateTime = DateTime.Now,
-                Area = routeValues["area"],
-                Controller = routeValues["controller"],
-                Action = routeValues["action"],
-                Method = context.HttpContext.Request.Method,
-                Description = desc.IsNull() ? "" : ((DescriptionAttribute)desc).Description,
-                RequestUrl = HttpContextCore.CurrentHttpContext.Request.GetDisplayUrl() ?? "",
-                RequestParameters = decs.ToJson(),
-                BrowserInfo = IpHelper.GetBrowserName(),
-                RequestIp = IpHelper.GetIp(),
-                IpAddress = IpHelper.GetIpAddress()
-            };
-
-
-            var reqUrl = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower();
-            if (reqUrl is "/auth/login")
-            {
-                var (_, value) = decs.SingleOrDefault(k => k.Key == "username");
-                if (!value.IsNullOrEmpty())
-                {
-                    auditLog.CreateBy = value.ToString();
-                }
-            }
-
-            return auditLog;
+            LogHelper.WriteLog(ex.Message,
+                new[] { "AuditingFilter", DateTime.Now.ToString("yyyy-MM-dd") });
+            //ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
+            // ignored
         }
+    }
+
+    /// <summary>
+    /// 创建审计对象
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    private AuditLog CreateAuditLog(ActionExecutingContext context)
+    {
+        var routeValues = context.ActionDescriptor.RouteValues;
+        Attribute desc =
+            ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.GetCustomAttribute(
+                typeof(DescriptionAttribute), true);
+
+        var decs = HttpHelper.GetAllRequestParams(context.HttpContext); //context.ActionArguments;
+
+        var auditLog = new AuditLog
+        {
+            Id = IdHelper.GetLongId(),
+            CreateBy = _currentUser.Name ?? "",
+            CreateTime = DateTime.Now,
+            Area = routeValues["area"],
+            Controller = routeValues["controller"],
+            Action = routeValues["action"],
+            Method = context.HttpContext.Request.Method,
+            Description = desc.IsNull() ? "" : ((DescriptionAttribute)desc).Description,
+            RequestUrl = HttpContextCore.CurrentHttpContext.Request.GetDisplayUrl() ?? "",
+            RequestParameters = decs.ToJson(),
+            BrowserInfo = IpHelper.GetBrowserName(),
+            RequestIp = IpHelper.GetIp(),
+            IpAddress = IpHelper.GetIpAddress()
+        };
+
+
+        var reqUrl = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower();
+        if (reqUrl is "/auth/login")
+        {
+            var (_, value) = decs.SingleOrDefault(k => k.Key == "username");
+            if (!value.IsNullOrEmpty())
+            {
+                auditLog.CreateBy = value.ToString();
+            }
+        }
+
+        return auditLog;
     }
 }

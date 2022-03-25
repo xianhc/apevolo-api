@@ -3,13 +3,11 @@ using ApeVolo.IRepository.Core;
 using ApeVolo.IRepository.UnitOfWork;
 using ApeVolo.Repository.Base;
 
-namespace ApeVolo.Repository.Core
+namespace ApeVolo.Repository.Core;
+
+public class RoleRepository : SugarHandler<Role>, IRoleRepository
 {
-    public class RoleRepository : SugarHandler<Role>, IRoleRepository
+    public RoleRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
     {
-        public RoleRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
-        {
-        }
     }
 }
-

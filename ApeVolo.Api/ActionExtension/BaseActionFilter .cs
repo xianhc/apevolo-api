@@ -8,140 +8,139 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace ApeVolo.Api.ActionExtension
+namespace ApeVolo.Api.ActionExtension;
+
+public class BaseActionFilter : Attribute, IAsyncActionFilter
 {
-    public class BaseActionFilter : Attribute, IAsyncActionFilter
+    public async virtual Task OnActionExecuting(ActionExecutingContext context)
     {
-        public async virtual Task OnActionExecuting(ActionExecutingContext context)
+        await Task.CompletedTask;
+    }
+
+    public async virtual Task OnActionExecuted(ActionExecutedContext context)
+    {
+        await Task.CompletedTask;
+    }
+
+    public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        await OnActionExecuting(context);
+        if (context.Result == null)
         {
-            await Task.CompletedTask;
+            var nextContext = await next();
+            await OnActionExecuted(nextContext);
         }
+    }
 
-        public async virtual Task OnActionExecuted(ActionExecutedContext context)
+    /// <summary>
+    /// 返回JSON
+    /// </summary>
+    /// <param name="json">json字符串</param>
+    /// <returns></returns>
+    public ContentResult JsonContent(string json)
+    {
+        return new ContentResult
+            { Content = json, StatusCode = StatusCodes.Status200OK, ContentType = "application/json; charset=utf-8" };
+    }
+
+    /// <summary>
+    /// 返回成功
+    /// </summary>
+    /// <returns></returns>
+    public ContentResult Success()
+    {
+        ActionResultVm res = new ActionResultVm
         {
-            await Task.CompletedTask;
-        }
+            Message = "请求成功！",
+            Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+        };
 
-        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        return JsonContent(res.ToJson());
+    }
+
+    /// <summary>
+    /// 返回成功
+    /// </summary>
+    /// <param name="msg">消息</param>
+    /// <returns></returns>
+    public ContentResult Success(string msg)
+    {
+        ActionResultVm res = new ActionResultVm
         {
-            await OnActionExecuting(context);
-            if (context.Result == null)
-            {
-                var nextContext = await next();
-                await OnActionExecuted(nextContext);
-            }
-        }
+            Message = msg,
+            Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+        };
 
-        /// <summary>
-        /// 返回JSON
-        /// </summary>
-        /// <param name="json">json字符串</param>
-        /// <returns></returns>
-        public ContentResult JsonContent(string json)
+        return JsonContent(res.ToJson());
+    }
+
+    /// <summary>
+    /// 返回成功
+    /// </summary>
+    /// <param name="data">返回的数据</param>
+    /// <returns></returns>
+    public ContentResult Success<T>(List<T> data)
+    {
+        ActionResultVm<T> res = new ActionResultVm<T>
         {
-            return new ContentResult
-                {Content = json, StatusCode = StatusCodes.Status200OK, ContentType = "application/json; charset=utf-8"};
-        }
+            Content = data,
+            TotalElements = 0
+        };
 
-        /// <summary>
-        /// 返回成功
-        /// </summary>
-        /// <returns></returns>
-        public ContentResult Success()
+        return JsonContent(res.ToJson());
+    }
+
+    /// <summary>
+    /// 返回错误
+    /// </summary>
+    /// <returns></returns>
+    public ContentResult Error()
+    {
+        ActionResultVm res = new ActionResultVm
         {
-            ActionResultVm res = new ActionResultVm
-            {
-                Message = "请求成功！",
-                Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
-            };
+            Status = StatusCodes.Status400BadRequest,
+            Error = "BadRequest",
+            Message = "请求失败！",
+            Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+        };
 
-            return JsonContent(res.ToJson());
-        }
+        return JsonContent(res.ToJson());
+    }
 
-        /// <summary>
-        /// 返回成功
-        /// </summary>
-        /// <param name="msg">消息</param>
-        /// <returns></returns>
-        public ContentResult Success(string msg)
+    /// <summary>
+    /// 返回错误
+    /// </summary>
+    /// <param name="msg">错误提示</param>
+    /// <returns></returns>
+    public ContentResult Error(string msg)
+    {
+        ActionResultVm res = new ActionResultVm
         {
-            ActionResultVm res = new ActionResultVm
-            {
-                Message = msg,
-                Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
-            };
+            Status = StatusCodes.Status400BadRequest,
+            Error = "BadRequest",
+            Message = msg,
+            Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+        };
 
-            return JsonContent(res.ToJson());
-        }
+        return JsonContent(res.ToJson());
+    }
 
-        /// <summary>
-        /// 返回成功
-        /// </summary>
-        /// <param name="data">返回的数据</param>
-        /// <returns></returns>
-        public ContentResult Success<T>(List<T> data)
+    /// <summary>
+    /// 返回错误
+    /// </summary>
+    /// <param name="msg">错误提示</param>
+    /// <param name="errorCode">错误代码</param>
+    /// <returns></returns>
+    public ContentResult Error(string msg, int errorCode)
+    {
+        ActionResultVm res = new ActionResultVm
         {
-            ActionResultVm<T> res = new ActionResultVm<T>
-            {
-                Content = data,
-                TotalElements = 0
-            };
+            Status = errorCode,
+            Error = "BadRequest",
+            Message = msg,
+            Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+        };
 
-            return JsonContent(res.ToJson());
-        }
-
-        /// <summary>
-        /// 返回错误
-        /// </summary>
-        /// <returns></returns>
-        public ContentResult Error()
-        {
-            ActionResultVm res = new ActionResultVm
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Error = "BadRequest",
-                Message = "请求失败！",
-                Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
-            };
-
-            return JsonContent(res.ToJson());
-        }
-
-        /// <summary>
-        /// 返回错误
-        /// </summary>
-        /// <param name="msg">错误提示</param>
-        /// <returns></returns>
-        public ContentResult Error(string msg)
-        {
-            ActionResultVm res = new ActionResultVm
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Error = "BadRequest",
-                Message = msg,
-                Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
-            };
-
-            return JsonContent(res.ToJson());
-        }
-
-        /// <summary>
-        /// 返回错误
-        /// </summary>
-        /// <param name="msg">错误提示</param>
-        /// <param name="errorCode">错误代码</param>
-        /// <returns></returns>
-        public ContentResult Error(string msg, int errorCode)
-        {
-            ActionResultVm res = new ActionResultVm
-            {
-                Status = errorCode,
-                Error = "BadRequest",
-                Message = msg,
-                Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
-            };
-
-            return JsonContent(res.ToJson());
-        }
+        return JsonContent(res.ToJson());
     }
 }

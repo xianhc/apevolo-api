@@ -1,9 +1,8 @@
-namespace ApeVolo.Common.Exception
+namespace ApeVolo.Common.Exception;
+
+public class DemoRequestException : System.Exception
 {
-    public class DemoRequestException: System.Exception
+    public DemoRequestException(string message) : base(message)
     {
-        public DemoRequestException(string message) : base(message)
-        {
-        }
     }
 }

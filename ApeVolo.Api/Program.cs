@@ -10,46 +10,45 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace ApeVolo.Api
+namespace ApeVolo.Api;
+
+public class Program
 {
-    public class Program
+    private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
+
+    public static void Main(string[] args)
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
+        XmlDocument log4NetConfig = new XmlDocument();
+        log4NetConfig.Load(File.OpenRead("Log4net.config"));
 
-        public static void Main(string[] args)
-        {
-            XmlDocument log4NetConfig = new XmlDocument();
-            log4NetConfig.Load(File.OpenRead("Log4net.config"));
+        var repo = LogManager.CreateRepository(
+            Assembly.GetEntryAssembly(), typeof(Hierarchy));
 
-            var repo = LogManager.CreateRepository(
-                Assembly.GetEntryAssembly(), typeof(Hierarchy));
+        XmlConfigurator.Configure(repo, log4NetConfig["log4net"]);
 
-            XmlConfigurator.Configure(repo, log4NetConfig["log4net"]);
-
-            var host = CreateHostBuilder(args)
-                .ConfigureAppConfiguration(r => r.AddJsonFile("IpRateLimit.json"))
-                .Build();
-            host.Run();
-        }
-
-
-        private static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory()) //<--NOTE THIS
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder
-                        .ConfigureKestrel(serverOptions => { serverOptions.AllowSynchronousIO = true; })
-                        .UseStartup<Startup>()
-                        .UseUrls("http://*:8002")
-                        .ConfigureLogging((hostingContext, builder) =>
-                        {
-                            builder.ClearProviders();
-                            builder.SetMinimumLevel(LogLevel.Trace);
-                            builder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                            builder.AddConsole();
-                            builder.AddDebug();
-                        });
-                });
+        var host = CreateHostBuilder(args)
+            .ConfigureAppConfiguration(r => r.AddJsonFile("IpRateLimit.json"))
+            .Build();
+        host.Run();
     }
+
+
+    private static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .UseServiceProviderFactory(new AutofacServiceProviderFactory()) //<--NOTE THIS
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder
+                    .ConfigureKestrel(serverOptions => { serverOptions.AllowSynchronousIO = true; })
+                    .UseStartup<Startup>()
+                    .UseUrls("http://*:8002")
+                    .ConfigureLogging((hostingContext, builder) =>
+                    {
+                        builder.ClearProviders();
+                        builder.SetMinimumLevel(LogLevel.Trace);
+                        builder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                        builder.AddConsole();
+                        builder.AddDebug();
+                    });
+            });
 }

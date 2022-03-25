@@ -1,12 +1,11 @@
 ﻿using SqlSugar;
 
-namespace ApeVolo.IRepository.UnitOfWork
+namespace ApeVolo.IRepository.UnitOfWork;
+
+public interface IUnitOfWork
 {
-    public interface IUnitOfWork
-    {
-        SqlSugarClient GetDbClient();
-        void BeginTran();
-        void CommitTran();
-        void RollbackTran();
-    }
+    SqlSugarClient GetDbClient();
+    void BeginTran();
+    void CommitTran();
+    void RollbackTran();
 }

@@ -1,48 +1,50 @@
-﻿using ApeVolo.Common.DI;
+﻿using System;
+using ApeVolo.Common.DI;
+using ApeVolo.Common.Helper;
 using ApeVolo.IRepository.UnitOfWork;
 using SqlSugar;
 
-namespace ApeVolo.Repository.UnitOfWork
+namespace ApeVolo.Repository.UnitOfWork;
+
+public class UnitOfWork : IUnitOfWork, IDependencyRepository
 {
-    public class UnitOfWork : IUnitOfWork, IDependencyRepository
+    private readonly ISqlSugarClient _sqlSugarClient;
+
+    public UnitOfWork(ISqlSugarClient sqlSugarClient)
     {
-        private readonly ISqlSugarClient _sqlSugarClient;
+        _sqlSugarClient = sqlSugarClient;
+    }
 
-        public UnitOfWork(ISqlSugarClient sqlSugarClient)
+    /// <summary>
+    /// 获取DB，保证唯一性
+    /// </summary>
+    /// <returns></returns>
+    public SqlSugarClient GetDbClient()
+    {
+        return _sqlSugarClient as SqlSugarClient;
+    }
+
+    public void BeginTran()
+    {
+        GetDbClient().BeginTran();
+    }
+
+    public void CommitTran()
+    {
+        try
         {
-            _sqlSugarClient = sqlSugarClient;
+            GetDbClient().CommitTran();
         }
-
-        /// <summary>
-        /// 获取DB，保证唯一性
-        /// </summary>
-        /// <returns></returns>
-        public SqlSugarClient GetDbClient()
-        {
-            return _sqlSugarClient as SqlSugarClient;
-        }
-
-        public void BeginTran()
-        {
-            GetDbClient().BeginTran();
-        }
-
-        public void CommitTran()
-        {
-            try
-            {
-                GetDbClient().CommitTran();
-            }
-            catch
-            {
-                GetDbClient().RollbackTran();
-                throw;
-            }
-        }
-
-        public void RollbackTran()
+        catch (Exception ex)
         {
             GetDbClient().RollbackTran();
+            ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
+            throw;
         }
+    }
+
+    public void RollbackTran()
+    {
+        GetDbClient().RollbackTran();
     }
 }

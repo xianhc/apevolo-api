@@ -32,172 +32,171 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace ApeVolo.Api
+namespace ApeVolo.Api;
+
+public class Startup
 {
-    public class Startup
+    private IConfiguration Configuration { get; }
+    private IWebHostEnvironment Env { get; }
+    public static ILoggerRepository Repository { get; set; }
+    private static readonly ILog Log = LogManager.GetLogger(typeof(GlobalExceptionFilter));
+
+    public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
-        private IConfiguration Configuration { get; }
-        private IWebHostEnvironment Env { get; }
-        public static ILoggerRepository Repository { get; set; }
-        private static readonly ILog Log = LogManager.GetLogger(typeof(GlobalExceptionFilter));
+        Configuration = configuration;
+        Env = env;
+    }
 
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
-        {
-            Configuration = configuration;
-            Env = env;
-        }
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddSingleton(new LogHelper(Env.ContentRootPath));
-            services.AddSingleton(new ExcelHelper(Env.ContentRootPath));
-            services.AddScoped<ICurrentUser, CurrentUser>();
-            services.AddSingleton(Configuration);
-            services.AddLogging();
-            services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
-            services.Configure<IISServerOptions>(options => { options.AllowSynchronousIO = true; });
-            services.AddMemoryCacheSetup();
-            services.AddRedisCacheSetup();
-            services.AddSqlsugarSetup();
-            services.AddDbSetup();
-            services.AddAutoMapperSetup();
-            services.AddCorsSetup();
-            services.AddMiniProfilerSetup();
-            services.AddSwaggerSetup();
-            services.AddQuartzNetJobSetup();
-            services.AddAuthorizationSetup();
-            services.AddSignalR().AddNewtonsoftJsonProtocol();
-            services.AddBrowserDetection();
-            services.AddRedisInitMqSetup();
-            services.AddIpStrategyRateLimitSetup(Configuration);
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+        services.AddSingleton(new LogHelper(Env.ContentRootPath));
+        services.AddSingleton(new ExcelHelper(Env.ContentRootPath));
+        services.AddScoped<ICurrentUser, CurrentUser>();
+        services.AddSingleton(Configuration);
+        services.AddLogging();
+        services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
+        services.Configure<IISServerOptions>(options => { options.AllowSynchronousIO = true; });
+        services.AddMemoryCacheSetup();
+        services.AddRedisCacheSetup();
+        services.AddSqlsugarSetup();
+        services.AddDbSetup();
+        services.AddAutoMapperSetup();
+        services.AddCorsSetup();
+        services.AddMiniProfilerSetup();
+        services.AddSwaggerSetup();
+        services.AddQuartzNetJobSetup();
+        services.AddAuthorizationSetup();
+        services.AddSignalR().AddNewtonsoftJsonProtocol();
+        services.AddBrowserDetection();
+        services.AddRedisInitMqSetup();
+        services.AddIpStrategyRateLimitSetup(Configuration);
 
 
-            services.AddControllers(options =>
+        services.AddControllers(options =>
+            {
+                // 异常过滤器
+                options.Filters.Add(typeof(GlobalExceptionFilter));
+                // 审计过滤器
+                options.Filters.Add<AuditingFilter>();
+            })
+            .AddControllersAsServices()
+            .AddNewtonsoftJson(options =>
                 {
-                    // 异常过滤器
-                    options.Filters.Add(typeof(GlobalExceptionFilter));
-                    // 审计过滤器
-                    options.Filters.Add<AuditingFilter>();
-                })
-                .AddControllersAsServices()
-                .AddNewtonsoftJson(options =>
-                    {
-                        //全局忽略循环引用
-                        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                        //options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-                        options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-                        options.SerializerSettings.ContractResolver = new CustomContractResolver();
-                    }
-                );
-        }
+                    //全局忽略循环引用
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    //options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                    options.SerializerSettings.ContractResolver = new CustomContractResolver();
+                }
+            );
+    }
 
-        public void ConfigureContainer(ContainerBuilder builder)
+    public void ConfigureContainer(ContainerBuilder builder)
+    {
+        #region DI依赖注入
+
+        //AOP
+        var cacheType = new List<Type>();
+        builder.RegisterType<TransactionAop>();
+        cacheType.Add(typeof(TransactionAop));
+        builder.RegisterType<RedisAop>();
+        cacheType.Add(typeof(RedisAop));
+
+        // 获取所有待注入服务类
+        var baseTypeService = typeof(IDependencyService);
+        var diTypes = GlobalData.FxAllTypes
+            .Where(x => baseTypeService.IsAssignableFrom(x) && x != baseTypeService).ToArray();
+        builder.RegisterTypes(diTypes)
+            .AsImplementedInterfaces()
+            .PropertiesAutowired()
+            .InstancePerDependency()
+            .EnableInterfaceInterceptors()
+            .InterceptedBy(cacheType.ToArray());
+
+
+        // 获取所有待注入仓储类
+        var diTypesRepository = typeof(IDependencyRepository);
+        var diTypes2 = GlobalData.FxAllTypes
+            .Where(x => diTypesRepository.IsAssignableFrom(x) && x != diTypesRepository).ToArray();
+        builder.RegisterTypes(diTypes2)
+            .AsImplementedInterfaces()
+            .InstancePerDependency();
+
+
+        //注册
+        builder.RegisterType<DisposableContainer>()
+            .As<IDisposableContainer>()
+            .InstancePerLifetimeScope();
+
+        #endregion
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MyContext myContext,
+        IQuartzNetService quartzNetService,
+        ISchedulerCenterService schedulerCenter, ILoggerFactory loggerFactory)
+    {
+        //获取远程真实ip,如果不是nginx代理部署可以不要
+        app.UseMiddleware<RealIpMiddleware>();
+        //IP限流
+        app.UseIpLimitMiddleware();
+        //日志
+        loggerFactory.AddLog4Net();
+        if (env.IsDevelopment())
         {
-            #region DI依赖注入
-
-            //AOP
-            var cacheType = new List<Type>();
-            builder.RegisterType<TransactionAop>();
-            cacheType.Add(typeof(TransactionAop));
-            builder.RegisterType<RedisAop>();
-            cacheType.Add(typeof(RedisAop));
-
-            // 获取所有待注入服务类
-            var baseTypeService = typeof(IDependencyService);
-            var diTypes = GlobalData.FxAllTypes
-                .Where(x => baseTypeService.IsAssignableFrom(x) && x != baseTypeService).ToArray();
-            builder.RegisterTypes(diTypes)
-                .AsImplementedInterfaces()
-                .PropertiesAutowired()
-                .InstancePerDependency()
-                .EnableInterfaceInterceptors()
-                .InterceptedBy(cacheType.ToArray());
-
-
-            // 获取所有待注入仓储类
-            var diTypesRepository = typeof(IDependencyRepository);
-            var diTypes2 = GlobalData.FxAllTypes
-                .Where(x => diTypesRepository.IsAssignableFrom(x) && x != diTypesRepository).ToArray();
-            builder.RegisterTypes(diTypes2)
-                .AsImplementedInterfaces()
-                .InstancePerDependency();
-
-
-            //注册
-            builder.RegisterType<DisposableContainer>()
-                .As<IDisposableContainer>()
-                .InstancePerLifetimeScope();
-
-            #endregion
+            app.UseDeveloperExceptionPage();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MyContext myContext,
-            IQuartzNetService quartzNetService,
-            ISchedulerCenterService schedulerCenter, ILoggerFactory loggerFactory)
+        app.Use(next => context =>
         {
-            //获取远程真实ip,如果不是nginx代理部署可以不要
-            app.UseMiddleware<RealIpMiddleware>();
-            //IP限流
-            app.UseIpLimitMiddleware();
-            //日志
-            loggerFactory.AddLog4Net();
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            context.Request.EnableBuffering();
 
-            app.Use(next => context =>
-            {
-                context.Request.EnableBuffering();
+            return next(context);
+        });
 
-                return next(context);
-            });
+        //autofac
+        AutofacHelper.Container = app.ApplicationServices.GetAutofacRoot();
+        //Swagger UI
+        app.UseSwaggerMiddleware(() =>
+            GetType().GetTypeInfo().Assembly.GetManifestResourceStream("ApeVolo.Api.index.html"));
+        // CORS跨域
+        app.UseCors(AppSettings.GetValue("Cors", "PolicyName"));
+        //静态文件
+        app.UseStaticFiles();
+        //cookie
+        app.UseCookiePolicy();
+        //错误页
+        app.UseStatusCodePages();
+        app.UseRouting();
 
-            //autofac
-            AutofacHelper.Container = app.ApplicationServices.GetAutofacRoot();
-            //Swagger UI
-            app.UseSwaggerMiddleware(() =>
-                GetType().GetTypeInfo().Assembly.GetManifestResourceStream("ApeVolo.Api.index.html"));
-            // CORS跨域
-            app.UseCors(AppSettings.GetValue("Cors", "PolicyName"));
-            //静态文件
-            app.UseStaticFiles();
-            //cookie
-            app.UseCookiePolicy();
-            //错误页
-            app.UseStatusCodePages();
-            app.UseRouting();
+        app.UseCors("IpPolicy");
+        // 认证
+        app.UseAuthentication();
+        // 授权
+        app.UseAuthorization();
+        //性能监控
+        app.UseMiniProfilerMiddleware();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+        });
+        app.UseHttpMethodOverride();
 
-            app.UseCors("IpPolicy");
-            // 认证
-            app.UseAuthentication();
-            // 授权
-            app.UseAuthorization();
-            //性能监控
-            app.UseMiniProfilerMiddleware();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
-            app.UseHttpMethodOverride();
+        app.UseSeedDataMildd(myContext, env.WebRootPath);
+        //作业调度
+        app.UseQuartzNetJobMiddleware(quartzNetService, schedulerCenter);
 
-            app.UseSeedDataMildd(myContext, env.WebRootPath);
-            //作业调度
-            app.UseQuartzNetJobMiddleware(quartzNetService, schedulerCenter);
-
-            //雪花ID器
-            new IdHelperBootstrapper().SetWorkderId(1).Boot();
+        //雪花ID器
+        new IdHelperBootstrapper().SetWorkderId(1).Boot();
 
 
-            //List<object> items = new List<object>();
-            //foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            //{
-            //    items.Add(assembly);
-            //}
-        }
+        //List<object> items = new List<object>();
+        //foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        //{
+        //    items.Add(assembly);
+        //}
     }
 }

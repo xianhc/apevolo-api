@@ -1,7 +1,6 @@
-namespace ApeVolo.IBusiness.QueryModel
+namespace ApeVolo.IBusiness.QueryModel;
+
+public class DictQueryCriteria
 {
-    public class DictQueryCriteria
-    {
-        public string KeyWords { get; set; }
-    }
+    public string KeyWords { get; set; }
 }

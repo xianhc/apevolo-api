@@ -1,12 +1,11 @@
-﻿namespace ApeVolo.Common.Global
+﻿namespace ApeVolo.Common.Global;
+
+public enum LogLevel
 {
-    public enum LogLevel
-    {
-        Trace,
-        Debug,
-        Info,
-        Warn,
-        Error,
-        Fatal
-    }
+    Trace,
+    Debug,
+    Info,
+    Warn,
+    Error,
+    Fatal
 }

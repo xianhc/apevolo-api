@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace ApeVolo.Common.AttributeExt
+namespace ApeVolo.Common.AttributeExt;
+
+public class MapToAttribute : Attribute
 {
-    public class MapToAttribute : Attribute
+    public MapToAttribute(Type targetType)
     {
-        public MapToAttribute(Type targetType)
-        {
-            TargetType = targetType;
-        }
-        public Type TargetType { get; }
+        TargetType = targetType;
     }
+
+    public Type TargetType { get; }
 }

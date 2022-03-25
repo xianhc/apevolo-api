@@ -8,25 +8,24 @@ using ApeVolo.IBusiness.Dto.Dictionary;
 using ApeVolo.IBusiness.EditDto.Dict;
 using ApeVolo.IBusiness.QueryModel;
 
-namespace ApeVolo.IBusiness.Interface.Dictionary
+namespace ApeVolo.IBusiness.Interface.Dictionary;
+
+/// <summary>
+/// 字典接口
+/// </summary>
+public interface IDictService : IBaseServices<Dict>
 {
-    /// <summary>
-    /// 字典接口
-    /// </summary>
-    public interface IDictService : IBaseServices<Dict>
-    {
-        #region 基础接口
+    #region 基础接口
 
-        Task<bool> CreateAsync(CreateUpdateDictDto createUpdateDictDto);
+    Task<bool> CreateAsync(CreateUpdateDictDto createUpdateDictDto);
 
-        Task<bool> UpdateAsync(CreateUpdateDictDto createUpdateDictDto);
+    Task<bool> UpdateAsync(CreateUpdateDictDto createUpdateDictDto);
 
-        Task<bool> DeleteAsync(HashSet<long> ids);
+    Task<bool> DeleteAsync(HashSet<long> ids);
 
-        Task<List<DictDto>> QueryAsync(DictQueryCriteria dictQueryCriteria, Pagination pagination);
+    Task<List<DictDto>> QueryAsync(DictQueryCriteria dictQueryCriteria, Pagination pagination);
 
-        Task<List<ExportRowModel>> DownloadAsync(DictQueryCriteria dictQueryCriteria);
+    Task<List<ExportRowModel>> DownloadAsync(DictQueryCriteria dictQueryCriteria);
 
-        #endregion
-    }
+    #endregion
 }

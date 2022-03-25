@@ -3,12 +3,11 @@ using ApeVolo.IRepository.Email;
 using ApeVolo.IRepository.UnitOfWork;
 using ApeVolo.Repository.Base;
 
-namespace ApeVolo.Repository.Email
+namespace ApeVolo.Repository.Email;
+
+public class QueuedEmailRepository : SugarHandler<QueuedEmail>, IQueuedEmailRepository
 {
-    public class QueuedEmailRepository : SugarHandler<QueuedEmail>, IQueuedEmailRepository
+    public QueuedEmailRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
     {
-        public QueuedEmailRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
-        {
-        }
     }
 }

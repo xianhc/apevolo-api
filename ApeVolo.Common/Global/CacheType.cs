@@ -1,18 +1,17 @@
-﻿namespace ApeVolo.Common.Global
+﻿namespace ApeVolo.Common.Global;
+
+/// <summary>
+/// 缓存类型
+/// </summary>
+public enum CacheType
 {
     /// <summary>
-    /// 缓存类型
+    /// 系统缓存
     /// </summary>
-    public enum CacheType
-    {
-        /// <summary>
-        /// 系统缓存
-        /// </summary>
-        SystemCache,
+    SystemCache,
 
-        /// <summary>
-        /// Redis缓存
-        /// </summary>
-        RedisCache
-    }
+    /// <summary>
+    /// Redis缓存
+    /// </summary>
+    RedisCache
 }

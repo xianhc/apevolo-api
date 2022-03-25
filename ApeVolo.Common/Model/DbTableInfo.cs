@@ -1,32 +1,25 @@
 ﻿using ApeVolo.Common.Extention;
 
-namespace ApeVolo.Common.Model
+namespace ApeVolo.Common.Model;
+
+/// <summary>
+/// 数据库所有表的信息
+/// </summary>
+public class DbTableInfo
 {
     /// <summary>
-    /// 数据库所有表的信息
+    /// 表名
     /// </summary>
-    public class DbTableInfo
+    public string TableName { get; set; }
+
+    /// <summary>
+    /// 表描述说明
+    /// </summary>
+    public string Description
     {
-        /// <summary>
-        /// 表名
-        /// </summary>
-        public string TableName { get; set; }
-
-        /// <summary>
-        /// 表描述说明
-        /// </summary>
-        public string Description
-        {
-            get
-            {
-                return _description.IsNullOrEmpty() ? TableName : _description;
-            }
-            set
-            {
-                _description = value;
-            }
-        }
-
-        private string _description { get; set; }
+        get { return _description.IsNullOrEmpty() ? TableName : _description; }
+        set { _description = value; }
     }
+
+    private string _description { get; set; }
 }
