@@ -12,7 +12,7 @@ public static class Log4NetExtensions
 {
     public static ILoggerFactory AddLog4Net(this ILoggerFactory factory)
     {
-        if (AppSettings.GetValue("Middleware", "RecordAllLogs", "Enabled").ToBool())
+        if (AppSettings.GetValue<bool>("Middleware", "RecordAllLogs", "Enabled"))
         {
             factory.AddProvider(new Log4NetProvider("Log4net.config"));
         }

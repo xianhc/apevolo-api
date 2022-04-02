@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using ApeVolo.Common.ClassLibrary;
+using ApeVolo.Common.Global;
 
 namespace ApeVolo.Common.Helper;
 
@@ -10,11 +11,9 @@ namespace ApeVolo.Common.Helper;
 public class LogHelper
 {
     static UsingLock<object> _lock;
-    static string _contentRoot = string.Empty;
 
-    public LogHelper(string contentPath)
+    public LogHelper()
     {
-        _contentRoot = contentPath;
         _lock = new UsingLock<object>();
     }
 
@@ -47,7 +46,7 @@ public class LogHelper
     {
         try
         {
-            var path = Path.Combine(_contentRoot, "Logs");
+            var path = Path.Combine(AppSettings.ContentRootPath, "Logs");
             foreach (var t in folder)
             {
                 path = Path.Combine(path, t);
@@ -92,7 +91,7 @@ public class LogHelper
     {
         try
         {
-            var path = Path.Combine(_contentRoot, "SqlLogs");
+            var path = Path.Combine(AppSettings.ContentRootPath, "SqlLogs");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);

@@ -20,7 +20,7 @@ public static class MiniProfilerMiddleware
 
         try
         {
-            if (AppSettings.GetValue("Middleware", "MiniProfiler", "Enabled").ToBool())
+            if (AppSettings.GetValue<bool>("Middleware", "MiniProfiler", "Enabled"))
             {
                 // 性能分析
                 app.UseMiniProfiler();

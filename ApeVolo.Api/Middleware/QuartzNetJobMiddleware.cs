@@ -23,7 +23,7 @@ public static class QuartzNetJobMiddleware
 
         try
         {
-            if (AppSettings.GetValue("Middleware", "QuartzNetJob", "Enabled").ToBool())
+            if (AppSettings.GetValue<bool>("Middleware", "QuartzNetJob", "Enabled"))
             {
                 var allTaskQuartzList = taskQuartzService.QueryAllAsync().Result;
                 foreach (var item in allTaskQuartzList)

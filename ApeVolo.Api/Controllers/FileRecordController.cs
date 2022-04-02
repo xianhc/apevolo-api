@@ -62,7 +62,7 @@ public class FileRecordController : BaseApiController
             return Error("请选择一个文件再尝试!");
         }
 
-        var fileLimitSize = AppSettings.GetValue("FileLimitSize").ToLong() * 1024 * 1024;
+        var fileLimitSize = AppSettings.GetValue<long>("FileLimitSize") * 1024 * 1024;
         if (file.Length > fileLimitSize)
         {
             return Error($"文件过大，请选择文件小于等于{fileLimitSize}MB的重新进行尝试!");

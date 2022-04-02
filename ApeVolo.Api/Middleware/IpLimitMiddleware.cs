@@ -21,7 +21,7 @@ public static class IpLimitMiddleware
 
         try
         {
-            if (AppSettings.GetValue("Middleware", "IpLimit", "Enabled").ToBool())
+            if (AppSettings.GetValue<bool>("Middleware", "IpLimit", "Enabled"))
             {
                 app.UseIpRateLimiting();
             }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
@@ -54,7 +55,7 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
 
         string fileName = DateTime.Now.ToString("yyyyMMdd") + IdHelper.GetId() +
                           file.FileName.Substring(Math.Max(file.FileName.LastIndexOf('.'), 0));
-        string filePath = Path.Combine(HttpContextCore.WebRootPath, "static", "file", fileTypeNameEn);
+        string filePath = Path.Combine(AppSettings.WebRootPath, "static", "file", fileTypeNameEn);
         if (!FileHelper.Exists(filePath))
         {
             Directory.CreateDirectory(filePath);

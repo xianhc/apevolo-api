@@ -18,7 +18,7 @@ public static class BaseDbConfig
         DataBaseOperate masterDb = null;
         var slaveDbs = new List<DataBaseOperate>();
         var allDbs = new List<DataBaseOperate>();
-        string path = "appsettings.json";
+        string path = AppSettings.IsDevelopment ? "appsettings.Development.json" : "appsettings.json";
         using var file = new StreamReader(path);
         using var reader = new JsonTextReader(file);
         var jObj = (JObject)JToken.ReadFrom(reader);
@@ -56,7 +56,7 @@ public static class BaseDbConfig
         }
 
         //如果开启读写分离
-        if (AppSettings.GetValue("CQRSEnabled").ToBool())
+        if (AppSettings.GetValue<bool>("CQRSEnabled"))
         {
             slaveDbs = allDbs.Where(x => x.DbType == masterDb.DbType && x.ConnId != GlobalVar.CurrentDbConnId)
                 .ToList();

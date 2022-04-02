@@ -70,7 +70,7 @@ public class SeedData
 
             #region 添加初始数据
 
-            if (AppSettings.GetValue("InitSeedData").ToBool())
+            if (AppSettings.GetValue<bool>("InitSeedData"))
             {
                 Console.WriteLine("初始化种子数据....");
                 JsonSerializerSettings setting = new JsonSerializerSettings();

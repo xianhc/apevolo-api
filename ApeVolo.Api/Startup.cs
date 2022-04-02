@@ -13,6 +13,7 @@ using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
+using ApeVolo.Entity.Do.Logs;
 using ApeVolo.Entity.Seed;
 using ApeVolo.IBusiness.Interface.Tasks;
 using ApeVolo.QuartzNetService.service;
@@ -37,22 +38,21 @@ namespace ApeVolo.Api;
 public class Startup
 {
     private IConfiguration Configuration { get; }
-    private IWebHostEnvironment Env { get; }
+    private IWebHostEnvironment WebHostEnvironment { get; }
     public static ILoggerRepository Repository { get; set; }
     private static readonly ILog Log = LogManager.GetLogger(typeof(GlobalExceptionFilter));
 
-    public Startup(IConfiguration configuration, IWebHostEnvironment env)
+    public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {
         Configuration = configuration;
-        Env = env;
+        WebHostEnvironment = webHostEnvironment;
     }
 
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-        services.AddSingleton(new LogHelper(Env.ContentRootPath));
-        services.AddSingleton(new ExcelHelper(Env.ContentRootPath));
+        services.AddSingleton(new AppSettings(WebHostEnvironment));
         services.AddScoped<ICurrentUser, CurrentUser>();
         services.AddSingleton(Configuration);
         services.AddLogging();
@@ -133,7 +133,7 @@ public class Startup
         #endregion
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MyContext myContext,
+    public void Configure(IApplicationBuilder app, MyContext myContext,
         IQuartzNetService quartzNetService,
         ISchedulerCenterService schedulerCenter, ILoggerFactory loggerFactory)
     {
@@ -143,7 +143,7 @@ public class Startup
         app.UseIpLimitMiddleware();
         //日志
         loggerFactory.AddLog4Net();
-        if (env.IsDevelopment())
+        if (WebHostEnvironment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
         }
@@ -185,14 +185,12 @@ public class Startup
         });
         app.UseHttpMethodOverride();
 
-        app.UseSeedDataMildd(myContext, env.WebRootPath);
+        app.UseSeedDataMildd(myContext);
         //作业调度
         app.UseQuartzNetJobMiddleware(quartzNetService, schedulerCenter);
 
         //雪花ID器
         new IdHelperBootstrapper().SetWorkderId(1).Boot();
-
-
         //List<object> items = new List<object>();
         //foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         //{

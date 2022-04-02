@@ -18,7 +18,7 @@ public static class RedisInitMqSetup
         if (services == null) throw new ArgumentNullException(nameof(services));
 
         //启动redis消息队列 必须先启动redis缓存
-        if (AppSettings.GetValue("Middleware", "RedisMq", "Enabled").ToBool())
+        if (AppSettings.GetValue<bool>("Middleware", "RedisMq", "Enabled"))
         {
             services.AddRedisMq(m =>
             {

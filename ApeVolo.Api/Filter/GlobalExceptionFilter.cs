@@ -74,7 +74,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             ContentType = "application/json; charset=utf-8",
             StatusCode = statusCode
         };
-        if (AppSettings.GetValue("IsMiniProfiler").ToBool())
+        if (AppSettings.GetValue<bool>("IsMiniProfiler"))
         {
             MiniProfiler.Current.CustomTiming("Errors：", throwMsg);
         }

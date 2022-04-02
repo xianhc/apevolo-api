@@ -11,15 +11,15 @@ public static class InitDbMiddleware
 {
     private static readonly ILog Log = LogManager.GetLogger(typeof(IpLimitMiddleware));
 
-    public static void UseSeedDataMildd(this IApplicationBuilder app, MyContext myContext, string webRootPath)
+    public static void UseSeedDataMildd(this IApplicationBuilder app, MyContext myContext)
     {
         if (app == null) throw new ArgumentNullException(nameof(app));
 
         try
         {
-            if (AppSettings.GetValue("InitDbTable").ToBool())
+            if (AppSettings.GetValue<bool>("InitDbTable"))
             {
-                SeedData.InitSystemDataAsync(myContext, webRootPath).Wait();
+                SeedData.InitSystemDataAsync(myContext, AppSettings.WebRootPath).Wait();
             }
         }
         catch (Exception e)

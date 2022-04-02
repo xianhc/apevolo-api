@@ -53,13 +53,13 @@ public static class SqlsugarSetup
                         {
                             Parallel.For(0, 1, _ =>
                             {
-                                if (AppSettings.GetValue("IsMiniProfiler").ToBool())
+                                if (AppSettings.GetValue<bool>("IsMiniProfiler"))
                                 {
                                     MiniProfiler.Current.CustomTiming("SQL",
                                         "【SQL参数】：\n" + GetParams(pars) + "【SQL语句】" + sql);
                                 }
 
-                                if (AppSettings.GetValue("IsSqlAOP").ToBool())
+                                if (AppSettings.GetValue<bool>("IsSqlAOP"))
                                 {
                                     LogHelper.WriteSqlLog($"SqlLog{DateTime.Now:yyyy-MM-dd}",
                                         new[] { "【SQL参数】：\n" + GetParams(pars), "【SQL语句】" + sql });

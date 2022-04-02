@@ -2068,11 +2068,39 @@
             配置文件帮助类
             </summary>
         </member>
+        <member name="P:ApeVolo.Common.Global.AppSettings.Configuration">
+            <summary>
+            全局配置
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Global.AppSettings.IsDevelopment">
+            <summary>
+            是否开发环境
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Global.AppSettings.ContentRootPath">
+            <summary>
+            网站根路径
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Common.Global.AppSettings.WebRootPath">
+            <summary>
+            网站根路径(wwwroot)
+            </summary>
+        </member>
         <member name="M:ApeVolo.Common.Global.AppSettings.GetValue(System.String)">
             <summary>
             从AppSettings获取key的值
             </summary>
             <param name="key">key</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Global.AppSettings.GetValue``1(System.String)">
+            <summary>
+            从AppSettings获取key的值
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">键路径</param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Common.Global.AppSettings.GetValue(System.String[])">
@@ -2082,11 +2110,28 @@
             <param name="keys"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Common.Global.AppSettings.GetConnectionString(System.String)">
+        <member name="M:ApeVolo.Common.Global.AppSettings.GetValue``1(System.String[])">
             <summary>
-            获取连接字符串
+            从AppSettings获取key的值
             </summary>
-            <param name="nameOfCon">连接字符串名</param>
+            <typeparam name="T">类型</typeparam>
+            <param name="keys">键路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Global.AppSettings.ConvertValue``1(System.String)">
+            <summary>
+            值类型转换
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="value">值</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Common.Global.AppSettings.ConvertValue(System.Type,System.String)">
+            <summary>
+            值类型转换
+            </summary>
+            <param name="type">类型</param>
+            <param name="value">值</param>
             <returns></returns>
         </member>
         <member name="T:ApeVolo.Common.Global.CacheType">
@@ -3901,11 +3946,6 @@
         <member name="P:ApeVolo.Common.WebApp.HttpContextCore.CurrentHttpContext">
             <summary>
             当前上下文
-            </summary>
-        </member>
-        <member name="F:ApeVolo.Common.WebApp.HttpContextCore.WebRootPath">
-            <summary>
-            网站文件根路径
             </summary>
         </member>
         <member name="T:ApeVolo.Common.WebApp.ICurrentUser">

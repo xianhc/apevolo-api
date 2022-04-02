@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Text.RegularExpressions;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Global;
 using ApeVolo.Common.WebApp;
 
 namespace ApeVolo.Common.Helper;
@@ -163,12 +164,12 @@ public static class ImgHelper
             Image img = GetImgFromBase64Url(imgBase64OrUrl);
             string fileName = $"{GuidHelper.GenerateKey()}.jpg";
 
-            string dir = Path.Combine(HttpContextCore.WebRootPath, "Upload", "Img");
+            string dir = Path.Combine(AppSettings.WebRootPath, "Upload", "Img");
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
             img.Save(Path.Combine(dir, fileName));
 
-            return $"{HttpContextCore.WebRootPath}/Upload/Img/{fileName}";
+            return $"{AppSettings.WebRootPath}/Upload/Img/{fileName}";
         }
 
         return imgBase64OrUrl;

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using ApeVolo.Common.DI;
+using ApeVolo.Common.Global;
 using ApeVolo.Common.WebApp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -20,6 +21,6 @@ public static partial class ExtObject
         virtualPath = urlHelper.Content(virtualPath);
 
         return
-            $"{Path.Combine(new List<string> { HttpContextCore.WebRootPath }.Concat(virtualPath.Split('/')).ToArray())}";
+            $"{Path.Combine(new List<string> { AppSettings.WebRootPath }.Concat(virtualPath.Split('/')).ToArray())}";
     }
 }

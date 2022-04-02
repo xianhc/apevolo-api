@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using ApeVolo.Common.Exception;
+using ApeVolo.Common.Global;
 using Aspose.Cells;
 using Range = Aspose.Cells.Range;
 
@@ -17,11 +18,8 @@ namespace ApeVolo.Common.Helper.Excel;
 /// </summary>
 public class ExcelHelper
 {
-    private static string _contentRoot = string.Empty;
-
-    public ExcelHelper(string contentPath)
+    public ExcelHelper()
     {
-        _contentRoot = contentPath;
     }
 
     #region 导出
@@ -50,7 +48,7 @@ public class ExcelHelper
 
         var columns = exportRows[0].exportColumnModels;
         string newFileName = fileName + DateTime.Now.ToString("yyyyMMddHHmmss_ffff") + ".xlsx";
-        string savePath = Path.Combine(_contentRoot, "wwwroot", "ExportFile");
+        string savePath = Path.Combine(AppSettings.WebRootPath, "ExportFile");
         //string filePath = Path.Combine(_contentRoot, "wwwroot", "resources", "ip", "ip2region.db");
         var dataFolder = DateTime.Now.Date.ToString("yyyyMMdd");
         if (!Directory.Exists(savePath))

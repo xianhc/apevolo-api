@@ -18,7 +18,7 @@ public static class CorsSetup
 
         services.AddCors(c =>
         {
-            if (AppSettings.GetValue("Cors", "EnableAllIPs").ToBool())
+            if (AppSettings.GetValue<bool>("Cors", "EnableAllIPs"))
             {
                 //允许任意跨域请求
                 c.AddPolicy(AppSettings.GetValue("Cors", "PolicyName"),
