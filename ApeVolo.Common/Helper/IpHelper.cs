@@ -113,7 +113,7 @@ public static class IpHelper
                 return "局域网IP";
             }
 
-            string filePath = Path.Combine(AppSettings.ContentRootPath, "resources", "ip", "ip2region.db");
+            string filePath = Path.Combine(AppSettings.WebRootPath, "resources", "ip", "ip2region.db");
 
             using var search = new DbSearcher(filePath);
             var address = search.MemorySearch(ip).Region.Replace("0|", "");
