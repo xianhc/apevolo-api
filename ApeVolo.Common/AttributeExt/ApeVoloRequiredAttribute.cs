@@ -5,7 +5,7 @@ namespace ApeVolo.Common.AttributeExt;
 /// <summary>
 /// 自定义校验特性
 /// </summary>
-// [AttributeUsage(AttributeTargets.Method)]
+[AttributeUsage(AttributeTargets.Property)]
 public class ApeVoloRequiredAttribute : Attribute
 {
     /// <summary>

@@ -17,7 +17,8 @@ public interface IOnlineUserService : IDependencyService
     /// </summary>
     /// <param name="jwtUserVo"></param>
     /// <param name="token"></param>
-    Task<bool> SaveAsync(JwtUserVo jwtUserVo, string token);
+    /// <param name="remoteIp"></param>
+    Task<bool> SaveAsync(JwtUserVo jwtUserVo, string token, string remoteIp);
 
     /// <summary>
     /// jwt用户信息

@@ -4,6 +4,8 @@ namespace ApeVolo.Common.Helper;
 
 public static class ConsoleHelper
 {
+    public static void WriteLine() => Console.Out.WriteLine();
+
     /// <summary>
     /// 打印控制台信息
     /// </summary>

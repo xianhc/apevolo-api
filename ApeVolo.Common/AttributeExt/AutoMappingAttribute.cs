@@ -5,12 +5,9 @@ namespace ApeVolo.Common.AttributeExt;
 /// <summary>
 /// dto映射属性
 /// </summary>
+[AttributeUsage(AttributeTargets.Class)]
 public sealed class AutoMappingAttribute : Attribute
 {
-    public AutoMappingAttribute()
-    {
-    }
-
     public AutoMappingAttribute(Type sourceType, Type targetType)
     {
         SourceType = sourceType;

@@ -33,6 +33,12 @@ public static class RequiredHelper
 
             if (!isReq) continue;
             var value = pi.GetValue(entity, null);
+            if (value.IsNullOrEmpty())
+            {
+                isTrue = false;
+                break;
+            }
+
             var dtlType = pi.PropertyType.Name;
             if (dtlType == "Int32")
             {
@@ -41,22 +47,6 @@ public static class RequiredHelper
                     isTrue = false;
                     break;
                 }
-            }
-
-            if (dtlType == "List`1")
-            {
-                var list = (dynamic)value;
-                if (list == null || list.Count < 1)
-                {
-                    isTrue = false;
-                    break;
-                }
-            }
-
-            if (value.IsNullOrEmpty())
-            {
-                isTrue = false;
-                break;
             }
         }
 

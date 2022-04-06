@@ -14,8 +14,6 @@ namespace ApeVolo.Api;
 
 public class Program
 {
-    private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
-
     public static void Main(string[] args)
     {
         XmlDocument log4NetConfig = new XmlDocument();

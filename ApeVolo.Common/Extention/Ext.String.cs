@@ -81,7 +81,7 @@ public static partial class ExtObject
     /// <returns></returns>
     public static string Base64Encode(this string source, Encoding encoding)
     {
-        string encode = string.Empty;
+        string encode;
         byte[] bytes = encoding.GetBytes(source);
         try
         {
@@ -114,7 +114,7 @@ public static partial class ExtObject
     /// <returns>解密后的字符串</returns>
     public static string Base64Decode(this string result, Encoding encoding)
     {
-        string decode = string.Empty;
+        string decode;
         byte[] bytes = Convert.FromBase64String(result);
         try
         {
@@ -170,7 +170,7 @@ public static partial class ExtObject
     /// </summary>
     /// <param name="str">字符串</param>
     /// <returns></returns>
-    public static byte[] ToSHA1Bytes(this string str)
+    public static byte[] ToSha1Bytes(this string str)
     {
         return str.ToSha1Bytes(Encoding.UTF8);
     }
@@ -183,13 +183,9 @@ public static partial class ExtObject
     /// <returns></returns>
     public static byte[] ToSha1Bytes(this string str, Encoding encoding)
     {
-#pragma warning disable CS0618
-        SHA1 sha1 = new SHA1CryptoServiceProvider();
-#pragma warning restore CS0618
-        byte[] inputBytes = encoding.GetBytes(str);
-        byte[] outputBytes = sha1.ComputeHash(inputBytes);
-
-        return outputBytes;
+        using var sha1 = SHA1.Create();
+        var inputBytes = encoding.GetBytes(str);
+        return sha1.ComputeHash(inputBytes);
     }
 
     /// <summary>
@@ -200,7 +196,7 @@ public static partial class ExtObject
     /// <returns></returns>
     public static string ToSha1String(this string str)
     {
-        return str.ToSHA1String(Encoding.UTF8);
+        return str.ToSha1String(Encoding.UTF8);
     }
 
     /// <summary>
@@ -209,7 +205,7 @@ public static partial class ExtObject
     /// <param name="str">字符串</param>
     /// <param name="encoding">编码</param>
     /// <returns></returns>
-    public static string ToSHA1String(this string str, Encoding encoding)
+    public static string ToSha1String(this string str, Encoding encoding)
     {
         byte[] sha1Bytes = str.ToSha1Bytes(encoding);
         string resStr = BitConverter.ToString(sha1Bytes);
@@ -221,12 +217,12 @@ public static partial class ExtObject
     /// </summary>
     /// <param name="str">字符串</param>
     /// <returns></returns>
-    public static string ToSHA256String(this string str)
+    public static string ToSha256String(this string str)
     {
         byte[] bytes = Encoding.UTF8.GetBytes(str);
         byte[] hash = SHA256.Create().ComputeHash(bytes);
 
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         for (int i = 0; i < hash.Length; i++)
         {
             builder.Append(hash[i].ToString("x2"));
@@ -366,7 +362,7 @@ public static partial class ExtObject
     /// </summary>
     /// <param name="str">字符串</param>
     /// <returns></returns>
-    public static byte[] ToASCIIBytes(this string str)
+    public static byte[] ToAsciiBytes(this string str)
     {
         return str.ToList().Select(x => (byte)x).ToArray();
     }
@@ -496,33 +492,33 @@ public static partial class ExtObject
         if (json == null || json == "")
             return default(T);
 
-        Type type = typeof(T);
+        var type = typeof(T);
         object obj = Activator.CreateInstance(type, null);
 
         foreach (var item in type.GetProperties())
         {
-            PropertyInfo info = obj.GetType().GetProperty(item.Name);
-            string pattern;
-            pattern = "\"" + item.Name + "\":\"(.*?)\"";
-            foreach (Match match in Regex.Matches(json, pattern))
+            if (obj != null)
             {
-                switch (item.PropertyType.ToString())
+                PropertyInfo info = obj.GetType().GetProperty(item.Name);
+                string pattern;
+                pattern = "\"" + item.Name + "\":\"(.*?)\"";
+                foreach (Match match in Regex.Matches(json, pattern))
                 {
-                    case "System.String":
-                        info.SetValue(obj, match.Groups[1].ToString(), null);
-                        break;
-                    case "System.Int32":
-                        info.SetValue(obj, match.Groups[1].ToString().ToInt(), null);
-                        ;
-                        break;
-                    case "System.Int64":
-                        info.SetValue(obj, Convert.ToInt64(match.Groups[1].ToString()), null);
-                        ;
-                        break;
-                    case "System.DateTime":
-                        info.SetValue(obj, Convert.ToDateTime(match.Groups[1].ToString()), null);
-                        ;
-                        break;
+                    switch (item.PropertyType.ToString())
+                    {
+                        case "System.String":
+                            if (info != null) info.SetValue(obj, match.Groups[1].ToString(), null);
+                            break;
+                        case "System.Int32":
+                            if (info != null) info.SetValue(obj, match.Groups[1].ToString().ToInt(), null);
+                            break;
+                        case "System.Int64":
+                            if (info != null) info.SetValue(obj, Convert.ToInt64(match.Groups[1].ToString()), null);
+                            break;
+                        case "System.DateTime":
+                            if (info != null) info.SetValue(obj, Convert.ToDateTime(match.Groups[1].ToString()), null);
+                            break;
+                    }
                 }
             }
         }
@@ -555,7 +551,7 @@ public static partial class ExtObject
     /// </summary>=
     /// <param name="str">字符串</param>
     /// <returns></returns>
-    public static IPEndPoint ToIPEndPoint(this string str)
+    public static IPEndPoint ToIpEndPoint(this string str)
     {
         IPEndPoint iPEndPoint = null;
         try

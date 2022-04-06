@@ -6,6 +6,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.IBusiness.Interface.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ApeVolo.Api.ActionExtension.Sign;
 
@@ -14,13 +15,6 @@ namespace ApeVolo.Api.ActionExtension.Sign;
 /// </summary>
 public class VerifySignatureAttribute : BaseActionFilter
 {
-    // private readonly IRedisCacheService _redisCacheService;
-    //
-    // public VerifySignatureAttribute(IRedisCacheService redisCacheService)
-    // {
-    //     _redisCacheService = redisCacheService;
-    // }
-
     /// <summary>
     /// Action执行之前执行
     /// </summary>
@@ -32,77 +26,72 @@ public class VerifySignatureAttribute : BaseActionFilter
             return;
         var request = filterContext.HttpContext.Request;
 
-        string appId = request.Headers["appId"].ToString();
+        var appId = request.Headers["appId"].ToString();
         if (appId.IsNullOrEmpty())
         {
-            ReturnError("缺少header:appId");
+            filterContext.Result = Error("缺少header:appId");
             return;
         }
 
-        string time = request.Headers["time"].ToString();
+        var time = request.Headers["time"].ToString();
         if (time.IsNullOrEmpty())
         {
-            ReturnError("缺少header:time");
+            filterContext.Result = Error("缺少header:time");
             return;
         }
 
         if (time.ToDateTime() < DateTime.Now.AddMinutes(-5) || time.ToDateTime() > DateTime.Now.AddMinutes(5))
         {
-            ReturnError("time过期");
+            filterContext.Result = Error("time过期");
             return;
         }
 
-        string guid = request.Headers["guid"].ToString();
+        var guid = request.Headers["guid"].ToString();
         if (guid.IsNullOrEmpty())
         {
-            ReturnError("缺少header:guid");
+            filterContext.Result = Error("缺少header:guid");
             return;
         }
 
-        string guidKey = $"ApiGuid_{guid}";
-        var redisCacheService = AutofacHelper.GetService<IRedisCacheService>();
+        var guidKey = $"ApiGuid_{guid}";
+        var redisCacheService = filterContext.HttpContext.RequestServices.GetRequiredService<IRedisCacheService>();
         if (!redisCacheService.GetCacheStrAsync(guidKey).IsNullOrEmpty())
         {
             await redisCacheService.SetCacheAsync(guidKey, "1");
         }
         else
         {
-            ReturnError("禁止重复调用!");
+            filterContext.Result = Error("禁止重复调用!");
             return;
         }
 
         request.EnableBuffering();
-        string body = request.Body.ReadToString();
+        var body = request.Body.ReadToString();
 
-        string sign = request.Headers["sign"].ToString();
+        var sign = request.Headers["sign"].ToString();
         if (sign.IsNullOrEmpty())
         {
-            ReturnError("缺少header:sign");
+            filterContext.Result = Error("缺少header:sign");
             return;
         }
 
-        var appSecretModel = await AutofacHelper.GetService<IAppSecretService>()
+        var appSecretModel = await filterContext.HttpContext.RequestServices.GetRequiredService<IAppSecretService>()
             .QueryFirstAsync(x => x.IsDeleted == false && x.AppId == appId);
         if (appSecretModel.IsNull())
         {
-            ReturnError("header:appId无效");
+            filterContext.Result = Error("header:appId无效");
             return;
         }
 
-        string newSign = BuildApiSign(appId, appSecretModel.AppSecretKey, guid, time.ToDateTime(), body);
+        var newSign = BuildApiSign(appId, appSecretModel.AppSecretKey, guid, time.ToDateTime(), body);
         if (sign != newSign)
         {
-            string log =
+            var msg =
                 $@"sign签名错误!
-headers:{request.Headers.ToJson()}
-body:{body}
-正确sign:{newSign}
-";
-            // ReturnError("header:sign签名错误");
-        }
-
-        void ReturnError(string msg)
-        {
+                        headers:{request.Headers.ToJson()}
+                        body:{body}
+                        传入sign{sign}
+                        正确sign:{newSign}";
             filterContext.Result = Error(msg);
         }
     }

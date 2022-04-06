@@ -26,19 +26,19 @@ public static class RedisCacheSetup
 
             RedisPass = AppSettings.GetValue("RedisConfig", "RedisPass"),
 
-            RedisIndex = AppSettings.GetValue("RedisConfig", "RedisIndex").ToInt(),
+            RedisIndex = AppSettings.GetValue<int>("RedisConfig", "RedisIndex"),
 
-            ConnectTimeout = AppSettings.GetValue("RedisConfig", "SyncTimeout").ToInt(),
+            ConnectTimeout = AppSettings.GetValue<int>("RedisConfig", "SyncTimeout"),
 
-            SyncTimeout = AppSettings.GetValue("RedisConfig", "ConnectTimeout").ToInt(),
+            SyncTimeout = AppSettings.GetValue<int>("RedisConfig", "ConnectTimeout"),
 
-            KeepAlive = AppSettings.GetValue("RedisConfig", "KeepAlive").ToInt(),
+            KeepAlive = AppSettings.GetValue<int>("RedisConfig", "KeepAlive"),
 
-            ConnectRetry = AppSettings.GetValue("RedisConfig", "ConnectRetry").ToInt(),
+            ConnectRetry = AppSettings.GetValue<int>("RedisConfig", "ConnectRetry"),
 
-            AbortOnConnectFail = AppSettings.GetValue("RedisConfig", "AbortOnConnectFail").ToBool(),
+            AbortOnConnectFail = AppSettings.GetValue<bool>("RedisConfig", "AbortOnConnectFail"),
 
-            AllowAdmin = AppSettings.GetValue("RedisConfig", "AllowAdmin").ToBool()
+            AllowAdmin = AppSettings.GetValue<bool>("RedisConfig", "AllowAdmin")
         };
 
         services.AddSingleton(typeof(IRedisCacheService), new RedisCacheService(redisOptions));

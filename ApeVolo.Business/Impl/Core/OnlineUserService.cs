@@ -39,21 +39,18 @@ public class OnlineUserService : IOnlineUserService
     /// </summary>
     /// <param name="jwtUserVo"></param>
     /// <param name="token"></param>
-    public async Task<bool> SaveAsync(JwtUserVo jwtUserVo, string token)
+    /// <param name="remoteIp"></param>
+    public async Task<bool> SaveAsync(JwtUserVo jwtUserVo, string token, string remoteIp)
     {
-        string ip = IpHelper.GetIp();
-        string browser = IpHelper.GetBrowserName();
-        string address = IpHelper.GetIpAddress();
-
-        OnlineUser onlineUser = new OnlineUser
+        var onlineUser = new OnlineUser
         {
             UserId = jwtUserVo.User.Id,
             UserName = jwtUserVo.User.Username,
             NickName = jwtUserVo.User.NickName,
             Dept = jwtUserVo.User.Dept.Name,
-            Browser = browser,
-            Ip = ip,
-            Address = address,
+            Browser = IpHelper.GetBrowserName(),
+            Ip = remoteIp,
+            Address = IpHelper.GetIpAddress(remoteIp),
             Key = token.ToHmacsha256String(AppSettings.GetValue("HmacSecret")),
             LoginTime = DateTime.Now,
             currentPermission = new CurrentPermission

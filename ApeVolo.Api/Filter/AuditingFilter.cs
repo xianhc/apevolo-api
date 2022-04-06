@@ -11,6 +11,8 @@ using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Do.Logs;
 using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Interface.Logs;
+using log4net;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -26,6 +28,9 @@ public class AuditingFilter : IAsyncActionFilter
     private readonly IAuditLogService _auditInfoService;
     private readonly ICurrentUser _currentUser;
     private readonly ISettingService _settingService;
+
+    private static readonly ILog Log =
+        LogManager.GetLogger(typeof(GlobalExceptionFilter));
 
     public AuditingFilter(IAuditLogService auditInfoService, ICurrentUser currentUser,
         ISettingService settingService)
@@ -59,27 +64,28 @@ public class AuditingFilter : IAsyncActionFilter
             if ((await _settingService.FindSettingByName("IsAuditLogSaveDB")).Value.ToBool())
             {
                 var result = resultContext.Result;
-                if (HttpContextCore.CurrentHttpContext.IsNotNull() && result.IsNotNull())
+                if (context.HttpContext.IsNotNull() && result.IsNotNull())
                 {
-                    var reqUrlPath = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower();
+                    var reqUrlPath = context.HttpContext.Request.Path.Value?.ToLower();
                     var settingDto = await _settingService.FindSettingByName("LgnoreAuditLogUrlPath");
                     var lgnoreAuditLogUrlPathList = settingDto.Value.Split("|");
                     if (!lgnoreAuditLogUrlPathList.Contains(reqUrlPath))
                     {
                         AuditLog auditInfo = CreateAuditLog(context);
-                        if (result.GetType().FullName == "Microsoft.AspNetCore.Mvc.ObjectResult")
+                        if (result != null && result.GetType().FullName == "Microsoft.AspNetCore.Mvc.ObjectResult")
                         {
                             var value = ((ObjectResult)result).Value;
                             if (value != null)
                                 auditInfo.ResponseData = value.ToString();
                         }
-                        else if (result.GetType().FullName == "Microsoft.AspNetCore.Mvc.FileContentResult")
+                        else if (result != null &&
+                                 result.GetType().FullName == "Microsoft.AspNetCore.Mvc.FileContentResult")
                         {
                             auditInfo.ResponseData = ((FileContentResult)result).FileDownloadName;
                         }
                         else
                         {
-                            auditInfo.ResponseData = ((ContentResult)result).Content;
+                            auditInfo.ResponseData = ((ContentResult)result)?.Content;
                         }
 
                         //用时
@@ -97,9 +103,8 @@ public class AuditingFilter : IAsyncActionFilter
         }
         catch (Exception ex)
         {
-            LogHelper.WriteLog(ex.Message,
-                new[] { "AuditingFilter", DateTime.Now.ToString("yyyy-MM-dd") });
-            //ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
+            Log.Error(ExceptionLogFormat.WriteLog(context.HttpContext, ex, _currentUser.Name));
+            ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
             // ignored
         }
     }
@@ -116,8 +121,9 @@ public class AuditingFilter : IAsyncActionFilter
             ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.GetCustomAttribute(
                 typeof(DescriptionAttribute), true);
 
-        var decs = HttpHelper.GetAllRequestParams(context.HttpContext); //context.ActionArguments;
-
+        var httpContext = context.HttpContext;
+        var remoteIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
+        var decs = HttpHelper.GetAllRequestParams(httpContext); //context.ActionArguments;
         var auditLog = new AuditLog
         {
             Id = IdHelper.GetLongId(),
@@ -126,17 +132,17 @@ public class AuditingFilter : IAsyncActionFilter
             Area = routeValues["area"],
             Controller = routeValues["controller"],
             Action = routeValues["action"],
-            Method = context.HttpContext.Request.Method,
-            Description = desc.IsNull() ? "" : ((DescriptionAttribute)desc).Description,
-            RequestUrl = HttpContextCore.CurrentHttpContext.Request.GetDisplayUrl() ?? "",
+            Method = httpContext.Request.Method,
+            Description = desc.IsNull() ? "" : ((DescriptionAttribute)desc)?.Description,
+            RequestUrl = httpContext.Request.GetDisplayUrl(),
             RequestParameters = decs.ToJson(),
             BrowserInfo = IpHelper.GetBrowserName(),
-            RequestIp = IpHelper.GetIp(),
-            IpAddress = IpHelper.GetIpAddress()
+            RequestIp = remoteIp,
+            IpAddress = IpHelper.GetIpAddress(remoteIp)
         };
 
 
-        var reqUrl = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower();
+        var reqUrl = httpContext.Request.Path.Value?.ToLower();
         if (reqUrl is "/auth/login")
         {
             var (_, value) = decs.SingleOrDefault(k => k.Key == "username");

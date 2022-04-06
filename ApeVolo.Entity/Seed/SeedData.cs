@@ -35,15 +35,18 @@ public class SeedData
                 throw new Exception("获取wwwroot路径时，异常！");
             }
 
-            Console.WriteLine($"程序启动==>webRootPath:{webRootPath}");
-            Console.WriteLine($"DB Type: {MyContext.DbType}");
-            Console.WriteLine($"DB ConnectString: {MyContext.ConnectionString}");
-            Console.WriteLine("初始化数据库....");
+            ConsoleHelper.WriteLine($"程序正在启动....", ConsoleColor.Green);
+            ConsoleHelper.WriteLine($"是否开发环境: {AppSettings.IsDevelopment}");
+            ConsoleHelper.WriteLine($"ContentRootPath: {AppSettings.ContentRootPath}");
+            ConsoleHelper.WriteLine($"WebRootPath: {AppSettings.WebRootPath}");
+            ConsoleHelper.WriteLine($"DB Type: {MyContext.DbType}");
+            ConsoleHelper.WriteLine($"DB ConnectString: {MyContext.ConnectionString}");
+            ConsoleHelper.WriteLine("初始化数据库....");
             myContext.Db.DbMaintenance.CreateDatabase();
             ConsoleHelper.WriteLine("初始化数据库成功。", ConsoleColor.Green);
-            Console.WriteLine();
+            ConsoleHelper.WriteLine();
 
-            Console.WriteLine("初始化数据表....");
+            ConsoleHelper.WriteLine("初始化数据表....");
             var entityTypes = GlobalData.EntityTypes.Where(x => x.GetCustomAttribute<InitTableAttribute>() != null)
                 .Select(x => x.GetCustomAttribute<InitTableAttribute>()?.SourceType);
 
@@ -52,7 +55,7 @@ public class SeedData
                 var attr = entity.GetCustomAttribute<SugarTable>();
                 if (attr == null)
                 {
-                    Console.WriteLine($"Entity:{entity.Name}-->缺少SugarTable特性");
+                    ConsoleHelper.WriteLine($"Entity:{entity.Name}-->缺少SugarTable特性");
                 }
                 else
                 {
@@ -65,14 +68,14 @@ public class SeedData
                 }
             });
             ConsoleHelper.WriteLine("初始化数据表成功！", ConsoleColor.Green);
-            Console.WriteLine();
+            ConsoleHelper.WriteLine();
             //添加初始数据
 
             #region 添加初始数据
 
             if (AppSettings.GetValue<bool>("InitSeedData"))
             {
-                Console.WriteLine("初始化种子数据....");
+                ConsoleHelper.WriteLine("初始化种子数据....");
                 JsonSerializerSettings setting = new JsonSerializerSettings();
                 JsonConvert.DefaultSettings = () =>
                 {
@@ -96,7 +99,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(User)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(User)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -114,7 +118,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(Role)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(Role)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -132,7 +137,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(Menu)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(Menu)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -150,7 +156,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(Department)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(Department)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -168,7 +175,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(Job)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(Job)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -186,7 +194,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(Setting)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(Setting)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -204,7 +213,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(Dict)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(Dict)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -222,7 +232,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(DictDetail)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(DictDetail)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -240,7 +251,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(QuartzNet)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(QuartzNet)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -258,7 +270,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(EmailAccount)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(EmailAccount)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -276,7 +289,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(MessageTemplate)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(MessageTemplate)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -294,7 +308,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(UserRoles)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(UserRoles)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -312,7 +327,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(UserJobs)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(UserJobs)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 
@@ -330,7 +346,8 @@ public class SeedData
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(RoleMenu)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！");
+                            $"Entity:{nameof(RoleMenu)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
                     }
                 }
 

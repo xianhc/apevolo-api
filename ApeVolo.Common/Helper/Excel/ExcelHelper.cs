@@ -18,10 +18,6 @@ namespace ApeVolo.Common.Helper.Excel;
 /// </summary>
 public class ExcelHelper
 {
-    public ExcelHelper()
-    {
-    }
-
     #region 导出
 
     #region 实体
@@ -48,7 +44,7 @@ public class ExcelHelper
 
         var columns = exportRows[0].exportColumnModels;
         string newFileName = fileName + DateTime.Now.ToString("yyyyMMddHHmmss_ffff") + ".xlsx";
-        string savePath = Path.Combine(AppSettings.WebRootPath, "ExportFile");
+        string savePath = Path.Combine(AppSettings.WebRootPath, "exportFile");
         //string filePath = Path.Combine(_contentRoot, "wwwroot", "resources", "ip", "ip2region.db");
         var dataFolder = DateTime.Now.Date.ToString("yyyyMMdd");
         if (!Directory.Exists(savePath))
@@ -155,9 +151,9 @@ public class ExcelHelper
         }
 
         string newFileName = fileName + DateTime.Now.ToString("yyyyMMddHHmmss_ffff") + ".xlsx";
-        string savePath = AppDomain.CurrentDomain.BaseDirectory + "ExportFile/";
+        string savePath = AppDomain.CurrentDomain.BaseDirectory + "exportFile/";
         var dataFolder = DateTime.Now.Date.ToString("yyyyMMdd") + "/";
-        relativePath = "ExportFile/" + dataFolder + newFileName;
+        relativePath = "exportFile/" + dataFolder + newFileName;
         if (!Directory.Exists(savePath))
         {
             Directory.CreateDirectory(savePath);
@@ -309,9 +305,9 @@ public class ExcelHelper
         }
 
         string newFileName = fileName + DateTime.Now.ToString("yyyyMMddHHmmss_ffff") + ".xlsx";
-        string savePath = AppDomain.CurrentDomain.BaseDirectory + "ExportFile/";
+        string savePath = AppDomain.CurrentDomain.BaseDirectory + "exportFile/";
         var dataFolder = DateTime.Now.Date.ToString("yyyyMMdd") + "/";
-        relativePath = "ExportFile/" + dataFolder + newFileName;
+        relativePath = "exportFile/" + dataFolder + newFileName;
         if (!Directory.Exists(savePath))
         {
             Directory.CreateDirectory(savePath);
@@ -449,9 +445,9 @@ public class ExcelHelper
         }
 
         string newFileName = fileName + DateTime.Now.ToString("yyyyMMddHHmmss_ffff") + ".xlsx";
-        string savePath = AppDomain.CurrentDomain.BaseDirectory + "ExportFile/";
+        string savePath = AppDomain.CurrentDomain.BaseDirectory + "exportFile/";
         var dataFolder = DateTime.Now.Date.ToString("yyyyMMdd") + "/";
-        relativePath = "ExportFile/" + dataFolder + newFileName;
+        relativePath = "exportFile/" + dataFolder + newFileName;
 
         if (!Directory.Exists(savePath))
         {

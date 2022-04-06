@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Global;
 using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -24,16 +26,16 @@ public static class SwaggerSetup
 
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo
+            c.SwaggerDoc(AppSettings.GetValue("Swagger", "Name"), new OpenApiInfo
             {
-                Version = "v1.0.0",
-                Title = "Apevolo Api 接口文档"
+                Version = AppSettings.GetValue("Swagger", "Version"),
+                Title = AppSettings.GetValue("Swagger", "Title") + "    " + RuntimeInformation.FrameworkDescription
             });
 
             try
             {
                 var xmlPath = Path.Combine(basePath, "ApeVolo.Api.xml");
-                c.IncludeXmlComments(xmlPath, true); //默认的第二个参数是false，这个是controller的注释，记得修改
+                c.IncludeXmlComments(xmlPath, true);
             }
             catch (Exception ex)
             {

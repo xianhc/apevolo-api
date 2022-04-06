@@ -4,6 +4,7 @@ using ApeVolo.Common.DI;
 using ApeVolo.Common.WebApp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ApeVolo.Api.ActionExtension.Jwt;
 
@@ -12,8 +13,8 @@ namespace ApeVolo.Api.ActionExtension.Jwt;
 /// </summary>
 public class TokenFilterAttribute : BaseActionFilter
 {
-    private readonly IHttpContextAccessor _accessor = AutofacHelper.GetService<IHttpContextAccessor>();
-    private readonly ICurrentUser _currentUser = AutofacHelper.GetService<ICurrentUser>();
+    //private readonly IHttpContextAccessor _accessor = AutofacHelper.GetService<IHttpContextAccessor>();
+    //private readonly ICurrentUser _currentUser = AutofacHelper.GetService<ICurrentUser>();
 
     /// <summary>
     /// Action执行之前执行
@@ -26,7 +27,8 @@ public class TokenFilterAttribute : BaseActionFilter
             //如果项目使用自定义jwt模式 需要在这里验证token是否有效或过期
             //还要增加白名单处理或无权限Attribute
             //if (context.ContainsFilter<无权限Attribute>()) return;
-
+            //var accessor = context.HttpContext.RequestServices.GetRequiredService<IHttpContextAccessor>();
+            //var currentUser = context.HttpContext.RequestServices.GetRequiredService<ICurrentUser>();
             //允许token为空(无权限接口) 权限接口已使用.net core内置鉴权
             //这里验证用户是在线 如果不需要用户在线功能 可把当前过滤器 登录接口保存在线用户方法注释
             //string token = _currentUser.GetToken();

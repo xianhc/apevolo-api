@@ -21,6 +21,7 @@ using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -117,8 +118,8 @@ public class AuthorizationController : BaseApiController
         var jwtUserVo = await _onlineUserService.FindJwtUserAsync(netUser);
 
         // 保存在线信息
-        bool isTrue =
-            await _onlineUserService.SaveAsync(jwtUserVo, token.ToString().Replace("Bearer ", ""));
+        string remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
+        await _onlineUserService.SaveAsync(jwtUserVo, token.ToString().Replace("Bearer ", ""), remoteIp);
 
 
         var dic = new Dictionary<string, object> { { "user", jwtUserVo }, { "token", token } };

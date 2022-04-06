@@ -9,19 +9,14 @@ using ApeVolo.Api.Middleware;
 using ApeVolo.Common.ClassLibrary;
 using ApeVolo.Common.DI;
 using ApeVolo.Common.Global;
-using ApeVolo.Common.Helper;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
-using ApeVolo.Entity.Do.Logs;
 using ApeVolo.Entity.Seed;
 using ApeVolo.IBusiness.Interface.Tasks;
 using ApeVolo.QuartzNetService.service;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
-using log4net;
-using log4net.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -39,8 +34,6 @@ public class Startup
 {
     private IConfiguration Configuration { get; }
     private IWebHostEnvironment WebHostEnvironment { get; }
-    public static ILoggerRepository Repository { get; set; }
-    private static readonly ILog Log = LogManager.GetLogger(typeof(GlobalExceptionFilter));
 
     public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {

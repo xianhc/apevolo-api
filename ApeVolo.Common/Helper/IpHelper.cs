@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using ApeVolo.Common.DI;
+using ApeVolo.Common.Global;
 using ApeVolo.Common.WebApp;
 using IP2Region;
 using Shyjus.BrowserDetection;
@@ -16,8 +17,6 @@ namespace ApeVolo.Common.Helper;
 /// </summary>
 public static class IpHelper
 {
-    static string _contentRoot = string.Empty;
-
     #region 外部接口
 
     /// <summary>
@@ -89,34 +88,32 @@ public static class IpHelper
         return isAvailable;
     }
 
+    /*
     /// <summary>
     /// 获取客户端IP地址
     /// </summary>
     /// <returns></returns>
     public static string GetIp()
     {
-        if (HttpContextCore.CurrentHttpContext.Connection.RemoteIpAddress != null)
-            return HttpContextCore.CurrentHttpContext.Connection.RemoteIpAddress.ToString();
-
-        return "0.0.0.0";
-    }
+        return HttpContextCore.CurrentHttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
+    }*/
 
     /// <summary>
     /// 获取IP详细地址
     /// </summary>
+    /// <param name="ip"></param>
     /// <returns></returns>
-    public static string GetIpAddress()
+    public static string GetIpAddress(string ip)
     {
         try
         {
-            string ip = GetIp();
             string pattern = @"^(([1-9]\d?)|(1\d{2})|(2[01]\d)|(22[0-3]))(\.((1?\d\d?)|(2[04]/d)|(25[0-5]))){3}$";
             if (!Regex.IsMatch(ip, pattern))
             {
                 return "局域网IP";
             }
 
-            string filePath = Path.Combine(_contentRoot, "wwwroot", "resources", "ip", "ip2region.db");
+            string filePath = Path.Combine(AppSettings.ContentRootPath, "resources", "ip", "ip2region.db");
 
             using var search = new DbSearcher(filePath);
             var address = search.MemorySearch(ip).Region.Replace("0|", "");
@@ -176,14 +173,14 @@ public static class IpHelper
         IPEndPoint[] ipsTcp = ipGlobalProperties.GetActiveTcpListeners();
 
         //返回本地计算机上的所有UDP监听程序
-        IPEndPoint[] ipsUDP = ipGlobalProperties.GetActiveUdpListeners();
+        IPEndPoint[] ipsUdp = ipGlobalProperties.GetActiveUdpListeners();
 
         //返回本地计算机上的Internet协议版本4(IPV4 传输控制协议(TCP)连接的信息。
         TcpConnectionInformation[] tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
 
         IList allPorts = new ArrayList();
         foreach (IPEndPoint ep in ipsTcp) allPorts.Add(ep.Port);
-        foreach (IPEndPoint ep in ipsUDP) allPorts.Add(ep.Port);
+        foreach (IPEndPoint ep in ipsUdp) allPorts.Add(ep.Port);
         foreach (TcpConnectionInformation conn in tcpConnInfoArray) allPorts.Add(conn.LocalEndPoint.Port);
 
         return allPorts;

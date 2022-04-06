@@ -14,8 +14,6 @@ public static class CorsSetup
     {
         if (services.IsNull()) throw new ArgumentNullException(nameof(services));
 
-        if (services == null) throw new ArgumentNullException(nameof(services));
-
         services.AddCors(c =>
         {
             if (AppSettings.GetValue<bool>("Cors", "EnableAllIPs"))

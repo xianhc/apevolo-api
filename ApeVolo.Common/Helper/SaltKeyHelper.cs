@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using ApeVolo.Common.Extention;
 
 namespace ApeVolo.Common.Helper;
 
@@ -15,11 +16,9 @@ public static class SaltKeyHelper
     /// <returns>A salt</returns>
     public static string CreateSalt(int size)
     {
-#pragma warning disable CS0618
-        var provider = new RNGCryptoServiceProvider();
-#pragma warning restore CS0618
-        byte[] data = new byte[size];
-        provider.GetBytes(data);
-        return Convert.ToBase64String(data);
+        var random = RandomNumberGenerator.Create();
+        var bytes = new byte[size];
+        random.GetNonZeroBytes(bytes);
+        return bytes.ToBase64String();
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Global;
+using JetBrains.Annotations;
 using log4net;
 using Microsoft.AspNetCore.Builder;
 
@@ -13,7 +15,7 @@ public static class SwaggerMiddleware
 {
     private static readonly ILog Log = LogManager.GetLogger(typeof(SwaggerMiddleware));
 
-    public static void UseSwaggerMiddleware(this IApplicationBuilder app, Func<Stream> streamHtml)
+    public static void UseSwaggerMiddleware(this IApplicationBuilder app, [CanBeNull] Func<Stream> streamHtml)
     {
         if (app.IsNull())
             throw new ArgumentNullException(nameof(app));
@@ -21,16 +23,18 @@ public static class SwaggerMiddleware
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "1.0.0");
+            c.SwaggerEndpoint($"/swagger/{AppSettings.GetValue("Swagger", "Name")}/swagger.json",
+                AppSettings.GetValue("Swagger", "Version"));
 
-            if (streamHtml.Invoke() == null)
+            var stream = streamHtml?.Invoke();
+            if (stream == null)
             {
                 const string msg = "index.html属性错误";
                 Log.Error(msg);
                 throw new Exception(msg);
             }
 
-            c.IndexStream = streamHtml;
+            c.IndexStream = () => stream;
             c.RoutePrefix = string.Empty;
         });
     }

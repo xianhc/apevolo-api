@@ -1173,11 +1173,18 @@
             <param name="context"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Filter.GlobalExceptionFilter.WriteLog(Microsoft.AspNetCore.Mvc.Filters.ExceptionContext)">
+        <member name="T:ApeVolo.Api.Filter.ExceptionLogFormat">
+            <summary>
+            统一输出日志格式
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Filter.ExceptionLogFormat.WriteLog(Microsoft.AspNetCore.Http.HttpContext,System.Exception,System.String)">
             <summary>
             自定义返回格式
             </summary>
-            <param name="context"></param>
+            <param name="httpContext"></param>
+            <param name="exception"></param>
+            <param name="currentUserName"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Filter.GlobalExceptionFilter.CreateLog(Microsoft.AspNetCore.Mvc.Filters.ExceptionContext)">
