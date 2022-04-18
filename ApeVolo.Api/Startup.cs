@@ -65,6 +65,8 @@ public class Startup
         services.AddBrowserDetection();
         services.AddRedisInitMqSetup();
         services.AddIpStrategyRateLimitSetup(Configuration);
+        services.AddRabbitMQSetup();
+        services.AddEventBusSetup();
 
 
         services.AddControllers(options =>
@@ -184,6 +186,8 @@ public class Startup
 
         //雪花ID器
         new IdHelperBootstrapper().SetWorkderId(1).Boot();
+        //事件总线配置订阅
+        app.ConfigureEventBus();
         //List<object> items = new List<object>();
         //foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         //{

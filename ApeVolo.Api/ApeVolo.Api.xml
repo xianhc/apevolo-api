@@ -1044,6 +1044,41 @@
             <param name="settingQueryCriteria"></param>
             <returns></returns>
         </member>
+        <member name="T:ApeVolo.Api.Controllers.TestController">
+            <summary>
+            测试
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.TestController.TestSecret">
+            <summary>
+            邮件测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.TestController.AddApeVolo">
+            <summary>
+            Apache JMeter 性能测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.TestController.TestSign">
+            <summary>
+            签名测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.TestController.TestRedisMq">
+            <summary>
+            redismq测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.TestController.EventBusTry">
+            <summary>
+            rabbitmq测试
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:ApeVolo.Api.Controllers.UserController">
             <summary>
             用户管理
@@ -1106,6 +1141,11 @@
             数据库上下文启动器
             </summary>
         </member>
+        <member name="T:ApeVolo.Api.Extensions.EventBusSetup">
+            <summary>
+            事件总线启动器
+            </summary>
+        </member>
         <member name="T:ApeVolo.Api.Extensions.IpRateLimitSetup">
             <summary>
             IP限流启动器
@@ -1124,6 +1164,11 @@
         <member name="T:ApeVolo.Api.Extensions.QuartzNetJobSetup">
             <summary>
             QuartzNet作业启动器
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Api.Extensions.RabbitMQSetup">
+            <summary>
+            rabbitmq启动器
             </summary>
         </member>
         <member name="T:ApeVolo.Api.Extensions.RedisCacheSetup">
@@ -1248,6 +1293,17 @@
             <summary>
             Swagger UI 中间件
             </summary>
+        </member>
+        <member name="T:ApeVolo.Api.MQ.Rabbit.EventHandling.UserQueryIntegrationEventHandler">
+            <summary>
+            测试rabbitmq事件总线
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.MQ.Rabbit.EventHandling.UserQueryIntegrationEventHandler.Handle(ApeVolo.Api.MQ.Rabbit.Events.UserQueryIntegrationEvent)">
+            <summary>
+            处理事件
+            </summary>
+            <param name="event"></param>
         </member>
     </members>
 </doc>

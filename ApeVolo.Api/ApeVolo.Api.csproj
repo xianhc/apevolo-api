@@ -38,8 +38,13 @@
   <ItemGroup>
     <ProjectReference Include="..\ApeVolo.Business\ApeVolo.Business.csproj" />
     <ProjectReference Include="..\ApeVolo.Common\ApeVolo.Common.csproj" />
+    <ProjectReference Include="..\ApeVolo.EventBus\ApeVolo.EventBus.csproj" />
     <ProjectReference Include="..\ApeVolo.QuartzNetService\ApeVolo.QuartzNetService.csproj" />
     <ProjectReference Include="..\ApeVolo.Repository\ApeVolo.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MQ\Rabbit" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="http://json.schemastore.org/band-manifest" /></VisualStudio></ProjectExtensions>

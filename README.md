@@ -22,6 +22,7 @@ ApeVolo.IBusiness   -- 业务接口
 ApeVolo.Business   -- 业务实现
 ApeVolo.Common      -- 通用工具
 ApeVolo.Entity      -- 实体
+ApeVolo.EventBus  --事件总线
 ApeVolo.QuartzNetService -- 任务调度
 ```
 
@@ -53,12 +54,13 @@ ApeVolo.QuartzNetService -- 任务调度
 - Quartz.Net 任务调度
 - Log4Net 日志
 - CORS 跨域
+- 事件总线(EventBus)
+- RabbitMQ消息队列
 
 
 ### 任务计划
 |          功能           | 进度          |
 | ---------------------- | ------------- |
-| RabbitMQ 消息队列        | 预计4月      |
 
 ## 快速开始
 
