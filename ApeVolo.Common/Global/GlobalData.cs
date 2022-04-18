@@ -11,7 +11,7 @@ namespace ApeVolo.Common.Global;
 public static class GlobalData
 {
     static readonly List<string> FxAssemblies = new List<string>
-        { "ApeVolo.Repository", "ApeVolo.Business", "ApeVolo.IBusiness", "ApeVolo.Entity" };
+        { "ApeVolo.Repository", "ApeVolo.Business", "ApeVolo.IBusiness" };
 
     static readonly List<string> EntityAssemblys = new List<string> { "ApeVolo.Entity" };
 

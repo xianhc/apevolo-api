@@ -40,7 +40,6 @@ public class UserService : BaseServices<User>, IUserService
     private readonly IUserJobsService _userJobsService;
     private readonly IJobService _jobService;
     private readonly IDataScopeService _dataScopeService;
-    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IRedisCacheService _redisCacheService;
 
     #endregion
@@ -50,7 +49,7 @@ public class UserService : BaseServices<User>, IUserService
     public UserService(IMapper mapper, IUserRepository userRepository, IDepartmentService departmentService,
         IRoleService roleService, IJobService jobService,
         IUserRolesService userRoleService, IUserJobsService userJobsService, IDataScopeService dataScopeService,
-        ICurrentUser currentUser, IWebHostEnvironment webHostEnvironment, IRedisCacheService redisCacheService)
+        ICurrentUser currentUser, IRedisCacheService redisCacheService)
     {
         _mapper = mapper;
         _baseDal = userRepository;
@@ -61,7 +60,6 @@ public class UserService : BaseServices<User>, IUserService
         _userRoleService = userRoleService;
         _userJobsService = userJobsService;
         _dataScopeService = dataScopeService;
-        _webHostEnvironment = webHostEnvironment;
         _redisCacheService = redisCacheService;
     }
 
@@ -482,8 +480,8 @@ public class UserService : BaseServices<User>, IUserService
         if (curUser.IsNull())
             throw new BadRequestException("用户不存在！");
 
-        string avatarName = GuidHelper.GenerateKey() + "_" + file.FileName;
-        string avatarPath = Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot", "images", "avatar");
+        string avatarName = GuidHelper.GenerateKey().ToLower() + "_" + file.FileName;
+        string avatarPath = Path.Combine(AppSettings.WebRootPath, "file", "avatar");
 
         if (!Directory.Exists(avatarPath))
         {
@@ -498,7 +496,7 @@ public class UserService : BaseServices<User>, IUserService
         }
 
         //curUser.AvatarPath = avatarPath;
-        curUser.AvatarPath = "/images/avatar/";
+        curUser.AvatarPath = "/file/avatar/";
         curUser.AvatarName = avatarName;
         await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + curUser.Id.ToString().ToMd5String());
         return await UpdateEntityAsync(curUser);

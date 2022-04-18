@@ -55,8 +55,8 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
 
         string fileName = DateTime.Now.ToString("yyyyMMdd") + IdHelper.GetId() +
                           file.FileName.Substring(Math.Max(file.FileName.LastIndexOf('.'), 0));
-        string filePath = Path.Combine(AppSettings.WebRootPath, "static", "file", fileTypeNameEn);
-        if (!FileHelper.Exists(filePath))
+        string filePath = Path.Combine(AppSettings.WebRootPath, "file", fileTypeNameEn);
+        if (!Directory.Exists(filePath))
         {
             Directory.CreateDirectory(filePath);
         }
