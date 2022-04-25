@@ -33,7 +33,7 @@ public class BaseController : ControllerBase
                 Status = vm.Status,
                 Error = vm.Error,
                 Message = vm.Message,
-                Path = HttpContext.Request.Path.Value?.ToLower()
+                Path = Request.Path.Value?.ToLower() //HttpContext.Request.Path.Value?.ToLower()
             }.ToJson(),
             ContentType = "application/json; charset=utf-8",
             StatusCode = vm.Status
@@ -62,7 +62,7 @@ public class BaseController : ControllerBase
         {
             Status = StatusCodes.Status200OK,
             Message = msg,
-            Path = HttpContext.Request.Path.Value?.ToLower()
+            Path = Request.Path.Value?.ToLower()
         };
 
         return JsonContent(res.ToJson());
@@ -78,7 +78,7 @@ public class BaseController : ControllerBase
         {
             Status = StatusCodes.Status201Created,
             Message = msg,
-            Path = HttpContext.Request.Path.Value?.ToLower()
+            Path = Request.Path.Value?.ToLower()
         };
 
         return JsonContent(vm);
@@ -94,7 +94,7 @@ public class BaseController : ControllerBase
         {
             Status = StatusCodes.Status204NoContent,
             Message = msg,
-            Path = HttpContext.Request.Path.Value?.ToLower()
+            Path = Request.Path.Value?.ToLower()
         };
 
         return JsonContent(vm);
@@ -112,7 +112,7 @@ public class BaseController : ControllerBase
             Status = StatusCodes.Status400BadRequest,
             Error = "BadRequest",
             Message = msg,
-            Path = HttpContext.Request.Path.Value?.ToLower()
+            Path = Request.Path.Value?.ToLower()
         };
 
         return JsonContent(vm);
