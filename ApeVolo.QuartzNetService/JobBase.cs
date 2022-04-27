@@ -18,9 +18,9 @@ public class JobBase
 {
     #region 字段
 
-    public IQuartzNetService _quartzNetService;
-    public IQuartzNetLogService _quartzNetLogService;
-    public ISchedulerCenterService _schedulerCenterService;
+    public IQuartzNetService QuartzNetService;
+    public IQuartzNetLogService QuartzNetLogService;
+    public ISchedulerCenterService SchedulerCenterService;
 
     #endregion
 
@@ -41,7 +41,7 @@ public class JobBase
         Stopwatch stopwatch = new Stopwatch();
         //JOBID
         string jobId = context.JobDetail.Key.Name;
-        var quartzNet = await _quartzNetService.QuerySingleAsync(jobId);
+        var quartzNet = await QuartzNetService.QuerySingleAsync(jobId);
         //JOB组名
         string groupName = context.JobDetail.Key.Group;
         //日志
@@ -62,7 +62,7 @@ public class JobBase
             //失败后是否暂停
             if (quartzNet.PauseAfterFailure)
             {
-                await _schedulerCenterService.PauseJob(quartzNet);
+                await SchedulerCenterService.PauseJob(quartzNet);
             }
             else
             {
@@ -82,7 +82,7 @@ public class JobBase
         {
             var taskSeconds = Math.Round(stopwatch.Elapsed.TotalSeconds, 3);
             jobHistory += $"，【{DateTime.Now:yyyy-MM-dd HH:mm:ss}】【执行结束】(耗时:{taskSeconds}秒)";
-            if (_quartzNetService != null)
+            if (QuartzNetService != null)
             {
                 if (quartzNet != null)
                 {
@@ -107,7 +107,7 @@ public class JobBase
                         CreateBy = "QuartzNet Task",
                         CreateTime = quartzNet.UpdateTime
                     };
-                    await _quartzNetService.UpdateJobInfoAsync(quartzNet, quartzNetLog);
+                    await QuartzNetService.UpdateJobInfoAsync(quartzNet, quartzNetLog);
                 }
             }
         }

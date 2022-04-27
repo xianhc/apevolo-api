@@ -13,10 +13,10 @@ public class SendEmailJobService : JobBase, IJob
     public SendEmailJobService(ISchedulerCenterService schedulerCenterService, IQuartzNetService quartzNetService,
         IQuartzNetLogService quartzNetLogService, IEmailScheduleTask emailScheduleTask)
     {
-        _quartzNetService = quartzNetService;
-        _quartzNetLogService = quartzNetLogService;
+        QuartzNetService = quartzNetService;
+        QuartzNetLogService = quartzNetLogService;
         _emailScheduleTask = emailScheduleTask;
-        _schedulerCenterService = schedulerCenterService;
+        SchedulerCenterService = schedulerCenterService;
     }
 
     public async Task Execute(IJobExecutionContext context)

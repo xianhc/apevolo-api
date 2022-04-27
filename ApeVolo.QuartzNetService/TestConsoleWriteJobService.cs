@@ -14,9 +14,9 @@ public class TestConsoleWriteJobService : JobBase, IJob
     public TestConsoleWriteJobService(ISchedulerCenterService schedulerCenterService,
         IQuartzNetService quartzNetService, IQuartzNetLogService quartzNetLogService)
     {
-        _quartzNetService = quartzNetService;
-        _quartzNetLogService = quartzNetLogService;
-        _schedulerCenterService = schedulerCenterService;
+        QuartzNetService = quartzNetService;
+        QuartzNetLogService = quartzNetLogService;
+        SchedulerCenterService = schedulerCenterService;
     }
 
     public async Task Execute(IJobExecutionContext context)
