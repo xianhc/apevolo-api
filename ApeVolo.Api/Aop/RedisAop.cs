@@ -10,8 +10,7 @@ using Castle.DynamicProxy;
 namespace ApeVolo.Api.Aop;
 
 /// <summary>
-/// Redis拦截器 暂只支持一个参数,
-/// 需要多个参数的可以自行扩展，获取所有参数拼起来即可
+/// Redis缓存拦截器
 /// </summary>
 public class RedisAop : IInterceptor
 {
@@ -37,7 +36,7 @@ public class RedisAop : IInterceptor
         {
             var cacheKey = CreateCacheKey(invocation, redisCachingAttribute);
             var cacheValue = AsyncHelper.RunSync(() => _redisCacheService.GetCacheStrAsync<string>(cacheKey));
-            if (cacheValue != null)
+            if (cacheValue.IsNotNull())
             {
                 Type returnType;
                 if (typeof(Task).IsAssignableFrom(method.ReturnType))
@@ -60,14 +59,14 @@ public class RedisAop : IInterceptor
 
             if (!string.IsNullOrWhiteSpace(cacheKey))
             {
-                object response;
+                object response = null;
 
                 //Type type = invocation.ReturnValue?.GetType();
                 var type = invocation.Method.ReturnType;
                 if (typeof(Task).IsAssignableFrom(type))
                 {
                     var resultProperty = type.GetProperty("Result");
-                    response = resultProperty.GetValue(invocation.ReturnValue);
+                    if (resultProperty != null) response = resultProperty.GetValue(invocation.ReturnValue);
                 }
                 else
                 {
@@ -96,19 +95,17 @@ public class RedisAop : IInterceptor
     {
         var typeName = invocation.TargetType.Name;
         var methodName = invocation.Method.Name;
-        var methodArguments = GetArgumentValue(invocation.Arguments.ToList()[0].ToString());
 
-        string key = "";
-        if (redisCachingAttribute.KeyPrefix.IsNullOrEmpty())
-        {
-            key = $"{typeName}:{methodName}:";
-        }
-        else
-        {
-            key = redisCachingAttribute.KeyPrefix;
-        }
+        //支持多参数包括实体类，建议不要超过三个， 避免产生的redis key过长
+        var methodArguments = invocation.Arguments.Select(GetArgumentValue).ToList();
 
-        return key + methodArguments;
+        var key = redisCachingAttribute.KeyPrefix.IsNullOrEmpty()
+            ? $"{typeName}:{methodName}:"
+            : redisCachingAttribute.KeyPrefix;
+
+        methodArguments.ForEach(arg => { key = $"{key}{arg}:"; });
+
+        return key.TrimEnd(':');
     }
 
     /// <summary>
@@ -118,11 +115,24 @@ public class RedisAop : IInterceptor
     /// <returns></returns>
     private static string GetArgumentValue(object arg)
     {
-        if (arg is DateTime time)
-            return time.ToString("yyyyMMddHHmmss").ToMd5String();
+        if (arg == null) return string.Empty;
 
-        if (arg.IsNull() || arg is string or ValueType)
-            return arg.ToString().ToMd5String();
-        return string.Empty;
+        switch (arg)
+        {
+            case string:
+            case long:
+                return arg.ToString().ToMd5String16();
+            case DateTime:
+                return arg.ToString("yyyyMMddHHmmss").ToMd5String16();
+            default:
+            {
+                if (arg.GetType().IsClass)
+                {
+                    return arg.ToJson().ToMd5String16();
+                }
+
+                return string.Empty;
+            }
+        }
     }
 }

@@ -154,7 +154,7 @@ public class AuthorizationController : BaseApiController
     {
         var (imgBytes, code) = ImgVerifyCodeHelper.BuildVerifyCode();
         var imgUrl = ImgHelper.ToBase64StringUrl(imgBytes);
-        var uuid = RedisKey.CodeKey + GuidHelper.GenerateKey();
+        var uuid = RedisKey.CodeKey + GuidHelper.GenerateKey().ToMd5String16();
 
         await _redisCacheService.SetCacheAsync(uuid, code, TimeSpan.FromMinutes(2));
 
@@ -192,10 +192,9 @@ public class AuthorizationController : BaseApiController
         //清理缓存
         if (!_currentUser.IsNotNull()) return Success();
         await _redisCacheService.RemoveAsync(RedisKey.OnlineKey +
-                                             _currentUser.GetToken()
-                                                 .ToHmacsha256String(AppSettings.GetValue("HmacSecret")));
-        await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + _currentUser.Id.ToString().ToMd5String());
-        await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + _currentUser.Name.ToMd5String());
+                                             _currentUser.GetToken().ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + _currentUser.Id.ToString().ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + _currentUser.Name.ToMd5String16());
 
         return Success();
     }

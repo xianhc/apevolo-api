@@ -180,12 +180,12 @@ public class UserService : BaseServices<User>, IUserService
         await _userJobsService.CreateAsync(userJobs);
 
         //清理缓存
-        await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + user.Id.ToString().ToMd5String());
-        await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + user.Username.ToMd5String());
-        await _redisCacheService.RemoveAsync(RedisKey.UserRolesById + user.Id.ToString().ToMd5String());
-        await _redisCacheService.RemoveAsync(RedisKey.UserJobsById + user.Id.ToString().ToMd5String());
-        await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById + user.Id.ToString().ToMd5String());
-        await _redisCacheService.RemoveAsync(RedisKey.UserBuildMenuById + user.Id.ToString().ToMd5String());
+        await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + user.Id.ToString().ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + user.Username.ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserRolesById + user.Id.ToString().ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserJobsById + user.Id.ToString().ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById + user.Id.ToString().ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserBuildMenuById + user.Id.ToString().ToMd5String16());
         return true;
     }
 
@@ -435,11 +435,11 @@ public class UserService : BaseServices<User>, IUserService
         if (isTrue)
         {
             //清理缓存
-            await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + curUser.Id.ToString().ToMd5String());
-            await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + curUser.Username.ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + curUser.Id.ToString().ToMd5String16());
+            await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + curUser.Username.ToMd5String16());
 
             //退出当前用户
-            await _redisCacheService.RemoveAsync(RedisKey.OnlineKey + _currentUser.GetToken());
+            await _redisCacheService.RemoveAsync(RedisKey.OnlineKey + _currentUser.GetToken().ToMd5String16());
         }
 
         return true;
@@ -464,7 +464,7 @@ public class UserService : BaseServices<User>, IUserService
         }
 
         var code = await _redisCacheService.GetCacheAsync(
-            RedisKey.EmailCaptchaKey + updateUserEmailDto.Email.ToMd5String());
+            RedisKey.EmailCaptchaKey + updateUserEmailDto.Email.ToMd5String16());
         if (code.IsNullOrEmpty() || !code.Equals(updateUserEmailDto.Code))
         {
             throw new BadRequestException("修改失败，验证码错误或已失效！");
@@ -498,7 +498,7 @@ public class UserService : BaseServices<User>, IUserService
         //curUser.AvatarPath = avatarPath;
         curUser.AvatarPath = "/file/avatar/";
         curUser.AvatarName = avatarName;
-        await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + curUser.Id.ToString().ToMd5String());
+        await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + curUser.Id.ToString().ToMd5String16());
         return await UpdateEntityAsync(curUser);
     }
 
@@ -534,12 +534,12 @@ public class UserService : BaseServices<User>, IUserService
     private async void ClearUserCache(User user)
     {
         //清理缓存
-        await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + user.Id.ToString().ToMd5String());
-        await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + user.Username.ToMd5String());
-        await _redisCacheService.RemoveAsync(RedisKey.UserRolesById + user.Id.ToString().ToMd5String());
-        await _redisCacheService.RemoveAsync(RedisKey.UserJobsById + user.Id.ToString().ToMd5String());
-        await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById + user.Id.ToString().ToMd5String());
-        await _redisCacheService.RemoveAsync(RedisKey.UserBuildMenuById + user.Id.ToString().ToMd5String());
+        await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + user.Id.ToString().ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + user.Username.ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserRolesById + user.Id.ToString().ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserJobsById + user.Id.ToString().ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById + user.Id.ToString().ToMd5String16());
+        await _redisCacheService.RemoveAsync(RedisKey.UserBuildMenuById + user.Id.ToString().ToMd5String16());
     }
 
     #endregion

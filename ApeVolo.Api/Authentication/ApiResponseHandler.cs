@@ -48,10 +48,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
     protected override async Task HandleForbiddenAsync(AuthenticationProperties properties)
     {
         var onlineUser = await _redisCacheService.GetCacheAsync<OnlineUser>(RedisKey.OnlineKey +
-                                                                            _currentUser.GetToken()
-                                                                                .ToHmacsha256String(
-                                                                                    AppSettings.GetValue(
-                                                                                        "HmacSecret")));
+                                                                            _currentUser.GetToken().ToMd5String16());
         if (onlineUser.IsNull())
         {
             Response.ContentType = "application/json";

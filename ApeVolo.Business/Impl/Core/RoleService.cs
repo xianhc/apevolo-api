@@ -338,7 +338,7 @@ public class RoleService : BaseServices<Role>, IRoleService
         userRoles.ForEach(async ur =>
         {
             await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById +
-                                                 ur.UserId.ToString().ToMd5String());
+                                                 ur.UserId.ToString().ToMd5String16());
         });
         return true;
     }

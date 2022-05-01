@@ -61,10 +61,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     {
         var isMatchRole = false;
         var onlineUser = await _redisCacheService.GetCacheAsync<OnlineUser>(RedisKey.OnlineKey +
-                                                                            _currentUser.GetToken()
-                                                                                .ToHmacsha256String(
-                                                                                    AppSettings.GetValue(
-                                                                                        "HmacSecret")));
+                                                                            _currentUser.GetToken().ToMd5String16());
         if (onlineUser.IsNotNull())
         {
             var httpContext = _accessor.HttpContext;

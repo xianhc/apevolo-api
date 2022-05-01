@@ -100,7 +100,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
         if (createUpdateMenuDto.PId.IsNotNull())
         {
             //清理缓存
-            await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + menu.PId.ToString().ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + menu.PId.ToString().ToMd5String16());
             var tmpMenu = await _baseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == menu.PId);
             if (tmpMenu.IsNotNull())
             {
@@ -173,10 +173,10 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
         var menu2 = _mapper.Map<Menu>(createUpdateMenuDto);
         //清理缓存
-        await _redisCacheService.RemoveAsync(RedisKey.LoadMenusById + menu2.Id.ToString().ToMd5String());
+        await _redisCacheService.RemoveAsync(RedisKey.LoadMenusById + menu2.Id.ToString().ToMd5String16());
         if (menu2.PId.IsNotNull())
         {
-            await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + menu2.PId.ToString().ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + menu2.PId.ToString().ToMd5String16());
         }
 
         await UpdateEntityAsync(menu2);
@@ -232,8 +232,8 @@ public class MenuService : BaseServices<Menu>, IMenuService
             //清除缓存
             idList.ForEach(async id =>
             {
-                await _redisCacheService.RemoveAsync(RedisKey.LoadMenusById + id.ToString().ToMd5String());
-                await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + id.ToString().ToMd5String());
+                await _redisCacheService.RemoveAsync(RedisKey.LoadMenusById + id.ToString().ToMd5String16());
+                await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + id.ToString().ToMd5String16());
             });
         }
 
@@ -311,17 +311,16 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
     public async Task<List<MenuDto>> QueryAllAsync()
     {
-        List<MenuDto> menuDtos = null;
-        menuDtos = await _redisCacheService.GetCacheAsync<List<MenuDto>>("menus:LoadAllMenu");
-        if (!menuDtos.IsNullOrEmpty())
+        var menuDtos = await _redisCacheService.GetCacheAsync<List<MenuDto>>("menus:LoadAllMenu");
+        if (menuDtos.IsNotNull())
         {
             return menuDtos;
         }
 
         menuDtos = _mapper.Map<List<MenuDto>>(await _baseDal.QueryListAsync(m => m.IsDeleted == false));
-        if (!menuDtos.IsNullOrEmpty())
+        if (menuDtos.IsNotNull())
         {
-            await _redisCacheService.SetCacheAsync("menus:LoadAllMenu", menuDtos, TimeSpan.FromSeconds(60));
+            await _redisCacheService.SetCacheAsync("menus:LoadAllMenu", menuDtos, TimeSpan.FromSeconds(120));
         }
 
         return menuDtos;

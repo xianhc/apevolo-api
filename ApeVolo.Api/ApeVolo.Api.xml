@@ -133,8 +133,7 @@
         </member>
         <member name="T:ApeVolo.Api.Aop.RedisAop">
             <summary>
-            Redis拦截器 暂只支持一个参数,
-            需要多个参数的可以自行扩展，获取所有参数拼起来即可
+            Redis缓存拦截器
             </summary>
         </member>
         <member name="M:ApeVolo.Api.Aop.RedisAop.CreateCacheKey(Castle.DynamicProxy.IInvocation,ApeVolo.Common.AttributeExt.RedisCachingAttribute)">

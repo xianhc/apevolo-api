@@ -69,7 +69,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
             throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在！");
         }
 
-        await _redisCacheService.RemoveAsync(RedisKey.LoadSettingByName + oldSetting.Name.ToMd5String());
+        await _redisCacheService.RemoveAsync(RedisKey.LoadSettingByName + oldSetting.Name.ToMd5String16());
         var setting = _mapper.Map<Setting>(createUpdateSettingDto);
         return await UpdateEntityAsync(setting);
     }
@@ -79,7 +79,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
         var settings = await QueryByIdsAsync(ids);
         settings.ForEach(async x =>
         {
-            await _redisCacheService.RemoveAsync(RedisKey.LoadSettingByName + x.Name.ToMd5String());
+            await _redisCacheService.RemoveAsync(RedisKey.LoadSettingByName + x.Name.ToMd5String16());
         });
         return await DeleteEntityListAsync(settings);
     }

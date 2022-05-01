@@ -51,7 +51,7 @@ public class OnlineUserService : IOnlineUserService
             Browser = IpHelper.GetBrowserName(),
             Ip = remoteIp,
             Address = IpHelper.GetIpAddress(remoteIp),
-            Key = token.ToHmacsha256String(AppSettings.GetValue("HmacSecret")),
+            Key = token.ToMd5String16(),
             LoginTime = DateTime.Now,
             currentPermission = new CurrentPermission
                 { Roles = jwtUserVo.User.Authorizes, Urls = jwtUserVo.User.PermissionUrl }

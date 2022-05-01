@@ -15,14 +15,14 @@
 ## 模块说明
 
 ```lua
-ApeVolo.Api         -- 对外API
-ApeVolo.IRepository -- 仓储接口
-ApeVolo.Repository -- 仓储实现
-ApeVolo.IBusiness   -- 业务接口
-ApeVolo.Business   -- 业务实现
-ApeVolo.Common      -- 通用工具
-ApeVolo.Entity      -- 实体
-ApeVolo.EventBus  --事件总线
+ApeVolo.Api              -- 对外API
+ApeVolo.IRepository      -- 仓储接口
+ApeVolo.Repository       -- 仓储实现
+ApeVolo.IBusiness        -- 业务接口
+ApeVolo.Business         -- 业务实现
+ApeVolo.Common           -- 通用工具
+ApeVolo.Entity           -- 实体
+ApeVolo.EventBus         --事件总线
 ApeVolo.QuartzNetService -- 任务调度
 ```
 
