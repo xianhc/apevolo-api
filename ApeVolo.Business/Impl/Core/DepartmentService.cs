@@ -81,7 +81,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         }
 
         Department dept = _mapper.Map<Department>(createUpdateDepartmentDto);
-
+        dept.SubCount = oldUseDepartment.SubCount;
         await UpdateEntityAsync(dept);
 
         //重新计算子节点个数
