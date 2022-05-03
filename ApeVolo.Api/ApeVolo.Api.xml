@@ -1125,6 +1125,11 @@
             授权启动器
             </summary>
         </member>
+        <member name="T:ApeVolo.Api.Extensions.AutofacRegister">
+            <summary>
+            autofac注册
+            </summary>
+        </member>
         <member name="T:ApeVolo.Api.Extensions.AutoMapperSetup">
             <summary>
             实体映射启动器

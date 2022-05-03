@@ -13,4 +13,8 @@
     <ProjectReference Include="..\ApeVolo.Common\ApeVolo.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Do\Other" />
+  </ItemGroup>
+
 </Project>

@@ -6,7 +6,6 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.WebApp;
-using ApeVolo.Entity.Do.Other;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;

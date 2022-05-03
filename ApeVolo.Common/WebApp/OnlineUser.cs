@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ApeVolo.Entity.Do.Other;
+namespace ApeVolo.Common.WebApp;
 
 /// <summary>
 /// 在线用户

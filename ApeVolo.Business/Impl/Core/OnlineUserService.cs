@@ -5,7 +5,7 @@ using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
-using ApeVolo.Entity.Do.Other;
+using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Vo;

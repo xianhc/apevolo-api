@@ -8,7 +8,6 @@ using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.WebApp;
-using ApeVolo.Entity.Do.Other;
 using ApeVolo.IBusiness.Interface.Core;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
