@@ -23,8 +23,8 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
 
     public DictDetailService(IMapper mapper, IDictDetailRepository repository)
     {
-        _mapper = mapper;
-        _baseDal = repository;
+        Mapper = mapper;
+        BaseDal = repository;
     }
 
     #endregion
@@ -41,7 +41,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
             throw new BadRequestException($"字典详情资源=>{createUpdateDictDetailDto.Label}=>已存在！");
         }
 
-        var dictDetail = _mapper.Map<DictDetail>(createUpdateDictDetailDto);
+        var dictDetail = Mapper.Map<DictDetail>(createUpdateDictDetailDto);
         dictDetail.DictId = createUpdateDictDetailDto.dict.Id;
         return await AddEntityAsync(dictDetail);
     }
@@ -53,7 +53,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
             throw new BadRequestException($"字典详情资源=>{createUpdateDictDetailDto.Label}=>不存在！");
         }
 
-        var dictDetail = _mapper.Map<DictDetail>(createUpdateDictDetailDto);
+        var dictDetail = Mapper.Map<DictDetail>(createUpdateDictDetailDto);
         dictDetail.DictId = createUpdateDictDetailDto.dict.Id;
         return await UpdateEntityAsync(dictDetail);
     }
@@ -73,7 +73,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
         Pagination pagination)
     {
         pagination.SortFields = new List<string> { "dict_sort asc" };
-        var list = await _baseDal.QueryMuchPageAsync<Dict, DictDetail, DictDetail>(pagination,
+        var list = await BaseDal.QueryMuchPageAsync<Dict, DictDetail, DictDetail>(pagination,
             (d, dd) => new object[]
             {
                 JoinType.Left, d.Id == dd.DictId,
@@ -81,7 +81,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
             (d, dd) => dd,
             (d, dd) => d.IsDeleted == false && dd.IsDeleted == false && d.Name == dictDetailQueryCriteria.DictName
         );
-        var dictDetailDtos = _mapper.Map<List<DictDetailDto>>(list);
+        var dictDetailDtos = Mapper.Map<List<DictDetailDto>>(list);
         dictDetailDtos.ForEach(dd => dd.Dict = new DictDto2 { Id = dd.DictId });
         return dictDetailDtos;
     }

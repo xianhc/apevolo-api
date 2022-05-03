@@ -21,7 +21,7 @@ public class PermissionService : BaseServices<Role>, IPermissionService
 
     public PermissionService(IRoleRepository roleRepository)
     {
-        _baseDal = roleRepository;
+        BaseDal = roleRepository;
     }
 
     #endregion
@@ -36,7 +36,7 @@ public class PermissionService : BaseServices<Role>, IPermissionService
     [RedisCaching(Expiration = 30, KeyPrefix = RedisKey.UserPermissionById)]
     public async Task<List<PermissionVO>> QueryUserPermissionAsync(long userId)
     {
-        var permissionLists = await _baseDal.QueryMuchAsync<Menu, RoleMenu, UserRoles, PermissionVO>(
+        var permissionLists = await BaseDal.QueryMuchAsync<Menu, RoleMenu, UserRoles, PermissionVO>(
             (m, rm, ur) => new object[]
             {
                 JoinType.Left, m.Id == rm.MenuId,

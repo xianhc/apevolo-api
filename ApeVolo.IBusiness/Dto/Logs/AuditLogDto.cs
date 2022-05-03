@@ -4,7 +4,7 @@ using ApeVolo.Entity.Do.Logs;
 namespace ApeVolo.IBusiness.Dto.Logs;
 
 [AutoMapping(typeof(AuditLog), typeof(AuditLogDto))]
-public class AuditLogDto : BaseEntityDto
+public class AuditLogDto : EntityDtoRoot<long>
 {
     public string Area { get; set; }
 

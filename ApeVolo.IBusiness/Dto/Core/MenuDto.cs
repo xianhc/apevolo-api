@@ -5,7 +5,7 @@ using ApeVolo.Entity.Do.Core;
 namespace ApeVolo.IBusiness.Dto.Core;
 
 [AutoMapping(typeof(Menu), typeof(MenuDto))]
-public class MenuDto : BaseEntityDto
+public class MenuDto : EntityDtoRoot<long>
 {
     public string Title { get; set; }
 

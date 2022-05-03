@@ -4,9 +4,9 @@ using ApeVolo.Entity.Do.Core;
 namespace ApeVolo.IBusiness.Dto.Core;
 
 [AutoMapping(typeof(UserRoles), typeof(UserRolesDto))]
-public class UserRolesDto
+public class UserRolesDto : EntityDtoRoot<long>
 {
-    public string UserId { get; set; }
+    public long UserId { get; set; }
 
-    public string RoleId { get; set; }
+    public long RoleId { get; set; }
 }

@@ -4,7 +4,7 @@ using ApeVolo.Entity.Do.Email;
 namespace ApeVolo.IBusiness.Dto.Email;
 
 [AutoMapping(typeof(MessageTemplate), typeof(MessageTemplateDto))]
-public class MessageTemplateDto : BaseEntityDto
+public class MessageTemplateDto : EntityDtoRoot<long>
 {
     /// <summary>
     /// 模板名称

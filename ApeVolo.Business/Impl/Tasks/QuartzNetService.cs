@@ -33,8 +33,8 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
     public QuartzNetService(IQuartzNetRepository taskQuartzRepository, IMapper mapper,
         IQuartzNetLogService quartzNetLogService)
     {
-        _baseDal = taskQuartzRepository;
-        _mapper = mapper;
+        BaseDal = taskQuartzRepository;
+        Mapper = mapper;
         _quartzNetLogService = quartzNetLogService;
     }
 
@@ -44,19 +44,19 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
 
     public async Task<List<QuartzNet>> QueryAllAsync()
     {
-        return await _baseDal.QueryListAsync(x => x.IsDeleted == false);
+        return await BaseDal.QueryListAsync(x => x.IsDeleted == false);
     }
 
 
     public async Task<QuartzNet> CreateAsync(CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
-        var quartzNet = _mapper.Map<QuartzNet>(createUpdateQuartzNetDto);
-        return await _baseDal.AddReturnEntityAsync(quartzNet);
+        var quartzNet = Mapper.Map<QuartzNet>(createUpdateQuartzNetDto);
+        return await BaseDal.AddReturnEntityAsync(quartzNet);
     }
 
     public async Task<bool> UpdateAsync(CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
-        var quartzNet = _mapper.Map<QuartzNet>(createUpdateQuartzNetDto);
+        var quartzNet = Mapper.Map<QuartzNet>(createUpdateQuartzNetDto);
         return await UpdateEntityAsync(quartzNet);
     }
 
@@ -64,7 +64,7 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
     [UseTran]
     public async Task<bool> UpdateJobInfoAsync(QuartzNet quartzNet, QuartzNetLog quartzNetLog)
     {
-        await _baseDal.UpdateAsync(quartzNet);
+        await BaseDal.UpdateAsync(quartzNet);
         await _quartzNetLogService.CreateAsync(quartzNetLog);
         return true;
     }
@@ -91,7 +91,7 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
                 x.CreateTime <= quartzNetQueryCriteria.CreateTime[1]);
         }
 
-        return _mapper.Map<List<QuartzNetDto>>(await _baseDal.QueryPageListAsync(whereExpression, pagination));
+        return Mapper.Map<List<QuartzNetDto>>(await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 
     public async Task<List<ExportRowModel>> DownloadAsync(QuartzNetQueryCriteria quartzNetQueryCriteria)

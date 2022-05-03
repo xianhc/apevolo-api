@@ -2,11 +2,12 @@
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
 using ApeVolo.Entity.Do.Tasks;
+using ApeVolo.IBusiness.Dto;
 
 namespace ApeVolo.IBusiness.EditDto.Tasks;
 
 [AutoMapping(typeof(QuartzNet), typeof(CreateUpdateQuartzNetDto))]
-public class CreateUpdateQuartzNetDto : BaseCreateUpdateEntityDto
+public class CreateUpdateQuartzNetDto : EntityDtoRoot<long>
 {
     /// <summary>
     /// 任务名称

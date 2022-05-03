@@ -32,8 +32,8 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
 
     public AppSecretService(IMapper mapper, IAppSecretRepository appSecretRepository)
     {
-        _mapper = mapper;
-        _baseDal = appSecretRepository;
+        Mapper = mapper;
+        BaseDal = appSecretRepository;
     }
 
     #endregion
@@ -52,7 +52,7 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
         createUpdateAppSecretDto.AppId = DateTime.Now.ToString("yyyyMMdd") + id[..8];
         createUpdateAppSecretDto.AppSecretKey =
             (createUpdateAppSecretDto.AppId + id).ToHmacsha256String(AppSettings.GetValue("HmacSecret"));
-        var appSecret = _mapper.Map<AppSecret>(createUpdateAppSecretDto);
+        var appSecret = Mapper.Map<AppSecret>(createUpdateAppSecretDto);
         return await AddEntityAsync(appSecret);
     }
 
@@ -71,7 +71,7 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
             throw new BadRequestException($"应用名称=>{createUpdateAppSecretDto.AppName}=>已存在！");
         }
 
-        var appSecret = _mapper.Map<AppSecret>(createUpdateAppSecretDto);
+        var appSecret = Mapper.Map<AppSecret>(createUpdateAppSecretDto);
         return await UpdateEntityAsync(appSecret);
     }
 
@@ -100,7 +100,7 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
                 r.CreateTime <= appsecretQueryCriteria.CreateTime[1]);
         }
 
-        return _mapper.Map<List<AppSecretDto>>(await _baseDal.QueryPageListAsync(whereLambda, pagination));
+        return Mapper.Map<List<AppSecretDto>>(await BaseDal.QueryPageListAsync(whereLambda, pagination));
     }
 
     public async Task<List<ExportRowModel>> DownloadAsync(AppsecretQueryCriteria appsecretQueryCriteria)

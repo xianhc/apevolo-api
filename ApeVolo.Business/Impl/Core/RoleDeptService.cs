@@ -21,7 +21,7 @@ public class RoleDeptService : BaseServices<RolesDepartments>, IRoleDeptService
 
     public RoleDeptService(IRoleDeptRepository repository)
     {
-        _baseDal = repository;
+        BaseDal = repository;
     }
 
     #endregion
@@ -30,17 +30,17 @@ public class RoleDeptService : BaseServices<RolesDepartments>, IRoleDeptService
 
     public async Task<bool> CreateAsync(List<RolesDepartments> rolesDepartmentses)
     {
-        return await _baseDal.AddReturnBoolAsync(rolesDepartmentses);
+        return await BaseDal.AddReturnBoolAsync(rolesDepartmentses);
     }
 
     public async Task<bool> DeleteByRoleIdAsync(long roleId)
     {
-        return await _baseDal.DeleteAsync(rd => rd.RoleId == roleId) > 0;
+        return await BaseDal.DeleteAsync(rd => rd.RoleId == roleId) > 0;
     }
 
     public async Task<List<RolesDepartments>> QueryByDeptIdsAsync(List<long> deptIds)
     {
-        var list = await _baseDal.QueryMuchAsync<RolesDepartments, Role, RolesDepartments>(
+        var list = await BaseDal.QueryMuchAsync<RolesDepartments, Role, RolesDepartments>(
             (rd, r) => new object[]
             {
                 JoinType.Left, rd.RoleId == r.Id
@@ -53,7 +53,7 @@ public class RoleDeptService : BaseServices<RolesDepartments>, IRoleDeptService
 
     public async Task<List<RolesDepartments>> QueryByRoleIdAsync(long roleId)
     {
-        return await _baseDal.QueryListAsync(x => x.RoleId == roleId);
+        return await BaseDal.QueryListAsync(x => x.RoleId == roleId);
     }
 
     #endregion

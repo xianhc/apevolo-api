@@ -19,23 +19,25 @@ public static class SwaggerMiddleware
     {
         if (app.IsNull())
             throw new ArgumentNullException(nameof(app));
-
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
+        if (AppSettings.GetValue<bool>("Swagger", "Enabled"))
         {
-            c.SwaggerEndpoint($"/swagger/{AppSettings.GetValue("Swagger", "Name")}/swagger.json",
-                AppSettings.GetValue("Swagger", "Version"));
-
-            var stream = streamHtml?.Invoke();
-            if (stream == null)
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                const string msg = "index.html属性错误";
-                Log.Error(msg);
-                throw new Exception(msg);
-            }
+                c.SwaggerEndpoint($"/swagger/{AppSettings.GetValue("Swagger", "Name")}/swagger.json",
+                    AppSettings.GetValue("Swagger", "Version"));
 
-            c.IndexStream = () => stream;
-            c.RoutePrefix = string.Empty;
-        });
+                var stream = streamHtml?.Invoke();
+                if (stream == null)
+                {
+                    const string msg = "index.html属性错误";
+                    Log.Error(msg);
+                    throw new Exception(msg);
+                }
+
+                c.IndexStream = () => stream;
+                c.RoutePrefix = string.Empty;
+            });
+        }
     }
 }

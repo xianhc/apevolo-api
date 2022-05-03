@@ -33,8 +33,8 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
 
     public FileRecordService(IMapper mapper, IFileRecordRepository fileRecordRepository)
     {
-        _mapper = mapper;
-        _baseDal = fileRecordRepository;
+        Mapper = mapper;
+        BaseDal = fileRecordRepository;
     }
 
     #endregion
@@ -98,7 +98,7 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
             throw new BadRequestException($"文件描述=>{createUpdateFileRecordDto.Description}=>已存在！");
         }
 
-        var fileRecord = _mapper.Map<FileRecord>(createUpdateFileRecordDto);
+        var fileRecord = Mapper.Map<FileRecord>(createUpdateFileRecordDto);
         return await UpdateEntityAsync(fileRecord);
     }
 
@@ -132,7 +132,7 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
                 r.CreateTime <= fileRecordQueryCriteria.CreateTime[1]);
         }
 
-        return _mapper.Map<List<FileRecordDto>>(await _baseDal.QueryPageListAsync(whereLambda, pagination));
+        return Mapper.Map<List<FileRecordDto>>(await BaseDal.QueryPageListAsync(whereLambda, pagination));
     }
 
     public async Task<List<ExportRowModel>> DownloadAsync(FileRecordQueryCriteria fileRecordQueryCriteria)

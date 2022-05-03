@@ -1,10 +1,11 @@
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.Do.Core;
+using ApeVolo.IBusiness.Dto;
 
 namespace ApeVolo.IBusiness.EditDto.Core;
 
 [AutoMapping(typeof(AppSecret), typeof(CreateUpdateAppSecretDto))]
-public class CreateUpdateAppSecretDto : BaseCreateUpdateEntityDto
+public class CreateUpdateAppSecretDto : EntityDtoRoot<long>
 {
     public string AppId { get; set; }
 

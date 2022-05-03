@@ -1,17 +1,29 @@
 ﻿using System.Collections.Generic;
-using ApeVolo.Common.AttributeExt;
+using ApeVolo.Common.DI;
+using ApeVolo.Entity.Do.Base;
 using SqlSugar;
 
 namespace ApeVolo.Entity.Do.Dictionary;
 
-[InitTable(typeof(Dict))]
-[SugarTable("sys_dict", "字典表")]
-public class Dict : BaseEntity
+/// <summary>
+/// 字典
+/// </summary>
+[SugarTable("sys_dict", "字典")]
+public class Dict : EntityRoot<long>, ILocalizedTable
 {
-    [SugarColumn(ColumnName = "name", ColumnDataType = "varchar", Length = 255, IsNullable = false)]
+    /// <summary>
+    /// 字典名称
+    /// </summary>
+    /// <returns></returns>
+    [SugarColumn(ColumnName = "name", ColumnDataType = "varchar", Length = 255, IsNullable = false,
+        ColumnDescription = "字典名称")]
     public string Name { get; set; }
 
-    [SugarColumn(ColumnName = "description", ColumnDataType = "varchar", Length = 255, IsNullable = false)]
+    /// <summary>
+    /// 描述
+    /// </summary>
+    [SugarColumn(ColumnName = "description", ColumnDataType = "varchar", Length = 255, IsNullable = false,
+        ColumnDescription = "描述")]
     public string Description { get; set; }
 
     [SugarColumn(IsIgnore = true)] public List<DictDetail> DictDetails { get; set; }

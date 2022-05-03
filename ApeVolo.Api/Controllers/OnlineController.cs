@@ -51,7 +51,7 @@ public class OnlineController : BaseApiController
                 OnlineUser onlineUser = await _redisCacheService.GetCacheAsync<OnlineUser>(item);
                 if (onlineUser != null)
                 {
-                    onlineUser.currentPermission = null;
+                    onlineUser.CurrentPermission = null;
                     onlineUsers.Add(onlineUser);
                 }
             }
@@ -115,7 +115,7 @@ public class OnlineController : BaseApiController
                 OnlineUser onlineUser = await _redisCacheService.GetCacheAsync<OnlineUser>(item);
                 if (onlineUser != null)
                 {
-                    onlineUser.currentPermission = null;
+                    onlineUser.CurrentPermission = null;
                     onlineUsers.Add(onlineUser);
                 }
             }

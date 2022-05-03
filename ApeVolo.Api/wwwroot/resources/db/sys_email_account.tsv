@@ -1,18 +1,18 @@
 [
-  {
-    "id": "1311994912685690880",
-    "email": "your email",
-    "displayName": "your dispalyName",
-    "host": "smtp.qq.com",
-    "port": 465,
-    "username": "your name",
-    "password": "your pass",
-    "enable_ssl": 1,
-    "useDefaultCredentials": 0,
-    "createBy": "apevolo",
-    "createTime": "\/Date(1609430400000+0800)\/",
-    "updateBy": null,
-    "updateTime": null,
-    "isDeleted": 0
-  }
+    {
+        "id":"1311994912685690880",
+        "email":"your email",
+        "displayName":"your dispalyName",
+        "host":"smtp.qq.com",
+        "port":465,
+        "username":"your name",
+        "password":"your pass",
+        "enable_ssl":1,
+        "useDefaultCredentials":0,
+        "createBy":"apevolo",
+        "createTime":"\/Date(1609430400000+0800)\/",
+        "updateBy":null,
+        "updateTime":null,
+        "isDeleted":0
+    }
 ]

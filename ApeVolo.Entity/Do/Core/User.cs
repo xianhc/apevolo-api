@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using ApeVolo.Common.AttributeExt;
+using ApeVolo.Common.DI;
+using ApeVolo.Entity.Do.Base;
 using SqlSugar;
 
 namespace ApeVolo.Entity.Do.Core;
 
-[InitTable(typeof(User))]
-[SugarTable("sys_user", "系统用户表")]
-public class User : BaseEntity
+/// <summary>
+/// 系统用户
+/// </summary>
+[SugarTable("sys_user", "系统用户")]
+public class User : EntityRoot<long>, ILocalizedTable
 {
     /// <summary>
     /// 用户名
@@ -86,7 +89,7 @@ public class User : BaseEntity
     /// <summary>
     /// 最后修改密码时间
     /// </summary>
-    [SugarColumn(ColumnName = "password_reset_time", IsNullable = true)]
+    [SugarColumn(ColumnName = "password_reset_time", IsNullable = true, ColumnDescription = "最后修改密码时间")]
     public DateTime? PasswordReSetTime { get; set; }
 
     /// <summary>
@@ -102,14 +105,36 @@ public class User : BaseEntity
 
     #region 扩展属性
 
-    [SugarColumn(IsIgnore = true)] public Department Dept { get; set; }
+    /// <summary>
+    /// 部门
+    /// </summary>
+    [SugarColumn(IsIgnore = true)]
+    public Department Dept { get; set; }
 
-    [SugarColumn(IsIgnore = true)] public List<UserRoles> UserRoles { get; set; }
 
-    [SugarColumn(IsIgnore = true)] public List<Role> Roles { get; set; }
+    /// <summary>
+    /// 用户角色集合
+    /// </summary>
+    [SugarColumn(IsIgnore = true)]
+    public List<UserRoles> UserRoles { get; set; }
 
-    [SugarColumn(IsIgnore = true)] public List<UserJobs> UserJobs { get; set; }
-    [SugarColumn(IsIgnore = true)] public List<Job> Jobs { get; set; }
+    /// <summary>
+    /// 角色集合
+    /// </summary>
+    [SugarColumn(IsIgnore = true)]
+    public List<Role> Roles { get; set; }
+
+    /// <summary>
+    /// 用户岗位集合
+    /// </summary>
+    [SugarColumn(IsIgnore = true)]
+    public List<UserJobs> UserJobs { get; set; }
+
+    /// <summary>
+    /// 岗位集合
+    /// </summary>
+    [SugarColumn(IsIgnore = true)]
+    public List<Job> Jobs { get; set; }
 
     #endregion
 }

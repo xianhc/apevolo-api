@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
+using ApeVolo.Common.Extention;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IRepository.Core;
@@ -16,7 +17,7 @@ public class RolesMenusService : BaseServices<RoleMenu>, IRolesMenusService
 
     public RolesMenusService(IRolesMenusRepository rolesMenusRepository)
     {
-        _baseDal = rolesMenusRepository;
+        BaseDal = rolesMenusRepository;
     }
 
     #endregion
@@ -25,12 +26,13 @@ public class RolesMenusService : BaseServices<RoleMenu>, IRolesMenusService
 
     public async Task<bool> DeleteAsync(List<long> roleIds)
     {
-        return await _baseDal.DeleteAsync(rm => roleIds.Contains(rm.RoleId)) > 0;
+        var roleMenus = await BaseDal.QueryListAsync(x => roleIds.Contains(x.RoleId) && x.IsDeleted == false);
+        return await DeleteEntityListAsync(roleMenus);
     }
 
     public async Task<bool> CreateAsync(List<RoleMenu> roleMenu)
     {
-        return await _baseDal.AddReturnBoolAsync(roleMenu);
+        return await AddEntityListAsync(roleMenu);
     }
 
     #endregion

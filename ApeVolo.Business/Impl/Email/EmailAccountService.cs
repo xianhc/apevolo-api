@@ -27,8 +27,8 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
 
     public EmailAccountService(IEmailAccountRepository emailAccountRepository, IMapper mapper)
     {
-        _baseDal = emailAccountRepository;
-        _mapper = mapper;
+        BaseDal = emailAccountRepository;
+        Mapper = mapper;
     }
 
     #endregion
@@ -48,7 +48,7 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
             throw new BadRequestException($"邮箱=>{createUpdateEmailAccountDto.Email}=>已存在!");
         }
 
-        var emailAccount = _mapper.Map<EmailAccount>(createUpdateEmailAccountDto);
+        var emailAccount = Mapper.Map<EmailAccount>(createUpdateEmailAccountDto);
         return await AddEntityAsync(emailAccount);
     }
 
@@ -65,7 +65,7 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
             throw new BadRequestException($"邮箱=>{nameof(EmailAccount)}=>不存在!");
         }
 
-        var emailAccount = _mapper.Map<EmailAccount>(createUpdateEmailAccountDto);
+        var emailAccount = Mapper.Map<EmailAccount>(createUpdateEmailAccountDto);
         return await UpdateEntityAsync(emailAccount);
     }
 
@@ -111,7 +111,7 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
                 x.CreateTime <= emailAccountQueryCriteria.CreateTime[1]);
         }
 
-        return _mapper.Map<List<EmailAccountDto>>(await _baseDal.QueryPageListAsync(whereExpression, pagination));
+        return Mapper.Map<List<EmailAccountDto>>(await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 
     public async Task<List<ExportRowModel>> DownloadAsync(EmailAccountQueryCriteria emailAccountQueryCriteria)

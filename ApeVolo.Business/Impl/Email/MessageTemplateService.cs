@@ -25,8 +25,8 @@ public class MessageTemplateService : BaseServices<MessageTemplate>, IEmailMessa
 
     public MessageTemplateService(IMessageTemplateRepository messageTemplateRepository, IMapper mapper)
     {
-        _baseDal = messageTemplateRepository;
-        _mapper = mapper;
+        BaseDal = messageTemplateRepository;
+        Mapper = mapper;
     }
 
     #endregion
@@ -45,7 +45,7 @@ public class MessageTemplateService : BaseServices<MessageTemplate>, IEmailMessa
         if (messageTemplate.IsNotNull())
             throw new BadRequestException($"邮箱模板=>{messageTemplate.Name}=>已存在!");
 
-        return await AddEntityAsync(_mapper.Map<MessageTemplate>(createUpdateMessageTemplateDto));
+        return await AddEntityAsync(Mapper.Map<MessageTemplate>(createUpdateMessageTemplateDto));
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public class MessageTemplateService : BaseServices<MessageTemplate>, IEmailMessa
         if (!await IsExistAsync(x => x.IsDeleted == false && x.Id == createUpdateMessageTemplateDto.Id))
             throw new BadRequestException($"邮箱模板=>{createUpdateMessageTemplateDto.Name}=>不存在！");
 
-        return await UpdateEntityAsync(_mapper.Map<MessageTemplate>(createUpdateMessageTemplateDto));
+        return await UpdateEntityAsync(Mapper.Map<MessageTemplate>(createUpdateMessageTemplateDto));
     }
 
     /// <summary>
@@ -102,8 +102,8 @@ public class MessageTemplateService : BaseServices<MessageTemplate>, IEmailMessa
                 x.CreateTime <= messageTemplateQueryCriteria.CreateTime[1]);
         }
 
-        return _mapper.Map<List<MessageTemplateDto>>(
-            await _baseDal.QueryPageListAsync(whereExpression, pagination));
+        return Mapper.Map<List<MessageTemplateDto>>(
+            await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 
     #endregion

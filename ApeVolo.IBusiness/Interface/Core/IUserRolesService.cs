@@ -13,7 +13,7 @@ public interface IUserRolesService : IBaseServices<UserRoles>
 {
     #region 基础接口
 
-    Task<int> CreateAsync(List<CreateUpdateUserRolesDto> createUpdateUserRoleDtos);
+    Task<bool> CreateAsync(List<CreateUpdateUserRolesDto> createUpdateUserRoleDtos);
     Task<bool> DeleteByUserIdAsync(long userId);
     Task<List<UserRoles>> QueryAsync(long userId);
     Task<List<UserRoles>> QueryByRoleIdsAsync(HashSet<long> roleIds);

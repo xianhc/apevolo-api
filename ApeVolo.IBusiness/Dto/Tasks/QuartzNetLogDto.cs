@@ -4,7 +4,7 @@ using ApeVolo.Entity.Do.Tasks;
 namespace ApeVolo.IBusiness.Dto.Tasks;
 
 [AutoMapping(typeof(QuartzNetLog), typeof(QuartzNetLogDto))]
-public class QuartzNetLogDto : BaseEntityDto
+public class QuartzNetLogDto : EntityDtoRoot<long>
 {
     /// <summary>
     /// 任务ID

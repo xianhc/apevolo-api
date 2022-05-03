@@ -51,9 +51,9 @@ public class UserService : BaseServices<User>, IUserService
         IUserRolesService userRoleService, IUserJobsService userJobsService, IDataScopeService dataScopeService,
         ICurrentUser currentUser, IRedisCacheService redisCacheService)
     {
-        _mapper = mapper;
-        _baseDal = userRepository;
-        _currentUser = currentUser;
+        Mapper = mapper;
+        BaseDal = userRepository;
+        CurrentUser = currentUser;
         _departmentService = departmentService;
         _roleService = roleService;
         _jobService = jobService;
@@ -88,7 +88,7 @@ public class UserService : BaseServices<User>, IUserService
             throw new BadRequestException($"电话=>{createUpdateUserDto.Phone}=>已存在！");
         }
 
-        var user = _mapper.Map<User>(createUpdateUserDto);
+        var user = Mapper.Map<User>(createUpdateUserDto);
 
         //设置用户密码
         user.SaltKey = SaltKeyHelper.CreateSalt(6);
@@ -153,7 +153,7 @@ public class UserService : BaseServices<User>, IUserService
         //验证角色等级
         var levels = (await _roleService.QueryByUserIdAsync(oldUser.Id)).Select(x => x.Level);
         await _roleService.VerificationUserRoleLevelAsync(levels.Min());
-        var user = _mapper.Map<User>(createUpdateUserDto);
+        var user = Mapper.Map<User>(createUpdateUserDto);
         user.DeptId = user.Dept.Id;
         //更新用户
         await UpdateEntityAsync(user, new List<string> { "password", "salt_key", "avatar_name", "avatar_path" });
@@ -193,6 +193,11 @@ public class UserService : BaseServices<User>, IUserService
     {
         //验证角色等级
         await _roleService.VerificationUserRoleLevelAsync(await _roleService.QueryUserRoleLevelAsync(ids));
+        if (ids.Contains(CurrentUser.Id))
+        {
+            throw new BadRequestException("不可删除自己！");
+        }
+
         var users = await QueryByIdsAsync(ids);
         users.ForEach(ClearUserCache);
         return await DeleteEntityListAsync(users);
@@ -239,16 +244,16 @@ public class UserService : BaseServices<User>, IUserService
         }
 
         //数据权限 
-        if (!_currentUser.Id.IsNullOrEmpty())
+        if (!CurrentUser.Id.IsNullOrEmpty())
         {
-            List<long> deptIds = await _dataScopeService.GetDeptIds(await QueryByIdAsync(_currentUser.Id));
+            List<long> deptIds = await _dataScopeService.GetDeptIds(await QueryByIdAsync(CurrentUser.Id));
             if (deptIds.Count > 0)
             {
                 whereExpression = whereExpression.And(u => deptIds.Contains(u.DeptId));
             }
         }
 
-        var users = await _baseDal.QueryMapperPageListAsync(async (it, cache) =>
+        var users = await BaseDal.QueryMapperPageListAsync(async (it, cache) =>
         {
             //部门 
             var department = cache.GetListByPrimaryKeys<Department>(model => model.DeptId);
@@ -269,7 +274,7 @@ public class UserService : BaseServices<User>, IUserService
             it.DeptId = 0;
         }, whereExpression, pagination);
 
-        return _mapper.Map<List<UserDto>>(users);
+        return Mapper.Map<List<UserDto>>(users);
     }
 
 
@@ -325,7 +330,7 @@ public class UserService : BaseServices<User>, IUserService
 
         if (user != null)
         {
-            userDto = _mapper.Map<UserDto>(user);
+            userDto = Mapper.Map<UserDto>(user);
             await AddUserAttributes(userDto);
         }
 
@@ -343,20 +348,20 @@ public class UserService : BaseServices<User>, IUserService
         User user;
         if (userName.IsEmail())
         {
-            user = await _baseDal.QueryFirstAsync(s => s.Email == userName && s.IsDeleted == false);
+            user = await BaseDal.QueryFirstAsync(s => s.Email == userName && s.IsDeleted == false);
         }
         else
         {
-            user = await _baseDal.QueryFirstAsync(s => s.Username == userName && s.IsDeleted == false);
+            user = await BaseDal.QueryFirstAsync(s => s.Username == userName && s.IsDeleted == false);
         }
 
-        return _mapper.Map<UserDto>(user);
+        return Mapper.Map<UserDto>(user);
     }
 
 
     public async Task<List<UserDto>> QueryByRoleIdAsync(long roleId)
     {
-        var users = await _baseDal.QueryMuchAsync<User, UserRoles, User>(
+        var users = await BaseDal.QueryMuchAsync<User, UserRoles, User>(
             (u, ur) => new object[]
             {
                 JoinType.Left, u.Id == ur.UserId,
@@ -364,7 +369,7 @@ public class UserService : BaseServices<User>, IUserService
             (u, ur) => u,
             (u, ur) => u.IsDeleted == false && ur.RoleId == roleId
         );
-        return _mapper.Map<List<UserDto>>(users);
+        return Mapper.Map<List<UserDto>>(users);
     }
 
     /// <summary>
@@ -374,8 +379,8 @@ public class UserService : BaseServices<User>, IUserService
     /// <returns></returns>
     public async Task<List<UserDto>> QueryByDeptIdsAsync(List<long> deptIds)
     {
-        return _mapper.Map<List<UserDto>>(
-            await _baseDal.QueryListAsync(u => u.IsDeleted == false && deptIds.Contains(u.DeptId)));
+        return Mapper.Map<List<UserDto>>(
+            await BaseDal.QueryListAsync(u => u.IsDeleted == false && deptIds.Contains(u.DeptId)));
     }
 
     /// <summary>
@@ -386,7 +391,7 @@ public class UserService : BaseServices<User>, IUserService
     /// <exception cref="BadRequestException"></exception>
     public async Task<bool> UpdateCenterAsync(UpdateUserCenterDto updateUserCenterDto)
     {
-        if (updateUserCenterDto.Id != _currentUser.Id)
+        if (updateUserCenterDto.Id != CurrentUser.Id)
             throw new BadRequestException("You do not have the right to modify other user data");
 
         var user = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == updateUserCenterDto.Id);
@@ -396,7 +401,8 @@ public class UserService : BaseServices<User>, IUserService
             throw new BadRequestException(nameof(updateUserCenterDto.Phone) +
                                           " please enter the correct phone number！");
 
-        var checkUser = await _baseDal.QueryFirstAsync(x => x.Phone == updateUserCenterDto.Phone);
+        var checkUser = await BaseDal.QueryFirstAsync(x =>
+            x.Phone == updateUserCenterDto.Phone && x.IsDeleted == false && x.Id != updateUserCenterDto.Id);
         if (checkUser.IsNotNull())
             throw new BadRequestException($"Mobile phone number {updateUserCenterDto.Phone} already exists");
 
@@ -415,7 +421,7 @@ public class UserService : BaseServices<User>, IUserService
         if (oldPassword == newPassword)
             throw new BadRequestException("新密码不能与旧密码相同！");
 
-        var curUser = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == _currentUser.Id);
+        var curUser = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == CurrentUser.Id);
         if (curUser.IsNull())
             throw new BadRequestException(nameof(curUser) + " does not exist");
         if (curUser.Password !=
@@ -439,7 +445,7 @@ public class UserService : BaseServices<User>, IUserService
             await _redisCacheService.RemoveAsync(RedisKey.UserInfoByName + curUser.Username.ToMd5String16());
 
             //退出当前用户
-            await _redisCacheService.RemoveAsync(RedisKey.OnlineKey + _currentUser.GetToken().ToMd5String16());
+            await _redisCacheService.RemoveAsync(RedisKey.OnlineKey + CurrentUser.GetToken().ToMd5String16());
         }
 
         return true;
@@ -452,7 +458,7 @@ public class UserService : BaseServices<User>, IUserService
     /// <returns></returns>
     public async Task<bool> UpdateEmailAsync(UpdateUserEmailDto updateUserEmailDto)
     {
-        var curUser = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == _currentUser.Id);
+        var curUser = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == CurrentUser.Id);
         if (curUser.IsNull())
             throw new BadRequestException("用户不存在！");
         var jsEncryptHelper = new JsEncryptHelper();
@@ -476,7 +482,7 @@ public class UserService : BaseServices<User>, IUserService
 
     public async Task<bool> UpdateAvatarAsync(IFormFile file)
     {
-        var curUser = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == _currentUser.Id);
+        var curUser = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == CurrentUser.Id);
         if (curUser.IsNull())
             throw new BadRequestException("用户不存在！");
 
@@ -518,16 +524,16 @@ public class UserService : BaseServices<User>, IUserService
 
     private async Task<List<JobSmallDto>> GetJobListAsync(long userId)
     {
-        var jobs = await _baseDal.QueryMuchAsync<User, UserJobs, Job, Job>(
+        var jobs = await BaseDal.QueryMuchAsync<User, UserJobs, Job, Job>(
             (u, uj, j) => new object[]
             {
                 JoinType.Left, u.Id == uj.UserId,
                 JoinType.Left, uj.JobId == j.Id
             },
             (u, uj, j) => j,
-            (u, uj, j) => u.IsDeleted == false && j.IsDeleted == false && u.Id == userId
+            (u, uj, j) => u.IsDeleted == false && j.IsDeleted == false && uj.IsDeleted == false && u.Id == userId
         );
-        return _mapper.Map<List<JobSmallDto>>(jobs);
+        return Mapper.Map<List<JobSmallDto>>(jobs);
     }
 
 

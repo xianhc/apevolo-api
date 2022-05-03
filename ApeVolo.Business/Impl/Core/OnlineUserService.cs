@@ -53,7 +53,7 @@ public class OnlineUserService : IOnlineUserService
             Address = IpHelper.GetIpAddress(remoteIp),
             Key = token.ToMd5String16(),
             LoginTime = DateTime.Now,
-            currentPermission = new CurrentPermission
+            CurrentPermission = new CurrentPermission
                 { Roles = jwtUserVo.User.Authorizes, Urls = jwtUserVo.User.PermissionUrl }
         };
         return await _redisCacheService.SetCacheAsync(RedisKey.OnlineKey + onlineUser.Key, onlineUser,

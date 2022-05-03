@@ -1,11 +1,14 @@
-using ApeVolo.Common.AttributeExt;
+using ApeVolo.Common.DI;
+using ApeVolo.Entity.Do.Base;
 using SqlSugar;
 
 namespace ApeVolo.Entity.Do.Core;
 
-[InitTable(typeof(TestApeVolo))]
-[SugarTable("test_apevolo", "测试表")]
-public class TestApeVolo : BaseEntity
+/// <summary>
+/// 测试用的
+/// </summary>
+[SugarTable("test_apevolo", "测试")]
+public class TestApeVolo : EntityRoot<long>, ILocalizedTable
 {
     [SugarColumn(ColumnName = "label", ColumnDataType = "varchar", Length = 255, IsNullable = false,
         ColumnDescription = "label")]

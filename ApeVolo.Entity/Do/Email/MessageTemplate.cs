@@ -1,4 +1,5 @@
-﻿using ApeVolo.Common.AttributeExt;
+﻿using ApeVolo.Common.DI;
+using ApeVolo.Entity.Do.Base;
 using SqlSugar;
 
 namespace ApeVolo.Entity.Do.Email;
@@ -6,9 +7,8 @@ namespace ApeVolo.Entity.Do.Email;
 /// <summary>
 /// 邮件模板
 /// </summary>
-[InitTable(typeof(MessageTemplate))]
 [SugarTable("sys_email_message_template", "邮件消息模板")]
-public class MessageTemplate : BaseEntity
+public class MessageTemplate : EntityRoot<long>, ILocalizedTable
 {
     /// <summary>
     /// 模板名称

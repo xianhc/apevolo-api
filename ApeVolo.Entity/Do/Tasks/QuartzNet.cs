@@ -1,12 +1,15 @@
 ﻿using System;
-using ApeVolo.Common.AttributeExt;
+using ApeVolo.Common.DI;
+using ApeVolo.Entity.Do.Base;
 using SqlSugar;
 
 namespace ApeVolo.Entity.Do.Tasks;
 
-[InitTable(typeof(QuartzNet))]
-[SugarTable("sys_quartz_job", "作业调度")]
-public class QuartzNet : BaseEntity
+/// <summary>
+/// 系统作业调度
+/// </summary>
+[SugarTable("sys_quartz_job", "系统作业调度")]
+public class QuartzNet : EntityRoot<long>, ILocalizedTable
 {
     /// <summary>
     /// 任务名称

@@ -24,8 +24,8 @@ public class QuartzNetLogService : BaseServices<QuartzNetLog>, IQuartzNetLogServ
 
     public QuartzNetLogService(IQuartzNetLogRepository taskQuartzLogRepository, IMapper mapper)
     {
-        _baseDal = taskQuartzLogRepository;
-        _mapper = mapper;
+        BaseDal = taskQuartzLogRepository;
+        Mapper = mapper;
     }
 
     #endregion
@@ -34,7 +34,7 @@ public class QuartzNetLogService : BaseServices<QuartzNetLog>, IQuartzNetLogServ
 
     public async Task<bool> CreateAsync(QuartzNetLog quartzNetLog)
     {
-        return await _baseDal.AddReturnBoolAsync(quartzNetLog);
+        return await BaseDal.AddReturnBoolAsync(quartzNetLog);
     }
 
     public async Task<List<QuartzNetLogDto>> QueryAsync(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria,
@@ -59,7 +59,7 @@ public class QuartzNetLogService : BaseServices<QuartzNetLog>, IQuartzNetLogServ
                 x.CreateTime <= quartzNetLogQueryCriteria.CreateTime[1]);
         }
 
-        return _mapper.Map<List<QuartzNetLogDto>>(await _baseDal.QueryPageListAsync(whereExpression, pagination));
+        return Mapper.Map<List<QuartzNetLogDto>>(await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 
     public async Task<List<ExportRowModel>> DownloadAsync(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria)

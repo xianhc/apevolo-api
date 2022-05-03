@@ -1,11 +1,14 @@
-﻿using ApeVolo.Common.AttributeExt;
+﻿using ApeVolo.Common.DI;
+using ApeVolo.Entity.Do.Base;
 using SqlSugar;
 
 namespace ApeVolo.Entity.Do.Tasks;
 
-[InitTable(typeof(QuartzNetLog))]
-[SugarTable("sys_quartz_job_log", "作业调度执行日志")]
-public class QuartzNetLog : BaseEntity
+/// <summary>
+/// 系统作业调度执行日志
+/// </summary>
+[SugarTable("sys_quartz_job_log", "系统作业调度执行日志")]
+public class QuartzNetLog : EntityRoot<long>, ILocalizedTable
 {
     /// <summary>
     /// 任务Id

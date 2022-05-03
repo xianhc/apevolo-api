@@ -28,8 +28,8 @@ public class JobService : BaseServices<Job>, IJobService
 
     public JobService(IJobRepository jobRepository, IMapper mapper)
     {
-        _baseDal = jobRepository;
-        _mapper = mapper;
+        BaseDal = jobRepository;
+        Mapper = mapper;
     }
 
     #endregion
@@ -44,7 +44,7 @@ public class JobService : BaseServices<Job>, IJobService
             throw new BadRequestException($"岗位=>{createUpdateJobDto.Name}=>已存在!");
         }
 
-        var job = _mapper.Map<Job>(createUpdateJobDto);
+        var job = Mapper.Map<Job>(createUpdateJobDto);
         return await AddEntityAsync(job);
     }
 
@@ -56,7 +56,7 @@ public class JobService : BaseServices<Job>, IJobService
             throw new BadRequestException($"岗位=>{createUpdateJobDto.Name}=>不存在!");
         }
 
-        var job = _mapper.Map<Job>(createUpdateJobDto);
+        var job = Mapper.Map<Job>(createUpdateJobDto);
         return await UpdateEntityAsync(job);
     }
 
@@ -68,17 +68,17 @@ public class JobService : BaseServices<Job>, IJobService
             throw new BadRequestException("删除的资源不存在！");
         }
 
-        var userJobs = await _baseDal.QueryMuchAsync<UserJobs, User, UserJobs>(
+        var userJobs = await BaseDal.QueryMuchAsync<UserJobs, User, UserJobs>(
             (uj, u) => new object[]
             {
                 JoinType.Left, uj.UserId == u.Id
             },
             (uj, u) => uj,
-            (uj, u) => u.IsDeleted == false && ids.Contains(uj.JobId)
+            (uj, u) => u.IsDeleted == false && uj.IsDeleted == false && ids.Contains(uj.JobId)
         );
         if (userJobs.Count > 0)
         {
-            throw new BadRequestException("所选部门存在用户关联，请解除后再试！");
+            throw new BadRequestException("所选岗位存在用户关联，请解除后再试！");
         }
 
         return await DeleteEntityListAsync(jobs);
@@ -104,7 +104,7 @@ public class JobService : BaseServices<Job>, IJobService
             whereExpression = whereExpression.And(x => x.Enabled == jobQueryCriteria.Enabled);
         }
 
-        return _mapper.Map<List<JobDto>>(await _baseDal.QueryPageListAsync(whereExpression, pagination));
+        return Mapper.Map<List<JobDto>>(await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 
     public async Task<List<ExportRowModel>> DownloadAsync(JobQueryCriteria jobQueryCriteria)
@@ -142,7 +142,7 @@ public class JobService : BaseServices<Job>, IJobService
         Expression<Func<Job, bool>> whereExpression = x => x.IsDeleted == false && x.Enabled;
 
 
-        return _mapper.Map<List<JobDto>>(await _baseDal.QueryListAsync(whereExpression, x => x.Sort,
+        return Mapper.Map<List<JobDto>>(await BaseDal.QueryListAsync(whereExpression, x => x.Sort,
             OrderByType.Asc));
     }
 

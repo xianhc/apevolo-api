@@ -6,12 +6,12 @@ namespace ApeVolo.IBusiness.Dto;
 /// <summary>
 /// 实体基类
 /// </summary>
-public class BaseEntityDto
+public abstract class EntityDtoRoot<T> where T : IEquatable<T>
 {
     /// <summary>
     /// 主键
     /// </summary>
-    public long Id { get; set; }
+    public T Id { get; set; }
 
     /// <summary>
     /// 创建者名称

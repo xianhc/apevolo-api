@@ -1,10 +1,11 @@
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.Do.Core;
+using ApeVolo.IBusiness.Dto;
 
 namespace ApeVolo.IBusiness.EditDto.Core;
 
 [AutoMapping(typeof(Menu), typeof(CreateUpdateMenuDto))]
-public class CreateUpdateMenuDto : BaseCreateUpdateEntityDto
+public class CreateUpdateMenuDto : EntityDtoRoot<long>
 {
     [ApeVoloRequired(Message = "菜单标题不能为空！")]
     public string Title { get; set; }

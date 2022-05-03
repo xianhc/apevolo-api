@@ -90,42 +90,7 @@ public class Startup
 
     public void ConfigureContainer(ContainerBuilder builder)
     {
-        #region DI依赖注入
-
-        //AOP
-        var cacheType = new List<Type>();
-        builder.RegisterType<TransactionAop>();
-        cacheType.Add(typeof(TransactionAop));
-        builder.RegisterType<RedisAop>();
-        cacheType.Add(typeof(RedisAop));
-
-        // 获取所有待注入服务类
-        var baseTypeService = typeof(IDependencyService);
-        var diTypes = GlobalData.FxAllTypes
-            .Where(x => baseTypeService.IsAssignableFrom(x) && x != baseTypeService).ToArray();
-        builder.RegisterTypes(diTypes)
-            .AsImplementedInterfaces()
-            .PropertiesAutowired()
-            .InstancePerDependency()
-            .EnableInterfaceInterceptors()
-            .InterceptedBy(cacheType.ToArray());
-
-
-        // 获取所有待注入仓储类
-        var diTypesRepository = typeof(IDependencyRepository);
-        var diTypes2 = GlobalData.FxAllTypes
-            .Where(x => diTypesRepository.IsAssignableFrom(x) && x != diTypesRepository).ToArray();
-        builder.RegisterTypes(diTypes2)
-            .AsImplementedInterfaces()
-            .InstancePerDependency();
-
-
-        //注册
-        builder.RegisterType<DisposableContainer>()
-            .As<IDisposableContainer>()
-            .InstancePerLifetimeScope();
-
-        #endregion
+        builder.RegisterModule(new AutofacRegister());
     }
 
     public void Configure(IApplicationBuilder app, MyContext myContext,
@@ -180,7 +145,7 @@ public class Startup
         });
         app.UseHttpMethodOverride();
 
-        app.UseSeedDataMildd(myContext);
+        app.UseDataSeederMiddleware(myContext);
         //作业调度
         app.UseQuartzNetJobMiddleware(quartzNetService, schedulerCenter);
 

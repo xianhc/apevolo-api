@@ -4,14 +4,14 @@ using ApeVolo.Entity.Do.Core;
 namespace ApeVolo.IBusiness.Dto.Core;
 
 [AutoMapping(typeof(FileRecord), typeof(FileRecordDto))]
-public class FileRecordDto : BaseEntityDto
+public class FileRecordDto : EntityDtoRoot<long>
 {
     public string Description { get; set; }
-    
+
     public string ContentType { get; set; }
 
     public string ContentTypeName { get; set; }
-    
+
     public string ContentTypeNameEn { get; set; }
 
     public string OriginalName { get; set; }

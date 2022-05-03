@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ApeVolo.Common.Caches.Redis.Models;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
+using ApeVolo.Common.Helper;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using RedisKey = StackExchange.Redis.RedisKey;
@@ -21,15 +22,23 @@ public class RedisCacheService : IRedisCacheService
     {
         if (redisOptions.IsNull())
         {
-            throw new System.Exception("redis初始化失败！！！");
+            throw new System.Exception("redis配置信息异常！！！");
         }
 
-        //设置线程池最小连接数
-        ThreadPool.SetMinThreads(200, 200);
-        _config = redisOptions;
-        var connection = ConnectionMultiplexer.Connect(GetRedisOptions());
-        _database = connection.GetDatabase(_config.RedisIndex);
-        _sub = connection.GetSubscriber();
+        try
+        {
+            //设置线程池最小连接数
+            ThreadPool.SetMinThreads(200, 200);
+            _config = redisOptions;
+            var connection = ConnectionMultiplexer.Connect(GetRedisOptions());
+            _database = connection.GetDatabase(_config.RedisIndex);
+            _sub = connection.GetSubscriber();
+        }
+        catch (System.Exception ex)
+        {
+            ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
+            throw;
+        }
     }
 
     #region 获取redis配置

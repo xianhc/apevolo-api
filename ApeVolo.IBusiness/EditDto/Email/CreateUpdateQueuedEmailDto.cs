@@ -1,11 +1,12 @@
 ﻿using System;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.Do.Email;
+using ApeVolo.IBusiness.Dto;
 
 namespace ApeVolo.IBusiness.EditDto.Email;
 
 [AutoMapping(typeof(QueuedEmail), typeof(CreateUpdateQueuedEmailDto))]
-public class CreateUpdateQueuedEmailDto : BaseCreateUpdateEntityDto
+public class CreateUpdateQueuedEmailDto : EntityDtoRoot<long>
 {
     /// <summary>
     /// 发件邮箱

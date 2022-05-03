@@ -5,7 +5,7 @@ using ApeVolo.Entity.Do.Email;
 namespace ApeVolo.IBusiness.Dto.Email;
 
 [AutoMapping(typeof(QueuedEmail), typeof(QueuedEmailDto))]
-public class QueuedEmailDto : BaseEntityDto
+public class QueuedEmailDto : EntityDtoRoot<long>
 {
     /// <summary>
     /// 发件邮箱

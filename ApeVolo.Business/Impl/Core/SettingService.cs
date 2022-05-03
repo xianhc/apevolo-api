@@ -33,8 +33,8 @@ public class SettingService : BaseServices<Setting>, ISettingService
     public SettingService(IMapper mapper, ISettingRepository settingRepository,
         IRedisCacheService redisCacheService)
     {
-        _mapper = mapper;
-        _baseDal = settingRepository;
+        Mapper = mapper;
+        BaseDal = settingRepository;
         _redisCacheService = redisCacheService;
     }
 
@@ -50,7 +50,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
             throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在!");
         }
 
-        var setting = _mapper.Map<Setting>(createUpdateSettingDto);
+        var setting = Mapper.Map<Setting>(createUpdateSettingDto);
         return await AddEntityAsync(setting);
     }
 
@@ -70,7 +70,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
         }
 
         await _redisCacheService.RemoveAsync(RedisKey.LoadSettingByName + oldSetting.Name.ToMd5String16());
-        var setting = _mapper.Map<Setting>(createUpdateSettingDto);
+        var setting = Mapper.Map<Setting>(createUpdateSettingDto);
         return await UpdateEntityAsync(setting);
     }
 
@@ -106,7 +106,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
                 r.CreateTime <= settingQueryCriteria.CreateTime[1]);
         }
 
-        return _mapper.Map<List<SettingDto>>(await _baseDal.QueryPageListAsync(whereLambda, pagination));
+        return Mapper.Map<List<SettingDto>>(await BaseDal.QueryPageListAsync(whereLambda, pagination));
     }
 
     public async Task<List<ExportRowModel>> DownloadAsync(SettingQueryCriteria settingQueryCriteria)
@@ -151,7 +151,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
         }
 
         var setting =
-            _mapper.Map<SettingDto>(await QueryFirstAsync(x => x.IsDeleted == false && x.Name == settingName));
+            Mapper.Map<SettingDto>(await QueryFirstAsync(x => x.IsDeleted == false && x.Name == settingName));
         if (setting.IsNull())
         {
             throw new BadRequestException("请输入正确的设置键名称!");

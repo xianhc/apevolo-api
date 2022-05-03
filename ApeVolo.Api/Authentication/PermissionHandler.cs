@@ -123,15 +123,15 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                             //用户权限点 路由
                             var role = _currentUser.GetClaimValueByType(ClaimTypes.Role);
                             var permissionList = await _permissionService.QueryUserPermissionAsync(_currentUser.Id);
-                            onlineUser.currentPermission.Urls.AddRange(permissionList.Select(s => s.Permission)
+                            onlineUser.CurrentPermission.Urls.AddRange(permissionList.Select(s => s.Permission)
                                 .Where(s => !s.IsNullOrEmpty()));
-                            onlineUser.currentPermission.Urls.AddRange(role.Select(r => r));
-                            onlineUser.currentPermission.Urls.AddRange(permissionList.Select(s => s.LinkUrl)
+                            onlineUser.CurrentPermission.Urls.AddRange(role.Select(r => r));
+                            onlineUser.CurrentPermission.Urls.AddRange(permissionList.Select(s => s.LinkUrl)
                                 .Where(s => !s.IsNullOrEmpty()));
                         }
 
                         //验证url
-                        foreach (var url in onlineUser.currentPermission.Urls)
+                        foreach (var url in onlineUser.CurrentPermission.Urls)
                         {
                             try
                             {
@@ -166,7 +166,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                                     if (apeVoloAuthorize.IsNotNull())
                                     {
                                         if (apeVoloAuthorize != null && apeVoloAuthorize.Roles.Any(role =>
-                                                onlineUser.currentPermission.Roles.Contains(role)))
+                                                onlineUser.CurrentPermission.Roles.Contains(role)))
                                         {
                                             isMatchRole = true;
                                         }

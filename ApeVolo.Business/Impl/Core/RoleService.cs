@@ -48,9 +48,9 @@ public class RoleService : BaseServices<Role>, IRoleService
         , IRolesMenusService rolesMenusService, IUserRolesService userRolesService,
         IRoleDeptService roleDeptService, IRedisCacheService redisCacheService)
     {
-        _mapper = mapper;
-        _baseDal = roleRepository;
-        _currentUser = currentUser;
+        Mapper = mapper;
+        BaseDal = roleRepository;
+        CurrentUser = currentUser;
         _db = sqlSugarClient;
         _menuService = menuService;
         _departmentService = departmentService;
@@ -80,7 +80,7 @@ public class RoleService : BaseServices<Role>, IRoleService
             throw new BadRequestException($"角色代码=>{createUpdateRoleDto.Permission}=>已存在!");
         }
 
-        var role = _mapper.Map<Role>(createUpdateRoleDto);
+        var role = Mapper.Map<Role>(createUpdateRoleDto);
         await AddEntityAsync(role);
 
         if (!createUpdateRoleDto.Depts.IsNullOrEmpty() && createUpdateRoleDto.Depts.Count > 0)
@@ -118,7 +118,7 @@ public class RoleService : BaseServices<Role>, IRoleService
         }
 
         await VerificationUserRoleLevelAsync(createUpdateRoleDto.Level);
-        var role = _mapper.Map<Role>(createUpdateRoleDto);
+        var role = Mapper.Map<Role>(createUpdateRoleDto);
         await UpdateEntityAsync(role);
 
         //删除部门权限关联
@@ -165,19 +165,19 @@ public class RoleService : BaseServices<Role>, IRoleService
                 r.CreateTime >= roleQueryCriteria.CreateTime[0] && r.CreateTime <= roleQueryCriteria.CreateTime[1]);
         }
 
-        var roleList = await _baseDal.QueryMapperPageListAsync(async (it, cache) =>
+        var roleList = await BaseDal.QueryMapperPageListAsync(async (it, cache) =>
         {
             //菜单
-            var menus = _mapper.Map<List<Menu>>(await _menuService.FindByRoleIdAsync(it.Id));
+            var menus = Mapper.Map<List<Menu>>(await _menuService.FindByRoleIdAsync(it.Id));
 
             //部门
-            var depts = _mapper.Map<List<Department>>(await _departmentService.QueryByRoleIdAsync(it.Id));
+            var depts = Mapper.Map<List<Department>>(await _departmentService.QueryByRoleIdAsync(it.Id));
 
             it.MenuList = menus;
             it.DepartmentList = depts;
         }, whereLambda, pagination);
 
-        return _mapper.Map<List<RoleDto>>(roleList);
+        return Mapper.Map<List<RoleDto>>(roleList);
     }
 
 
@@ -219,21 +219,19 @@ public class RoleService : BaseServices<Role>, IRoleService
 
     public async Task<List<RoleDto>> QuerySingleAsync(long roleId)
     {
-        var roleList = await _baseDal.QueryMapperAsync(async (it, cache) =>
+        var roleList = await BaseDal.QueryMapperAsync(async (it, cache) =>
         {
-            //性能差 待优化
-
             //菜单
-            var menus = _mapper.Map<List<Menu>>(await _menuService.FindByRoleIdAsync(it.Id));
+            var menus = Mapper.Map<List<Menu>>(await _menuService.FindByRoleIdAsync(it.Id));
 
             //部门
-            var depts = _mapper.Map<List<Department>>(await _departmentService.QueryByRoleIdAsync(it.Id));
+            var depts = Mapper.Map<List<Department>>(await _departmentService.QueryByRoleIdAsync(it.Id));
 
             it.MenuList = menus;
             it.DepartmentList = depts;
         }, r => r.IsDeleted == false);
 
-        return _mapper.Map<List<RoleDto>>(roleList);
+        return Mapper.Map<List<RoleDto>>(roleList);
     }
 
 
@@ -244,16 +242,16 @@ public class RoleService : BaseServices<Role>, IRoleService
     /// <returns></returns>
     public async Task<List<RoleSmallDto>> QueryByUserIdAsync(long userId)
     {
-        var roleSmallList = await _baseDal.QueryMuchAsync<Role, UserRoles, Role>(
+        var roleSmallList = await BaseDal.QueryMuchAsync<Role, UserRoles, Role>(
             (r, ur) => new object[]
             {
                 JoinType.Left, r.Id == ur.RoleId
             },
             (r, ur) => r,
-            (r, ur) => r.IsDeleted == false && ur.UserId == userId
+            (r, ur) => r.IsDeleted == false && ur.IsDeleted == false && ur.UserId == userId
         );
 
-        return _mapper.Map<List<RoleSmallDto>>(roleSmallList);
+        return Mapper.Map<List<RoleSmallDto>>(roleSmallList);
     }
 
     public async Task<List<RoleDto>> QueryAllAsync()
@@ -262,28 +260,28 @@ public class RoleService : BaseServices<Role>, IRoleService
             async (it, cache) =>
             {
                 //菜单
-                var menus = _mapper.Map<List<Menu>>(await _menuService.FindByRoleIdAsync(it.Id));
+                var menus = Mapper.Map<List<Menu>>(await _menuService.FindByRoleIdAsync(it.Id));
 
                 //部门
-                var depts = _mapper.Map<List<Department>>(await _departmentService.QueryByRoleIdAsync(it.Id));
+                var depts = Mapper.Map<List<Department>>(await _departmentService.QueryByRoleIdAsync(it.Id));
 
                 it.MenuList = menus;
                 it.DepartmentList = depts;
             }
         ).ToListAsync();
-        return _mapper.Map<List<RoleDto>>(roleList);
+        return Mapper.Map<List<RoleDto>>(roleList);
     }
 
     public async Task<int> QueryUserRoleLevelAsync(HashSet<long> ids)
     {
         List<int> levels = new List<int>();
-        var roles = await _baseDal.QueryMuchAsync<Role, UserRoles, Role>(
+        var roles = await BaseDal.QueryMuchAsync<Role, UserRoles, Role>(
             (r, ur) => new object[]
             {
                 JoinType.Left, r.Id == ur.RoleId
             },
             (r, ur) => r,
-            (r, ur) => r.IsDeleted == false && ids.Contains(ur.UserId)
+            (r, ur) => r.IsDeleted == false && ur.IsDeleted == false && ids.Contains(ur.UserId)
         );
         levels.AddRange(roles.Select(x => x.Level).ToList());
         int minLevel = levels.Min();
@@ -293,13 +291,14 @@ public class RoleService : BaseServices<Role>, IRoleService
     public async Task<int> VerificationUserRoleLevelAsync(int? level)
     {
         List<int> levels = new List<int>();
-        var roles = await _baseDal.QueryMuchAsync<Role, UserRoles, Role>(
+        var roles = await BaseDal.QueryMuchAsync<Role, UserRoles, Role>(
             (r, ur) => new object[]
             {
                 JoinType.Left, r.Id == ur.RoleId
             },
             (r, ur) => r,
-            (r, ur) => r.IsDeleted == false && ur.UserId == _currentUser.Id //"737368938475687938"//
+            (r, ur) => r.IsDeleted == false && ur.IsDeleted == false &&
+                       ur.UserId == CurrentUser.Id //"737368938475687938"//
         );
         levels.AddRange(roles.Select(x => x.Level).ToList());
         int minLevel = levels.Min();
@@ -322,7 +321,7 @@ public class RoleService : BaseServices<Role>, IRoleService
         await VerificationUserRoleLevelAsync(role.Level);
 
 
-        //删除菜单病删除
+        //删除菜单
         List<RoleMenu> roleMenus = new List<RoleMenu>();
         if (!createUpdateRoleDto.Menus.IsNullOrEmpty() && createUpdateRoleDto.Menus.Count > 0)
         {

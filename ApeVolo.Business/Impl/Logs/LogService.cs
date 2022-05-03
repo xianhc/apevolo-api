@@ -23,8 +23,8 @@ public class LogService : BaseServices<Log>, ILogService
 
     public LogService(ILogRepository logRepository, IMapper mapper)
     {
-        _baseDal = logRepository;
-        _mapper = mapper;
+        BaseDal = logRepository;
+        Mapper = mapper;
     }
 
     #endregion
@@ -51,8 +51,8 @@ public class LogService : BaseServices<Log>, ILogService
                 l.CreateTime >= logQueryCriteria.CreateTime[0] && l.CreateTime <= logQueryCriteria.CreateTime[1]);
         }
 
-        var logs = await _baseDal.QueryPageListAsync(whereLambda, pagination);
-        return _mapper.Map<List<LogDto>>(logs);
+        var logs = await BaseDal.QueryPageListAsync(whereLambda, pagination);
+        return Mapper.Map<List<LogDto>>(logs);
     }
 
     #endregion

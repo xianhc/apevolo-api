@@ -1,15 +1,28 @@
 [
-  {
-    "id": "1306054134645919752",
-    "name": "内置管理员",
-    "level": 1,
-    "description": "-",
-    "dataScope": "全部",
-    "permission": "admin",
-    "createBy": "apevolo",
-    "createTime": "\/Date(1609430400000+0800)\/",
-    "updateBy": null,
-    "updateTime": null,
-    "isDeleted": 0
-  }
+    {
+        "id":"1306054134645919752",
+        "name":"内置管理员",
+        "level":1,
+        "description":"-",
+        "dataScope":"全部",
+        "permission":"admin",
+        "createBy":"apevolo",
+        "createTime":"\/Date(1609430400000+0800)\/",
+        "updateBy":null,
+        "updateTime":null,
+        "isDeleted":0
+    },
+    {
+        "id":"1521439155194695680",
+        "name":"游客",
+        "level":1,
+        "description":"-",
+        "dataScope":"全部",
+        "permission":"guest",
+        "createBy":"apevolo",
+        "createTime":"\/Date(1609430400000+0800)\/",
+        "updateBy":null,
+        "updateTime":null,
+        "isDeleted":0
+    }
 ]

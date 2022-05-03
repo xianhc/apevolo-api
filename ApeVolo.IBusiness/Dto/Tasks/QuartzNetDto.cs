@@ -5,7 +5,7 @@ using ApeVolo.Entity.Do.Tasks;
 namespace ApeVolo.IBusiness.Dto.Tasks;
 
 [AutoMapping(typeof(QuartzNet), typeof(QuartzNetDto))]
-public class QuartzNetDto : BaseEntityDto
+public class QuartzNetDto : EntityDtoRoot<long>
 {
     /// <summary>
     /// 任务名称

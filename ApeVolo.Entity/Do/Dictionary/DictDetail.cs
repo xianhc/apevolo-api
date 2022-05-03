@@ -1,21 +1,40 @@
-﻿using ApeVolo.Common.AttributeExt;
+﻿using ApeVolo.Common.DI;
+using ApeVolo.Entity.Do.Base;
 using SqlSugar;
 
 namespace ApeVolo.Entity.Do.Dictionary;
 
-[InitTable(typeof(DictDetail))]
-[SugarTable("sys_dict_detail", "字典详细表")]
-public class DictDetail : BaseEntity
+/// <summary>
+/// 字典详情
+/// </summary>
+[SugarTable("sys_dict_detail", "字典详细")]
+public class DictDetail : EntityRoot<long>, ILocalizedTable
 {
-    [SugarColumn(ColumnName = "dict_id", ColumnDataType = "bigint", Length = 19, IsNullable = false)]
+    /// <summary>
+    /// 字典ID
+    /// </summary>
+    [SugarColumn(ColumnName = "dict_id", ColumnDataType = "bigint", Length = 19, IsNullable = false,
+        ColumnDescription = "字典ID")]
     public long DictId { get; set; }
 
-    [SugarColumn(ColumnName = "label", ColumnDataType = "varchar", Length = 255, IsNullable = false)]
+    /// <summary>
+    /// 字典标签
+    /// </summary>
+    [SugarColumn(ColumnName = "label", ColumnDataType = "varchar", Length = 255, IsNullable = false,
+        ColumnDescription = "字典标签")]
     public string Label { get; set; }
 
-    [SugarColumn(ColumnName = "value", ColumnDataType = "varchar", Length = 255, IsNullable = false)]
+    /// <summary>
+    /// 字典值
+    /// </summary>
+    [SugarColumn(ColumnName = "value", ColumnDataType = "varchar", Length = 255, IsNullable = false,
+        ColumnDescription = "字典值")]
     public string Value { get; set; }
 
-    [SugarColumn(ColumnName = "dict_sort", ColumnDataType = "varchar", Length = 255, IsNullable = false)]
+    /// <summary>
+    /// 排序
+    /// </summary>
+    [SugarColumn(ColumnName = "dict_sort", ColumnDataType = "varchar", Length = 255, IsNullable = false,
+        ColumnDescription = "排序")]
     public string DictSort { get; set; }
 }

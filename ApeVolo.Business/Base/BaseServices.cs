@@ -23,17 +23,17 @@ public class BaseServices<TEntity> : IDependencyService, IBaseServices<TEntity> 
     /// <summary>
     /// 仓储DAL
     /// </summary>
-    protected ISugarHandler<TEntity> _baseDal;
+    protected ISugarHandler<TEntity> BaseDal;
 
     /// <summary>
     /// 当前用户
     /// </summary>
-    protected ICurrentUser _currentUser;
+    protected ICurrentUser CurrentUser;
 
     /// <summary>
     /// mapper
     /// </summary>
-    protected IMapper _mapper;
+    protected IMapper Mapper;
 
     #endregion
 
@@ -42,50 +42,50 @@ public class BaseServices<TEntity> : IDependencyService, IBaseServices<TEntity> 
     public async Task<bool> AddEntityAsync(TEntity entity)
     {
         entity.InitEntity();
-        return await _baseDal.AddReturnBoolAsync(entity);
+        return await BaseDal.AddReturnBoolAsync(entity);
     }
 
     public async Task<bool> AddEntityListAsync(List<TEntity> entityList)
     {
         entityList.ForEach(u => { u.InitEntity(); });
-        return await _baseDal.AddReturnBoolAsync(entityList);
+        return await BaseDal.AddReturnBoolAsync(entityList);
     }
 
     public async Task<bool> UpdateEntityAsync(TEntity entity, List<string> lstIgnoreColumns = null,
         bool isLock = true)
     {
         entity.EditEntity();
-        return await _baseDal.UpdateAsync(entity, lstIgnoreColumns, isLock) > 0;
+        return await BaseDal.UpdateAsync(entity, lstIgnoreColumns, isLock) > 0;
     }
 
     public async Task<bool> UpdateEntityListAsync(List<TEntity> entityList)
     {
         entityList.ForEach(u => { u.EditEntity(); });
-        return await _baseDal.UpdateAsync(entityList) > 0;
+        return await BaseDal.UpdateAsync(entityList) > 0;
     }
 
 
     public async Task<bool> DeleteEntityAsync(TEntity entity)
     {
         entity.DelEntity();
-        return await _baseDal.UpdateAsync(entity) > 0;
+        return await BaseDal.UpdateAsync(entity) > 0;
     }
 
     public async Task<bool> DeleteEntityListAsync(List<TEntity> entityList)
     {
         entityList.ForEach(u => { u.DelEntity(); });
-        return await _baseDal.UpdateAsync(entityList) > 0;
+        return await BaseDal.UpdateAsync(entityList) > 0;
     }
 
     public async Task<TEntity> QuerySingleAsync(object objId, string columnName = "id")
     {
-        return await _baseDal.QuerySingleAsync(objId, columnName);
+        return await BaseDal.QuerySingleAsync(objId, columnName);
     }
 
 
     public async Task<List<TEntity>> QueryByIdsAsync(List<long> ids, string columnName = "id")
     {
-        return await _baseDal.QueryListInAsync(ids, columnName);
+        return await BaseDal.QueryListInAsync(ids, columnName);
     }
 
     public async Task<List<TEntity>> QueryByIdsAsync(HashSet<long> ids, string columnName = "id")
@@ -95,12 +95,12 @@ public class BaseServices<TEntity> : IDependencyService, IBaseServices<TEntity> 
 
     public async Task<bool> IsExistAsync(Expression<Func<TEntity, bool>> whereLambda)
     {
-        return await _baseDal.IsExistAsync(whereLambda);
+        return await BaseDal.IsExistAsync(whereLambda);
     }
 
     public async Task<TEntity> QueryFirstAsync(Expression<Func<TEntity, bool>> whereLambda = null)
     {
-        return await _baseDal.QueryFirstAsync(whereLambda);
+        return await BaseDal.QueryFirstAsync(whereLambda);
     }
 
     #endregion

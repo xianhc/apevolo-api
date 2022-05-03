@@ -55,5 +55,5 @@ public class OnlineUser
     /// <summary>
     /// 当前权限信息
     /// </summary>
-    public CurrentPermission currentPermission { get; set; }
+    public CurrentPermission CurrentPermission { get; set; }
 }

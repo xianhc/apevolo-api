@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ApeVolo.Common.Extention;
@@ -30,16 +31,23 @@ public static class BaseDbConfig
                 for (int i = 0; i < secJt.Count(); i++)
                 {
                     // ReSharper disable once PossibleNullReferenceException
-                    if (!secJt[i]["Enabled"]
-                            .ToBool()) //|| secJt[i]["ConnId"]?.ToString() != DatabaseEntry.CurrentDbConnId)
+                    if (!secJt[i]["Enabled"].ToBool())
                         continue;
-                    allDbs.Add(new DataBaseOperate
+                    var dataBaseOperate = new DataBaseOperate();
+                    dataBaseOperate.ConnId = secJt[i]["ConnId"]?.ToString();
+                    dataBaseOperate.HitRate = secJt[i]["HitRate"].ToInt();
+                    dataBaseOperate.DbType = (DataBaseType)secJt[i]["DBType"].ToInt();
+                    if (dataBaseOperate.DbType == DataBaseType.Sqlite)
                     {
-                        ConnId = secJt[i]["ConnId"]?.ToString(),
-                        HitRate = secJt[i]["HitRate"].ToInt(),
-                        ConnectionString = secJt[i]["ConnectionString"]?.ToString(),
-                        DbType = (DataBaseType)secJt[i]["DBType"].ToInt()
-                    });
+                        dataBaseOperate.ConnectionString = "DataSource=" + Path.Combine(AppSettings.ContentRootPath,
+                            secJt[i]["ConnectionString"]?.ToString() ?? string.Empty);
+                    }
+                    else
+                    {
+                        dataBaseOperate.ConnectionString = secJt[i]["ConnectionString"]?.ToString();
+                    }
+
+                    allDbs.Add(dataBaseOperate);
                 }
             }
         }
@@ -52,7 +60,7 @@ public static class BaseDbConfig
         masterDb = allDbs.FirstOrDefault(x => x.ConnId == GlobalVar.CurrentDbConnId);
         if (masterDb.IsNull())
         {
-            throw new System.Exception($"请确保主库ID:{GlobalVar.CurrentDbConnId}的Enabled为true;");
+            throw new System.Exception($"请确保数据库ID:{GlobalVar.CurrentDbConnId}的Enabled为true;");
         }
 
         //如果开启读写分离
@@ -62,7 +70,7 @@ public static class BaseDbConfig
                 .ToList();
             if (slaveDbs.Count < 1)
             {
-                throw new System.Exception($"请确保主库ID:{GlobalVar.CurrentDbConnId}对应的从库的Enabled为true;");
+                throw new System.Exception($"请确保数据库ID:{GlobalVar.CurrentDbConnId}对应的从库的Enabled为true;");
             }
         }
 

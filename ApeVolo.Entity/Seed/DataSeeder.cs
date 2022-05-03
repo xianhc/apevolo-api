@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using ApeVolo.Common.AttributeExt;
+using ApeVolo.Common.DI;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
@@ -18,7 +18,7 @@ using SqlSugar;
 
 namespace ApeVolo.Entity.Seed;
 
-public class SeedData
+public class DataSeeder
 {
     /// <summary>
     /// 异步添加种子数据
@@ -47,10 +47,12 @@ public class SeedData
             ConsoleHelper.WriteLine();
 
             ConsoleHelper.WriteLine("初始化数据表....");
-            var entityTypes = GlobalData.EntityTypes.Where(x => x.GetCustomAttribute<InitTableAttribute>() != null)
-                .Select(x => x.GetCustomAttribute<InitTableAttribute>()?.SourceType);
 
-            entityTypes.ForEach(entity =>
+            var localizedTable = typeof(ILocalizedTable);
+            var localizedTableArray = GlobalData.EntityTypes
+                .Where(x => localizedTable.IsAssignableFrom(x) && x != localizedTable).ToArray();
+
+            localizedTableArray.ForEach(entity =>
             {
                 var attr = entity.GetCustomAttribute<SugarTable>();
                 if (attr == null)
@@ -67,6 +69,7 @@ public class SeedData
                     }
                 }
             });
+
             ConsoleHelper.WriteLine("初始化数据表成功！", ConsoleColor.Green);
             ConsoleHelper.WriteLine();
             //添加初始数据

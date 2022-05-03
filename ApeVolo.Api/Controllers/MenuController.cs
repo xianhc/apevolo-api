@@ -104,7 +104,7 @@ public class MenusController : BaseApiController
     [HttpGet]
     [Description("构建树形菜单")]
     [Route("build")]
-    [ApeVoloAuthorize(new[] { "admin", "menu:list" })]
+    [ApeVoloAuthorize(new[] { "admin", "menu_list", "guest" })]
     public async Task<ActionResult<object>> Build()
     {
         var menuVos = await _menuService.BuildTreeAsync(_currentUser.Id);
@@ -119,7 +119,7 @@ public class MenusController : BaseApiController
     [HttpGet]
     [Description("获取子菜单")]
     [Route("lazy")]
-    [ApeVoloAuthorize(new[] { "admin", "menu:list" })]
+    [ApeVoloAuthorize(new[] { "admin", "menu_list", "guest" })]
     public async Task<ActionResult<object>> GetMenuLazy(long pid)
     {
         if (pid.IsNullOrEmpty())
@@ -183,7 +183,7 @@ public class MenusController : BaseApiController
     [Description("获取同级与上级菜单")]
     [Route("superior")]
     [NoJsonParamter]
-    [ApeVoloAuthorize(new[] { "admin", "menu:list" })]
+    [ApeVoloAuthorize(new[] { "admin", "menu_list" })]
     public async Task<ActionResult<object>> GetSuperior([FromBody] List<long> ids)
     {
         if (ids == null || ids.Count < 1)
@@ -198,7 +198,7 @@ public class MenusController : BaseApiController
     [HttpGet]
     [Description("获取所有子级菜单ID")]
     [Route("child")]
-    [ApeVoloAuthorize(new[] { "admin", "menu:list" })]
+    [ApeVoloAuthorize(new[] { "admin", "menu_list" })]
     [NoJsonParamter]
     public async Task<ActionResult<object>> GetChild(long id)
     {

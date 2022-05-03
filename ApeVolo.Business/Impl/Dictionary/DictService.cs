@@ -27,8 +27,8 @@ public class DictService : BaseServices<Dict>, IDictService
 
     public DictService(IDictRepository dictRepository, IMapper mapper)
     {
-        _baseDal = dictRepository;
-        _mapper = mapper;
+        BaseDal = dictRepository;
+        Mapper = mapper;
     }
 
     #endregion
@@ -42,7 +42,7 @@ public class DictService : BaseServices<Dict>, IDictService
             throw new BadRequestException($"字典资源>{createUpdateDictDto.Name}=>已存在！");
         }
 
-        return await AddEntityAsync(_mapper.Map<Dict>(createUpdateDictDto));
+        return await AddEntityAsync(Mapper.Map<Dict>(createUpdateDictDto));
     }
 
     public async Task<bool> UpdateAsync(CreateUpdateDictDto createUpdateDictDto)
@@ -52,7 +52,7 @@ public class DictService : BaseServices<Dict>, IDictService
             throw new BadRequestException($"字典资源=>{createUpdateDictDto.Name}=>不存在！");
         }
 
-        return await UpdateEntityAsync(_mapper.Map<Dict>(createUpdateDictDto));
+        return await UpdateEntityAsync(Mapper.Map<Dict>(createUpdateDictDto));
     }
 
     public async Task<bool> DeleteAsync(HashSet<long> ids)
@@ -70,9 +70,9 @@ public class DictService : BaseServices<Dict>, IDictService
                 d.Name.Contains(dictQueryCriteria.KeyWords) || d.Description.Contains(dictQueryCriteria.KeyWords));
         }
 
-        var list = await _baseDal.QueryMapperPageListAsync(it => it.DictDetails,
+        var list = await BaseDal.QueryMapperPageListAsync(it => it.DictDetails,
             it => it.DictDetails.FirstOrDefault().DictId, whereLambda, pagination);
-        var dicts = _mapper.Map<List<DictDto>>(list);
+        var dicts = Mapper.Map<List<DictDto>>(list);
         foreach (var item in dicts)
         {
             item.DictDetails.ForEach(d => d.Dict = new DictDto2 { Id = d.DictId });

@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace ApeVolo.IBusiness.Dto.Dictionary;
 
 [AutoMapping(typeof(DictDetail), typeof(DictDetailDto))]
-public class DictDetailDto : BaseEntityDto
+public class DictDetailDto : EntityDtoRoot<long>
 {
     [JsonIgnore]
     //[JsonProperty]

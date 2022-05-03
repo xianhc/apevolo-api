@@ -1,19 +1,19 @@
 ﻿using System;
 using SqlSugar;
 
-namespace ApeVolo.Entity.Do;
+namespace ApeVolo.Entity.Do.Base;
 
 /// <summary>
 /// 实体基类
 /// </summary>
-public class BaseEntity
+public class EntityRoot<T> where T : IEquatable<T>
 {
     /// <summary>
     /// 主键
     /// </summary>
     [SugarColumn(ColumnName = "id", ColumnDataType = "bigint", IsNullable = false, Length = 19,
         IsPrimaryKey = true, ColumnDescription = "ID主键")]
-    public long Id { get; set; }
+    public T Id { get; set; }
 
     /// <summary>
     /// 创建者名称
@@ -44,7 +44,6 @@ public class BaseEntity
     /// <summary>
     /// 是否删除
     /// </summary>
-    [SugarColumn(ColumnName = "is_deleted", IsNullable = true, ColumnDescription = "软删除(1:删除，0:未删除)",
-        DefaultValue = "0")]
+    [SugarColumn(ColumnName = "is_deleted", IsNullable = true, ColumnDescription = "软删除(1:删除，0:未删除)")]
     public bool IsDeleted { get; set; } = false;
 }

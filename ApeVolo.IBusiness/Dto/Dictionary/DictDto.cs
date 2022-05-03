@@ -5,7 +5,7 @@ using ApeVolo.Entity.Do.Dictionary;
 namespace ApeVolo.IBusiness.Dto.Dictionary;
 
 [AutoMapping(typeof(Dict), typeof(DictDto))]
-public class DictDto : BaseEntityDto
+public class DictDto : EntityDtoRoot<long>
 {
     public string Name { get; set; }
 

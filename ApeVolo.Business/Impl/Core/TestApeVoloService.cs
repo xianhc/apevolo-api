@@ -14,7 +14,7 @@ public class TestApeVoloService : BaseServices<TestApeVolo>, ITestApeVoloService
 {
     public TestApeVoloService(ITestApeVoloRepostiory testApeVoloRepostiory)
     {
-        _baseDal = testApeVoloRepostiory;
+        BaseDal = testApeVoloRepostiory;
     }
 
     public async Task<bool> CreateAsync(TestApeVolo testApeVolo)
@@ -25,6 +25,6 @@ public class TestApeVoloService : BaseServices<TestApeVolo>, ITestApeVoloService
     public async Task<List<TestApeVolo>> QueryAsync(Pagination pagination)
     {
         Expression<Func<TestApeVolo, bool>> whereExpression = x => x.IsDeleted == false;
-        return _mapper.Map<List<TestApeVolo>>(await _baseDal.QueryPageListAsync(whereExpression, pagination));
+        return Mapper.Map<List<TestApeVolo>>(await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 }

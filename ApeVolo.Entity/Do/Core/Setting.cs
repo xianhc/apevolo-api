@@ -1,11 +1,14 @@
-using ApeVolo.Common.AttributeExt;
+using ApeVolo.Common.DI;
+using ApeVolo.Entity.Do.Base;
 using SqlSugar;
 
 namespace ApeVolo.Entity.Do.Core;
 
-[InitTable(typeof(Setting))]
-[SugarTable("sys_setting", "系统设置表")]
-public class Setting : BaseEntity
+/// <summary>
+/// 系统设置
+/// </summary>
+[SugarTable("sys_setting", "系统设置")]
+public class Setting : EntityRoot<long>, ILocalizedTable
 {
     [SugarColumn(ColumnName = "name", ColumnDescription = "名称", ColumnDataType = "varchar", Length = 255,
         IsNullable = false)]

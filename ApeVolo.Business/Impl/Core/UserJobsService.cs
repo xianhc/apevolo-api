@@ -22,34 +22,30 @@ public class UserJobsService : BaseServices<UserJobs>, IUserJobsService
 
     public UserJobsService(IUserJobsRepository userJobsRepository, IMapper mapper)
     {
-        _baseDal = userJobsRepository;
-        _mapper = mapper;
+        BaseDal = userJobsRepository;
+        Mapper = mapper;
     }
 
     #endregion
 
     #region 基础方法
 
-    public async Task<int> CreateAsync(List<CreateUpdateUserJobsDto> createUpdateJobDtos)
+    public async Task<bool> CreateAsync(List<CreateUpdateUserJobsDto> createUpdateJobDtos)
     {
-        var userJobs = _mapper.Map<List<UserJobs>>(createUpdateJobDtos);
-        return await _baseDal.AddAsync(userJobs);
+        var userJobs = Mapper.Map<List<UserJobs>>(createUpdateJobDtos);
+        return await AddEntityListAsync(userJobs);
     }
 
     public async Task<bool> DeleteByUserIdAsync(long userId)
     {
-        if (userId.IsNullOrEmpty())
-        {
-            throw new BadRequestException("userId 不能为空！");
-        }
-
-        return await _baseDal.DeleteAsync(x => x.UserId == userId) > 0;
+        var userJobs = await BaseDal.QueryListAsync(x => x.UserId == userId && x.IsDeleted == false);
+        return await DeleteEntityListAsync(userJobs);
     }
 
     [RedisCaching(KeyPrefix = RedisKey.UserJobsById)]
     public async Task<List<UserJobs>> QueryByUserIdAsync(long userId)
     {
-        return await _baseDal.QueryListAsync(uj => uj.UserId == userId);
+        return await BaseDal.QueryListAsync(uj => uj.UserId == userId && uj.IsDeleted == false);
     }
 
     #endregion

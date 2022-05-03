@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.Do.Core;
+using ApeVolo.IBusiness.Dto;
 
 namespace ApeVolo.IBusiness.EditDto.Core;
 
 [AutoMapping(typeof(User), typeof(CreateUpdateUserDto))]
-public class CreateUpdateUserDto : BaseCreateUpdateEntityDto
+public class CreateUpdateUserDto : EntityDtoRoot<long>
 {
     /// <summary>
     /// 用户名

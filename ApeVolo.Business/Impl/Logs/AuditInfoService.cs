@@ -23,8 +23,8 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
 
     public AuditInfoService(IAuditLogRepository auditInfoRepository, IMapper mapper)
     {
-        _baseDal = auditInfoRepository;
-        _mapper = mapper;
+        BaseDal = auditInfoRepository;
+        Mapper = mapper;
     }
 
     #endregion
@@ -33,7 +33,7 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
 
     public async Task<bool> CreateAsync(AuditLog auditInfo)
     {
-        return await _baseDal.AddReturnBoolAsync(auditInfo);
+        return await BaseDal.AddReturnBoolAsync(auditInfo);
     }
 
     public async Task<List<AuditLogDto>> QueryAsync(LogQueryCriteria logQueryCriteria,
@@ -51,8 +51,8 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
                 l.CreateTime >= logQueryCriteria.CreateTime[0] && l.CreateTime <= logQueryCriteria.CreateTime[1]);
         }
 
-        var auditInfos = await _baseDal.QueryPageListAsync(whereLambda, pagination);
-        return _mapper.Map<List<AuditLogDto>>(auditInfos);
+        var auditInfos = await BaseDal.QueryPageListAsync(whereLambda, pagination);
+        return Mapper.Map<List<AuditLogDto>>(auditInfos);
     }
 
     public async Task<List<AuditLogDto>> QueryByCurrentAsync(string userName, Pagination pagination)
@@ -70,8 +70,8 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
             BrowserInfo = x.BrowserInfo, ExecutionDuration = x.ExecutionDuration, CreateTime = x.CreateTime
         };
 
-        var auditInfos = await _baseDal.QueryPageListAsync(whereLambda, pagination, expression);
-        return _mapper.Map<List<AuditLogDto>>(auditInfos);
+        var auditInfos = await BaseDal.QueryPageListAsync(whereLambda, pagination, expression);
+        return Mapper.Map<List<AuditLogDto>>(auditInfos);
     }
 
     #endregion

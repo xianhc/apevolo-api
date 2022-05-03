@@ -23,45 +23,41 @@ public class UserRolesService : BaseServices<UserRoles>, IUserRolesService
 
     public UserRolesService(IUserRolesRepository userRolesRepository, IMapper mapper)
     {
-        _baseDal = userRolesRepository;
-        _mapper = mapper;
+        BaseDal = userRolesRepository;
+        Mapper = mapper;
     }
 
     #endregion
 
     #region 基础方法
 
-    public async Task<int> CreateAsync(List<CreateUpdateUserRolesDto> createUpdateUserRoleDtos)
+    public async Task<bool> CreateAsync(List<CreateUpdateUserRolesDto> createUpdateUserRoleDtos)
     {
-        var userRoles = _mapper.Map<List<UserRoles>>(createUpdateUserRoleDtos);
-        return await _baseDal.AddAsync(userRoles);
+        var userRoles = Mapper.Map<List<UserRoles>>(createUpdateUserRoleDtos);
+        return await AddEntityListAsync(userRoles);
     }
 
     public async Task<bool> DeleteByUserIdAsync(long userId)
     {
-        if (userId.IsNullOrEmpty())
-        {
-            throw new BadRequestException("userId 不能为空！");
-        }
-
-        return await _baseDal.DeleteAsync(x => x.UserId == userId) > 0;
+        var userRoles = await BaseDal.QueryListAsync(x => x.UserId == userId && x.IsDeleted == false);
+        return await DeleteEntityListAsync(userRoles);
     }
 
     [RedisCaching(KeyPrefix = RedisKey.UserRolesById)]
     public async Task<List<UserRoles>> QueryAsync(long userId)
     {
-        return await _baseDal.QueryListAsync(ur => ur.UserId == userId);
+        return await BaseDal.QueryListAsync(ur => ur.UserId == userId && ur.IsDeleted == false);
     }
 
     public async Task<List<UserRoles>> QueryByRoleIdsAsync(HashSet<long> roleIds)
     {
-        var list = await _baseDal.QueryMuchAsync<UserRoles, User, UserRoles>(
+        var list = await BaseDal.QueryMuchAsync<UserRoles, User, UserRoles>(
             (ur, u) => new object[]
             {
                 JoinType.Left, ur.UserId == u.Id
             },
             (ur, u) => ur,
-            (ur, u) => u.IsDeleted == false && roleIds.Contains(ur.RoleId)
+            (ur, u) => u.IsDeleted == false && ur.IsDeleted == false && roleIds.Contains(ur.RoleId)
         );
         return list;
     }

@@ -1,15 +1,15 @@
 ﻿using System;
-using ApeVolo.Common.AttributeExt;
+using ApeVolo.Common.DI;
+using ApeVolo.Entity.Do.Base;
 using SqlSugar;
 
 namespace ApeVolo.Entity.Do.Email;
 
 /// <summary>
 /// 邮件队列
-/// </summary>
-[InitTable(typeof(QueuedEmail))]
+/// </summary>=
 [SugarTable("sys_queued_email", "邮件队列")]
-public class QueuedEmail : BaseEntity
+public class QueuedEmail : EntityRoot<long>, ILocalizedTable
 {
     /// <summary>
     /// 发件邮箱

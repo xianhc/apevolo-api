@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.Do.Core;
+using ApeVolo.IBusiness.Dto;
 
 namespace ApeVolo.IBusiness.EditDto.Core;
 
 [AutoMapping(typeof(Role), typeof(CreateUpdateRoleDto))]
-public class CreateUpdateRoleDto : BaseCreateUpdateEntityDto
+public class CreateUpdateRoleDto : EntityDtoRoot<long>
 {
     [ApeVoloRequired(Message = "角色名称不能为空！")]
     public string Name { get; set; }

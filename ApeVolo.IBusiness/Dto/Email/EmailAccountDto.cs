@@ -4,7 +4,7 @@ using ApeVolo.Entity.Do.Email;
 namespace ApeVolo.IBusiness.Dto.Email;
 
 [AutoMapping(typeof(EmailAccount), typeof(EmailAccountDto))]
-public class EmailAccountDto : BaseEntityDto
+public class EmailAccountDto : EntityDtoRoot<long>
 {
     /// <summary>
     ///电子邮件地址

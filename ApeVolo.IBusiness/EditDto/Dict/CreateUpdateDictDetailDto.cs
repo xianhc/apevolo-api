@@ -1,11 +1,12 @@
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.Do.Dictionary;
+using ApeVolo.IBusiness.Dto;
 using ApeVolo.IBusiness.Dto.Dictionary;
 
 namespace ApeVolo.IBusiness.EditDto.Dict;
 
 [AutoMapping(typeof(DictDetail), typeof(CreateUpdateDictDetailDto))]
-public class CreateUpdateDictDetailDto : BaseCreateUpdateEntityDto
+public class CreateUpdateDictDetailDto : EntityDtoRoot<long>
 {
     public string DictId { get; set; }
 

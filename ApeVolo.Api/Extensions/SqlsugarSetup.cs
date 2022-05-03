@@ -46,7 +46,7 @@ public static class SqlsugarSetup
                     ConnectionString = BaseDbConfig.GetDataBaseOperate.MasterDb.ConnectionString,
                     DbType = (DbType)BaseDbConfig.GetDataBaseOperate.MasterDb.DbType,
                     IsAutoCloseConnection = true,
-                    //IsShardSameThread = false,
+                    IsShardSameThread = false,
                     AopEvents = new AopEvents
                     {
                         OnLogExecuting = (sql, pars) => //执行前

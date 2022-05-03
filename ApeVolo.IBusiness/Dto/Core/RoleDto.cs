@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace ApeVolo.IBusiness.Dto.Core;
 
 [AutoMapping(typeof(Role), typeof(RoleDto))]
-public class RoleDto : BaseEntityDto
+public class RoleDto : EntityDtoRoot<long>
 {
     public string Name { get; set; }
     public int Level { get; set; }

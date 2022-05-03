@@ -39,8 +39,8 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
         IEmailMessageTemplateService emailMessageTemplateService, IEmailAccountService emailAccountService,
         IRedisCacheService redisCacheService)
     {
-        _baseDal = queuedEmailRepository;
-        _mapper = mapper;
+        BaseDal = queuedEmailRepository;
+        Mapper = mapper;
         _emailMessageTemplateService = emailMessageTemplateService;
         _emailAccountService = emailAccountService;
         _redisCacheService = redisCacheService;
@@ -57,7 +57,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
     /// <returns></returns>
     public async Task<bool> CreateAsync(CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto)
     {
-        var queuedEmail = _mapper.Map<QueuedEmail>(createUpdateQueuedEmailDto);
+        var queuedEmail = Mapper.Map<QueuedEmail>(createUpdateQueuedEmailDto);
         return await AddEntityAsync(queuedEmail);
     }
 
@@ -68,8 +68,8 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
     /// <returns></returns>
     public async Task<bool> UpdateTriesAsync(QueuedEmailDto queuedEmailDto)
     {
-        var queuedEmail = _mapper.Map<QueuedEmail>(queuedEmailDto);
-        return await _baseDal.UpdateAsync(queuedEmail) > 0;
+        var queuedEmail = Mapper.Map<QueuedEmail>(queuedEmailDto);
+        return await BaseDal.UpdateAsync(queuedEmail) > 0;
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
             throw new BadRequestException($"({nameof(QueuedEmail)})不存在!");
         }
 
-        var queuedEmail = _mapper.Map<QueuedEmail>(createUpdateQueuedEmailDto);
+        var queuedEmail = Mapper.Map<QueuedEmail>(createUpdateQueuedEmailDto);
         return await UpdateEntityAsync(queuedEmail);
     }
 
@@ -150,7 +150,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
                 x.CreateTime <= queuedEmailQueryCriteria.CreateTime[1]);
         }
 
-        return _mapper.Map<List<QueuedEmailDto>>(await _baseDal.QueryPageListAsync(whereExpression, pagination));
+        return Mapper.Map<List<QueuedEmailDto>>(await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 
     #endregion
@@ -187,7 +187,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
         queuedEmail.SentTries = 0;
         queuedEmail.EmailAccountId = emailAccount.Id;
 
-        bool isTrue = await _baseDal.AddReturnBoolAsync(queuedEmail);
+        bool isTrue = await BaseDal.AddReturnBoolAsync(queuedEmail);
         if (isTrue)
         {
             await _redisCacheService.RemoveAsync(RedisKey.EmailCaptchaKey + queuedEmail.To.ToMd5String());

@@ -12,7 +12,7 @@ public interface IUserJobsService
 {
     #region 基础接口
 
-    Task<int> CreateAsync(List<CreateUpdateUserJobsDto> createUpdateUserJobsDtos);
+    Task<bool> CreateAsync(List<CreateUpdateUserJobsDto> createUpdateUserJobsDtos);
     Task<bool> DeleteByUserIdAsync(long userId);
     Task<List<UserJobs>> QueryByUserIdAsync(long userId);
 

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace ApeVolo.IBusiness.Dto.Core;
 
 [AutoMapping(typeof(Department), typeof(DepartmentDto))]
-public class DepartmentDto : BaseEntityDto
+public class DepartmentDto : EntityDtoRoot<long>
 {
     public string Name { get; set; }
     public long? PId { get; set; }

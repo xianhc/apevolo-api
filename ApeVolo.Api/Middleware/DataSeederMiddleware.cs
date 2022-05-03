@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Builder;
 
 namespace ApeVolo.Api.Middleware;
 
-public static class InitDbMiddleware
+public static class DataSeederMiddleware
 {
-    private static readonly ILog Log = LogManager.GetLogger(typeof(IpLimitMiddleware));
+    private static readonly ILog Log = LogManager.GetLogger(typeof(DataSeederMiddleware));
 
-    public static void UseSeedDataMildd(this IApplicationBuilder app, MyContext myContext)
+    public static void UseDataSeederMiddleware(this IApplicationBuilder app, MyContext myContext)
     {
         if (app == null) throw new ArgumentNullException(nameof(app));
 
@@ -19,7 +19,7 @@ public static class InitDbMiddleware
         {
             if (AppSettings.GetValue<bool>("InitDbTable"))
             {
-                SeedData.InitSystemDataAsync(myContext, AppSettings.WebRootPath).Wait();
+                DataSeeder.InitSystemDataAsync(myContext, AppSettings.WebRootPath).Wait();
             }
         }
         catch (Exception e)
