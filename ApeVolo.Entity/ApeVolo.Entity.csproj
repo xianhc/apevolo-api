@@ -6,15 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SqlSugarCore" Version="5.0.3.4" />
+    <PackageReference Include="SqlSugarCore" Version="5.0.9.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ApeVolo.Common\ApeVolo.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Do\Other" />
   </ItemGroup>
 
 </Project>

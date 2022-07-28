@@ -15,15 +15,13 @@ public class Dict : EntityRoot<long>, ILocalizedTable
     /// 字典名称
     /// </summary>
     /// <returns></returns>
-    [SugarColumn(ColumnName = "name", ColumnDataType = "varchar", Length = 255, IsNullable = false,
-        ColumnDescription = "字典名称")]
+    [SugarColumn(ColumnName = "name", IsNullable = false, ColumnDescription = "字典名称")]
     public string Name { get; set; }
 
     /// <summary>
     /// 描述
     /// </summary>
-    [SugarColumn(ColumnName = "description", ColumnDataType = "varchar", Length = 255, IsNullable = false,
-        ColumnDescription = "描述")]
+    [SugarColumn(ColumnName = "description", IsNullable = false, ColumnDescription = "描述")]
     public string Description { get; set; }
 
     [SugarColumn(IsIgnore = true)] public List<DictDetail> DictDetails { get; set; }

@@ -15,21 +15,21 @@ namespace ApeVolo.Api.Controllers;
 /// <summary>
 /// 系统异常日志管理
 /// </summary>
-[Area("SystemLog")]
-[Route("/api/log")]
-public class LogController : BaseApiController
+[Area("Exception")]
+[Route("/api/exception")]
+public class ExceptionLogController : BaseApiController
 {
     #region 字段
 
-    private readonly ILogService _logService;
+    private readonly IExceptionLogService _exceptionLogService;
 
     #endregion
 
     #region 构造函数
 
-    public LogController(ILogService logService)
+    public ExceptionLogController(IExceptionLogService exceptionLogService)
     {
-        _logService = logService;
+        _exceptionLogService = exceptionLogService;
     }
 
     #endregion
@@ -48,11 +48,11 @@ public class LogController : BaseApiController
     public async Task<ActionResult<object>> FindList(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
     {
-        var auditInfos = await _logService.QueryAsync(logQueryCriteria, pagination);
+        var exceptionLogs = await _exceptionLogService.QueryAsync(logQueryCriteria, pagination);
 
-        return new ActionResultVm<LogDto>
+        return new ActionResultVm<ExceptionLogDto>
         {
-            Content = auditInfos,
+            Content = exceptionLogs,
             TotalElements = pagination.TotalElements
         }.ToJson();
     }
@@ -73,7 +73,7 @@ public class LogController : BaseApiController
             return Error("id is null");
         }
 
-        var log = await _logService.QuerySingleAsync(id);
+        var log = await _exceptionLogService.QuerySingleAsync(id);
         Dictionary<string, string> logDetail = new Dictionary<string, string>
         {
             {

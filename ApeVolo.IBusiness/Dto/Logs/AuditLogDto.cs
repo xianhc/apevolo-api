@@ -24,9 +24,15 @@ public class AuditLogDto : EntityDtoRoot<long>
 
     public int ExecutionDuration { get; set; }
 
-    public string BrowserInfo { get; set; }
-
     public string RequestIp { get; set; }
 
     public string IpAddress { get; set; }
+
+    public string OperatingSystem { get; set; }
+
+    public string DeviceType { get; set; }
+
+    public string BrowserName { get; set; }
+
+    public string Version { get; set; }
 }

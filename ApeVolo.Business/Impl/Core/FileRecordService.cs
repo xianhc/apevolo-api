@@ -43,8 +43,7 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
 
     public async Task<bool> CreateAsync(string description, IFormFile file)
     {
-        if (await IsExistAsync(x => x.IsDeleted == false
-                                    && x.Description == description))
+        if (await IsExistAsync(x => x.Description == description))
         {
             throw new BadRequestException($"文件描述=>{description}=>已存在,请更换!");
         }
@@ -85,15 +84,14 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
     public async Task<bool> UpdateAsync(CreateUpdateFileRecordDto createUpdateFileRecordDto)
     {
         //取出待更新数据
-        var oldFileRecord = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == createUpdateFileRecordDto.Id);
+        var oldFileRecord = await QueryFirstAsync(x => x.Id == createUpdateFileRecordDto.Id);
         if (oldFileRecord.IsNull())
         {
             throw new BadRequestException("更新失败=》待更新数据不存在！");
         }
 
         if (oldFileRecord.Description != createUpdateFileRecordDto.Description && await IsExistAsync(x =>
-                x.IsDeleted == false
-                && x.Description == createUpdateFileRecordDto.Description))
+                x.Description == createUpdateFileRecordDto.Description))
         {
             throw new BadRequestException($"文件描述=>{createUpdateFileRecordDto.Description}=>已存在！");
         }
@@ -105,11 +103,11 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
     public async Task<bool> DeleteAsync(HashSet<long> ids)
     {
         var appSecretList = await QueryByIdsAsync(ids);
-        appSecretList.ForEach(async x =>
+        foreach (var appSecret in appSecretList)
         {
-            await DeleteEntityAsync(x);
-            FileHelper.Delete(x.FilePath);
-        });
+            await DeleteEntityAsync(appSecret);
+            FileHelper.Delete(appSecret.FilePath);
+        }
 
         return true;
     }
@@ -117,17 +115,17 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
     public async Task<List<FileRecordDto>> QueryAsync(FileRecordQueryCriteria fileRecordQueryCriteria,
         Pagination pagination)
     {
-        Expression<Func<FileRecord, bool>> whereLambda = r => r.IsDeleted == false;
+        Expression<Func<FileRecord, bool>> whereLambda = r => true;
         if (!fileRecordQueryCriteria.KeyWords.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(r =>
+            whereLambda = whereLambda.AndAlso(r =>
                 r.Description.Contains(fileRecordQueryCriteria.KeyWords) ||
                 r.OriginalName.Contains(fileRecordQueryCriteria.KeyWords));
         }
 
         if (!fileRecordQueryCriteria.CreateTime.IsNull())
         {
-            whereLambda = whereLambda.And(r =>
+            whereLambda = whereLambda.AndAlso(r =>
                 r.CreateTime >= fileRecordQueryCriteria.CreateTime[0] &&
                 r.CreateTime <= fileRecordQueryCriteria.CreateTime[1]);
         }

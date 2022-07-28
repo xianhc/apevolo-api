@@ -10,15 +10,17 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Entity.Do.Email;
-using ApeVolo.IBusiness.Dto.Email;
+using ApeVolo.Entity.Do.Queued;
+using ApeVolo.IBusiness.Dto.Queued;
 using ApeVolo.IBusiness.EditDto.Email;
+using ApeVolo.IBusiness.EditDto.Queued;
 using ApeVolo.IBusiness.Interface.Email;
+using ApeVolo.IBusiness.Interface.Queued;
 using ApeVolo.IBusiness.QueryModel;
-using ApeVolo.IRepository.Email;
+using ApeVolo.IRepository.Queued;
 using AutoMapper;
 
-namespace ApeVolo.Business.Impl.Email;
+namespace ApeVolo.Business.Impl.Queued;
 
 /// <summary>
 /// 邮件队列接口实现
@@ -79,8 +81,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
     /// <returns></returns>
     public async Task<bool> UpdateAsync(CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto)
     {
-        if (!await IsExistAsync(x => x.IsDeleted == false
-                                     && x.Id == createUpdateQueuedEmailDto.Id))
+        if (!await IsExistAsync(x => x.Id == createUpdateQueuedEmailDto.Id))
         {
             throw new BadRequestException($"({nameof(QueuedEmail)})不存在!");
         }
@@ -112,40 +113,40 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
     public async Task<List<QueuedEmailDto>> QueryAsync(QueuedEmailQueryCriteria queuedEmailQueryCriteria,
         Pagination pagination)
     {
-        Expression<Func<QueuedEmail, bool>> whereExpression = x => x.IsDeleted == false;
+        Expression<Func<QueuedEmail, bool>> whereExpression = x => true;
         if (!queuedEmailQueryCriteria.Id.IsNullOrEmpty())
         {
-            whereExpression = whereExpression.And(x => x.Id == queuedEmailQueryCriteria.Id);
+            whereExpression = whereExpression.AndAlso(x => x.Id == queuedEmailQueryCriteria.Id);
         }
 
         if (queuedEmailQueryCriteria.MaxTries > 0)
         {
-            whereExpression = whereExpression.And(x => x.SentTries < queuedEmailQueryCriteria.MaxTries);
+            whereExpression = whereExpression.AndAlso(x => x.SentTries < queuedEmailQueryCriteria.MaxTries);
         }
 
         if (!queuedEmailQueryCriteria.Form.IsNullOrEmpty())
         {
-            whereExpression = whereExpression.And(x =>
+            whereExpression = whereExpression.AndAlso(x =>
                 x.From.Contains(queuedEmailQueryCriteria.Form) ||
                 x.FromName.Contains(queuedEmailQueryCriteria.Form));
         }
 
         if (!queuedEmailQueryCriteria.To.IsNullOrEmpty())
         {
-            whereExpression = whereExpression.And(x =>
+            whereExpression = whereExpression.AndAlso(x =>
                 x.To.Contains(queuedEmailQueryCriteria.To) || x.ToName.Contains(queuedEmailQueryCriteria.To));
         }
 
         if (queuedEmailQueryCriteria.IsSend.IsNotNull())
         {
             whereExpression = queuedEmailQueryCriteria.IsSend.ToBool()
-                ? whereExpression.And(x => x.SendTime != null)
-                : whereExpression.And(x => x.SendTime == null);
+                ? whereExpression.AndAlso(x => x.SendTime != null)
+                : whereExpression.AndAlso(x => x.SendTime == null);
         }
 
         if (!queuedEmailQueryCriteria.CreateTime.IsNullOrEmpty() && queuedEmailQueryCriteria.CreateTime.Count > 1)
         {
-            whereExpression = whereExpression.And(x =>
+            whereExpression = whereExpression.AndAlso(x =>
                 x.CreateTime >= queuedEmailQueryCriteria.CreateTime[0] &&
                 x.CreateTime <= queuedEmailQueryCriteria.CreateTime[1]);
         }
@@ -167,7 +168,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
     {
         var emailMessageTemplate =
             await _emailMessageTemplateService.QueryFirstAsync(x =>
-                x.IsDeleted == false && x.Name == messageTemplateName);
+                x.Name == messageTemplateName);
         if (emailMessageTemplate.IsNull())
             throw new BadRequestException($"{messageTemplateName} 获取邮件模板失败！");
         var emailAccount = await _emailAccountService.QuerySingleAsync(emailMessageTemplate.EmailAccountId);
@@ -181,8 +182,8 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
         queuedEmail.FromName = emailAccount.DisplayName;
         queuedEmail.To = emailAddres;
         queuedEmail.Priority = (int)QueuedEmailPriority.High;
-        queuedEmail.Bcc = emailMessageTemplate.BccEmailAddresses ?? null;
-        queuedEmail.Subject = emailMessageTemplate.Subject ?? null;
+        queuedEmail.Bcc = emailMessageTemplate.BccEmailAddresses;
+        queuedEmail.Subject = emailMessageTemplate.Subject;
         queuedEmail.Body = emailMessageTemplate.Body.Replace("%captcha%", captcha);
         queuedEmail.SentTries = 0;
         queuedEmail.EmailAccountId = emailAccount.Id;

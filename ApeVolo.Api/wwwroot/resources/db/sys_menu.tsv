@@ -1102,7 +1102,7 @@
     {
         "id":"1306054134650114062",
         "title":"异常日志",
-        "linkUrl":"/api/log/query",
+        "linkUrl":"/api/exception/query",
         "path":"log",
         "permission":"log_list",
         "iFrame":0,
@@ -1388,7 +1388,7 @@
     {
         "id":"1379471066346295297",
         "title":"邮件队列",
-        "linkUrl":"/api/email/queued/query",
+        "linkUrl":"/api/queued/email/query",
         "path":"email/queued",
         "permission":"queuedEmail_list",
         "iFrame":0,
@@ -1410,7 +1410,7 @@
     {
         "id":"1381170607151910912",
         "title":"邮件队列添加",
-        "linkUrl":"/api/email/queued/create",
+        "linkUrl":"/api/queued/email/create",
         "path":null,
         "permission":"queuedEmail_add",
         "iFrame":0,
@@ -1432,7 +1432,7 @@
     {
         "id":"1381170723069890560",
         "title":"邮件队列编辑",
-        "linkUrl":"/api/email/queued/edit",
+        "linkUrl":"/api/queued/email/edit",
         "path":null,
         "permission":"queuedEmail_edit",
         "iFrame":0,
@@ -1454,7 +1454,7 @@
     {
         "id":"1381170809464164352",
         "title":"邮件队列删除",
-        "linkUrl":"/api/email/queued/delete",
+        "linkUrl":"/api/queued/email/delete",
         "path":null,
         "permission":"queuedEmail_del",
         "iFrame":0,

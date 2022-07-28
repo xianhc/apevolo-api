@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Common.Model;
-using ApeVolo.Entity.Do.Email;
+using ApeVolo.Entity.Do.Queued;
 using ApeVolo.IBusiness.Base;
-using ApeVolo.IBusiness.Dto.Email;
+using ApeVolo.IBusiness.Dto.Queued;
 using ApeVolo.IBusiness.EditDto.Email;
+using ApeVolo.IBusiness.EditDto.Queued;
 using ApeVolo.IBusiness.QueryModel;
 
-namespace ApeVolo.IBusiness.Interface.Email;
+namespace ApeVolo.IBusiness.Interface.Queued;
 
 /// <summary>
 /// 邮件队列接口

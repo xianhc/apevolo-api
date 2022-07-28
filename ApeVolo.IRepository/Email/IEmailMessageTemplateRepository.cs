@@ -3,6 +3,6 @@ using ApeVolo.IRepository.Base;
 
 namespace ApeVolo.IRepository.Email;
 
-public interface IQueuedEmailRepository : ISugarHandler<QueuedEmail>
+public interface IEmailMessageTemplateRepository : ISugarHandler<EmailMessageTemplate>
 {
 }

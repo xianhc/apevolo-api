@@ -589,18 +589,18 @@
             邮箱账户
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController.Create(ApeVolo.IBusiness.EditDto.Email.CreateUpdateMessageTemplateDto)">
+        <member name="M:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController.Create(ApeVolo.IBusiness.EditDto.Email.CreateUpdateEmailMessageTemplateDto)">
             <summary>
             新增邮箱账户
             </summary>
-            <param name="createUpdateMessageTemplateDto"></param>
+            <param name="createUpdateEmailMessageTemplateDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController.Update(ApeVolo.IBusiness.EditDto.Email.CreateUpdateMessageTemplateDto)">
+        <member name="M:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController.Update(ApeVolo.IBusiness.EditDto.Email.CreateUpdateEmailMessageTemplateDto)">
             <summary>
             更新邮箱账户
             </summary>
-            <param name="createUpdateMessageTemplateDto"></param>
+            <param name="createUpdateEmailMessageTemplateDto"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController.Delete(System.Collections.Generic.HashSet{System.Int64})">
@@ -610,7 +610,7 @@
             <param name="ids"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController.Query(ApeVolo.IBusiness.QueryModel.MessageTemplateQueryCriteria,ApeVolo.Common.Model.Pagination)">
+        <member name="M:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController.Query(ApeVolo.IBusiness.QueryModel.EmailMessageTemplateQueryCriteria,ApeVolo.Common.Model.Pagination)">
             <summary>
             邮箱账户列表
             </summary>
@@ -618,38 +618,24 @@
             <param name="pagination"></param>
             <returns></returns>
         </member>
-        <member name="T:ApeVolo.Api.Controllers.Email.QueuedEmailController">
+        <member name="T:ApeVolo.Api.Controllers.ExceptionLogController">
             <summary>
-            邮箱账户
+            系统异常日志管理
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.QueuedEmailController.Create(ApeVolo.IBusiness.EditDto.Email.CreateUpdateQueuedEmailDto)">
+        <member name="M:ApeVolo.Api.Controllers.ExceptionLogController.FindList(ApeVolo.IBusiness.QueryModel.LogQueryCriteria,ApeVolo.Common.Model.Pagination)">
             <summary>
-            新增邮箱账户
+            查看异常日志列表
             </summary>
-            <param name="createUpdateQueuedEmailDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.QueuedEmailController.Update(ApeVolo.IBusiness.EditDto.Email.CreateUpdateQueuedEmailDto)">
-            <summary>
-            更新邮箱账户
-            </summary>
-            <param name="createUpdateQueuedEmailDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.QueuedEmailController.Delete(System.Collections.Generic.HashSet{System.Int64})">
-            <summary>
-            删除邮箱账户
-            </summary>
-            <param name="ids"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.QueuedEmailController.Query(ApeVolo.IBusiness.QueryModel.QueuedEmailQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            邮箱账户列表
-            </summary>
-            <param name="queuedEmailQueryCriteria"></param>
+            <param name="logQueryCriteria"></param>
             <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.ExceptionLogController.QueryDetail(System.String)">
+            <summary>
+            查看日志堆栈详情
+            </summary>
+            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="T:ApeVolo.Api.Controllers.FileRecordController">
@@ -739,26 +725,6 @@
             导出岗位
             </summary>
             <param name="jobQueryCriteria"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.LogController">
-            <summary>
-            系统异常日志管理
-            </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.LogController.FindList(ApeVolo.IBusiness.QueryModel.LogQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            查看异常日志列表
-            </summary>
-            <param name="logQueryCriteria"></param>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.LogController.QueryDetail(System.String)">
-            <summary>
-            查看日志堆栈详情
-            </summary>
-            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="T:ApeVolo.Api.Controllers.MenusController">
@@ -924,6 +890,40 @@
             <param name="quartzNetLogQueryCriteria"></param>
             <returns></returns>
         </member>
+        <member name="T:ApeVolo.Api.Controllers.Queued.QueuedEmailController">
+            <summary>
+            邮箱账户
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Queued.QueuedEmailController.Create(ApeVolo.IBusiness.EditDto.Queued.CreateUpdateQueuedEmailDto)">
+            <summary>
+            新增邮箱账户
+            </summary>
+            <param name="createUpdateQueuedEmailDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Queued.QueuedEmailController.Update(ApeVolo.IBusiness.EditDto.Queued.CreateUpdateQueuedEmailDto)">
+            <summary>
+            更新邮箱账户
+            </summary>
+            <param name="createUpdateQueuedEmailDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Queued.QueuedEmailController.Delete(System.Collections.Generic.HashSet{System.Int64})">
+            <summary>
+            删除邮箱账户
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Queued.QueuedEmailController.Query(ApeVolo.IBusiness.QueryModel.QueuedEmailQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            邮箱账户列表
+            </summary>
+            <param name="queuedEmailQueryCriteria"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
         <member name="T:ApeVolo.Api.Controllers.RoleController">
             <summary>
             角色管理
@@ -1069,12 +1069,6 @@
         <member name="M:ApeVolo.Api.Controllers.TestController.TestRedisMq">
             <summary>
             redismq测试
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.TestController.EventBusTry">
-            <summary>
-            rabbitmq测试
             </summary>
             <returns></returns>
         </member>
@@ -1227,13 +1221,17 @@
             统一输出日志格式
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Filter.ExceptionLogFormat.WriteLog(Microsoft.AspNetCore.Http.HttpContext,System.Exception,System.String)">
+        <member name="M:ApeVolo.Api.Filter.ExceptionLogFormat.WriteLog(Microsoft.AspNetCore.Http.HttpContext,System.Exception,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             自定义返回格式
             </summary>
-            <param name="httpContext"></param>
-            <param name="exception"></param>
-            <param name="currentUserName"></param>
+            <param name="httpContext">http上下文</param>
+            <param name="exception">异常类</param>
+            <param name="currentUserName">当前用户名</param>
+            <param name="operatingSystem">操作系统</param>
+            <param name="deviceType">设备类型</param>
+            <param name="browserName">浏览器名称</param>
+            <param name="version">版本号</param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Filter.GlobalExceptionFilter.CreateLog(Microsoft.AspNetCore.Mvc.Filters.ExceptionContext)">

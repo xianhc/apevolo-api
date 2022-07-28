@@ -26,7 +26,7 @@ public class RolesMenusService : BaseServices<RoleMenu>, IRolesMenusService
 
     public async Task<bool> DeleteAsync(List<long> roleIds)
     {
-        var roleMenus = await BaseDal.QueryListAsync(x => roleIds.Contains(x.RoleId) && x.IsDeleted == false);
+        var roleMenus = await BaseDal.QueryListAsync(x => roleIds.Contains(x.RoleId));
         return await DeleteEntityListAsync(roleMenus);
     }
 

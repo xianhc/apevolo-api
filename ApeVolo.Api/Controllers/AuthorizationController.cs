@@ -16,7 +16,7 @@ using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Interface.Core;
-using ApeVolo.IBusiness.Interface.Email;
+using ApeVolo.IBusiness.Interface.Queued;
 using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

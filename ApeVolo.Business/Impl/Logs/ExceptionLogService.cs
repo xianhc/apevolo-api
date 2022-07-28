@@ -17,13 +17,13 @@ namespace ApeVolo.Business.Impl.Logs;
 /// <summary>
 /// 系统日志服务
 /// </summary>
-public class LogService : BaseServices<Log>, ILogService
+public class ExceptionLogService : BaseServices<ExceptionLog>, IExceptionLogService
 {
     #region 构造函数
 
-    public LogService(ILogRepository logRepository, IMapper mapper)
+    public ExceptionLogService(IExceptionLogRepository exceptionLogRepository, IMapper mapper)
     {
-        BaseDal = logRepository;
+        BaseDal = exceptionLogRepository;
         Mapper = mapper;
     }
 
@@ -31,28 +31,27 @@ public class LogService : BaseServices<Log>, ILogService
 
     #region 基础方法
 
-    public async Task<bool> CreateAsync(Log log)
+    public async Task<bool> CreateAsync(ExceptionLog exceptionLog)
     {
-        return await AddEntityAsync(log);
+        return await AddEntityAsync(exceptionLog);
     }
 
-
-    public async Task<List<LogDto>> QueryAsync(LogQueryCriteria logQueryCriteria, Pagination pagination)
+    public async Task<List<ExceptionLogDto>> QueryAsync(LogQueryCriteria logQueryCriteria, Pagination pagination)
     {
-        Expression<Func<Log, bool>> whereLambda = l => l.IsDeleted == false;
+        Expression<Func<ExceptionLog, bool>> whereLambda = l => true;
         if (!logQueryCriteria.KeyWords.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(l => l.Description.Contains(logQueryCriteria.KeyWords));
+            whereLambda = whereLambda.AndAlso(l => l.Description.Contains(logQueryCriteria.KeyWords));
         }
 
         if (!logQueryCriteria.CreateTime.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(l =>
+            whereLambda = whereLambda.AndAlso(l =>
                 l.CreateTime >= logQueryCriteria.CreateTime[0] && l.CreateTime <= logQueryCriteria.CreateTime[1]);
         }
 
         var logs = await BaseDal.QueryPageListAsync(whereLambda, pagination);
-        return Mapper.Map<List<LogDto>>(logs);
+        return Mapper.Map<List<ExceptionLogDto>>(logs);
     }
 
     #endregion

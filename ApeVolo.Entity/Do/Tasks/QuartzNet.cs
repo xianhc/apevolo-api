@@ -14,51 +14,49 @@ public class QuartzNet : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// 任务名称
     /// </summary>
-    [SugarColumn(ColumnName = "task_name", ColumnDataType = "varchar", Length = 255, ColumnDescription = "任务名称")]
+    [SugarColumn(ColumnName = "task_name", ColumnDescription = "任务名称")]
     public string TaskName { get; set; }
 
     /// <summary>
     /// 任务分组
     /// </summary>
-    [SugarColumn(ColumnName = "task_group", ColumnDataType = "varchar", Length = 255, ColumnDescription = "任务名称")]
+    [SugarColumn(ColumnName = "task_group", ColumnDescription = "任务名称")]
     public string TaskGroup { get; set; }
 
     /// <summary>
     /// cron 表达式
     /// </summary>
-    [SugarColumn(ColumnName = "cron", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "cron 表达式")]
+    [SugarColumn(ColumnName = "cron", IsNullable = true, ColumnDescription = "cron 表达式")]
     public string Cron { get; set; }
 
     /// <summary>
     /// 程序集名称
     /// </summary>
-    [SugarColumn(ColumnName = "assembly_name", ColumnDataType = "varchar", Length = 255, ColumnDescription = "程序集名称")]
+    [SugarColumn(ColumnName = "assembly_name", ColumnDescription = "程序集名称")]
     public string AssemblyName { get; set; }
 
     /// <summary>
     /// 任务所在类
     /// </summary>
-    [SugarColumn(ColumnName = "class_name", ColumnDataType = "varchar", Length = 255, ColumnDescription = "任务所在类")]
+    [SugarColumn(ColumnName = "class_name", ColumnDescription = "任务所在类")]
     public string ClassName { get; set; }
 
     /// <summary>
     /// 任务描述
     /// </summary>
-    [SugarColumn(ColumnName = "description", ColumnDataType = "varchar", Length = 500, ColumnDescription = "任务描述")]
+    [SugarColumn(ColumnName = "description", ColumnDataType = "nvarchar", Length = 500, ColumnDescription = "任务描述")]
     public string Description { get; set; }
 
     /// <summary>
     /// 任务负责人
     /// </summary>
-    [SugarColumn(ColumnName = "principal", ColumnDataType = "varchar", Length = 255, ColumnDescription = "任务负责人")]
+    [SugarColumn(ColumnName = "principal", ColumnDescription = "任务负责人")]
     public string Principal { get; set; }
 
     /// <summary>
     /// 告警邮箱
     /// </summary>
-    [SugarColumn(ColumnName = "alert_email", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "告警邮箱")]
+    [SugarColumn(ColumnName = "alert_email", IsNullable = true, ColumnDescription = "告警邮箱")]
     public string AlertEmail { get; set; }
 
     /// <summary>
@@ -112,7 +110,7 @@ public class QuartzNet : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// 执行传参
     /// </summary>
-    [SugarColumn(ColumnName = "run_params", ColumnDataType = "varchar", Length = 255, IsNullable = true,
+    [SugarColumn(ColumnName = "run_params", IsNullable = true,
         ColumnDescription = "执行传参")]
     public string RunParams { get; set; }
 

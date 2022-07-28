@@ -76,7 +76,7 @@ public class VerifySignatureAttribute : BaseActionFilter
         }
 
         var appSecretModel = await filterContext.HttpContext.RequestServices.GetRequiredService<IAppSecretService>()
-            .QueryFirstAsync(x => x.IsDeleted == false && x.AppId == appId);
+            .QueryFirstAsync(x => x.AppId == appId);
         if (appSecretModel.IsNull())
         {
             filterContext.Result = Error("header:appId无效");

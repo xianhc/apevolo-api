@@ -3,6 +3,6 @@ using ApeVolo.IRepository.Base;
 
 namespace ApeVolo.IRepository.Logs;
 
-public interface ILogRepository : ISugarHandler<Log>
+public interface IExceptionLogRepository : ISugarHandler<ExceptionLog>
 {
 }

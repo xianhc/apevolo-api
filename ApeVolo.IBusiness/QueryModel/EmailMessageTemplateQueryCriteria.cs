@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ApeVolo.IBusiness.QueryModel;
 
-public class MessageTemplateQueryCriteria
+public class EmailMessageTemplateQueryCriteria
 {
     public string Name { get; set; }
 

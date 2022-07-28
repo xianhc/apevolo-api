@@ -282,17 +282,17 @@ public class DataSeeder
 
                 #region 邮件模板
 
-                if (!await myContext.Db.Queryable<MessageTemplate>().AnyAsync())
+                if (!await myContext.Db.Queryable<EmailMessageTemplate>().AnyAsync())
                 {
-                    var attr = typeof(MessageTemplate).GetCustomAttribute<SugarTable>();
+                    var attr = typeof(EmailMessageTemplate).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<MessageTemplate>().InsertRangeAsync(
-                            JsonConvert.DeserializeObject<List<MessageTemplate>>(
+                        await myContext.GetEntityDb<EmailMessageTemplate>().InsertRangeAsync(
+                            JsonConvert.DeserializeObject<List<EmailMessageTemplate>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(MessageTemplate)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            $"Entity:{nameof(EmailMessageTemplate)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
                             ConsoleColor.Green);
                     }
                 }

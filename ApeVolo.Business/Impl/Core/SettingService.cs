@@ -44,8 +44,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
 
     public async Task<bool> CreateAsync(CreateUpdateSettingDto createUpdateSettingDto)
     {
-        if (await IsExistAsync(r => r.IsDeleted == false
-                                    && r.Name == createUpdateSettingDto.Name))
+        if (await IsExistAsync(r => r.Name == createUpdateSettingDto.Name))
         {
             throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在!");
         }
@@ -57,14 +56,14 @@ public class SettingService : BaseServices<Setting>, ISettingService
     public async Task<bool> UpdateAsync(CreateUpdateSettingDto createUpdateSettingDto)
     {
         //取出待更新数据
-        var oldSetting = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == createUpdateSettingDto.Id);
+        var oldSetting = await QueryFirstAsync(x => x.Id == createUpdateSettingDto.Id);
         if (oldSetting.IsNull())
         {
             throw new BadRequestException("更新失败=》待更新数据不存在！");
         }
 
-        if (oldSetting.Name != createUpdateSettingDto.Name && await IsExistAsync(x => x.IsDeleted == false
-                && x.Name == createUpdateSettingDto.Name))
+        if (oldSetting.Name != createUpdateSettingDto.Name &&
+            await IsExistAsync(x => x.Name == createUpdateSettingDto.Name))
         {
             throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在！");
         }
@@ -77,31 +76,32 @@ public class SettingService : BaseServices<Setting>, ISettingService
     public async Task<bool> DeleteAsync(HashSet<long> ids)
     {
         var settings = await QueryByIdsAsync(ids);
-        settings.ForEach(async x =>
+        foreach (var setting in settings)
         {
-            await _redisCacheService.RemoveAsync(RedisKey.LoadSettingByName + x.Name.ToMd5String16());
-        });
+            await _redisCacheService.RemoveAsync(RedisKey.LoadSettingByName + setting.Name.ToMd5String16());
+        }
+
         return await DeleteEntityListAsync(settings);
     }
 
     public async Task<List<SettingDto>> QueryAsync(SettingQueryCriteria settingQueryCriteria, Pagination pagination)
     {
-        Expression<Func<Setting, bool>> whereLambda = r => r.IsDeleted == false;
+        Expression<Func<Setting, bool>> whereLambda = r => true;
         if (!settingQueryCriteria.KeyWords.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(r =>
+            whereLambda = whereLambda.AndAlso(r =>
                 r.Name.Contains(settingQueryCriteria.KeyWords) || r.Value.Contains(settingQueryCriteria.KeyWords) ||
                 r.Description.Contains(settingQueryCriteria.KeyWords));
         }
 
         if (!settingQueryCriteria.Enabled.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(x => x.Enabled == settingQueryCriteria.Enabled);
+            whereLambda = whereLambda.AndAlso(x => x.Enabled == settingQueryCriteria.Enabled);
         }
 
         if (!settingQueryCriteria.CreateTime.IsNull())
         {
-            whereLambda = whereLambda.And(r =>
+            whereLambda = whereLambda.AndAlso(r =>
                 r.CreateTime >= settingQueryCriteria.CreateTime[0] &&
                 r.CreateTime <= settingQueryCriteria.CreateTime[1]);
         }
@@ -151,7 +151,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
         }
 
         var setting =
-            Mapper.Map<SettingDto>(await QueryFirstAsync(x => x.IsDeleted == false && x.Name == settingName));
+            Mapper.Map<SettingDto>(await QueryFirstAsync(x => x.Name == settingName));
         if (setting.IsNull())
         {
             throw new BadRequestException("请输入正确的设置键名称!");

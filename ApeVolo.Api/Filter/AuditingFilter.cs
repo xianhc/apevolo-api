@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Shyjus.BrowserDetection;
 
 namespace ApeVolo.Api.Filter;
 
@@ -28,16 +29,18 @@ public class AuditingFilter : IAsyncActionFilter
     private readonly IAuditLogService _auditInfoService;
     private readonly ICurrentUser _currentUser;
     private readonly ISettingService _settingService;
+    private readonly IBrowserDetector _browserDetector;
 
     private static readonly ILog Log =
         LogManager.GetLogger(typeof(GlobalExceptionFilter));
 
     public AuditingFilter(IAuditLogService auditInfoService, ICurrentUser currentUser,
-        ISettingService settingService)
+        ISettingService settingService, IBrowserDetector browserDetector)
     {
         _auditInfoService = auditInfoService;
         _currentUser = currentUser;
         _settingService = settingService;
+        _browserDetector = browserDetector;
     }
 
     public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -91,21 +94,16 @@ public class AuditingFilter : IAsyncActionFilter
                         //用时
                         auditInfo.ExecutionDuration = Convert.ToInt32(sw.ElapsedMilliseconds);
                         await _auditInfoService.CreateAsync(auditInfo);
-                        //是否可以转同步方法执行
-                        //Task addLgo = Task.Factory.StartNew(async () =>
-                        //{
-                        //    //auditInfo.ResponseData = "{}";
-                        //    await _auditInfoService.CreateAsync(auditInfo);
-                        //});
                     }
                 }
             }
         }
         catch (Exception ex)
         {
-            Log.Error(ExceptionLogFormat.WriteLog(context.HttpContext, ex, _currentUser.Name));
+            Log.Error(ExceptionLogFormat.WriteLog(context.HttpContext, ex, _currentUser?.Name,
+                _browserDetector.Browser.OS, _browserDetector.Browser.DeviceType, _browserDetector.Browser.Name,
+                _browserDetector.Browser.Version));
             ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
-            // ignored
         }
     }
 
@@ -136,9 +134,12 @@ public class AuditingFilter : IAsyncActionFilter
             Description = desc.IsNull() ? "" : ((DescriptionAttribute)desc)?.Description,
             RequestUrl = httpContext.Request.GetDisplayUrl(),
             RequestParameters = decs.ToJson(),
-            BrowserInfo = IpHelper.GetBrowserName(),
             RequestIp = remoteIp,
-            IpAddress = IpHelper.GetIpAddress(remoteIp)
+            IpAddress = IpHelper.GetIpAddress(remoteIp),
+            OperatingSystem = _browserDetector.Browser.OS,
+            DeviceType = _browserDetector.Browser.DeviceType,
+            BrowserName = _browserDetector.Browser.Name,
+            Version = _browserDetector.Browser.Version
         };
 
 

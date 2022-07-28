@@ -30,22 +30,22 @@ public class UserJobsService : BaseServices<UserJobs>, IUserJobsService
 
     #region 基础方法
 
-    public async Task<bool> CreateAsync(List<CreateUpdateUserJobsDto> createUpdateJobDtos)
+    public async Task<bool> CreateAsync(List<CreateUpdateUserJobsDto> createUpdateUserJobsDtos)
     {
-        var userJobs = Mapper.Map<List<UserJobs>>(createUpdateJobDtos);
+        var userJobs = Mapper.Map<List<UserJobs>>(createUpdateUserJobsDtos);
         return await AddEntityListAsync(userJobs);
     }
 
     public async Task<bool> DeleteByUserIdAsync(long userId)
     {
-        var userJobs = await BaseDal.QueryListAsync(x => x.UserId == userId && x.IsDeleted == false);
+        var userJobs = await BaseDal.QueryListAsync(x => x.UserId == userId);
         return await DeleteEntityListAsync(userJobs);
     }
 
     [RedisCaching(KeyPrefix = RedisKey.UserJobsById)]
     public async Task<List<UserJobs>> QueryByUserIdAsync(long userId)
     {
-        return await BaseDal.QueryListAsync(uj => uj.UserId == userId && uj.IsDeleted == false);
+        return await BaseDal.QueryListAsync(uj => uj.UserId == userId);
     }
 
     #endregion

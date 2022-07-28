@@ -37,7 +37,7 @@ public class DictService : BaseServices<Dict>, IDictService
 
     public async Task<bool> CreateAsync(CreateUpdateDictDto createUpdateDictDto)
     {
-        if (await IsExistAsync(d => d.IsDeleted == false && d.Name == createUpdateDictDto.Name))
+        if (await IsExistAsync(d => d.Name == createUpdateDictDto.Name))
         {
             throw new BadRequestException($"字典资源>{createUpdateDictDto.Name}=>已存在！");
         }
@@ -47,7 +47,7 @@ public class DictService : BaseServices<Dict>, IDictService
 
     public async Task<bool> UpdateAsync(CreateUpdateDictDto createUpdateDictDto)
     {
-        if (!await IsExistAsync(d => d.IsDeleted == false && d.Id == createUpdateDictDto.Id))
+        if (!await IsExistAsync(d => d.Id == createUpdateDictDto.Id))
         {
             throw new BadRequestException($"字典资源=>{createUpdateDictDto.Name}=>不存在！");
         }
@@ -63,10 +63,10 @@ public class DictService : BaseServices<Dict>, IDictService
 
     public async Task<List<DictDto>> QueryAsync(DictQueryCriteria dictQueryCriteria, Pagination pagination)
     {
-        Expression<Func<Dict, bool>> whereLambda = u => u.IsDeleted == false;
+        Expression<Func<Dict, bool>> whereLambda = u => true;
         if (!dictQueryCriteria.KeyWords.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(d =>
+            whereLambda = whereLambda.AndAlso(d =>
                 d.Name.Contains(dictQueryCriteria.KeyWords) || d.Description.Contains(dictQueryCriteria.KeyWords));
         }
 

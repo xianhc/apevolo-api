@@ -3,8 +3,8 @@ using ApeVolo.Entity.Do.Logs;
 
 namespace ApeVolo.IBusiness.Dto.Logs;
 
-[AutoMapping(typeof(Log), typeof(LogDto))]
-public class LogDto : EntityDtoRoot<long>
+[AutoMapping(typeof(ExceptionLog), typeof(ExceptionLogDto))]
+public class ExceptionLogDto : EntityDtoRoot<long>
 {
     public string Area { get; set; }
 
@@ -28,9 +28,15 @@ public class LogDto : EntityDtoRoot<long>
 
     public int LogLevel { get; set; }
 
-    public string BrowserInfo { get; set; }
-
     public string RequestIp { get; set; }
 
     public string IpAddress { get; set; }
+
+    public string OperatingSystem { get; set; }
+
+    public string DeviceType { get; set; }
+
+    public string BrowserName { get; set; }
+
+    public string Version { get; set; }
 }

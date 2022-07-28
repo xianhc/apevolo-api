@@ -39,15 +39,15 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
     public async Task<List<AuditLogDto>> QueryAsync(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
     {
-        Expression<Func<AuditLog, bool>> whereLambda = l => l.IsDeleted == false;
+        Expression<Func<AuditLog, bool>> whereLambda = l => true;
         if (!logQueryCriteria.KeyWords.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(l => l.Description.Contains(logQueryCriteria.KeyWords));
+            whereLambda = whereLambda.AndAlso(l => l.Description.Contains(logQueryCriteria.KeyWords));
         }
 
         if (!logQueryCriteria.CreateTime.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(l =>
+            whereLambda = whereLambda.AndAlso(l =>
                 l.CreateTime >= logQueryCriteria.CreateTime[0] && l.CreateTime <= logQueryCriteria.CreateTime[1]);
         }
 
@@ -57,17 +57,18 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
 
     public async Task<List<AuditLogDto>> QueryByCurrentAsync(string userName, Pagination pagination)
     {
-        Expression<Func<AuditLog, bool>> whereLambda = x => x.IsDeleted == false;
+        Expression<Func<AuditLog, bool>> whereLambda = x => true;
         if (!userName.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(x => x.CreateBy == userName);
+            whereLambda = whereLambda.AndAlso(x => x.CreateBy == userName);
         }
 
 
         Expression<Func<AuditLog, AuditLog>> expression = x => new AuditLog
         {
             Id = x.Id, Description = x.Description, RequestIp = x.RequestIp, IpAddress = x.IpAddress,
-            BrowserInfo = x.BrowserInfo, ExecutionDuration = x.ExecutionDuration, CreateTime = x.CreateTime
+            OperatingSystem = x.OperatingSystem, DeviceType = x.DeviceType, BrowserName = x.BrowserName,
+            Version = x.Version, ExecutionDuration = x.ExecutionDuration, CreateTime = x.CreateTime
         };
 
         var auditInfos = await BaseDal.QueryPageListAsync(whereLambda, pagination, expression);

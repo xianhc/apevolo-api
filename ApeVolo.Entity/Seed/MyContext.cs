@@ -6,28 +6,6 @@ namespace ApeVolo.Entity.Seed;
 
 public class MyContext
 {
-    public MyContext()
-    {
-        if (string.IsNullOrEmpty(ConnectionString))
-            throw new ArgumentNullException("数据库连接字符串为空");
-        Db = new SqlSugarClient(new ConnectionConfig
-        {
-            ConnectionString = ConnectionString,
-            DbType = DbType,
-            IsAutoCloseConnection = true,
-            InitKeyType = InitKeyType.Attribute, //mark
-            ConfigureExternalServices = new ConfigureExternalServices
-            {
-                //DataInfoCacheService = new HttpRuntimeCache()
-            },
-            MoreSettings = new ConnMoreSettings
-            {
-                //IsWithNoLockQuery = true,
-                IsAutoRemoveDataCache = true
-            }
-        });
-    }
-
     private static DataBaseOperate ConnectObject => GetCurrentConnectionDb();
 
     /// <summary>
@@ -40,15 +18,24 @@ public class MyContext
     /// </summary>
     public static DbType DbType { get; set; } = (DbType)ConnectObject.DbType;
 
+
     /// <summary>
     /// 数据连接对象 
     /// </summary>
-    public SqlSugarClient Db { get; private set; }
+    private SqlSugarScope _db;
 
-    /// <summary>
-    /// 数据库上下文实例（自动关闭连接）
-    /// </summary>
-    public static MyContext Context => new MyContext();
+    public SqlSugarScope Db
+    {
+        get => _db;
+        private set => _db = value;
+    }
+
+    public MyContext(ISqlSugarClient sqlSugarClient)
+    {
+        if (string.IsNullOrEmpty(ConnectionString))
+            throw new ArgumentNullException("sqlSugarClient", "数据库连接字符串为空");
+        _db = sqlSugarClient as SqlSugarScope;
+    }
 
     /// <summary>
     /// 当前数据库连接字符串 
@@ -66,7 +53,7 @@ public class MyContext
     /// <returns>返回值</returns>
     public SimpleClient<T> GetEntityDb<T>() where T : class, new()
     {
-        return new SimpleClient<T>(Db);
+        return new SimpleClient<T>(_db);
     }
 
     /// <summary>

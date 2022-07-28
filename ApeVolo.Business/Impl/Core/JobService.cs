@@ -38,8 +38,7 @@ public class JobService : BaseServices<Job>, IJobService
 
     public async Task<bool> CreateAsync(CreateUpdateJobDto createUpdateJobDto)
     {
-        if (await IsExistAsync(j => j.IsDeleted == false
-                                    && j.Name == createUpdateJobDto.Name))
+        if (await IsExistAsync(j => j.Name == createUpdateJobDto.Name))
         {
             throw new BadRequestException($"岗位=>{createUpdateJobDto.Name}=>已存在!");
         }
@@ -50,8 +49,7 @@ public class JobService : BaseServices<Job>, IJobService
 
     public async Task<bool> UpdateAsync(CreateUpdateJobDto createUpdateJobDto)
     {
-        if (!await IsExistAsync(j => j.IsDeleted == false
-                                     && j.Id == createUpdateJobDto.Id))
+        if (!await IsExistAsync(j => j.Id == createUpdateJobDto.Id))
         {
             throw new BadRequestException($"岗位=>{createUpdateJobDto.Name}=>不存在!");
         }
@@ -74,7 +72,7 @@ public class JobService : BaseServices<Job>, IJobService
                 JoinType.Left, uj.UserId == u.Id
             },
             (uj, u) => uj,
-            (uj, u) => u.IsDeleted == false && uj.IsDeleted == false && ids.Contains(uj.JobId)
+            (uj, u) => ids.Contains(uj.JobId)
         );
         if (userJobs.Count > 0)
         {
@@ -87,21 +85,21 @@ public class JobService : BaseServices<Job>, IJobService
 
     public async Task<List<JobDto>> QueryAsync(JobQueryCriteria jobQueryCriteria, Pagination pagination)
     {
-        Expression<Func<Job, bool>> whereExpression = x => x.IsDeleted == false;
+        Expression<Func<Job, bool>> whereExpression = x => true;
         if (!jobQueryCriteria.JobName.IsNullOrEmpty())
         {
-            whereExpression = whereExpression.And(x => x.Name.Contains(jobQueryCriteria.JobName));
+            whereExpression = whereExpression.AndAlso(x => x.Name.Contains(jobQueryCriteria.JobName));
         }
 
         if (!jobQueryCriteria.CreateTime.IsNullOrEmpty() && jobQueryCriteria.CreateTime.Count > 1)
         {
-            whereExpression = whereExpression.And(x =>
+            whereExpression = whereExpression.AndAlso(x =>
                 x.CreateTime >= jobQueryCriteria.CreateTime[0] && x.CreateTime <= jobQueryCriteria.CreateTime[1]);
         }
 
         if (!jobQueryCriteria.Enabled.IsNullOrEmpty())
         {
-            whereExpression = whereExpression.And(x => x.Enabled == jobQueryCriteria.Enabled);
+            whereExpression = whereExpression.AndAlso(x => x.Enabled == jobQueryCriteria.Enabled);
         }
 
         return Mapper.Map<List<JobDto>>(await BaseDal.QueryPageListAsync(whereExpression, pagination));
@@ -139,7 +137,7 @@ public class JobService : BaseServices<Job>, IJobService
 
     public async Task<List<JobDto>> QueryAllAsync()
     {
-        Expression<Func<Job, bool>> whereExpression = x => x.IsDeleted == false && x.Enabled;
+        Expression<Func<Job, bool>> whereExpression = x => x.Enabled;
 
 
         return Mapper.Map<List<JobDto>>(await BaseDal.QueryListAsync(whereExpression, x => x.Sort,

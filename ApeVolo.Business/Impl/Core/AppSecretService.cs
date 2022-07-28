@@ -42,8 +42,7 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
 
     public async Task<bool> CreateAsync(CreateUpdateAppSecretDto createUpdateAppSecretDto)
     {
-        if (await IsExistAsync(r => r.IsDeleted == false
-                                    && r.AppName == createUpdateAppSecretDto.AppName))
+        if (await IsExistAsync(r => r.AppName == createUpdateAppSecretDto.AppName))
         {
             throw new BadRequestException($"应用名称=>{createUpdateAppSecretDto.AppName}=>已存在!");
         }
@@ -59,14 +58,14 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
     public async Task<bool> UpdateAsync(CreateUpdateAppSecretDto createUpdateAppSecretDto)
     {
         //取出待更新数据
-        var oldAppSecret = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == createUpdateAppSecretDto.Id);
+        var oldAppSecret = await QueryFirstAsync(x => x.Id == createUpdateAppSecretDto.Id);
         if (oldAppSecret.IsNull())
         {
             throw new BadRequestException("更新失败=》待更新数据不存在！");
         }
 
-        if (oldAppSecret.AppName != createUpdateAppSecretDto.AppName && await IsExistAsync(x => x.IsDeleted == false
-                && x.AppName == createUpdateAppSecretDto.AppName))
+        if (oldAppSecret.AppName != createUpdateAppSecretDto.AppName &&
+            await IsExistAsync(x => x.AppName == createUpdateAppSecretDto.AppName))
         {
             throw new BadRequestException($"应用名称=>{createUpdateAppSecretDto.AppName}=>已存在！");
         }
@@ -84,10 +83,10 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
     public async Task<List<AppSecretDto>> QueryAsync(AppsecretQueryCriteria appsecretQueryCriteria,
         Pagination pagination)
     {
-        Expression<Func<AppSecret, bool>> whereLambda = r => r.IsDeleted == false;
+        Expression<Func<AppSecret, bool>> whereLambda = r => true;
         if (!appsecretQueryCriteria.KeyWords.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(r =>
+            whereLambda = whereLambda.AndAlso(r =>
                 r.AppId.Contains(appsecretQueryCriteria.KeyWords) ||
                 r.AppName.Contains(appsecretQueryCriteria.KeyWords) ||
                 r.Remark.Contains(appsecretQueryCriteria.KeyWords));
@@ -95,7 +94,7 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
 
         if (!appsecretQueryCriteria.CreateTime.IsNull())
         {
-            whereLambda = whereLambda.And(r =>
+            whereLambda = whereLambda.AndAlso(r =>
                 r.CreateTime >= appsecretQueryCriteria.CreateTime[0] &&
                 r.CreateTime <= appsecretQueryCriteria.CreateTime[1]);
         }

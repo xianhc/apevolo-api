@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ApeVolo.Common.ClassLibrary;
 using ApeVolo.Common.Global;
 
@@ -8,21 +10,17 @@ namespace ApeVolo.Common.Helper;
 /// <summary>
 /// 日志操作类
 /// </summary>
-public class LogHelper
+public static class LogHelper
 {
-    static UsingLock<object> _lock;
+    private static readonly UsingLock<object> Lock = new();
 
-    public LogHelper()
-    {
-        _lock = new UsingLock<object>();
-    }
 
     /// <summary>
-    /// 写日志文件数据库日志文件
+    /// 文本日志
     /// </summary>
     /// <param name="folder">文件夹</param>
     /// <param name="message">消息</param>   
-    public static void WriteError(string message, string[] folder)
+    public static void WriteError(string message, IEnumerable<string> folder)
     {
         AddLog(message, folder);
     }
@@ -32,25 +30,22 @@ public class LogHelper
     /// </summary>
     /// <param name="folder">文件夹</param>
     /// <param name="message">消息</param> 
-    public static void WriteLog(string message, string[] folder)
+    public static void WriteLog(string message, IEnumerable<string> folder)
     {
         AddLog(message, folder);
     }
 
     /// <summary>
-    /// 写日志文件数据库日志文件
+    /// 文本日志
     /// </summary>
     /// <param name="folder">文件夹</param>
     /// <param name="message">日志存储目录名称</param>
-    private static void AddLog(string message, string[] folder)
+    private static void AddLog(string message, IEnumerable<string> folder)
     {
         try
         {
             var path = Path.Combine(AppSettings.ContentRootPath, "Logs");
-            foreach (var t in folder)
-            {
-                path = Path.Combine(path, t);
-            }
+            path = folder.Aggregate(path, Path.Combine);
 
             if (!Directory.Exists(path))
             {
@@ -68,15 +63,15 @@ public class LogHelper
             if (!File.Exists(logFilePath))
             {
                 using var fs = new FileStream(logFilePath, FileMode.Create, FileAccess.Write);
-                StreamWriter sw = new StreamWriter(fs);
+                var sw = new StreamWriter(fs);
                 sw.Close();
                 fs.Close();
             }
 
-            using (_lock.Write())
+            using (Lock.Write())
             {
-                using StreamWriter writer = new StreamWriter(logFilePath, true);
-                writer.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                using var writer = new StreamWriter(logFilePath, true);
+                writer.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss fff"));
                 writer.WriteLine(message);
                 writer.WriteLine(Environment.NewLine);
             }
@@ -87,29 +82,27 @@ public class LogHelper
         }
     }
 
-    public static void WriteSqlLog(string filename, string[] dataParas, bool isHeader = true)
+    /// <summary>
+    /// SQL日志
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <param name="dataParas"></param>
+    public static void WriteSqlLog(string filename, IEnumerable<string> dataParas)
     {
         try
         {
-            var path = Path.Combine(AppSettings.ContentRootPath, "SqlLogs");
+            var path = Path.Combine(AppSettings.ContentRootPath, "Logs", "Sql");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            string logFilePath = Path.Combine(path, $@"{filename}.log");
+            var logFilePath = Path.Combine(path, $@"{filename}.log");
 
-            string logContent = string.Join("\r\n", dataParas);
-            if (isHeader)
-            {
-                logContent =
-                    "--------------------------------\r\n" +
-                    DateTime.Now + "|\r\n" +
-                    string.Join("\r\n", dataParas) + "\r\n"
-                    ;
-            }
-
-            using (_lock.Write())
+            var logContent =
+                DateTime.Now.ToString("yyyy-MM-dd HH:ss:mm fff") + "\r\n" +
+                string.Join("", dataParas) + "\r\n\r\n\r\n\r\n";
+            using (Lock.Write())
             {
                 File.AppendAllText(logFilePath, logContent);
             }

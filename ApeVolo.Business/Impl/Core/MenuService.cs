@@ -20,6 +20,7 @@ using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IBusiness.Vo;
 using ApeVolo.IRepository.Core;
 using AutoMapper;
+using Microsoft.AspNetCore.Components.Web;
 using SqlSugar;
 
 namespace ApeVolo.Business.Impl.Core;
@@ -56,12 +57,12 @@ public class MenuService : BaseServices<Menu>, IMenuService
     [UseTran]
     public async Task<bool> CreateAsync(CreateUpdateMenuDto createUpdateMenuDto)
     {
-        if (await IsExistAsync(m => m.IsDeleted == false && m.Title == createUpdateMenuDto.Title))
+        if (await IsExistAsync(m => m.Title == createUpdateMenuDto.Title))
         {
             throw new BadRequestException($"菜单名称=》{createUpdateMenuDto.Title}=》已存在");
         }
 
-        if (await IsExistAsync(m => m.IsDeleted == false && m.ComponentName == createUpdateMenuDto.ComponentName))
+        if (await IsExistAsync(m => m.ComponentName == createUpdateMenuDto.ComponentName))
         {
             throw new BadRequestException($"菜单组件=》{createUpdateMenuDto.ComponentName}=》已存在");
         }
@@ -101,11 +102,11 @@ public class MenuService : BaseServices<Menu>, IMenuService
         {
             //清理缓存
             await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + menu.PId.ToString().ToMd5String16());
-            var tmpMenu = await BaseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == menu.PId);
+            var tmpMenu = await BaseDal.QueryFirstAsync(x => x.Id == menu.PId);
             if (tmpMenu.IsNotNull())
             {
                 var tmpMenuList =
-                    await BaseDal.QueryListAsync(x => x.IsDeleted == false && x.PId == tmpMenu.Id);
+                    await BaseDal.QueryListAsync(x => x.PId == tmpMenu.Id);
                 tmpMenu.SubCount = tmpMenuList.Count;
                 await UpdateEntityAsync(tmpMenu);
             }
@@ -118,21 +119,19 @@ public class MenuService : BaseServices<Menu>, IMenuService
     public async Task<bool> UpdateAsync(CreateUpdateMenuDto createUpdateMenuDto)
     {
         //取出待更新数据
-        var oldMenu = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == createUpdateMenuDto.Id);
+        var oldMenu = await QueryFirstAsync(x => x.Id == createUpdateMenuDto.Id);
         if (oldMenu.IsNull())
         {
             throw new BadRequestException("更新失败=》待更新数据不存在！");
         }
 
-        if (oldMenu.Title != createUpdateMenuDto.Title && await IsExistAsync(x => x.IsDeleted == false
-                && x.Title == createUpdateMenuDto.Title))
+        if (oldMenu.Title != createUpdateMenuDto.Title && await IsExistAsync(x => x.Title == createUpdateMenuDto.Title))
         {
             throw new BadRequestException($"菜单标题=>{createUpdateMenuDto.Title}=>已存在！");
         }
 
         if (oldMenu.Permission != createUpdateMenuDto.Permission && await IsExistAsync(x =>
-                x.IsDeleted == false
-                && x.Permission == createUpdateMenuDto.Permission))
+                x.Permission == createUpdateMenuDto.Permission))
         {
             throw new BadRequestException($"角色代码=>{createUpdateMenuDto.Permission}=>已存在！");
         }
@@ -148,8 +147,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
             }
         }
 
-        var menu = await BaseDal.QueryFirstAsync(m =>
-            m.IsDeleted == false && m.Title.Equals(createUpdateMenuDto.Title));
+        var menu = await BaseDal.QueryFirstAsync(m => m.Title.Equals(createUpdateMenuDto.Title));
         if (menu != null && menu.Id != createUpdateMenuDto.Id)
         {
             throw new BadRequestException($"菜单名称=>{createUpdateMenuDto.Title}=>已存在");
@@ -158,7 +156,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
         if (!createUpdateMenuDto.ComponentName.IsNullOrEmpty())
         {
             var menu1 = await BaseDal.QueryFirstAsync(m =>
-                m.IsDeleted == false && m.ComponentName.Equals(createUpdateMenuDto.ComponentName));
+                m.ComponentName.Equals(createUpdateMenuDto.ComponentName));
             if (menu1 != null && menu1.Id != createUpdateMenuDto.Id)
             {
                 throw new BadRequestException($"菜单组件=>{createUpdateMenuDto.ComponentName}=>已存在");
@@ -184,22 +182,22 @@ public class MenuService : BaseServices<Menu>, IMenuService
         {
             if (menu2.PId.IsNotNull())
             {
-                var tmpMenu = await BaseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == menu2.PId);
+                var tmpMenu = await BaseDal.QueryFirstAsync(x => x.Id == menu2.PId);
                 if (tmpMenu.IsNotNull())
                 {
                     var tmpMenuList =
-                        await BaseDal.QueryListAsync(x => x.IsDeleted == false && x.PId == tmpMenu.Id);
+                        await BaseDal.QueryListAsync(x => x.PId == tmpMenu.Id);
                     tmpMenu.SubCount = tmpMenuList.Count;
                     await UpdateEntityAsync(tmpMenu);
                 }
 
                 if (oldMenu.PId.IsNotNull())
                 {
-                    var tmpMenu2 = await BaseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == oldMenu.PId);
+                    var tmpMenu2 = await BaseDal.QueryFirstAsync(x => x.Id == oldMenu.PId);
                     if (tmpMenu2.IsNotNull())
                     {
                         var tmpMenu2List =
-                            await BaseDal.QueryListAsync(x => x.IsDeleted == false && x.PId == tmpMenu2.Id);
+                            await BaseDal.QueryListAsync(x => x.PId == tmpMenu2.Id);
                         tmpMenu2.SubCount = tmpMenu2List.Count;
                         await UpdateEntityAsync(tmpMenu2);
                     }
@@ -213,27 +211,27 @@ public class MenuService : BaseServices<Menu>, IMenuService
     public async Task<bool> DeleteAsync(HashSet<long> ids)
     {
         var idList = new List<long>();
-        ids.ForEach(async id =>
+        foreach (var id in ids)
         {
             if (!idList.Contains(id))
             {
                 idList.Add(id);
             }
 
-            var menus = await BaseDal.QueryListAsync(m => m.IsDeleted == false && m.PId == id);
+            var menus = await BaseDal.QueryListAsync(m => m.PId == id);
             await FindChildIdsAsync(menus, idList);
-        });
+        }
 
         var menuList = await QueryByIdsAsync(idList);
         var isTrue = await DeleteEntityListAsync(menuList);
         if (isTrue)
         {
             //清除缓存
-            idList.ForEach(async id =>
+            foreach (var id in idList)
             {
                 await _redisCacheService.RemoveAsync(RedisKey.LoadMenusById + id.ToString().ToMd5String16());
                 await _redisCacheService.RemoveAsync(RedisKey.LoadMenusByPId + id.ToString().ToMd5String16());
-            });
+            }
         }
 
         return isTrue;
@@ -241,30 +239,20 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
     public async Task<List<MenuDto>> QueryAsync(MenuQueryCriteria menuQueryCriteria, Pagination pagination)
     {
-        Expression<Func<Menu, bool>> whereLambda = m => m.IsDeleted == false;
+        Expression<Func<Menu, bool>> whereLambda = m => true;
         if (!menuQueryCriteria.Title.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(m =>
+            whereLambda = whereLambda.AndAlso(m =>
                 m.Title.Contains(menuQueryCriteria.Title));
         }
 
         whereLambda = menuQueryCriteria.PId.IsNull()
-            ? whereLambda.And(m => m.PId == null)
-            : whereLambda.And(m => m.PId == menuQueryCriteria.PId);
+            ? whereLambda.AndAlso(m => m.PId == null)
+            : whereLambda.AndAlso(m => m.PId == menuQueryCriteria.PId);
 
         pagination.SortFields = new List<string> { "menu_sort asc" };
-        var menus = await BaseDal.QueryMapperPageListAsync(async (it, cache) =>
-        {
-            var childrenList = await cache.Get(list =>
-            {
-                var ids = list.Select(i => i.Id).ToList();
-                return BaseDal.QueryListAsync(m => m.IsDeleted == false && ids.Contains(Convert.ToInt64(m.PId)));
-            });
-            it.Children = childrenList.Where(m => m.PId == it.Id).ToList();
-        }, whereLambda, pagination);
-
+        var menus = await BaseDal.QueryPageListAsync(whereLambda, pagination);
         var menuDtos = Mapper.Map<List<MenuDto>>(menus);
-        menuDtos.ForEach(menu => { menu.Children = null; });
         return menuDtos;
     }
 
@@ -316,7 +304,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
             return menuDtos;
         }
 
-        menuDtos = Mapper.Map<List<MenuDto>>(await BaseDal.QueryListAsync(m => m.IsDeleted == false));
+        menuDtos = Mapper.Map<List<MenuDto>>(await BaseDal.QueryListAsync());
         if (menuDtos.IsNotNull())
         {
             await _redisCacheService.SetCacheAsync("menus:LoadAllMenu", menuDtos, TimeSpan.FromSeconds(120));
@@ -358,7 +346,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
                 CreateTime = m.CreateTime,
                 CreateBy = m.CreateBy
             },
-            (m, rm) => m.IsDeleted == false && roleIds.Contains(rm.RoleId) && m.Type != (int)MenuType.Button
+            (m, rm) => roleIds.Contains(rm.RoleId) && m.Type != (int)MenuType.Button
             , (m, rm) => new { m.Title, m.LinkUrl, m.Path, m.Permission, m.IFrame, m.Component, m.ComponentName, m.PId, m.MenuSort, m.Icon, m.Type, m.IsDeleted, m.Id, m.CreateBy, m.CreateTime },
             "menu_sort asc");
         var menuListChild = TreeHelper<MenuDto>.ListToTrees(menuList, "Id", "PId", null);
@@ -369,12 +357,12 @@ public class MenuService : BaseServices<Menu>, IMenuService
     [RedisCaching(Expiration = 30, KeyPrefix = RedisKey.LoadMenusById)]
     public async Task<List<MenuDto>> FindSuperiorAsync(long id)
     {
-        Expression<Func<Menu, bool>> whereLambda = m => m.IsDeleted == false;
+        Expression<Func<Menu, bool>> whereLambda = m => true;
         var menu = await QuerySingleAsync(id);
         List<MenuDto> menuDtoList;
         if (menu.PId.IsNull())
         {
-            var menus = await BaseDal.QueryListAsync(x => x.PId == null && x.IsDeleted == false, x => x.MenuSort,
+            var menus = await BaseDal.QueryListAsync(x => x.PId == null, x => x.MenuSort,
                 OrderByType.Asc);
             menuDtoList = Mapper.Map<List<MenuDto>>(menus);
             menuDtoList.ForEach(x => x.Children = null);
@@ -385,20 +373,18 @@ public class MenuService : BaseServices<Menu>, IMenuService
             List<long> parentIds = new List<long>();
             parentIds.Add(Convert.ToInt64(menu.PId));
             await GetParentIdsAsync(menu, parentIds);
-            whereLambda = whereLambda.And(m => parentIds.Contains(Convert.ToInt64(m.PId)) || m.PId == null);
+            whereLambda = whereLambda.AndAlso(m => parentIds.Contains(Convert.ToInt64(m.PId)) || m.PId == null);
 
-            var menus = await BaseDal.QueryMapperAsync(async (it, cache) =>
+            //可以优化语句
+            var menus = await BaseDal.QueryListAsync(whereLambda, x => x.MenuSort, OrderByType.Asc);
+            var allMenu = await BaseDal.QueryListAsync();
+            foreach (var m in menus)
             {
-                if (parentIds.Contains(it.Id) && it.PId.IsNull())
+                if (parentIds.Contains(m.Id) && m.PId.IsNull())
                 {
-                    var childrenList = await cache.Get(list =>
-                    {
-                        //var ids = list.Select(i => i.ID).ToList();&& ids.Contains(m.PID)
-                        return BaseDal.QueryListAsync(m => m.IsDeleted == false);
-                    });
-                    it.Children = childrenList.Where(m => m.PId == it.Id).ToList();
+                    m.Children = allMenu.Where(x => x.PId == m.Id).ToList();
                 }
-            }, whereLambda, "menu_sort asc");
+            }
 
 
             var tempDtos = Mapper.Map<List<MenuDto>>(menus);
@@ -443,29 +429,29 @@ public class MenuService : BaseServices<Menu>, IMenuService
         MenuTreeVo menuVo = null;
         List<MenuDto> menuDtoList = null;
 
-        menuDtOs.ForEach(async item =>
+        foreach (var menu in menuDtOs)
         {
-            menuDtoList = item.Children;
+            menuDtoList = menu.Children;
             menuVo = new MenuTreeVo
             {
-                Name = item.ComponentName.IsNullOrEmpty() ? item.Title : item.ComponentName,
-                Path = item.PId.IsNull() ? "/" + item.Path : item.Path,
-                Hidden = item.Hidden
+                Name = menu.ComponentName.IsNullOrEmpty() ? menu.Title : menu.ComponentName,
+                Path = menu.PId.IsNull() ? "/" + menu.Path : menu.Path,
+                Hidden = menu.Hidden
             };
 
-            if (!item.IFrame)
+            if (!menu.IFrame)
             {
-                if (item.PId.IsNull())
+                if (menu.PId.IsNull())
                 {
-                    menuVo.Component = item.Component.IsNullOrEmpty() ? "Layout" : item.Component;
+                    menuVo.Component = menu.Component.IsNullOrEmpty() ? "Layout" : menu.Component;
                 }
-                else if (!item.Component.IsNullOrEmpty())
+                else if (!menu.Component.IsNullOrEmpty())
                 {
-                    menuVo.Component = item.Component;
+                    menuVo.Component = menu.Component;
                 }
             }
 
-            menuVo.Meta = new MenuMetaVO(item.Title, item.Icon, !item.Cache);
+            menuVo.Meta = new MenuMetaVO(menu.Title, menu.Icon, !menu.Cache);
             if (menuDtoList is { Count: > 0 })
             {
                 menuVo.AlwaysShow = true;
@@ -474,16 +460,17 @@ public class MenuService : BaseServices<Menu>, IMenuService
             }
 
             menuVos.Add(menuVo);
-        });
-        return await Task.FromResult(menuVos);
+        }
+
+        return menuVos;
     }
 
     [RedisCaching(Expiration = 30, KeyPrefix = RedisKey.LoadMenusByPId)]
     public async Task<List<MenuDto>> FindByPIdAsync(long pid = 0)
     {
         List<MenuDto> menuDtos = null;
-        Expression<Func<Menu, bool>> whereLambda = m => m.IsDeleted == false;
-        whereLambda = pid == 0 ? whereLambda.And(m => m.PId == null) : whereLambda.And(m => m.PId == pid);
+        Expression<Func<Menu, bool>> whereLambda = m => true;
+        whereLambda = pid == 0 ? whereLambda.AndAlso(m => m.PId == null) : whereLambda.AndAlso(m => m.PId == pid);
 
         menuDtos = Mapper.Map<List<MenuDto>>(await BaseDal.QueryListAsync(whereLambda, o => o.MenuSort,
             OrderByType.Asc));
@@ -524,15 +511,14 @@ public class MenuService : BaseServices<Menu>, IMenuService
                 CreateTime = m.CreateTime,
                 CreateBy = m.CreateBy
             },
-            (m, rm) => m.IsDeleted == false && rm.IsDeleted == false && roleId == rm.RoleId
+            (m, rm) => roleId == rm.RoleId
         );
         return menuList;
-        // return TreeHelper<MenuDto>.SetLeafProperty(menuList, "Id", "PId", null);
     }
 
     private async Task<List<long>> GetParentIdsAsync(Menu m, List<long> parentIds)
     {
-        var menu = await BaseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == m.PId);
+        var menu = await BaseDal.QueryFirstAsync(x => x.Id == m.PId);
         if (menu.IsNull() || menu.PId.IsNull())
         {
             //parentIds.Add(menu.PId);
@@ -551,19 +537,22 @@ public class MenuService : BaseServices<Menu>, IMenuService
     /// <returns></returns>
     private async Task FindChildIdsAsync(List<Menu> menuList, List<long> ids)
     {
-        menuList.ForEach(async ml =>
+        if (menuList is { Count: > 0 })
         {
-            if (!ids.Contains(ml.Id))
+            foreach (var menu in menuList)
             {
-                ids.Add(ml.Id);
-            }
+                if (!ids.Contains(menu.Id))
+                {
+                    ids.Add(menu.Id);
+                }
 
-            List<Menu> menus = await BaseDal.QueryListAsync(m => m.IsDeleted == false && m.PId == ml.Id);
-            if (menus is { Count: > 0 })
-            {
-                await FindChildIdsAsync(menus, ids);
+                List<Menu> menus = await BaseDal.QueryListAsync(m => m.PId == menu.Id);
+                if (menus is { Count: > 0 })
+                {
+                    await FindChildIdsAsync(menus, ids);
+                }
             }
-        });
+        }
 
         await Task.FromResult(ids);
     }

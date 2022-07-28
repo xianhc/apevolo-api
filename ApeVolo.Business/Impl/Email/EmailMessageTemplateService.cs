@@ -19,11 +19,11 @@ namespace ApeVolo.Business.Impl.Email;
 /// <summary>
 /// 邮件消息模板实现
 /// </summary>
-public class MessageTemplateService : BaseServices<MessageTemplate>, IEmailMessageTemplateService
+public class EmailMessageTemplateService : BaseServices<EmailMessageTemplate>, IEmailMessageTemplateService
 {
     #region 构造函数
 
-    public MessageTemplateService(IMessageTemplateRepository messageTemplateRepository, IMapper mapper)
+    public EmailMessageTemplateService(IEmailMessageTemplateRepository messageTemplateRepository, IMapper mapper)
     {
         BaseDal = messageTemplateRepository;
         Mapper = mapper;
@@ -36,29 +36,29 @@ public class MessageTemplateService : BaseServices<MessageTemplate>, IEmailMessa
     /// <summary>
     /// 新增
     /// </summary>
-    /// <param name="createUpdateMessageTemplateDto"></param>
+    /// <param name="createUpdateEmailMessageTemplateDto"></param>
     /// <returns></returns>
-    public async Task<bool> CreateAsync(CreateUpdateMessageTemplateDto createUpdateMessageTemplateDto)
+    public async Task<bool> CreateAsync(CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto)
     {
         var messageTemplate =
-            await QueryFirstAsync(x => x.IsDeleted == false && x.Name == createUpdateMessageTemplateDto.Name);
+            await QueryFirstAsync(x => x.Name == createUpdateEmailMessageTemplateDto.Name);
         if (messageTemplate.IsNotNull())
             throw new BadRequestException($"邮箱模板=>{messageTemplate.Name}=>已存在!");
 
-        return await AddEntityAsync(Mapper.Map<MessageTemplate>(createUpdateMessageTemplateDto));
+        return await AddEntityAsync(Mapper.Map<EmailMessageTemplate>(createUpdateEmailMessageTemplateDto));
     }
 
     /// <summary>
     /// 修改
     /// </summary>
-    /// <param name="createUpdateMessageTemplateDto"></param>
+    /// <param name="createUpdateEmailMessageTemplateDto"></param>
     /// <returns></returns>
-    public async Task<bool> UpdateAsync(CreateUpdateMessageTemplateDto createUpdateMessageTemplateDto)
+    public async Task<bool> UpdateAsync(CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto)
     {
-        if (!await IsExistAsync(x => x.IsDeleted == false && x.Id == createUpdateMessageTemplateDto.Id))
-            throw new BadRequestException($"邮箱模板=>{createUpdateMessageTemplateDto.Name}=>不存在！");
+        if (!await IsExistAsync(x => x.Id == createUpdateEmailMessageTemplateDto.Id))
+            throw new BadRequestException($"邮箱模板=>{createUpdateEmailMessageTemplateDto.Name}=>不存在！");
 
-        return await UpdateEntityAsync(Mapper.Map<MessageTemplate>(createUpdateMessageTemplateDto));
+        return await UpdateEntityAsync(Mapper.Map<EmailMessageTemplate>(createUpdateEmailMessageTemplateDto));
     }
 
     /// <summary>
@@ -80,29 +80,29 @@ public class MessageTemplateService : BaseServices<MessageTemplate>, IEmailMessa
     /// <param name="messageTemplateQueryCriteria"></param>
     /// <param name="pagination"></param>
     /// <returns></returns>
-    public async Task<List<MessageTemplateDto>> QueryAsync(
-        MessageTemplateQueryCriteria messageTemplateQueryCriteria, Pagination pagination)
+    public async Task<List<EmailMessageTemplateDto>> QueryAsync(
+        EmailMessageTemplateQueryCriteria messageTemplateQueryCriteria, Pagination pagination)
     {
-        Expression<Func<MessageTemplate, bool>> whereExpression = x => x.IsDeleted == false;
+        Expression<Func<EmailMessageTemplate, bool>> whereExpression = x => true;
         if (!messageTemplateQueryCriteria.Name.IsNullOrEmpty())
         {
-            whereExpression = whereExpression.And(x => x.Name.Contains(messageTemplateQueryCriteria.Name));
+            whereExpression = whereExpression.AndAlso(x => x.Name.Contains(messageTemplateQueryCriteria.Name));
         }
 
         if (messageTemplateQueryCriteria.IsActive.IsNotNull())
         {
-            whereExpression = whereExpression.And(x => x.IsActive == messageTemplateQueryCriteria.IsActive);
+            whereExpression = whereExpression.AndAlso(x => x.IsActive == messageTemplateQueryCriteria.IsActive);
         }
 
         if (!messageTemplateQueryCriteria.CreateTime.IsNullOrEmpty() &&
             messageTemplateQueryCriteria.CreateTime.Count > 1)
         {
-            whereExpression = whereExpression.And(x =>
+            whereExpression = whereExpression.AndAlso(x =>
                 x.CreateTime >= messageTemplateQueryCriteria.CreateTime[0] &&
                 x.CreateTime <= messageTemplateQueryCriteria.CreateTime[1]);
         }
 
-        return Mapper.Map<List<MessageTemplateDto>>(
+        return Mapper.Map<List<EmailMessageTemplateDto>>(
             await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 

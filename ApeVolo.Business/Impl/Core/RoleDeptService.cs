@@ -46,7 +46,7 @@ public class RoleDeptService : BaseServices<RolesDepartments>, IRoleDeptService
                 JoinType.Left, rd.RoleId == r.Id
             },
             (rd, r) => rd,
-            (rd, r) => r.IsDeleted == false && deptIds.Contains(rd.DeptId)
+            (rd, r) => deptIds.Contains(rd.DeptId)
         );
         return list;
     }

@@ -14,8 +14,8 @@ public interface ISettingService : IBaseServices<Setting>
 {
     #region 基础接口
 
-    Task<bool> CreateAsync(CreateUpdateSettingDto createUpdateRoleDto);
-    Task<bool> UpdateAsync(CreateUpdateSettingDto createUpdateRoleDto);
+    Task<bool> CreateAsync(CreateUpdateSettingDto createUpdateSettingDto);
+    Task<bool> UpdateAsync(CreateUpdateSettingDto createUpdateSettingDto);
     Task<bool> DeleteAsync(HashSet<long> ids);
     Task<List<SettingDto>> QueryAsync(SettingQueryCriteria settingQueryCriteria, Pagination pagination);
     Task<List<ExportRowModel>> DownloadAsync(SettingQueryCriteria settingQueryCriteria);

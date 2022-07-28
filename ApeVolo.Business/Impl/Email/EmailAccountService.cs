@@ -42,8 +42,7 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
     /// <returns></returns>
     public async Task<bool> CreateAsync(CreateUpdateEmailAccountDto createUpdateEmailAccountDto)
     {
-        if (await IsExistAsync(x => x.IsDeleted == false
-                                    && x.Email == createUpdateEmailAccountDto.Email))
+        if (await IsExistAsync(x => x.Email == createUpdateEmailAccountDto.Email))
         {
             throw new BadRequestException($"邮箱=>{createUpdateEmailAccountDto.Email}=>已存在!");
         }
@@ -59,8 +58,7 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
     /// <returns></returns>
     public async Task<bool> UpdateAsync(CreateUpdateEmailAccountDto createUpdateEmailAccountDto)
     {
-        if (!await IsExistAsync(x => x.IsDeleted == false
-                                     && x.Id == createUpdateEmailAccountDto.Id))
+        if (!await IsExistAsync(x => x.Id == createUpdateEmailAccountDto.Id))
         {
             throw new BadRequestException($"邮箱=>{nameof(EmailAccount)}=>不存在!");
         }
@@ -92,21 +90,21 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
     public async Task<List<EmailAccountDto>> QueryAsync(EmailAccountQueryCriteria emailAccountQueryCriteria,
         Pagination pagination)
     {
-        Expression<Func<EmailAccount, bool>> whereExpression = x => x.IsDeleted == false;
+        Expression<Func<EmailAccount, bool>> whereExpression = x => true;
         if (!emailAccountQueryCriteria.Username.IsNullOrEmpty())
         {
-            whereExpression = whereExpression.And(x => x.Username.Contains(emailAccountQueryCriteria.Username));
+            whereExpression = whereExpression.AndAlso(x => x.Username.Contains(emailAccountQueryCriteria.Username));
         }
 
         if (!emailAccountQueryCriteria.DisplayName.IsNullOrEmpty())
         {
             whereExpression =
-                whereExpression.And(x => x.DisplayName.Contains(emailAccountQueryCriteria.DisplayName));
+                whereExpression.AndAlso(x => x.DisplayName.Contains(emailAccountQueryCriteria.DisplayName));
         }
 
         if (!emailAccountQueryCriteria.CreateTime.IsNullOrEmpty() && emailAccountQueryCriteria.CreateTime.Count > 1)
         {
-            whereExpression = whereExpression.And(x =>
+            whereExpression = whereExpression.AndAlso(x =>
                 x.CreateTime >= emailAccountQueryCriteria.CreateTime[0] &&
                 x.CreateTime <= emailAccountQueryCriteria.CreateTime[1]);
         }

@@ -11,13 +11,13 @@ namespace ApeVolo.IBusiness.Interface.Logs;
 /// <summary>
 /// 系统日志接口
 /// </summary>
-public interface ILogService : IBaseServices<Log>
+public interface IExceptionLogService : IBaseServices<ExceptionLog>
 {
     #region 基础接口
 
-    Task<bool> CreateAsync(Log log);
+    Task<bool> CreateAsync(ExceptionLog exceptionLog);
 
-    Task<List<LogDto>> QueryAsync(LogQueryCriteria logQueryCriteria, Pagination pagination);
+    Task<List<ExceptionLogDto>> QueryAsync(LogQueryCriteria logQueryCriteria, Pagination pagination);
 
     #endregion
 }

@@ -228,6 +228,27 @@ public static partial class ExtObject
     }
 
     /// <summary>
+    /// 连接表达式与运算
+    /// </summary>
+    /// <typeparam name="T">参数</typeparam>
+    /// <param name="one">原表达式</param>
+    /// <param name="another">新的表达式</param>
+    /// <returns></returns>
+    public static Expression<Func<T, bool>> AndAlso<T>(this Expression<Func<T, bool>> one,
+        Expression<Func<T, bool>> another)
+    {
+        //创建新参数
+        var newParameter = Expression.Parameter(typeof(T), "parameter");
+
+        var parameterReplacer = new ParameterReplaceVisitor(newParameter);
+        var left = parameterReplacer.Visit(one.Body);
+        var right = parameterReplacer.Visit(another.Body);
+        var body = Expression.AndAlso(left, right);
+
+        return Expression.Lambda<Func<T, bool>>(body, newParameter);
+    }
+
+    /// <summary>
     /// 连接表达式或运算
     /// </summary>
     /// <typeparam name="T">参数</typeparam>

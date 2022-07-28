@@ -39,14 +39,14 @@ public class UserRolesService : BaseServices<UserRoles>, IUserRolesService
 
     public async Task<bool> DeleteByUserIdAsync(long userId)
     {
-        var userRoles = await BaseDal.QueryListAsync(x => x.UserId == userId && x.IsDeleted == false);
+        var userRoles = await BaseDal.QueryListAsync(x => x.UserId == userId);
         return await DeleteEntityListAsync(userRoles);
     }
 
     [RedisCaching(KeyPrefix = RedisKey.UserRolesById)]
     public async Task<List<UserRoles>> QueryAsync(long userId)
     {
-        return await BaseDal.QueryListAsync(ur => ur.UserId == userId && ur.IsDeleted == false);
+        return await BaseDal.QueryListAsync(ur => ur.UserId == userId);
     }
 
     public async Task<List<UserRoles>> QueryByRoleIdsAsync(HashSet<long> roleIds)
@@ -57,7 +57,7 @@ public class UserRolesService : BaseServices<UserRoles>, IUserRolesService
                 JoinType.Left, ur.UserId == u.Id
             },
             (ur, u) => ur,
-            (ur, u) => u.IsDeleted == false && ur.IsDeleted == false && roleIds.Contains(ur.RoleId)
+            (ur, u) => roleIds.Contains(ur.RoleId)
         );
         return list;
     }

@@ -53,8 +53,7 @@ public class SmtpBuilder : ISmtpBuilder, IDependencyService
             var settingDto = await _settingService.FindSettingByName("DefaultEmailAccountId");
             var defaultEmailAccountId = settingDto?.Value.ToLong();
             emailAccount =
-                await _emailAccountService.QueryFirstAsync(x =>
-                    x.IsDeleted == false && x.Id == defaultEmailAccountId)
+                await _emailAccountService.QueryFirstAsync(x => x.Id == defaultEmailAccountId)
                 ?? throw new Exception("Email account could not be loaded");
         }
 

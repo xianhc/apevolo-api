@@ -157,7 +157,10 @@ public class QuartzNetController : BaseApiController
     {
         var quartzNetList = await _quartzNetService.QueryAsync(quartzNetQueryCriteria, pagination);
 
-        quartzNetList.ForEach(async m => { m.TriggerStatus = await _schedulerCenterService.GetTriggerStatus(m); });
+        foreach (var quartzNet in quartzNetList)
+        {
+            quartzNet.TriggerStatus = await _schedulerCenterService.GetTriggerStatus(quartzNet);
+        }
 
         return new ActionResultVm<QuartzNetDto>
         {
@@ -200,7 +203,7 @@ public class QuartzNetController : BaseApiController
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Execute(long id)
     {
-        var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.IsDeleted == false && x.Id == id);
+        var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.Id == id);
         if (quartzNet.IsNull())
         {
             return Error("作业不存在，执行失败！");
@@ -239,7 +242,7 @@ public class QuartzNetController : BaseApiController
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Pause(long id)
     {
-        var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.IsDeleted == false && x.Id == id);
+        var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.Id == id);
         if (quartzNet.IsNull())
         {
             return Error("作业不存在，暂停失败！");
@@ -277,7 +280,7 @@ public class QuartzNetController : BaseApiController
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Resume(long id)
     {
-        var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.IsDeleted == false && x.Id == id);
+        var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.Id == id);
         if (quartzNet.IsNull())
         {
             return Error("作业不存在，暂停失败！");

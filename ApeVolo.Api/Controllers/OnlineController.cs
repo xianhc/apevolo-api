@@ -83,7 +83,7 @@ public class OnlineController : BaseApiController
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> DropOut([FromBody] HashSet<string> keys)
     {
-        if (keys == null || keys.Count < 0)
+        if (keys == null || keys.Count < 1)
         {
             return Error("keys is null");
         }
@@ -137,7 +137,13 @@ public class OnlineController : BaseApiController
             exportColumnModels.Add(
                 new ExportColumnModel { Key = "IP地址", Value = onlineUser.Address, Point = point++ });
             exportColumnModels.Add(new ExportColumnModel
-                { Key = "浏览器", Value = onlineUser.Browser, Point = point++ });
+                { Key = "操作系统", Value = onlineUser.OperatingSystem, Point = point++ });
+            exportColumnModels.Add(new ExportColumnModel
+                { Key = "设备类型", Value = onlineUser.DeviceType, Point = point++ });
+            exportColumnModels.Add(new ExportColumnModel
+                { Key = "浏览器", Value = onlineUser.BrowserName, Point = point++ });
+            exportColumnModels.Add(new ExportColumnModel
+                { Key = "版本号", Value = onlineUser.Version, Point = point++ });
             exportColumnModels.Add(new ExportColumnModel
             {
                 Key = "登录时间", Value = onlineUser.LoginTime.ToString(CultureInfo.InvariantCulture), Point = point++

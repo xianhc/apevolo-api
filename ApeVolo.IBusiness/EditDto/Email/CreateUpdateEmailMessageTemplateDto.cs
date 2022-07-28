@@ -1,10 +1,11 @@
 ﻿using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.Do.Email;
+using ApeVolo.IBusiness.Dto;
 
-namespace ApeVolo.IBusiness.Dto.Email;
+namespace ApeVolo.IBusiness.EditDto.Email;
 
-[AutoMapping(typeof(MessageTemplate), typeof(MessageTemplateDto))]
-public class MessageTemplateDto : EntityDtoRoot<long>
+[AutoMapping(typeof(EmailMessageTemplate), typeof(CreateUpdateEmailMessageTemplateDto))]
+public class CreateUpdateEmailMessageTemplateDto : EntityDtoRoot<long>
 {
     /// <summary>
     /// 模板名称

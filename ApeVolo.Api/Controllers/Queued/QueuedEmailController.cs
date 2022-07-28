@@ -6,19 +6,20 @@ using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.IBusiness.Dto.Email;
+using ApeVolo.IBusiness.Dto.Queued;
 using ApeVolo.IBusiness.EditDto.Email;
-using ApeVolo.IBusiness.Interface.Email;
+using ApeVolo.IBusiness.EditDto.Queued;
+using ApeVolo.IBusiness.Interface.Queued;
 using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ApeVolo.Api.Controllers.Email;
+namespace ApeVolo.Api.Controllers.Queued;
 
 /// <summary>
 /// 邮箱账户
 /// </summary>
 [Area("emailAccount")]
-[Route("/api/email/queued")]
+[Route("/api/queued/email")]
 public class QueuedEmailController : BaseApiController
 {
     private readonly IQueuedEmailService _queuedEmailService;

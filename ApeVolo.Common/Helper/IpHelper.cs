@@ -128,34 +128,6 @@ public static class IpHelper
         return "";
     }
 
-    /// <summary>
-    /// 获取端浏览器名称
-    /// </summary>
-    /// <returns></returns>
-    public static string GetBrowserName()
-    {
-        try
-        {
-            var browser = AutofacHelper.GetScopeService<IBrowserDetector>();
-            return browser.Browser.Name;
-        }
-        catch
-        {
-            // ignored
-        }
-
-        return "";
-    }
-
-    /// <summary>
-    /// 获取浏览器对象 包括类型 浏览器 版本 系统
-    /// </summary>
-    /// <returns></returns>
-    public static object GetBrowser()
-    {
-        return AutofacHelper.GetScopeService<IBrowserDetector>();
-    }
-
     #endregion
 
     #region 私有成员

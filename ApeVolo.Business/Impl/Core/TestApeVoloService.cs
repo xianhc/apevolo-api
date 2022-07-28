@@ -24,7 +24,7 @@ public class TestApeVoloService : BaseServices<TestApeVolo>, ITestApeVoloService
 
     public async Task<List<TestApeVolo>> QueryAsync(Pagination pagination)
     {
-        Expression<Func<TestApeVolo, bool>> whereExpression = x => x.IsDeleted == false;
+        Expression<Func<TestApeVolo, bool>> whereExpression = x => true;
         return Mapper.Map<List<TestApeVolo>>(await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 }

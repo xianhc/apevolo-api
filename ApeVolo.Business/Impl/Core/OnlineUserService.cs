@@ -9,6 +9,7 @@ using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Vo;
+using Shyjus.BrowserDetection;
 
 namespace ApeVolo.Business.Impl.Core;
 
@@ -20,14 +21,16 @@ public class OnlineUserService : IOnlineUserService
     #region 字段
 
     private readonly IRedisCacheService _redisCacheService;
+    private readonly IBrowserDetector _browserDetector;
 
     #endregion
 
     #region 构造函数
 
-    public OnlineUserService(IRedisCacheService redisCacheService)
+    public OnlineUserService(IRedisCacheService redisCacheService, IBrowserDetector browserDetector)
     {
         _redisCacheService = redisCacheService;
+        _browserDetector = browserDetector;
     }
 
     #endregion
@@ -48,9 +51,12 @@ public class OnlineUserService : IOnlineUserService
             UserName = jwtUserVo.User.Username,
             NickName = jwtUserVo.User.NickName,
             Dept = jwtUserVo.User.Dept.Name,
-            Browser = IpHelper.GetBrowserName(),
             Ip = remoteIp,
             Address = IpHelper.GetIpAddress(remoteIp),
+            OperatingSystem = _browserDetector.Browser.OS,
+            DeviceType = _browserDetector.Browser.DeviceType,
+            BrowserName = _browserDetector.Browser.Name,
+            Version = _browserDetector.Browser.Version,
             Key = token.ToMd5String16(),
             LoginTime = DateTime.Now,
             CurrentPermission = new CurrentPermission

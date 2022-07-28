@@ -18,6 +18,7 @@ using ApeVolo.IBusiness.EditDto.Core;
 using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.Core;
+using ApeVolo.IRepository.UnitOfWork;
 using AutoMapper;
 using Castle.Core.Internal;
 using SqlSugar;
@@ -36,7 +37,6 @@ public class RoleService : BaseServices<Role>, IRoleService
     private readonly IUserRolesService _userRolesService;
     private readonly IDepartmentService _departmentService;
     private readonly IRoleDeptService _roleDeptService;
-    private readonly ISqlSugarClient _db;
     private readonly IRedisCacheService _redisCacheService;
 
     #endregion
@@ -44,14 +44,13 @@ public class RoleService : BaseServices<Role>, IRoleService
     #region 构造函数
 
     public RoleService(IMapper mapper, IRoleRepository roleRepository, ICurrentUser currentUser,
-        IMenuService menuService, IDepartmentService departmentService, ISqlSugarClient sqlSugarClient
+        IMenuService menuService, IDepartmentService departmentService
         , IRolesMenusService rolesMenusService, IUserRolesService userRolesService,
         IRoleDeptService roleDeptService, IRedisCacheService redisCacheService)
     {
         Mapper = mapper;
         BaseDal = roleRepository;
         CurrentUser = currentUser;
-        _db = sqlSugarClient;
         _menuService = menuService;
         _departmentService = departmentService;
         _rolesMenusService = rolesMenusService;
@@ -68,14 +67,12 @@ public class RoleService : BaseServices<Role>, IRoleService
     public async Task<bool> CreateAsync(CreateUpdateRoleDto createUpdateRoleDto)
     {
         await VerificationUserRoleLevelAsync(createUpdateRoleDto.Level);
-        if (await IsExistAsync(r => r.IsDeleted == false
-                                    && r.Name == createUpdateRoleDto.Name))
+        if (await IsExistAsync(r => r.Name == createUpdateRoleDto.Name))
         {
             throw new BadRequestException($"角色=>{createUpdateRoleDto.Name}=>已存在!");
         }
 
-        if (await IsExistAsync(r => r.IsDeleted == false
-                                    && r.Permission == createUpdateRoleDto.Permission))
+        if (await IsExistAsync(r => r.Permission == createUpdateRoleDto.Permission))
         {
             throw new BadRequestException($"角色代码=>{createUpdateRoleDto.Permission}=>已存在!");
         }
@@ -98,21 +95,19 @@ public class RoleService : BaseServices<Role>, IRoleService
     public async Task<bool> UpdateAsync(CreateUpdateRoleDto createUpdateRoleDto)
     {
         //取出待更新数据
-        var oldRole = await QueryFirstAsync(x => x.IsDeleted == false && x.Id == createUpdateRoleDto.Id);
+        var oldRole = await QueryFirstAsync(x => x.Id == createUpdateRoleDto.Id);
         if (oldRole.IsNull())
         {
             throw new BadRequestException("更新失败=》待更新数据不存在！");
         }
 
-        if (oldRole.Name != createUpdateRoleDto.Name && await IsExistAsync(x => x.IsDeleted == false
-                && x.Name == createUpdateRoleDto.Name))
+        if (oldRole.Name != createUpdateRoleDto.Name && await IsExistAsync(x => x.Name == createUpdateRoleDto.Name))
         {
             throw new BadRequestException($"角色名称=>{createUpdateRoleDto.Name}=>已存在！");
         }
 
         if (oldRole.Permission != createUpdateRoleDto.Permission && await IsExistAsync(x =>
-                x.IsDeleted == false
-                && x.Permission == createUpdateRoleDto.Permission))
+                x.Permission == createUpdateRoleDto.Permission))
         {
             throw new BadRequestException($"角色代码=>{createUpdateRoleDto.Permission}=>已存在！");
         }
@@ -152,35 +147,39 @@ public class RoleService : BaseServices<Role>, IRoleService
 
     public async Task<List<RoleDto>> QueryAsync(RoleQueryCriteria roleQueryCriteria, Pagination pagination)
     {
-        Expression<Func<Role, bool>> whereLambda = r => r.IsDeleted == false;
+        Expression<Func<Role, bool>> whereLambda = r => true;
         if (!roleQueryCriteria.RoleName.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(r =>
+            whereLambda = whereLambda.AndAlso(r =>
                 r.Name.Contains(roleQueryCriteria.RoleName));
         }
 
         if (!roleQueryCriteria.CreateTime.IsNullOrEmpty())
         {
-            whereLambda = whereLambda.And(r =>
+            whereLambda = whereLambda.AndAlso(r =>
                 r.CreateTime >= roleQueryCriteria.CreateTime[0] && r.CreateTime <= roleQueryCriteria.CreateTime[1]);
         }
 
-        var roleList = await BaseDal.QueryMapperPageListAsync(async (it, cache) =>
+        var roleList = await BaseDal.QueryPageListAsync(whereLambda, pagination);
+        foreach (var role in roleList)
         {
             //菜单
-            var menus = Mapper.Map<List<Menu>>(await _menuService.FindByRoleIdAsync(it.Id));
+            var menus = Mapper.Map<List<Menu>>(await _menuService.FindByRoleIdAsync(role.Id));
+            role.MenuList = menus;
 
             //部门
-            var depts = Mapper.Map<List<Department>>(await _departmentService.QueryByRoleIdAsync(it.Id));
-
-            it.MenuList = menus;
-            it.DepartmentList = depts;
-        }, whereLambda, pagination);
+            var departments = Mapper.Map<List<Department>>(await _departmentService.QueryByRoleIdAsync(role.Id));
+            role.DepartmentList = departments;
+        }
 
         return Mapper.Map<List<RoleDto>>(roleList);
     }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="roleQueryCriteria"></param>
+    /// <returns></returns>
     public async Task<List<ExportRowModel>> DownloadAsync(RoleQueryCriteria roleQueryCriteria)
     {
         var roles = await QueryAsync(roleQueryCriteria, new Pagination { PageSize = 9999 });
@@ -217,30 +216,12 @@ public class RoleService : BaseServices<Role>, IRoleService
 
     #region 扩展方法
 
-    public async Task<List<RoleDto>> QuerySingleAsync(long roleId)
-    {
-        var roleList = await BaseDal.QueryMapperAsync(async (it, cache) =>
-        {
-            //菜单
-            var menus = Mapper.Map<List<Menu>>(await _menuService.FindByRoleIdAsync(it.Id));
-
-            //部门
-            var depts = Mapper.Map<List<Department>>(await _departmentService.QueryByRoleIdAsync(it.Id));
-
-            it.MenuList = menus;
-            it.DepartmentList = depts;
-        }, r => r.IsDeleted == false);
-
-        return Mapper.Map<List<RoleDto>>(roleList);
-    }
-
-
     /// <summary>
     /// 获取用户全部角色
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
-    public async Task<List<RoleSmallDto>> QueryByUserIdAsync(long userId)
+    public async Task<List<RoleSmallDto>> QueryByUserIdAsync(long id)
     {
         var roleSmallList = await BaseDal.QueryMuchAsync<Role, UserRoles, Role>(
             (r, ur) => new object[]
@@ -248,7 +229,7 @@ public class RoleService : BaseServices<Role>, IRoleService
                 JoinType.Left, r.Id == ur.RoleId
             },
             (r, ur) => r,
-            (r, ur) => r.IsDeleted == false && ur.IsDeleted == false && ur.UserId == userId
+            (r, ur) => ur.UserId == id
         );
 
         return Mapper.Map<List<RoleSmallDto>>(roleSmallList);
@@ -256,19 +237,18 @@ public class RoleService : BaseServices<Role>, IRoleService
 
     public async Task<List<RoleDto>> QueryAllAsync()
     {
-        var roleList = await _db.Queryable<Role>().Mapper(
-            async (it, cache) =>
-            {
-                //菜单
-                var menus = Mapper.Map<List<Menu>>(await _menuService.FindByRoleIdAsync(it.Id));
+        var roleList = await BaseDal.QueryListAsync();
+        foreach (var role in roleList)
+        {
+            //菜单
+            var menus = Mapper.Map<List<Menu>>(await _menuService.FindByRoleIdAsync(role.Id));
+            role.MenuList = menus;
 
-                //部门
-                var depts = Mapper.Map<List<Department>>(await _departmentService.QueryByRoleIdAsync(it.Id));
+            //部门
+            var depts = Mapper.Map<List<Department>>(await _departmentService.QueryByRoleIdAsync(role.Id));
+            role.DepartmentList = depts;
+        }
 
-                it.MenuList = menus;
-                it.DepartmentList = depts;
-            }
-        ).ToListAsync();
         return Mapper.Map<List<RoleDto>>(roleList);
     }
 
@@ -281,7 +261,7 @@ public class RoleService : BaseServices<Role>, IRoleService
                 JoinType.Left, r.Id == ur.RoleId
             },
             (r, ur) => r,
-            (r, ur) => r.IsDeleted == false && ur.IsDeleted == false && ids.Contains(ur.UserId)
+            (r, ur) => ids.Contains(ur.UserId)
         );
         levels.AddRange(roles.Select(x => x.Level).ToList());
         int minLevel = levels.Min();
@@ -297,17 +277,13 @@ public class RoleService : BaseServices<Role>, IRoleService
                 JoinType.Left, r.Id == ur.RoleId
             },
             (r, ur) => r,
-            (r, ur) => r.IsDeleted == false && ur.IsDeleted == false &&
-                       ur.UserId == CurrentUser.Id //"737368938475687938"//
+            (r, ur) => ur.UserId == CurrentUser.Id //"737368938475687938"//
         );
         levels.AddRange(roles.Select(x => x.Level).ToList());
         int minLevel = levels.Min();
-        if (level != null)
+        if (level != null && level < minLevel)
         {
-            if (level < minLevel)
-            {
-                throw new BadRequestException("您无权修改或删除比你角色等级更高的数据！");
-            }
+            throw new BadRequestException("您无权修改或删除比你角色等级更高的数据！");
         }
 
         return minLevel;
@@ -334,11 +310,12 @@ public class RoleService : BaseServices<Role>, IRoleService
 
         //获取所有用户  删除缓存
         var userRoles = await _userRolesService.QueryByRoleIdsAsync(new HashSet<long> { role.Id });
-        userRoles.ForEach(async ur =>
+        foreach (var ur in userRoles)
         {
             await _redisCacheService.RemoveAsync(RedisKey.UserPermissionById +
                                                  ur.UserId.ToString().ToMd5String16());
-        });
+        }
+
         return true;
     }
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Entity.Do.Email;
+using ApeVolo.Entity.Do.Queued;
 
-namespace ApeVolo.IBusiness.Dto.Email;
+namespace ApeVolo.IBusiness.Dto.Queued;
 
 [AutoMapping(typeof(QueuedEmail), typeof(QueuedEmailDto))]
 public class QueuedEmailDto : EntityDtoRoot<long>

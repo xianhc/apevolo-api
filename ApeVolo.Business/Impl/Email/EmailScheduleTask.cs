@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ApeVolo.Common.DI;
 using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Interface.Email;
+using ApeVolo.IBusiness.Interface.Queued;
 using ApeVolo.IBusiness.QueryModel;
 using log4net;
 
@@ -71,8 +72,7 @@ public class EmailScheduleTask : IEmailScheduleTask, IDependencyService
             try
             {
                 await _emailSender.SendEmailAsync(
-                    await _emailAccountService.QueryFirstAsync(x =>
-                        x.IsDeleted == false && x.Id == queuedEmail.EmailAccountId),
+                    await _emailAccountService.QueryFirstAsync(x => x.Id == queuedEmail.EmailAccountId),
                     queuedEmail.Subject,
                     queuedEmail.Body,
                     queuedEmail.From,

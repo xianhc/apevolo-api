@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using ApeVolo.Api.Aop;
 using ApeVolo.Api.Extensions;
 using ApeVolo.Api.Filter;
 using ApeVolo.Api.Middleware;
@@ -16,7 +12,6 @@ using ApeVolo.IBusiness.Interface.Tasks;
 using ApeVolo.QuartzNetService.service;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Autofac.Extras.DynamicProxy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using Shyjus.BrowserDetection;
 using StackExchange.Profiling;
 using LogLevel = ApeVolo.Common.Global.LogLevel;
 
@@ -27,19 +28,22 @@ namespace ApeVolo.Api.Filter;
 
 public class GlobalExceptionFilter : IAsyncExceptionFilter
 {
-    private readonly ILogService _logService;
+    private readonly IExceptionLogService _exceptionLogService;
     private readonly ICurrentUser _currentUser;
     private readonly ISettingService _settingService;
+    private readonly IBrowserDetector _browserDetector;
 
     private static readonly ILog Log =
         LogManager.GetLogger(typeof(GlobalExceptionFilter));
 
 
-    public GlobalExceptionFilter(ICurrentUser currentUser, ILogService logService, ISettingService settingService)
+    public GlobalExceptionFilter(ICurrentUser currentUser, IExceptionLogService exceptionLogService,
+        ISettingService settingService, IBrowserDetector browserDetector)
     {
-        _logService = logService;
+        _exceptionLogService = exceptionLogService;
         _currentUser = currentUser;
         _settingService = settingService;
+        _browserDetector = browserDetector;
     }
 
     public async Task OnExceptionAsync(ExceptionContext context)
@@ -76,7 +80,9 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         }
 
         //记录日志
-        Log.Error(ExceptionLogFormat.WriteLog(context.HttpContext, context.Exception, _currentUser.Name));
+        Log.Error(ExceptionLogFormat.WriteLog(context.HttpContext, context.Exception, _currentUser?.Name,
+            _browserDetector.Browser.OS, _browserDetector.Browser.DeviceType, _browserDetector.Browser.Name,
+            _browserDetector.Browser.Version));
         if ((await _settingService.FindSettingByName("IsExceptionLogSaveDB")).Value.ToBool() &&
             exceptionType != typeof(DemoRequestException))
         {
@@ -86,16 +92,17 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 var log = CreateLog(context);
                 if (log.IsNotNull())
                 {
-                    await _logService.CreateAsync(log);
+                    await _exceptionLogService.AddEntityAsync(log);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // ignored
+                Log.Error(ExceptionLogFormat.WriteLog(context.HttpContext, ex, _currentUser?.Name,
+                    _browserDetector.Browser.OS, _browserDetector.Browser.DeviceType, _browserDetector.Browser.Name,
+                    _browserDetector.Browser.Version));
+                ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
             }
         }
-
-        //await Task.CompletedTask;
     }
 
     /// <summary>
@@ -103,20 +110,20 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    private Log CreateLog(ExceptionContext context)
+    private ExceptionLog CreateLog(ExceptionContext context)
     {
         var routeValues = context.ActionDescriptor.RouteValues;
         Attribute desc =
             ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.GetCustomAttribute(
                 typeof(DescriptionAttribute), true);
 
-        Log log = null;
+        ExceptionLog log = null;
         try
         {
             var httpContext = context.HttpContext;
             var remoteIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
             var discs = HttpHelper.GetAllRequestParams(httpContext);
-            log = new Log
+            log = new ExceptionLog
             {
                 Id = IdHelper.GetLongId(),
                 CreateBy = _currentUser.Name ?? "",
@@ -128,13 +135,16 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 Description = desc == null ? "" : ((DescriptionAttribute)desc).Description,
                 RequestUrl = httpContext.Request.GetDisplayUrl(),
                 RequestParameters = discs.ToJson(),
-                BrowserInfo = IpHelper.GetBrowserName(),
+                ExceptionMessage = context.Exception.Message,
+                ExceptionMessageFull = ExceptionHelper.GetExceptionAllMsg(context.Exception),
+                ExceptionStack = context.Exception.StackTrace,
                 RequestIp = remoteIp,
                 IpAddress = IpHelper.GetIpAddress(remoteIp),
                 LogLevel = (int)LogLevel.Debug,
-                ExceptionMessage = context.Exception.Message,
-                ExceptionMessageFull = ExceptionHelper.GetExceptionAllMsg(context.Exception),
-                ExceptionStack = context.Exception.StackTrace
+                OperatingSystem = _browserDetector.Browser.OS,
+                DeviceType = _browserDetector.Browser.DeviceType,
+                BrowserName = _browserDetector.Browser.Name,
+                Version = _browserDetector.Browser.Version
             };
         }
         catch

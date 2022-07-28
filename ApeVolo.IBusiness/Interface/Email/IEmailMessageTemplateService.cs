@@ -12,17 +12,17 @@ namespace ApeVolo.IBusiness.Interface.Email;
 /// <summary>
 /// 邮件消息模板接口
 /// </summary>
-public interface IEmailMessageTemplateService : IBaseServices<MessageTemplate>
+public interface IEmailMessageTemplateService : IBaseServices<EmailMessageTemplate>
 {
     #region 基础接口
 
-    Task<bool> CreateAsync(CreateUpdateMessageTemplateDto createUpdateMessageTemplateDto);
+    Task<bool> CreateAsync(CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto);
 
-    Task<bool> UpdateAsync(CreateUpdateMessageTemplateDto createUpdateMessageTemplateDto);
+    Task<bool> UpdateAsync(CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto);
 
     Task<bool> DeleteAsync(HashSet<long> ids);
 
-    Task<List<MessageTemplateDto>> QueryAsync(MessageTemplateQueryCriteria messageTemplateQueryCriteria,
+    Task<List<EmailMessageTemplateDto>> QueryAsync(EmailMessageTemplateQueryCriteria messageTemplateQueryCriteria,
         Pagination pagination);
 
     #endregion

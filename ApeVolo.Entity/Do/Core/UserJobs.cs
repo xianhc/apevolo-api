@@ -13,14 +13,14 @@ public class UserJobs : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// 用户ID
     /// </summary>
-    [SugarColumn(ColumnName = "user_id", ColumnDataType = "bigint", Length = 19, IsNullable = false,
+    [SugarColumn(ColumnName = "user_id", ColumnDataType = "bigint", IsNullable = false,
         ColumnDescription = "用户ID")]
     public long UserId { get; set; }
 
     /// <summary>
     /// 岗位ID
     /// </summary>
-    [SugarColumn(ColumnName = "job_id", ColumnDataType = "bigint", Length = 19, IsNullable = false,
+    [SugarColumn(ColumnName = "job_id", ColumnDataType = "bigint", IsNullable = false,
         ColumnDescription = "岗位ID")]
     public long JobId { get; set; }
 }

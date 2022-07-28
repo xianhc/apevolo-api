@@ -21,18 +21,11 @@ public interface IRoleService : IBaseServices<Role>
     Task<bool> UpdateAsync(CreateUpdateRoleDto createUpdateRoleDto);
     Task<bool> DeleteAsync(HashSet<long> ids);
     Task<List<RoleDto>> QueryAsync(RoleQueryCriteria roleQueryCriteria, Pagination pagination);
-    Task<List<ExportRowModel>> DownloadAsync(RoleQueryCriteria userQueryCriteria);
+    Task<List<ExportRowModel>> DownloadAsync(RoleQueryCriteria roleQueryCriteria);
 
     #endregion
 
     #region 扩展接口
-
-    /// <summary>
-    /// 获取单个角色
-    /// </summary>
-    /// <param name="roleId"></param>
-    /// <returns></returns>
-    Task<List<RoleDto>> QuerySingleAsync(long roleId);
 
     /// <summary>
     /// 根据用户ID获取角色

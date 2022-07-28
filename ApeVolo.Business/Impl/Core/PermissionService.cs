@@ -47,7 +47,7 @@ public class PermissionService : BaseServices<Role>, IPermissionService
                 LinkUrl = m.LinkUrl,
                 Permission = m.Permission
             },
-            (m, rm, ur) => m.IsDeleted == false && ur.UserId == userId
+            (m, rm, ur) => ur.UserId == userId
             , (m, rm, ur) => new { m.LinkUrl, m.Permission }
         );
         return permissionLists;

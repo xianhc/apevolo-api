@@ -33,10 +33,10 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
 
     public async Task<bool> CreateAsync(CreateUpdateDictDetailDto createUpdateDictDetailDto)
     {
-        if (await IsExistAsync(dd => dd.IsDeleted == false &&
-                                     dd.DictId == createUpdateDictDetailDto.dict.Id &&
-                                     dd.Label == createUpdateDictDetailDto.Label &&
-                                     dd.Value == createUpdateDictDetailDto.Value))
+        if (await IsExistAsync(dd =>
+                dd.DictId == createUpdateDictDetailDto.dict.Id &&
+                dd.Label == createUpdateDictDetailDto.Label &&
+                dd.Value == createUpdateDictDetailDto.Value))
         {
             throw new BadRequestException($"字典详情资源=>{createUpdateDictDetailDto.Label}=>已存在！");
         }
@@ -48,7 +48,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
 
     public async Task<bool> UpdateAsync(CreateUpdateDictDetailDto createUpdateDictDetailDto)
     {
-        if (!await IsExistAsync(dd => dd.IsDeleted == false && dd.Id == createUpdateDictDetailDto.Id))
+        if (!await IsExistAsync(dd => dd.Id == createUpdateDictDetailDto.Id))
         {
             throw new BadRequestException($"字典详情资源=>{createUpdateDictDetailDto.Label}=>不存在！");
         }
@@ -61,7 +61,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
     public async Task<bool> DeleteAsync(string id)
     {
         var dictDetail = await QuerySingleAsync(id);
-        if (dictDetail == null || dictDetail.IsDeleted)
+        if (dictDetail == null)
         {
             throw new BadRequestException("删除的资源不存在！");
         }
@@ -79,7 +79,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
                 JoinType.Left, d.Id == dd.DictId,
             },
             (d, dd) => dd,
-            (d, dd) => d.IsDeleted == false && dd.IsDeleted == false && d.Name == dictDetailQueryCriteria.DictName
+            (d, dd) => d.Name == dictDetailQueryCriteria.DictName
         );
         var dictDetailDtos = Mapper.Map<List<DictDetailDto>>(list);
         dictDetailDtos.ForEach(dd => dd.Dict = new DictDto2 { Id = dd.DictId });

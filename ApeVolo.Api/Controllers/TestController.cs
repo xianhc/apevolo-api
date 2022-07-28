@@ -4,12 +4,15 @@ using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Api.MQ.Rabbit.Events;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
+using ApeVolo.Common.Model;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.EventBus.Abstractions;
 using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Interface.Email;
+using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shyjus.BrowserDetection;
 
 namespace ApeVolo.Api.Controllers;
 
@@ -22,17 +25,25 @@ namespace ApeVolo.Api.Controllers;
 public class TestController : BaseApiController
 {
     private readonly IEmailScheduleTask _emailScheduleTask;
-    private readonly IEventBus _eventBus;
+
+    //private readonly IEventBus _eventBus;
     private readonly IRedisCacheService _redisCacheService;
     private readonly ITestApeVoloService _testApeVoloService;
+    private readonly IUserService _userService;
+    private readonly IRoleService _roleService;
+    private readonly IBrowserDetector _browserDetector;
 
     public TestController(IEmailScheduleTask emailScheduleTask, ITestApeVoloService testApeVoloService,
-        IRedisCacheService redisCacheService, IEventBus eventBus)
+        IRedisCacheService redisCacheService, IUserService userService, IRoleService roleService,
+        IBrowserDetector browserDetector)
     {
         _emailScheduleTask = emailScheduleTask;
         _testApeVoloService = testApeVoloService;
         _redisCacheService = redisCacheService;
-        _eventBus = eventBus;
+        //_eventBus = eventBus;
+        _userService = userService;
+        _roleService = roleService;
+        _browserDetector = browserDetector;
     }
 
     /// <summary>
@@ -118,7 +129,7 @@ public class TestController : BaseApiController
     /// rabbitmq测试
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
+    /*[HttpGet]
     [AllowAnonymous]
     public ActionResult<object> EventBusTry()
     {
@@ -137,5 +148,5 @@ public class TestController : BaseApiController
         }
 
         return Success();
-    }
+    }*/
 }

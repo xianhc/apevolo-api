@@ -52,27 +52,32 @@ public class DataScopeService : IDataScopeService, IDependencyService
             return deptIds;
         }
 
-        roleList.ForEach(async role =>
+        foreach (var role in roleList)
         {
-            if (role.DataScope == "本级")
+            switch (role.DataScope)
             {
-                if (!deptIds.Contains(userDto.DeptId))
+                case "本级":
                 {
-                    deptIds.Add(userDto.DeptId);
+                    if (!deptIds.Contains(userDto.DeptId))
+                    {
+                        deptIds.Add(userDto.DeptId);
+                    }
+
+                    break;
                 }
+                case "自定义":
+                    await GetCustomizeDeptIds(deptIds, role);
+                    break;
             }
-            else if (role.DataScope == "自定义")
-            {
-                await GetCustomizeDeptIds(deptIds, role);
-            }
-        });
+        }
+
         return deptIds;
     }
 
     private async Task GetCustomizeDeptIds(List<long> deptIds, RoleSmallDto role)
     {
         var roleDepts = await _roleDeptService.QueryByRoleIdAsync(role.Id);
-        roleDepts.ForEach(async rd =>
+        foreach (var rd in roleDepts)
         {
             if (!deptIds.Contains(rd.DeptId))
             {
@@ -92,7 +97,7 @@ public class DataScopeService : IDataScopeService, IDependencyService
                     }
                 });
             }
-        });
+        }
     }
 
     #endregion

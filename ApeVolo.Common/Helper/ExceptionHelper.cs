@@ -60,17 +60,6 @@ public static class ExceptionHelper
     public static string GetExceptionAllMsg(System.Exception ex)
     {
         string msg = GetExceptionAllMsg(ex, 1);
-//             try
-//             {
-//                 msg += $@"
-// url:{HttpContextCore.CurrentHttpContext.Request.GetDisplayUrl()}
-// body:{HttpContextCore.CurrentHttpContext.Request.Body.ReadToString()}
-// ";
-//             }
-//             catch
-//             {
-//
-//             }
         return msg;
     }
 }

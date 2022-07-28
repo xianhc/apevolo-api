@@ -40,21 +40,21 @@ public class QuartzNetLogService : BaseServices<QuartzNetLog>, IQuartzNetLogServ
     public async Task<List<QuartzNetLogDto>> QueryAsync(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria,
         Pagination pagination)
     {
-        Expression<Func<QuartzNetLog, bool>> whereExpression = x => x.IsDeleted == false;
+        Expression<Func<QuartzNetLog, bool>> whereExpression = x => true;
 
         if (!quartzNetLogQueryCriteria.Id.IsNullOrEmpty())
         {
-            whereExpression = whereExpression.And(x => x.TaskId == quartzNetLogQueryCriteria.Id);
+            whereExpression = whereExpression.AndAlso(x => x.TaskId == quartzNetLogQueryCriteria.Id);
         }
 
         if (quartzNetLogQueryCriteria.IsSuccess.HasValue)
         {
-            whereExpression = whereExpression.And(x => x.IsSuccess == quartzNetLogQueryCriteria.IsSuccess);
+            whereExpression = whereExpression.AndAlso(x => x.IsSuccess == quartzNetLogQueryCriteria.IsSuccess);
         }
 
         if (!quartzNetLogQueryCriteria.CreateTime.IsNullOrEmpty() && quartzNetLogQueryCriteria.CreateTime.Count > 1)
         {
-            whereExpression = whereExpression.And(x =>
+            whereExpression = whereExpression.AndAlso(x =>
                 x.CreateTime >= quartzNetLogQueryCriteria.CreateTime[0] &&
                 x.CreateTime <= quartzNetLogQueryCriteria.CreateTime[1]);
         }

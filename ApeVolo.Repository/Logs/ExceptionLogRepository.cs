@@ -5,9 +5,9 @@ using ApeVolo.Repository.Base;
 
 namespace ApeVolo.Repository.Logs;
 
-public class LogRepository : SugarHandler<Log>, ILogRepository
+public class ExceptionLogRepository : SugarHandler<ExceptionLog>, IExceptionLogRepository
 {
-    public LogRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
+    public ExceptionLogRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
     {
     }
 }

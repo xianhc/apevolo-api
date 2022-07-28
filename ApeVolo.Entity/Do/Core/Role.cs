@@ -14,8 +14,7 @@ public class Role : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// 角色名称
     /// </summary>
-    [SugarColumn(ColumnName = "name", ColumnDataType = "varchar", Length = 255, IsNullable = false,
-        ColumnDescription = "角色名称")]
+    [SugarColumn(ColumnName = "name", IsNullable = false, ColumnDescription = "角色名称")]
     public string Name { get; set; }
 
     /// <summary>
@@ -27,21 +26,20 @@ public class Role : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// 描述
     /// </summary>
-    [SugarColumn(ColumnName = "description", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "描述")]
+    [SugarColumn(ColumnName = "description", IsNullable = true, ColumnDescription = "描述")]
     public string Description { get; set; }
 
     /// <summary>
     /// 数据权限
     /// </summary>
-    [SugarColumn(ColumnName = "data_scope", ColumnDataType = "varchar", Length = 50, IsNullable = false,
+    [SugarColumn(ColumnName = "data_scope", ColumnDataType = "nvarchar", Length = 50, IsNullable = false,
         ColumnDescription = "数据权限")]
     public string DataScope { get; set; }
 
     /// <summary>
     /// 角色代码
     /// </summary>
-    [SugarColumn(ColumnName = "permission", ColumnDataType = "varchar", Length = 20, IsNullable = false,
+    [SugarColumn(ColumnName = "permission", ColumnDataType = "nvarchar", Length = 20, IsNullable = false,
         ColumnDescription = "角色代码")]
     public string Permission { get; set; }
 

@@ -38,8 +38,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     [UseTran]
     public async Task<bool> CreateAsync(CreateUpdateDepartmentDto createUpdateDepartmentDto)
     {
-        if (await IsExistAsync(d => d.IsDeleted == false
-                                    && d.Name == createUpdateDepartmentDto.Name))
+        if (await IsExistAsync(d => d.Name == createUpdateDepartmentDto.Name))
         {
             throw new BadRequestException($"部门=》{createUpdateDepartmentDto.Name}=》已存在!");
         }
@@ -50,11 +49,11 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         //重新计算子节点个数
         if (!dept.PId.IsNullOrEmpty())
         {
-            var department = await BaseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == dept.PId);
+            var department = await BaseDal.QueryFirstAsync(x => x.Id == dept.PId);
             if (department.IsNotNull())
             {
                 var departmentList =
-                    await BaseDal.QueryListAsync(x => x.IsDeleted == false && x.PId == department.Id);
+                    await BaseDal.QueryListAsync(x => x.PId == department.Id);
                 department.SubCount = departmentList.Count;
                 await UpdateEntityAsync(department);
             }
@@ -67,15 +66,14 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     public async Task<bool> UpdateAsync(CreateUpdateDepartmentDto createUpdateDepartmentDto)
     {
         var oldUseDepartment =
-            await QueryFirstAsync(x => x.IsDeleted == false && x.Id == createUpdateDepartmentDto.Id);
+            await QueryFirstAsync(x => x.Id == createUpdateDepartmentDto.Id);
         if (oldUseDepartment.IsNull())
         {
             throw new BadRequestException("更新失败=》待更新数据不存在！");
         }
 
         if (oldUseDepartment.Name != createUpdateDepartmentDto.Name && await IsExistAsync(x =>
-                x.IsDeleted == false
-                && x.Name == createUpdateDepartmentDto.Name))
+                x.Name == createUpdateDepartmentDto.Name))
         {
             throw new BadRequestException($"部门名称=>{createUpdateDepartmentDto.Name}=>已存在！");
         }
@@ -90,11 +88,11 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         {
             if (!dept.PId.IsNullOrEmpty())
             {
-                var department = await BaseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == dept.PId);
+                var department = await BaseDal.QueryFirstAsync(x => x.Id == dept.PId);
                 if (department.IsNotNull())
                 {
                     var departmentList =
-                        await BaseDal.QueryListAsync(x => x.IsDeleted == false && x.PId == department.Id);
+                        await BaseDal.QueryListAsync(x => x.PId == department.Id);
                     department.SubCount = departmentList.Count;
                     await UpdateEntityAsync(department);
                 }
@@ -103,11 +101,11 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
             if (!oldUseDepartment.PId.IsNullOrEmpty())
             {
                 var department =
-                    await BaseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == oldUseDepartment.PId);
+                    await BaseDal.QueryFirstAsync(x => x.Id == oldUseDepartment.PId);
                 if (department.IsNotNull())
                 {
                     var departmentList =
-                        await BaseDal.QueryListAsync(x => x.IsDeleted == false && x.PId == department.Id);
+                        await BaseDal.QueryListAsync(x => x.PId == department.Id);
                     department.SubCount = departmentList.Count;
                     await UpdateEntityAsync(department);
                 }
@@ -121,16 +119,17 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     public async Task<bool> DeleteAsync(HashSet<long> ids)
     {
         List<long> idList = new List<long>();
-        ids.ForEach(async id =>
+        foreach (var id in ids)
         {
             if (!idList.Contains(id))
             {
                 idList.Add(id);
             }
 
-            var departments = await BaseDal.QueryListAsync(m => m.IsDeleted == false && m.PId == id);
+            var departments = await BaseDal.QueryListAsync(m => m.PId == id);
             await FindChildIds(departments, idList);
-        });
+        }
+
         var departmentList = await QueryByIdsAsync(idList);
         await DeleteEntityListAsync(departmentList);
 
@@ -144,17 +143,16 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
             }
         });
 
-        uPIds.ForEach(async pid =>
+        foreach (var pid in uPIds)
         {
-            var department = await BaseDal.QueryFirstAsync(x => x.IsDeleted == false && x.Id == pid);
-            if (department.IsNotNull())
-            {
-                var depts =
-                    await BaseDal.QueryListAsync(x => x.IsDeleted == false && x.PId == department.Id);
-                department.SubCount = depts.Count;
-                await UpdateEntityAsync(department);
-            }
-        });
+            var department = await BaseDal.QueryFirstAsync(x => x.Id == pid);
+            if (!department.IsNotNull()) continue;
+
+            var depts =
+                await BaseDal.QueryListAsync(x => x.PId == department.Id);
+            department.SubCount = depts.Count;
+            await UpdateEntityAsync(department);
+        }
 
         return true;
     }
@@ -163,26 +161,22 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     public async Task<List<DepartmentDto>> QueryAsync(DeptQueryCriteria deptQueryCriteria,
         Pagination pagination)
     {
-        Expression<Func<Department, bool>> whereExpression = x => x.IsDeleted == false;
+        Expression<Func<Department, bool>> whereExpression = x => true;
         whereExpression = deptQueryCriteria.PId.IsNotNull()
-            ? whereExpression.And(x => x.PId == deptQueryCriteria.PId)
-            : whereExpression.And(x => x.PId == null);
+            ? whereExpression.AndAlso(x => x.PId == deptQueryCriteria.PId)
+            : whereExpression.AndAlso(x => x.PId == null);
         if (!deptQueryCriteria.DeptName.IsNullOrEmpty())
         {
-            whereExpression = whereExpression.And(x => x.Name.Contains(deptQueryCriteria.DeptName));
+            whereExpression = whereExpression.AndAlso(x => x.Name.Contains(deptQueryCriteria.DeptName));
         }
 
         if (!deptQueryCriteria.Enabled.IsNullOrEmpty())
         {
-            whereExpression = whereExpression.And(x => x.Enabled == deptQueryCriteria.Enabled);
+            whereExpression = whereExpression.AndAlso(x => x.Enabled == deptQueryCriteria.Enabled);
         }
 
         var deptList = await BaseDal.QueryPageListAsync(whereExpression, pagination);
         var deptDatalist = Mapper.Map<List<DepartmentDto>>(deptList);
-        // if (deptQueryCriteria.PId.IsNull())
-        // {
-        //     deptDatalist = deptDatalist.Where(x => x.PId == null).ToList();
-        // }
 
         pagination.TotalElements = deptDatalist.Count;
         return deptDatalist;
@@ -222,31 +216,30 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
 
     public async Task<List<DepartmentDto>> QuerySuperiorDeptAsync(List<long> ids)
     {
-        DepartmentDto departmentDto = null;
-        List<DepartmentDto> departmentDtos = new List<DepartmentDto>();
-        var dtos = departmentDtos;
-        ids.ForEach(async (s, index) =>
+        var departmentList = new List<DepartmentDto>();
+        foreach (var id in ids)
         {
-            departmentDto =
-                Mapper.Map<DepartmentDto>(await QueryFirstAsync(x => x.IsDeleted == false && x.Id == s));
-            List<DepartmentDto> depts = await FindSuperiorAsync(departmentDto, new List<DepartmentDto>());
-            dtos.AddRange(depts);
-        });
-        departmentDtos = TreeHelper<DepartmentDto>.ListToTrees(departmentDtos, "Id", "PId", null);
+            var dept = await QueryFirstAsync(x => x.Id == id);
+            var deptDto = Mapper.Map<DepartmentDto>(dept);
+            var departmentDtoList = await FindSuperiorAsync(deptDto, new List<DepartmentDto>());
+            departmentList.AddRange(departmentDtoList);
+        }
 
-        return await Task.FromResult(departmentDtos);
+        departmentList = TreeHelper<DepartmentDto>.ListToTrees(departmentList, "Id", "PId", null);
+
+        return departmentList;
     }
 
     public async Task<List<DepartmentDto>> QueryByPIdAsync(long id)
     {
         return Mapper.Map<List<DepartmentDto>>(await BaseDal.QueryListAsync(x =>
-            x.IsDeleted == false && x.PId == id && x.Enabled == true));
+            x.PId == id && x.Enabled));
     }
 
     public async Task<DepartmentSmallDto> QueryByIdAsync(long id)
     {
         return Mapper.Map<DepartmentSmallDto>(await BaseDal.QueryFirstAsync(x =>
-            x.IsDeleted == false && x.Id == id && x.Enabled));
+            x.Id == id && x.Enabled));
     }
 
 
@@ -257,7 +250,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
             {
                 JoinType.Left, d.Id == rd.DeptId
             }, (d, rd) => d,
-            (d, rd) => d.IsDeleted == false && rd.IsDeleted == false && roleId == rd.RoleId
+            (d, rd) => roleId == rd.RoleId
         );
         departments = TreeHelper<Department>.SetLeafProperty(departments, "Id", "PId", null);
         return Mapper.Map<List<DepartmentDto>>(departments);
@@ -265,22 +258,21 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
 
     public async Task<List<long>> FindChildIds(List<long> deptIds, List<DepartmentDto> departmentDtos)
     {
-        departmentDtos.ForEach(async dept =>
+        foreach (var dept in departmentDtos)
         {
-            if (dept.Enabled)
+            if (!dept.Enabled) continue;
+            if (!deptIds.Contains(dept.Id))
             {
-                if (!deptIds.Contains(dept.Id))
-                {
-                    deptIds.Add(dept.Id);
-                }
-
-                List<DepartmentDto> deptLists = await QueryByPIdAsync(dept.Id);
-                if (deptLists != null && deptLists.Count > 0)
-                {
-                    await FindChildIds(deptIds, deptLists);
-                }
+                deptIds.Add(dept.Id);
             }
-        });
+
+            List<DepartmentDto> deptLists = await QueryByPIdAsync(dept.Id);
+            if (deptLists != null && deptLists.Count > 0)
+            {
+                await FindChildIds(deptIds, deptLists);
+            }
+        }
+
         return await Task.FromResult(deptIds);
     }
 
@@ -294,8 +286,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     /// <returns></returns>
     private async Task<List<DepartmentDto>> FindByPIdIsNullAsync()
     {
-        return Mapper.Map<List<DepartmentDto>>(await BaseDal.QueryListAsync(x =>
-            x.IsDeleted == false && x.PId == null && x.Enabled));
+        return Mapper.Map<List<DepartmentDto>>(await BaseDal.QueryListAsync(x => x.PId == null && x.Enabled));
     }
 
     /// <summary>
@@ -317,8 +308,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
 
             departmentDtoList.AddRange(await QueryByPIdAsync(Convert.ToInt64(departmentDto.PId)));
             departmentDto =
-                Mapper.Map<DepartmentDto>(await QueryFirstAsync(x =>
-                    x.IsDeleted == false && x.Id == departmentDto.PId));
+                Mapper.Map<DepartmentDto>(await QueryFirstAsync(x => x.Id == departmentDto.PId));
         }
     }
 
@@ -330,20 +320,23 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     /// <returns></returns>
     private async Task FindChildIds(List<Department> departmentList, List<long> ids)
     {
-        departmentList.ForEach(async ml =>
+        if (departmentList is { Count: > 0 })
         {
-            if (!ids.Contains(ml.Id))
+            foreach (var department in departmentList)
             {
-                ids.Add(ml.Id);
-            }
+                if (!ids.Contains(department.Id))
+                {
+                    ids.Add(department.Id);
+                }
 
-            List<Department> departments =
-                await BaseDal.QueryListAsync(m => m.IsDeleted == false && m.PId == ml.Id);
-            if (departments is { Count: > 0 })
-            {
-                await FindChildIds(departments, ids);
+                List<Department> departments =
+                    await BaseDal.QueryListAsync(m => m.PId == department.Id);
+                if (departments is { Count: > 0 })
+                {
+                    await FindChildIds(departments, ids);
+                }
             }
-        });
+        }
 
         await Task.FromResult(ids);
     }

@@ -14,29 +14,25 @@ public class Menu : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// 菜单标题
     /// </summary>
-    [SugarColumn(ColumnName = "title", ColumnDataType = "varchar", Length = 255, IsNullable = false,
-        ColumnDescription = "菜单标题")]
+    [SugarColumn(ColumnName = "title", IsNullable = false, ColumnDescription = "菜单标题")]
     public string Title { get; set; }
 
     /// <summary>
     /// api地址
     /// </summary>
-    [SugarColumn(ColumnName = "link_url", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "api地址")]
+    [SugarColumn(ColumnName = "link_url", IsNullable = true, ColumnDescription = "api地址")]
     public string LinkUrl { get; set; }
 
     /// <summary>
     /// 组件路径
     /// </summary>
-    [SugarColumn(ColumnName = "path", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "组件路径")]
+    [SugarColumn(ColumnName = "path", IsNullable = true, ColumnDescription = "组件路径")]
     public string Path { get; set; }
 
     /// <summary>
     /// 权限标识符
     /// </summary>
-    [SugarColumn(ColumnName = "permission", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "权限标识符")]
+    [SugarColumn(ColumnName = "permission", IsNullable = true, ColumnDescription = "权限标识符")]
     public string Permission { get; set; }
 
     /// <summary>
@@ -48,22 +44,19 @@ public class Menu : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// 组件
     /// </summary>
-    [SugarColumn(ColumnName = "component", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "组件")]
+    [SugarColumn(ColumnName = "component", IsNullable = true, ColumnDescription = "组件")]
     public string Component { get; set; }
 
     /// <summary>
     /// 组件名称
     /// </summary>
-    [SugarColumn(ColumnName = "component_name", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "组件名称")]
+    [SugarColumn(ColumnName = "component_name", IsNullable = true, ColumnDescription = "组件名称")]
     public string ComponentName { get; set; }
 
     /// <summary>
     /// 父级菜单ID
     /// </summary>
-    [SugarColumn(ColumnName = "parent_id", ColumnDataType = "bigint", Length = 19, IsNullable = true,
-        ColumnDescription = "父级ID")]
+    [SugarColumn(ColumnName = "parent_id", ColumnDataType = "bigint", IsNullable = true, ColumnDescription = "父级ID")]
     public long? PId { get; set; }
 
     /// <summary>
@@ -75,8 +68,7 @@ public class Menu : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// icon图标
     /// </summary>
-    [SugarColumn(ColumnName = "icon", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "icon图标")]
+    [SugarColumn(ColumnName = "icon", IsNullable = true, ColumnDescription = "icon图标")]
     public string Icon { get; set; }
 
     /// <summary>

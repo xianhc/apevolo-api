@@ -545,15 +545,58 @@ public class SugarHandler<TEntity> : IDependencyRepository, ISugarHandler<TEntit
         Pagination pagination, Expression<Func<TEntity, TEntity>> expression = null)
     {
         RefAsync<int> totalCount = 0;
-        //var list = await _db.Queryable<TEntity>()
-        //    .WhereIF(whereLambda != null, whereLambda)
-        //    .OrderByIF(!string.IsNullOrEmpty(pagination.SortField), pagination.SortField)
-        //    .ToPageListAsync(pagination.Page, pagination.Size, totalCount);
         var query = _db.Queryable<TEntity>();
         query = query.WhereIF(whereLambda != null, whereLambda);
         if (expression != null)
         {
             query = query.Select(expression);
+        }
+
+        query = query.OrderByIF(pagination.SortFields.Count > 0, string.Join(",", pagination.SortFields));
+        var list = await query.ToPageListAsync(pagination.PageIndex, pagination.PageSize, totalCount);
+        pagination.TotalElements = totalCount;
+        return list;
+    }
+
+
+    /// <summary>
+    /// 实体列表 分页查询
+    /// </summary>
+    /// <param name="whereLambda">条件表达式</param>
+    /// <param name="pagination">分页对象</param>
+    /// <param name="selectExpression"></param>
+    /// <param name="navigationExpression"></param>
+    /// <param name="navigationExpression2"></param>
+    /// <param name="navigationExpression3"></param>
+    /// <returns></returns>
+    public async Task<List<TEntity>> QueryPageListAsync<T, T2, T3>(Expression<Func<TEntity, bool>> whereLambda,
+        Pagination pagination, Expression<Func<TEntity, TEntity>> selectExpression = null,
+        Expression<Func<TEntity, T>> navigationExpression = null,
+        Expression<Func<TEntity, List<T2>>> navigationExpression2 = null,
+        Expression<Func<TEntity, List<T3>>> navigationExpression3 = null)
+    {
+        RefAsync<int> totalCount = 0;
+        var query = _db.Queryable<TEntity>();
+
+        if (navigationExpression != null)
+        {
+            query = query.Includes(navigationExpression);
+        }
+
+        if (navigationExpression2 != null)
+        {
+            query = query.Includes(navigationExpression2);
+        }
+
+        if (navigationExpression3 != null)
+        {
+            query = query.Includes(navigationExpression3);
+        }
+
+        query = query.WhereIF(whereLambda != null, whereLambda);
+        if (selectExpression != null)
+        {
+            query = query.Select(selectExpression);
         }
 
         query = query.OrderByIF(pagination.SortFields.Count > 0, string.Join(",", pagination.SortFields));

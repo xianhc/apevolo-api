@@ -13,14 +13,14 @@ public class UserRoles : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// 用户ID
     /// </summary>
-    [SugarColumn(ColumnName = "user_id", ColumnDataType = "bigint", Length = 19, IsNullable = false,
+    [SugarColumn(ColumnName = "user_id", ColumnDataType = "bigint", IsNullable = false,
         ColumnDescription = "用户ID")]
     public long UserId { get; set; }
 
     /// <summary>
     /// 角色ID
     /// </summary>
-    [SugarColumn(ColumnName = "role_id", ColumnDataType = "bigint", Length = 19, IsNullable = false,
+    [SugarColumn(ColumnName = "role_id", ColumnDataType = "bigint", IsNullable = false,
         ColumnDescription = "角色ID")]
     public long RoleId { get; set; }
 }

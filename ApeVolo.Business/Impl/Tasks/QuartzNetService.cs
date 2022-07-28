@@ -44,7 +44,7 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
 
     public async Task<List<QuartzNet>> QueryAllAsync()
     {
-        return await BaseDal.QueryListAsync(x => x.IsDeleted == false);
+        return await BaseDal.QueryListAsync();
     }
 
 
@@ -78,15 +78,15 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
     public async Task<List<QuartzNetDto>> QueryAsync(QuartzNetQueryCriteria quartzNetQueryCriteria,
         Pagination pagination)
     {
-        Expression<Func<QuartzNet, bool>> whereExpression = x => x.IsDeleted == false;
+        Expression<Func<QuartzNet, bool>> whereExpression = x => true;
         if (!quartzNetQueryCriteria.TaskName.IsNullOrEmpty())
         {
-            whereExpression = whereExpression.And(x => x.TaskName.Contains(quartzNetQueryCriteria.TaskName));
+            whereExpression = whereExpression.AndAlso(x => x.TaskName.Contains(quartzNetQueryCriteria.TaskName));
         }
 
         if (!quartzNetQueryCriteria.CreateTime.IsNullOrEmpty() && quartzNetQueryCriteria.CreateTime.Count > 1)
         {
-            whereExpression = whereExpression.And(x =>
+            whereExpression = whereExpression.AndAlso(x =>
                 x.CreateTime >= quartzNetQueryCriteria.CreateTime[0] &&
                 x.CreateTime <= quartzNetQueryCriteria.CreateTime[1]);
         }
@@ -99,7 +99,7 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
         var quartzNets = await QueryAsync(quartzNetQueryCriteria, new Pagination { PageSize = 9999 });
         List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
         List<ExportColumnModel> exportColumnModels;
-        int point = 0;
+        int point;
         quartzNets.ForEach(quartzNet =>
         {
             point = 0;

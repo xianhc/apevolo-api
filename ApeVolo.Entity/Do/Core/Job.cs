@@ -13,7 +13,7 @@ public class Job : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// 名称
     /// </summary>
-    [SugarColumn(ColumnName = "name", ColumnDataType = "varchar", Length = 255, IsNullable = false)]
+    [SugarColumn(ColumnName = "name", IsNullable = false)]
     public string Name { get; set; }
 
     /// <summary>

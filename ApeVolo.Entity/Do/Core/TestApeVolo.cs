@@ -10,12 +10,10 @@ namespace ApeVolo.Entity.Do.Core;
 [SugarTable("test_apevolo", "测试")]
 public class TestApeVolo : EntityRoot<long>, ILocalizedTable
 {
-    [SugarColumn(ColumnName = "label", ColumnDataType = "varchar", Length = 255, IsNullable = false,
-        ColumnDescription = "label")]
+    [SugarColumn(ColumnName = "label", IsNullable = false, ColumnDescription = "label")]
     public string Label { get; set; }
 
-    [SugarColumn(ColumnName = "content", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "content")]
+    [SugarColumn(ColumnName = "content", IsNullable = true, ColumnDescription = "content")]
     public string Content { get; set; }
 
     [SugarColumn(ColumnName = "sort", IsNullable = true, ColumnDescription = "排序")]

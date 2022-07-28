@@ -96,7 +96,7 @@ public class DeptController : BaseApiController
             return Error("ids is null");
 
         var deptIds = new List<long>();
-        ids.ForEach(async id =>
+        foreach (var id in ids)
         {
             deptIds.Add(id);
             var deptDtolist = await _departmentService.QueryByPIdAsync(id);
@@ -104,7 +104,8 @@ public class DeptController : BaseApiController
             {
                 if (!deptIds.Contains(deptDto.Id)) deptIds.Add(deptDto.Id);
             });
-        });
+        }
+
         var depts = await _roleDeptService.QueryByDeptIdsAsync(deptIds);
         if (depts.Count > 0) return Error("所选部门存在角色关联，请解除后再试！");
 

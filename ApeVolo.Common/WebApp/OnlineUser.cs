@@ -27,10 +27,6 @@ public class OnlineUser
     /// </summary>
     public string Dept { get; set; }
 
-    /// <summary>
-    /// 浏览器
-    /// </summary>
-    public string Browser { get; set; }
 
     /// <summary>
     /// 请求IP
@@ -41,6 +37,26 @@ public class OnlineUser
     /// IP详细地址
     /// </summary>
     public string Address { get; set; }
+
+    /// <summary>
+    /// 操作系统
+    /// </summary>
+    public string OperatingSystem { get; set; }
+
+    /// <summary>
+    /// 设备类型
+    /// </summary>
+    public string DeviceType { get; set; }
+
+    /// <summary>
+    /// 浏览器名称
+    /// </summary>
+    public string BrowserName { get; set; }
+
+    /// <summary>
+    /// 浏览器版本
+    /// </summary>
+    public string Version { get; set; }
 
     /// <summary>
     /// 在线唯一表示KEY

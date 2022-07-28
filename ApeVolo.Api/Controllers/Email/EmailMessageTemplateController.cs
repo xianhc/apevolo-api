@@ -41,32 +41,32 @@ public class EmailMessageTemplateController : BaseApiController
     /// <summary>
     /// 新增邮箱账户
     /// </summary>
-    /// <param name="createUpdateMessageTemplateDto"></param>
+    /// <param name="createUpdateEmailMessageTemplateDto"></param>
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
     [Description("新增邮件消息模板")]
     public async Task<ActionResult<object>> Create(
-        [FromBody] CreateUpdateMessageTemplateDto createUpdateMessageTemplateDto)
+        [FromBody] CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto)
     {
-        RequiredHelper.IsValid(createUpdateMessageTemplateDto);
-        await _emailMessageTemplateService.CreateAsync(createUpdateMessageTemplateDto);
+        RequiredHelper.IsValid(createUpdateEmailMessageTemplateDto);
+        await _emailMessageTemplateService.CreateAsync(createUpdateEmailMessageTemplateDto);
         return Create();
     }
 
     /// <summary>
     /// 更新邮箱账户
     /// </summary>
-    /// <param name="createUpdateMessageTemplateDto"></param>
+    /// <param name="createUpdateEmailMessageTemplateDto"></param>
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
     [Description("更新邮件消息模板")]
     public async Task<ActionResult<object>> Update(
-        [FromBody] CreateUpdateMessageTemplateDto createUpdateMessageTemplateDto)
+        [FromBody] CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto)
     {
-        RequiredHelper.IsValid(createUpdateMessageTemplateDto);
-        await _emailMessageTemplateService.UpdateAsync(createUpdateMessageTemplateDto);
+        RequiredHelper.IsValid(createUpdateEmailMessageTemplateDto);
+        await _emailMessageTemplateService.UpdateAsync(createUpdateEmailMessageTemplateDto);
         return NoContent();
     }
 
@@ -96,13 +96,13 @@ public class EmailMessageTemplateController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("邮件消息模板列表")]
-    public async Task<ActionResult<object>> Query(MessageTemplateQueryCriteria messageTemplateQueryCriteria,
+    public async Task<ActionResult<object>> Query(EmailMessageTemplateQueryCriteria messageTemplateQueryCriteria,
         Pagination pagination)
     {
         var emailMessageTemplateList =
             await _emailMessageTemplateService.QueryAsync(messageTemplateQueryCriteria, pagination);
 
-        return new ActionResultVm<MessageTemplateDto>
+        return new ActionResultVm<EmailMessageTemplateDto>
         {
             Content = emailMessageTemplateList,
             TotalElements = pagination.TotalElements

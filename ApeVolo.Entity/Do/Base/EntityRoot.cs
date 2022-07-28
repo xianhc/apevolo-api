@@ -11,15 +11,14 @@ public class EntityRoot<T> where T : IEquatable<T>
     /// <summary>
     /// 主键
     /// </summary>
-    [SugarColumn(ColumnName = "id", ColumnDataType = "bigint", IsNullable = false, Length = 19,
-        IsPrimaryKey = true, ColumnDescription = "ID主键")]
+    [SugarColumn(ColumnName = "id", ColumnDataType = "bigint", IsNullable = false, IsPrimaryKey = true,
+        ColumnDescription = "ID主键")]
     public T Id { get; set; }
 
     /// <summary>
     /// 创建者名称
     /// </summary>
-    [SugarColumn(ColumnName = "create_by", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "创建者账号")]
+    [SugarColumn(ColumnName = "create_by", IsNullable = true, ColumnDescription = "创建者账号")]
     public string CreateBy { get; set; }
 
     /// <summary>
@@ -31,8 +30,7 @@ public class EntityRoot<T> where T : IEquatable<T>
     /// <summary>
     /// 更新者名称
     /// </summary>
-    [SugarColumn(ColumnName = "update_by", ColumnDataType = "varchar", Length = 255, IsNullable = true,
-        ColumnDescription = "更新者账户")]
+    [SugarColumn(ColumnName = "update_by", IsNullable = true, ColumnDescription = "更新者账户")]
     public string UpdateBy { get; set; }
 
     /// <summary>

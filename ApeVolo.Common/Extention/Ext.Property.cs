@@ -14,7 +14,6 @@ public static partial class ExtObject
     public static void InitEntity(this object entity)
     {
         var curUser = AutofacHelper.GetScopeService<ICurrentUser>();
-
         if (entity.ContainsProperty("Id"))
             entity.SetPropertyValue("Id", IdHelper.GetLongId());
         if (entity.ContainsProperty("CreateTime"))

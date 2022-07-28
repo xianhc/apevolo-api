@@ -13,15 +13,13 @@ public class Department : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// 部门名称
     /// </summary>
-    [SugarColumn(ColumnName = "name", ColumnDataType = "varchar", Length = 255, IsNullable = false,
-        ColumnDescription = "部门名称")]
+    [SugarColumn(ColumnName = "name", IsNullable = false, ColumnDescription = "部门名称")]
     public string Name { get; set; }
 
     /// <summary>
     /// 父级部门ID
     /// </summary>
-    [SugarColumn(ColumnName = "parent_id", ColumnDataType = "bigint", Length = 19, IsNullable = true,
-        ColumnDescription = "父级部门")]
+    [SugarColumn(ColumnName = "parent_id", ColumnDataType = "bigint", IsNullable = true, ColumnDescription = "父级部门")]
     public long? PId { get; set; }
 
     /// <summary>
