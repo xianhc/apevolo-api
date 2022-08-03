@@ -35,8 +35,8 @@ public static class SwaggerMiddleware
                     throw new Exception(msg);
                 }
 
-                c.IndexStream = () => stream;
-                c.RoutePrefix = string.Empty;
+                c.IndexStream = streamHtml;
+                c.RoutePrefix = "";
             });
         }
     }
