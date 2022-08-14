@@ -1392,7 +1392,7 @@
         "path":"email/queued",
         "permission":"queuedEmail_list",
         "iFrame":0,
-        "component":"message/email/queued/index",
+        "component":"queued/index",
         "componentName":"Queue",
         "pId":"1306054134650114054",
         "menuSort":3,
