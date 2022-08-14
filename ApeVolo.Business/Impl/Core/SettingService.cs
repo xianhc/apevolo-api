@@ -10,6 +10,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
@@ -46,7 +47,8 @@ public class SettingService : BaseServices<Setting>, ISettingService
     {
         if (await IsExistAsync(r => r.Name == createUpdateSettingDto.Name))
         {
-            throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在!");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Setting"),
+                createUpdateSettingDto.Name));
         }
 
         var setting = Mapper.Map<Setting>(createUpdateSettingDto);
@@ -59,13 +61,14 @@ public class SettingService : BaseServices<Setting>, ISettingService
         var oldSetting = await QueryFirstAsync(x => x.Id == createUpdateSettingDto.Id);
         if (oldSetting.IsNull())
         {
-            throw new BadRequestException("更新失败=》待更新数据不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
         if (oldSetting.Name != createUpdateSettingDto.Name &&
             await IsExistAsync(x => x.Name == createUpdateSettingDto.Name))
         {
-            throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Setting"),
+                createUpdateSettingDto.Name));
         }
 
         await _redisCacheService.RemoveAsync(RedisKey.LoadSettingByName + oldSetting.Name.ToMd5String16());
@@ -147,14 +150,14 @@ public class SettingService : BaseServices<Setting>, ISettingService
     {
         if (settingName.IsNullOrEmpty())
         {
-            throw new BadRequestException("请输入合法的设置键名称!");
+            throw new BadRequestException(Localized.Get("{0}required", "settingName"));
         }
 
         var setting =
             Mapper.Map<SettingDto>(await QueryFirstAsync(x => x.Name == settingName));
         if (setting.IsNull())
         {
-            throw new BadRequestException("请输入正确的设置键名称!");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
         return setting;

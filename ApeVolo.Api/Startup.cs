@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Reflection;
 using ApeVolo.Api.Extensions;
 using ApeVolo.Api.Filter;
@@ -15,12 +16,14 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace ApeVolo.Api;
@@ -62,6 +65,18 @@ public class Startup
         services.AddIpStrategyRateLimitSetup(Configuration);
         services.AddRabbitMQSetup();
         services.AddEventBusSetup();
+        services.Configure<RequestLocalizationOptions>(options =>
+        {
+            var supportedCultures = new[]
+            {
+                new CultureInfo("zh-CN"),
+                new CultureInfo("en-US")
+            };
+
+            options.DefaultRequestCulture = new RequestCulture(culture: "zh-CN", uiCulture: "zh-CN");
+            options.SupportedCultures = supportedCultures;
+            options.SupportedUICultures = supportedCultures;
+        });
 
 
         services.AddControllers(options =>
@@ -92,6 +107,8 @@ public class Startup
         IQuartzNetService quartzNetService,
         ISchedulerCenterService schedulerCenter, ILoggerFactory loggerFactory)
     {
+        var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+        if (locOptions != null) app.UseRequestLocalization(locOptions.Value);
         //获取远程真实ip,如果不是nginx代理部署可以不要
         app.UseMiddleware<RealIpMiddleware>();
         //IP限流

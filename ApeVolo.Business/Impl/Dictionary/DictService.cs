@@ -8,6 +8,7 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Entity.Do.Dictionary;
 using ApeVolo.IBusiness.Dto.Dictionary;
 using ApeVolo.IBusiness.EditDto.Dict;
@@ -39,7 +40,8 @@ public class DictService : BaseServices<Dict>, IDictService
     {
         if (await IsExistAsync(d => d.Name == createUpdateDictDto.Name))
         {
-            throw new BadRequestException($"字典资源>{createUpdateDictDto.Name}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Dict"),
+                createUpdateDictDto.Name));
         }
 
         return await AddEntityAsync(Mapper.Map<Dict>(createUpdateDictDto));
@@ -47,9 +49,17 @@ public class DictService : BaseServices<Dict>, IDictService
 
     public async Task<bool> UpdateAsync(CreateUpdateDictDto createUpdateDictDto)
     {
-        if (!await IsExistAsync(d => d.Id == createUpdateDictDto.Id))
+        var oldDict =
+            await QueryFirstAsync(x => x.Id == createUpdateDictDto.Id);
+        if (oldDict.IsNull())
         {
-            throw new BadRequestException($"字典资源=>{createUpdateDictDto.Name}=>不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
+        }
+
+        if (oldDict.Name != createUpdateDictDto.Name && await IsExistAsync(j => j.Id == createUpdateDictDto.Id))
+        {
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Dict"),
+                createUpdateDictDto.Name));
         }
 
         return await UpdateEntityAsync(Mapper.Map<Dict>(createUpdateDictDto));

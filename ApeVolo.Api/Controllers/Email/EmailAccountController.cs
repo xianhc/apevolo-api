@@ -8,6 +8,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.Email;
 using ApeVolo.IBusiness.EditDto.Email;
 using ApeVolo.IBusiness.Interface.Email;
@@ -20,7 +21,7 @@ namespace ApeVolo.Api.Controllers.Email;
 /// <summary>
 /// 邮箱账户
 /// </summary>
-[Area("emailAccount")]
+[Area("EmailAccount")]
 [Route("/api/email/account")]
 public class EmailAccountController : BaseApiController
 {
@@ -39,7 +40,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("新增邮箱账户")]
+    [Description("{0}Add")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateEmailAccountDto createUpdateEmailAccountDto)
     {
@@ -55,7 +56,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("更新邮箱账户")]
+    [Description("{0}Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateEmailAccountDto createUpdateEmailAccountDto)
     {
@@ -71,7 +72,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("删除邮箱账户")]
+    [Description("{0}Delete")]
     [NoJsonParamter]
     public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
     {
@@ -89,7 +90,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("邮箱账户列表")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> FindList(EmailAccountQueryCriteria emailAccountQueryCriteria,
         Pagination pagination)
     {
@@ -109,15 +110,14 @@ public class EmailAccountController : BaseApiController
     /// <param name="emailAccountQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("导出邮箱账户")]
+    [Description("{0}Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(EmailAccountQueryCriteria emailAccountQueryCriteria)
     {
         var exportRowModels = await _emailAccountService.DownloadAsync(emailAccountQueryCriteria);
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, "邮箱账户列表");
+        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("EmailAccount"));
 
-        var provider = new FileExtensionContentTypeProvider();
         FileInfo fileInfo = new FileInfo(filepath);
         var ext = fileInfo.Extension;
         new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);

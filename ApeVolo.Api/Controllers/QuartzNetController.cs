@@ -9,6 +9,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Entity.Do.Tasks;
 using ApeVolo.IBusiness.Dto.Tasks;
 using ApeVolo.IBusiness.EditDto.Tasks;
@@ -59,7 +60,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("新增作业")]
+    [Description("{0}Add")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
@@ -68,14 +69,13 @@ public class QuartzNetController : BaseApiController
         var quartzNet = await _quartzNetService.CreateAsync(createUpdateQuartzNetDto);
         if (quartzNet.IsNotNull())
         {
-            string msg = $"创建【{quartzNet.TaskName}】成功";
             if (quartzNet.IsEnable)
             {
                 //开启作业任务
                 await _schedulerCenterService.AddScheduleJobAsync(quartzNet);
             }
 
-            return Create(msg);
+            return Create();
         }
 
         return Error();
@@ -88,7 +88,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("更新作业")]
+    [Description("{0}Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
@@ -119,12 +119,12 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("删除作业")]
+    [Description("{0}Delete")]
     [NoJsonParamter]
     public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
     {
         if (ids == null || ids.Count < 1)
-            return Error("ids异常");
+            return Error("ids is null");
 
         var quartzList = await _quartzNetService.QueryByIdsAsync(ids);
         if (quartzList.Count > 0)
@@ -151,7 +151,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("获取作业调度列表")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> Query(QuartzNetQueryCriteria quartzNetQueryCriteria,
         Pagination pagination)
     {
@@ -175,15 +175,14 @@ public class QuartzNetController : BaseApiController
     /// <param name="quartzNetQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("导出作业调度")]
+    [Description("{0}Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(QuartzNetQueryCriteria quartzNetQueryCriteria)
     {
         var exportRowModels = await _quartzNetService.DownloadAsync(quartzNetQueryCriteria);
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, "作业调度列表");
+        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("QuartzNet"));
 
-        var provider = new FileExtensionContentTypeProvider();
         FileInfo fileInfo = new FileInfo(filepath);
         var ext = fileInfo.Extension;
         new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
@@ -198,7 +197,7 @@ public class QuartzNetController : BaseApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpPut]
-    [Description("执行作业")]
+    [Description("{0}Execute")]
     [Route("execute/{id}")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Execute(long id)
@@ -206,7 +205,7 @@ public class QuartzNetController : BaseApiController
         var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.Id == id);
         if (quartzNet.IsNull())
         {
-            return Error("作业不存在，执行失败！");
+            return Error(Localized.Get("{0}NotExist", Localized.Get("QuartzNet")));
         }
 
         //开启作业任务
@@ -222,13 +221,13 @@ public class QuartzNetController : BaseApiController
                     return NoContent();
                 }
 
-                return Error("执行失败，请重试！");
+                return Error(Localized.Get("{0}RetryFailure"));
             }
 
-            return Error("作业已在运行，请勿重复开启！");
+            return Error(Localized.Get("{0}DoNotTurnOn"));
         }
 
-        return Error("执行DB失败！");
+        return Error();
     }
 
     /// <summary>
@@ -237,7 +236,7 @@ public class QuartzNetController : BaseApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpPut]
-    [Description("暂停作业")]
+    [Description("{0}Stop")]
     [Route("pause/{id}")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Pause(long id)
@@ -245,7 +244,7 @@ public class QuartzNetController : BaseApiController
         var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.Id == id);
         if (quartzNet.IsNull())
         {
-            return Error("作业不存在，暂停失败！");
+            return Error(Localized.Get("{0}NotExist", Localized.Get("QuartzNet")));
         }
 
         var triggerStatus = await _schedulerCenterService.GetTriggerStatus(_mapper.Map<QuartzNetDto>(quartzNet));
@@ -253,20 +252,13 @@ public class QuartzNetController : BaseApiController
         {
             //检查任务在内存状态
             var isTrue = await _schedulerCenterService.IsExistScheduleJobAsync(quartzNet);
-            if (isTrue)
+            if (isTrue && await _schedulerCenterService.PauseJob(quartzNet))
             {
-                if (await _schedulerCenterService.PauseJob(quartzNet))
-                {
-                    return NoContent();
-                }
-
-                return Error("暂停失败，请重试！");
+                return NoContent();
             }
-
-            return Error("暂停失败，作业未启动！");
         }
 
-        return Error("暂停失败，作业非正常状态！");
+        return Error(Localized.Get("StopFailure"));
     }
 
     /// <summary>
@@ -283,7 +275,7 @@ public class QuartzNetController : BaseApiController
         var quartzNet = await _quartzNetService.QueryFirstAsync(x => x.Id == id);
         if (quartzNet.IsNull())
         {
-            return Error("作业不存在，暂停失败！");
+            return Error(Localized.Get("{0}NotExist", Localized.Get("QuartzNet")));
         }
 
         var triggerStatus = await _schedulerCenterService.GetTriggerStatus(_mapper.Map<QuartzNetDto>(quartzNet));
@@ -291,20 +283,13 @@ public class QuartzNetController : BaseApiController
         {
             //检查任务在内存状态
             var isTrue = await _schedulerCenterService.IsExistScheduleJobAsync(quartzNet);
-            if (isTrue)
+            if (isTrue && await _schedulerCenterService.ResumeJob(quartzNet))
             {
-                if (await _schedulerCenterService.ResumeJob(quartzNet))
-                {
-                    return NoContent();
-                }
-
-                return Error("恢复失败，请重试！");
+                return NoContent();
             }
-
-            return Error("恢复失败，作业未启动！");
         }
 
-        return Error("恢复失败，作业非暂停状态！");
+        return Error(Localized.Get("RecoveryFailed"));
     }
 
 
@@ -316,7 +301,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("logs/list/{id}")]
-    [Description("作业调度执行日志")]
+    [Description("{0}ExecutionLog")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> QueryLog(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria,
         Pagination pagination)
@@ -336,16 +321,15 @@ public class QuartzNetController : BaseApiController
     /// <param name="quartzNetLogQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("导出作业调度")]
+    [Description("{0}Export")]
     [Route("logs/download/{id}")]
     //[ApeVoloAuthorize(new string[] { "admin" })]
     public async Task<ActionResult<object>> Download(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria)
     {
         var exportRowModels = await _quartzNetLogService.DownloadAsync(quartzNetLogQueryCriteria);
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, "作业日志列表");
+        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("QuartzNet"));
 
-        var provider = new FileExtensionContentTypeProvider();
         FileInfo fileInfo = new FileInfo(filepath);
         var ext = fileInfo.Extension;
         new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);

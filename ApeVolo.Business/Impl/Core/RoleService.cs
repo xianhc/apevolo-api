@@ -11,6 +11,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Dto.Core;
@@ -69,12 +70,14 @@ public class RoleService : BaseServices<Role>, IRoleService
         await VerificationUserRoleLevelAsync(createUpdateRoleDto.Level);
         if (await IsExistAsync(r => r.Name == createUpdateRoleDto.Name))
         {
-            throw new BadRequestException($"角色=>{createUpdateRoleDto.Name}=>已存在!");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Role"),
+                createUpdateRoleDto.Name));
         }
 
         if (await IsExistAsync(r => r.Permission == createUpdateRoleDto.Permission))
         {
-            throw new BadRequestException($"角色代码=>{createUpdateRoleDto.Permission}=>已存在!");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Role"),
+                createUpdateRoleDto.Permission));
         }
 
         var role = Mapper.Map<Role>(createUpdateRoleDto);
@@ -98,18 +101,20 @@ public class RoleService : BaseServices<Role>, IRoleService
         var oldRole = await QueryFirstAsync(x => x.Id == createUpdateRoleDto.Id);
         if (oldRole.IsNull())
         {
-            throw new BadRequestException("更新失败=》待更新数据不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
         if (oldRole.Name != createUpdateRoleDto.Name && await IsExistAsync(x => x.Name == createUpdateRoleDto.Name))
         {
-            throw new BadRequestException($"角色名称=>{createUpdateRoleDto.Name}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Role"),
+                createUpdateRoleDto.Name));
         }
 
         if (oldRole.Permission != createUpdateRoleDto.Permission && await IsExistAsync(x =>
                 x.Permission == createUpdateRoleDto.Permission))
         {
-            throw new BadRequestException($"角色代码=>{createUpdateRoleDto.Permission}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Role"),
+                createUpdateRoleDto.Permission));
         }
 
         await VerificationUserRoleLevelAsync(createUpdateRoleDto.Level);

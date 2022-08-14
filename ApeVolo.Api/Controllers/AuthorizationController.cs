@@ -14,6 +14,7 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
+using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Interface.Core;
 using ApeVolo.IBusiness.Interface.Queued;
@@ -21,6 +22,8 @@ using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json.Linq;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -79,19 +82,19 @@ public class AuthorizationController : BaseApiController
         RequiredHelper.IsValid(authUser);
         var code = await _redisCacheService.GetCacheAsync<string>(authUser.Uuid);
         await _redisCacheService.RemoveAsync(authUser.Uuid);
-        if (code.IsNullOrEmpty()) return Error("验证码不存在或已过期！");
+        if (code.IsNullOrEmpty()) return Error(Localized.Get("CodeNotExist"));
 
-        if (!code.Equals(authUser.Code)) return Error("验证码错误！");
+        if (!code.Equals(authUser.Code)) return Error(Localized.Get("CodeWrong"));
 
         var userDto = await _userService.QueryByNameAsync(authUser.Username);
-        if (userDto == null) return Error("用户不存在！");
+        if (userDto == null) return Error(Localized.Get("{0}NotExist", Localized.Get("User")));
         var password = new JsEncryptHelper().Decrypt(authUser.Password);
         if (!userDto.Password.Equals(
                 (password + userDto.SaltKey).ToHmacsha256String(
                     AppSettings.GetValue(new[] { "HmacSecret" }))))
-            return Error("密码错误！");
+            return Error(Localized.Get("PasswrodWrong"));
 
-        if (!userDto.Enabled) return Error("账号未激活！");
+        if (!userDto.Enabled) return Error(Localized.Get("{0}NotActivated", Localized.Get("User")));
 
         var netUser = await _userService.QueryByIdAsync(userDto.Id);
 
@@ -127,9 +130,10 @@ public class AuthorizationController : BaseApiController
         return dic.ToJson();
     }
 
+
     [HttpGet]
     [Route("/auth/info")]
-    [Description("获取用户信息")]
+    [Description("UserInfo")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> GetInfo()
     {
@@ -147,7 +151,7 @@ public class AuthorizationController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Description("获取验证码")]
+    [Description("GetCode")]
     [Route("/auth/code")]
     [AllowAnonymous]
     public async Task<ActionResult<object>> GetCode()
@@ -167,7 +171,7 @@ public class AuthorizationController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    [Description("获取验证码，申请变更邮箱")]
+    [Description("GetCode")]
     [Route("/auth/code/reset/email")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> ResetEmail(string email)
@@ -185,7 +189,7 @@ public class AuthorizationController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("/auth/logout")]
-    [Description("用户登出")]
+    [Description("LoginOut")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> Logout()
     {

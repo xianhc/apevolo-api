@@ -27,7 +27,7 @@ public class ActionResultVm
     /// <summary>
     /// Timestamp
     /// </summary>
-    public string Timestamp { get; set; } = DateTime.Now.ToUnixTimeStampMillisecond().ToString();
+    public string Timestamp { get; set; }
 
     /// <summary>
     /// 请求路径

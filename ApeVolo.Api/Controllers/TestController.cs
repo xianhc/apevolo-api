@@ -5,6 +5,7 @@ using ApeVolo.Api.MQ.Rabbit.Events;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.EventBus.Abstractions;
 using ApeVolo.IBusiness.Interface.Core;
@@ -12,6 +13,7 @@ using ApeVolo.IBusiness.Interface.Email;
 using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Shyjus.BrowserDetection;
 
 namespace ApeVolo.Api.Controllers;
@@ -125,10 +127,6 @@ public class TestController : BaseApiController
     }
 
 
-    /// <summary>
-    /// rabbitmq测试
-    /// </summary>
-    /// <returns></returns>
     /*[HttpGet]
     [AllowAnonymous]
     public ActionResult<object> EventBusTry()
@@ -149,4 +147,26 @@ public class TestController : BaseApiController
 
         return Success();
     }*/
+
+    /// <summary>
+    /// redismq测试
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<ActionResult<object>> Test123456()
+    {
+        string text = "";
+        try
+        {
+            text = Localized.Get("ModuleHasSet");
+        }
+        catch
+        {
+            // ignored
+        }
+
+        await Task.CompletedTask;
+        return Success();
+    }
 }

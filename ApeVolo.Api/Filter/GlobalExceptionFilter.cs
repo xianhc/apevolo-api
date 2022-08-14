@@ -8,6 +8,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Do.Logs;
@@ -113,7 +114,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
     private ExceptionLog CreateLog(ExceptionContext context)
     {
         var routeValues = context.ActionDescriptor.RouteValues;
-        Attribute desc =
+        var desc =
             ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.GetCustomAttribute(
                 typeof(DescriptionAttribute), true);
 
@@ -122,7 +123,8 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         {
             var httpContext = context.HttpContext;
             var remoteIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-            var discs = HttpHelper.GetAllRequestParams(httpContext);
+            var arguments = HttpHelper.GetAllRequestParams(httpContext);
+            var description = desc == null ? "" : ((DescriptionAttribute)desc).Description;
             log = new ExceptionLog
             {
                 Id = IdHelper.GetLongId(),
@@ -132,9 +134,9 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 Controller = routeValues["controller"],
                 Action = routeValues["action"],
                 Method = httpContext.Request.Method,
-                Description = desc == null ? "" : ((DescriptionAttribute)desc).Description,
+                Description = ExceptionLogFormat.GetResourcesDescription(description, routeValues["area"]),
                 RequestUrl = httpContext.Request.GetDisplayUrl(),
-                RequestParameters = discs.ToJson(),
+                RequestParameters = arguments.ToJson(),
                 ExceptionMessage = context.Exception.Message,
                 ExceptionMessageFull = ExceptionHelper.GetExceptionAllMsg(context.Exception),
                 ExceptionStack = context.Exception.StackTrace,

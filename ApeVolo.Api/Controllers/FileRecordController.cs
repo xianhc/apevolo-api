@@ -10,6 +10,7 @@ using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
 using ApeVolo.IBusiness.Interface.Core;
@@ -23,7 +24,7 @@ namespace ApeVolo.Api.Controllers;
 /// <summary>
 /// 文件存储管理
 /// </summary>
-[Area("AppSecret")]
+[Area("FileRecord")]
 [Route("/api/storage")]
 public class FileRecordController : BaseApiController
 {
@@ -52,7 +53,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpOptions, HttpPost]
     [Route("upload")]
-    [Description("上传文件")]
+    [Description("{0}Add")]
     [CheckParamNotEmptyAttribute("description")]
     public async Task<ActionResult<object>> Upload(string description,
         [FromForm] IFormFile file)
@@ -79,7 +80,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("更新文件描述")]
+    [Description("{0}Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateFileRecordDto createUpdateAppSecretDto)
     {
@@ -94,7 +95,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("删除文件")]
+    [Description("{0}Delete")]
     [NoJsonParamter]
     public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
     {
@@ -116,7 +117,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("获取文件列表")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> Query(FileRecordQueryCriteria fileRecordQueryCriteria,
         Pagination pagination)
     {
@@ -136,15 +137,14 @@ public class FileRecordController : BaseApiController
     /// <param name="fileRecordQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("导出文件记录")]
+    [Description("{0}Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(FileRecordQueryCriteria fileRecordQueryCriteria)
     {
         var exportRowModels = await _fileRecordService.DownloadAsync(fileRecordQueryCriteria);
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, "文件记录");
+        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("FileRecord"));
 
-        var provider = new FileExtensionContentTypeProvider();
         FileInfo fileInfo = new FileInfo(filepath);
         var ext = fileInfo.Extension;
         new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);

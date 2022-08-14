@@ -9,6 +9,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
 using ApeVolo.IBusiness.Interface.Core;
@@ -21,7 +22,7 @@ namespace ApeVolo.Api.Controllers;
 /// <summary>
 /// 部门管理
 /// </summary>
-[Area("dept")]
+[Area("Department")]
 [Route("/api/dept")]
 public class DeptController : BaseApiController
 {
@@ -54,13 +55,13 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("新增部门")]
+    [Description("{0}Add")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateDepartmentDto createUpdateDepartmentDto)
     {
         RequiredHelper.IsValid(createUpdateDepartmentDto);
         await _departmentService.CreateAsync(createUpdateDepartmentDto);
-        return Create("添加成功");
+        return Create();
     }
 
 
@@ -71,13 +72,13 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("更新部门")]
+    [Description("{0}Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateDepartmentDto createUpdateDepartmentDto)
     {
         RequiredHelper.IsValid(createUpdateDepartmentDto);
         await _departmentService.UpdateAsync(createUpdateDepartmentDto);
-        return NoContent("更新成功");
+        return NoContent();
     }
 
 
@@ -88,7 +89,7 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("删除部门")]
+    [Description("{0}Delete")]
     [NoJsonParamter]
     public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
     {
@@ -125,7 +126,7 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("查看部门列表")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> Query(DeptQueryCriteria deptQueryCriteria,
         Pagination pagination)
     {
@@ -145,15 +146,14 @@ public class DeptController : BaseApiController
     /// <param name="deptQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("导出部门")]
+    [Description("{0}Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(DeptQueryCriteria deptQueryCriteria)
     {
         var exportRowModels = await _departmentService.DownloadAsync(deptQueryCriteria);
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, "部门列表");
+        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("Department"));
 
-        var provider = new FileExtensionContentTypeProvider();
         var fileInfo = new FileInfo(filepath);
         var ext = fileInfo.Extension;
         new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
@@ -169,8 +169,8 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("superior")]
-    [Description("获取同级、父级部门")]
-    [ApeVoloAuthorize(new[] { "admin", "dept:list" })]
+    [Description("SiblingParentDepartment")]
+    [ApeVoloAuthorize(new[] { "admin", "dept_list" })]
     public async Task<ActionResult<object>> GetSuperior([FromBody] List<long> ids)
     {
         if (ids == null || ids.Count < 1) return Error("ids is null");

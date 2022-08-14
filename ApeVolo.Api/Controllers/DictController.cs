@@ -7,6 +7,7 @@ using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.Dictionary;
 using ApeVolo.IBusiness.EditDto.Dict;
 using ApeVolo.IBusiness.Interface.Dictionary;
@@ -47,7 +48,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("新增字典")]
+    [Description("{0}Add")]
     public async Task<ActionResult<object>> Create([FromBody] CreateUpdateDictDto createUpdateDictDto)
     {
         await _dictService.CreateAsync(createUpdateDictDto);
@@ -62,7 +63,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("更新字典")]
+    [Description("{0}Edit")]
     public async Task<ActionResult<object>> Update([FromBody] CreateUpdateDictDto createUpdateDictDto)
     {
         await _dictService.UpdateAsync(createUpdateDictDto);
@@ -76,7 +77,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("删除字典")]
+    [Description("{0}Delete")]
     [NoJsonParamter]
     public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
     {
@@ -97,7 +98,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("查看字典列表")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> Query(DictQueryCriteria dictQueryCriteria,
         Pagination pagination)
     {
@@ -116,15 +117,14 @@ public class DictController : BaseApiController
     /// <param name="dictQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("导出字典")]
+    [Description("{0}Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(DictQueryCriteria dictQueryCriteria)
     {
         var exportRowModels = await _dictService.DownloadAsync(dictQueryCriteria);
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, "字典列表");
+        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("Dict"));
 
-        var provider = new FileExtensionContentTypeProvider();
         FileInfo fileInfo = new FileInfo(filepath);
         var ext = fileInfo.Extension;
         new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);

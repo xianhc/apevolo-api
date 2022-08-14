@@ -24,6 +24,7 @@ public class VerifySignatureAttribute : BaseActionFilter
         //判断是否需要签名
         if (filterContext.ContainsFilter<IgnoreVerifySignatureAttribute>())
             return;
+        HttpContext = filterContext.HttpContext;
         var request = filterContext.HttpContext.Request;
 
         var appId = request.Headers["appId"].ToString();

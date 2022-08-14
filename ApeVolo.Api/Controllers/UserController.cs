@@ -10,6 +10,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
 using ApeVolo.IBusiness.Interface.Core;
@@ -50,13 +51,13 @@ public class UserController : BaseApiController
     /// <param name="createUpdateUserDto"></param>
     /// <returns></returns>
     [HttpPost]
-    [Description("新增用户")]
+    [Description("{0}Add")]
     [Route("create")]
     public async Task<ActionResult<object>> Create([FromBody] CreateUpdateUserDto createUpdateUserDto)
     {
         RequiredHelper.IsValid(createUpdateUserDto);
         await _userService.CreateAsync(createUpdateUserDto);
-        return Create("添加成功，默认密码123456");
+        return Create();
     }
 
     /// <summary>
@@ -66,7 +67,7 @@ public class UserController : BaseApiController
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     [HttpPut]
-    [Description("更新用户")]
+    [Description("{0}Edit")]
     [Route("edit")]
     public async Task<ActionResult<object>> Update([FromBody] CreateUpdateUserDto createUpdateUserDto)
     {
@@ -80,8 +81,8 @@ public class UserController : BaseApiController
     /// <param name="ids"></param>
     /// <returns></returns>
     [HttpDelete]
+    [Description("{0}Delete")]
     [Route("delete")]
-    [Description("删除用户")]
     [NoJsonParamter]
     public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
     {
@@ -96,7 +97,7 @@ public class UserController : BaseApiController
 
     [HttpPut]
     [Route("center")]
-    [Description("更新个人信息")]
+    [Description("UpdatePersonalInfo")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> UpdateCenterAsync(UpdateUserCenterDto updateUserCenterDto)
     {
@@ -107,7 +108,7 @@ public class UserController : BaseApiController
 
     [HttpPost]
     [Route("update/password")]
-    [Description("更新密码")]
+    [Description("UpdatePassword")]
     public async Task<ActionResult<object>> UpdatePasswordAsync(UpdateUserPassDto updateUserPassDto)
     {
         RequiredHelper.IsValid(updateUserPassDto);
@@ -117,7 +118,7 @@ public class UserController : BaseApiController
 
     [HttpPost]
     [Route("update/email")]
-    [Description("更新邮箱")]
+    [Description("UpdateEmail")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> UpdateEmail(UpdateUserEmailDto updateUserEmailDto)
     {
@@ -128,7 +129,7 @@ public class UserController : BaseApiController
 
     [HttpOptions, HttpPost]
     [Route("update/avatar")]
-    [Description("更新头像")]
+    [Description("UpdateAvatar")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> UpdateAvatar([FromForm] IFormFile avatar) //多文件使用  IFormFileCollection
     {
@@ -149,7 +150,7 @@ public class UserController : BaseApiController
     /// <param name="pagination"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("查看用户列表")]
+    [Description("{0}List")]
     [Route("query")]
     public async Task<ActionResult<object>> Query(UserQueryCriteria userQueryCriteria,
         Pagination pagination)
@@ -169,15 +170,14 @@ public class UserController : BaseApiController
     /// <param name="userQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("导出用户列表")]
+    [Description("{0}Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(UserQueryCriteria userQueryCriteria)
     {
         var exportRowModels = await _userService.DownloadAsync(userQueryCriteria);
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, "用户列表");
+        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("User"));
 
-        var provider = new FileExtensionContentTypeProvider();
         FileInfo fileInfo = new FileInfo(filepath);
         var ext = fileInfo.Extension;
         new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);

@@ -1,0 +1,365 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!-- 
+      Microsoft ResX Schema 
+      
+      Version 2.0
+      
+      The primary goals of this format is to allow a simple XML format 
+      that is mostly human readable. The generation and parsing of the 
+      various data types are done through the TypeConverter classes 
+      associated with the data types.
+      
+      Example:
+      
+      ... ado.net/XML headers & schema ...
+      <resheader name="resmimetype">text/microsoft-resx</resheader>
+      <resheader name="version">2.0</resheader>
+      <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+      <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+      <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+      <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+      <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+          <value>[base64 mime encoded serialized .NET Framework object]</value>
+      </data>
+      <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+          <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+          <comment>This is a comment</comment>
+      </data>
+                  
+      There are any number of "resheader" rows that contain simple 
+      name/value pairs.
+      
+      Each data row contains a name, and value. The row also contains a 
+      type or mimetype. Type corresponds to a .NET class that support 
+      text/value conversion through the TypeConverter architecture. 
+      Classes that don't support this are serialized and stored with the 
+      mimetype set.
+      
+      The mimetype is used for serialized objects, and tells the 
+      ResXResourceReader how to depersist the object. This is currently not 
+      extensible. For a given mimetype the value must be set accordingly:
+      
+      Note - application/x-microsoft.net.object.binary.base64 is the format 
+      that the ResXResourceWriter will generate, however the reader can 
+      read any of the formats listed below.
+      
+      mimetype: application/x-microsoft.net.object.binary.base64
+      value   : The object must be serialized with 
+              : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+              : and then encoded with base64 encoding.
+      
+      mimetype: application/x-microsoft.net.object.soap.base64
+      value   : The object must be serialized with 
+              : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+              : and then encoded with base64 encoding.
+  
+      mimetype: application/x-microsoft.net.object.bytearray.base64
+      value   : The object must be serialized into a byte array 
+              : using a System.ComponentModel.TypeConverter
+              : and then encoded with base64 encoding.
+      -->
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string"/>
+                            <xsd:attribute name="type" type="xsd:string"/>
+                            <xsd:attribute name="mimetype" type="xsd:string"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string"/>
+                            <xsd:attribute name="name" type="xsd:string"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="User" xml:space="preserve">
+    <value>User</value>
+    </data>
+    <data name="Department" xml:space="preserve">
+    <value>Department</value>
+    </data>
+    <data name="Job" xml:space="preserve">
+    <value>Job</value>
+    </data>
+    <data name="Role" xml:space="preserve">
+    <value>Role</value>
+    </data>
+    <data name="AppSecret" xml:space="preserve">
+    <value>AppSecret</value>
+    </data>
+    <data name="FileRecord" xml:space="preserve">
+    <value>FileRecord</value>
+    </data>
+    <data name="Menu" xml:space="preserve">
+    <value>Menu</value>
+    </data>
+    <data name="Setting" xml:space="preserve">
+    <value>Setting</value>
+    </data>
+    <data name="Dict" xml:space="preserve">
+    <value>Dict</value>
+    </data>
+    <data name="DictDetail" xml:space="preserve">
+    <value>DictDetail</value>
+    </data>
+    <data name="EmailAccount" xml:space="preserve">
+    <value>EmailAccount</value>
+    </data>
+    <data name="EmailMessageTemplate" xml:space="preserve">
+    <value>EmailMessageTemplate</value>
+    </data>
+    <data name="AuditLog" xml:space="preserve">
+    <value>AuditLog</value>
+  </data>
+    <data name="ExceptionLog" xml:space="preserve">
+    <value>ExceptionLog</value>
+  </data>
+    <data name="QueuedEmail" xml:space="preserve">
+    <value>QueuedEmail</value>
+  </data>
+    <data name="QuartzNet" xml:space="preserve">
+    <value>QuartzNet</value>
+  </data>
+    <data name="QuartzNetLog" xml:space="preserve">
+    <value>QuartzNetLog</value>
+  </data>
+    <data name="ServiceMonitoring" xml:space="preserve">
+    <value>server information</value>
+  </data>
+    <data name="OnlineUser" xml:space="preserve">
+    <value>online user</value>
+    </data>
+    <data name="UserBehavior" xml:space="preserve">
+    <value>user behavior</value>
+    </data>
+    <data name="UserInfo" xml:space="preserve">
+    <value>User Info</value>
+    </data>
+    <data name="LoginOut" xml:space="preserve">
+    <value>Sign out</value>
+    </data>
+    <data name="OutOnlineUser" xml:space="preserve">
+    <value>logout online user</value>
+    </data>
+    <data name="HttpOK" xml:space="preserve">
+    <value>request succeeded</value>
+  </data>
+    <data name="HttpCreated" xml:space="preserve">
+    <value>Created successfully</value>
+  </data>
+    <data name="HttpNoContent" xml:space="preserve">
+    <value>Edited successfully</value>
+  </data>
+    <data name="HttpBadRequest" xml:space="preserve">
+    <value>Request failed</value>
+  </data>
+    <data name="HttpUnauthorized" xml:space="preserve">
+    <value>Sorry, you do not have permission to access this interface</value>
+  </data>
+    <data name="HttpForbidden" xml:space="preserve">
+    <value>Sorry, your access level is insufficient</value>
+  </data>
+    <data name="HttpInternalServerError" xml:space="preserve">
+    <value>System exception</value>
+  </data>
+    <data name="GetCode" xml:space="preserve">
+    <value>get verification code</value>
+  </data>
+    <data name="CodeNotExist" xml:space="preserve">
+    <value>The verification code does not exist or has expired</value>
+  </data>
+    <data name="CodeWrong" xml:space="preserve">
+    <value>Verification code error</value>
+  </data>
+    <data name="DataCannotDelete" xml:space="preserve">
+    <value>Data is used and cannot be deleted</value>
+  </data>
+    <data name="DataNotExist" xml:space="preserve">
+    <value>data does not exist</value>
+  </data>
+    <data name="{0}NotExist" xml:space="preserve">
+    <value>{0} does not exist</value>
+  </data>
+    <data name="{0}{1}IsExist" xml:space="preserve">
+    <value>{0}=>{1}=>existed</value>
+  </data>
+    <data name="{0}NotActivated" xml:space="preserve">
+    <value>{0} inactivated</value>
+  </data>
+    <data name="PasswrodWrong" xml:space="preserve">
+    <value>wrong password</value>
+  </data>
+    <data name="{0}required" xml:space="preserve">
+    <value>{0} is required</value>
+  </data>
+    <data name="ValueIsInvalidAccessor" xml:space="preserve">
+    <value>{0} wrong format</value>
+  </data>
+    <data name="{0}AtLeastOne" xml:space="preserve">
+    <value>{0} choose at least one</value>
+  </data>
+    <data name="ForbidToDeleteYourself" xml:space="preserve">
+    <value>Forbid to delete yourself</value>
+  </data>
+    <data name="OperationProhibited" xml:space="preserve">
+    <value>Prohibit manipulation of other people's data</value>
+  </data>
+    <data name="{0}Add" xml:space="preserve">
+    <value>{0} added</value>
+  </data>
+    <data name="{0}Edit" xml:space="preserve">
+    <value>{0} edit</value>
+  </data>
+    <data name="{0}Delete" xml:space="preserve">
+    <value>{0} delte</value>
+  </data>
+    <data name="{0}List" xml:space="preserve">
+    <value>{0} list</value>
+  </data>
+    <data name="{0}Export" xml:space="preserve">
+    <value>{0} export</value>
+  </data>
+    <data name="{0}Execute" xml:space="preserve">
+    <value>{0} execute</value>
+  </data>
+    <data name="{0}Stop" xml:space="preserve">
+    <value>{0} stop</value>
+  </data>
+    <data name="{0}Info" xml:space="preserve">
+    <value>{0} info</value>
+  </data>
+    <data name="{0}ExecutionLog" xml:space="preserve">
+    <value>{0} execution log</value>
+  </data>
+    <data name="SiblingParentDepartment" xml:space="preserve">
+    <value>Get sibling, parent department</value>
+  </data>
+    <data name="LogStack" xml:space="preserve">
+    <value>log stack</value>
+  </data>
+    <data name="BuildMenu" xml:space="preserve">
+    <value>build menu</value>
+  </data>
+    <data name="Submenu" xml:space="preserve">
+    <value>Submenu</value>
+  </data>
+    <data name="SiblingParentMenu" xml:space="preserve">
+    <value>Get sibling, parent menu</value>
+  </data>
+    <data name="AllChildID" xml:space="preserve">
+    <value>Get all sub-menu IDs</value>
+  </data>
+    <data name="RetryFailure" xml:space="preserve">
+    <value>Execution failed, please try again!</value>
+  </data>
+    <data name="StopFailure" xml:space="preserve">
+    <value>Pause failed, please try again!</value>
+  </data>
+    <data name="RecoveryFailed" xml:space="preserve">
+    <value>Recovery failed, please try again!</value>
+  </data>
+    <data name="DoNotTurnOn" xml:space="preserve">
+    <value>It is already running, please do not open it again!</value>
+  </data>
+    <data name="UserRoleLevel" xml:space="preserve">
+    <value>current user level</value>
+  </data>
+    <data name="ViewRole" xml:space="preserve">
+    <value>View roles</value>
+  </data>
+    <data name="RoleMenu" xml:space="preserve">
+    <value>character menu</value>
+  </data>
+    <data name="UpdatePersonalInfo" xml:space="preserve">
+    <value>Update personal information</value>
+  </data>
+    <data name="UpdatePassword" xml:space="preserve">
+    <value>update password</value>
+  </data>
+    <data name="UpdateAvatar" xml:space="preserve">
+    <value>Update avatar</value>
+  </data>
+    <data name="UpdateEmail" xml:space="preserve">
+    <value>Update email</value>
+  </data>
+    <data name="PasswordsCannotBeTheSame" xml:space="preserve">
+    <value>The new password cannot be the same as the old password</value>
+  </data>
+    <data name="AttemptedValueIsInvalidAccessor" xml:space="preserve">
+    <value>'{0}' is not a valid format for {1}</value>
+  </data>
+    <data name="{0}formaterror" xml:space="preserve">
+    <value>The {0} field has an error format</value>
+  </data>
+    <data name="{0}number" xml:space="preserve">
+    <value>The {0} field must be digit</value>
+  </data>
+    <data name="{0}range{1}" xml:space="preserve">
+    <value>{0} must be at least {1}</value>
+  </data>
+    <data name="{0}range{1}{2}" xml:space="preserve">
+    <value>{0} must between {1} and {2}</value>
+  </data>
+    <data name="{0}range{2}" xml:space="preserve">
+    <value>{0} must be less than {1}</value>
+  </data>
+    <data name="{0}stringmax{1}" xml:space="preserve">
+    <value>The {0} field is limited {1} characters</value>
+  </data>
+    <data name="{0}ValueNotExist" xml:space="preserve">
+    <value>The {0} field's value does not exist</value>
+  </data>
+    <data name="{0}ValueTypeNotAllowed" xml:space="preserve">
+    <value>The {0} field's type is not supported</value>
+  </data>
+</root>

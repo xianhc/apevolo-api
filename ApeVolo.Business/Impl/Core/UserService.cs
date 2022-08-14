@@ -13,6 +13,7 @@ using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Dto.Core;
@@ -73,17 +74,20 @@ public class UserService : BaseServices<User>, IUserService
     {
         if (await IsExistAsync(x => x.Username == createUpdateUserDto.Username))
         {
-            throw new BadRequestException($"用户名称=>{createUpdateUserDto.Username}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("User"),
+                createUpdateUserDto.Username));
         }
 
         if (await IsExistAsync(x => x.Email == createUpdateUserDto.Email))
         {
-            throw new BadRequestException($"邮箱=>{createUpdateUserDto.Email}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("User"),
+                createUpdateUserDto.Email));
         }
 
         if (await IsExistAsync(x => x.Phone == createUpdateUserDto.Phone))
         {
-            throw new BadRequestException($"电话=>{createUpdateUserDto.Phone}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("User"),
+                createUpdateUserDto.Phone));
         }
 
         var user = Mapper.Map<User>(createUpdateUserDto);
@@ -99,7 +103,7 @@ public class UserService : BaseServices<User>, IUserService
         //角色
         if (user.Roles.Count < 1)
         {
-            throw new BadRequestException("角色至少选择一个！");
+            throw new BadRequestException(Localized.Get("AtLeastOne", Localized.Get("Role")));
         }
 
         var userRoles = new List<CreateUpdateUserRolesDto>();
@@ -110,7 +114,7 @@ public class UserService : BaseServices<User>, IUserService
         //岗位
         if (user.Jobs.Count < 1)
         {
-            throw new BadRequestException("岗位至少选择一个！");
+            throw new BadRequestException(Localized.Get("AtLeastOne", Localized.Get("Job")));
         }
 
         var userJobs = new List<CreateUpdateUserJobsDto>();
@@ -127,23 +131,26 @@ public class UserService : BaseServices<User>, IUserService
         var oldUser = await QueryFirstAsync(x => x.Id == createUpdateUserDto.Id);
         if (oldUser.IsNull())
         {
-            throw new BadRequestException("更新失败=》待更新数据不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
         if (oldUser.Username != createUpdateUserDto.Username &&
             await IsExistAsync(x => x.Username == createUpdateUserDto.Username))
         {
-            throw new BadRequestException($"用户名称=>{createUpdateUserDto.Username}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("User"),
+                createUpdateUserDto.Username));
         }
 
         if (oldUser.Email != createUpdateUserDto.Email && await IsExistAsync(x => x.Email == createUpdateUserDto.Email))
         {
-            throw new BadRequestException($"邮箱=>{createUpdateUserDto.Email}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("User"),
+                createUpdateUserDto.Email));
         }
 
         if (oldUser.Phone != createUpdateUserDto.Phone && await IsExistAsync(x => x.Phone == createUpdateUserDto.Phone))
         {
-            throw new BadRequestException($"电话=>{createUpdateUserDto.Phone}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("User"),
+                createUpdateUserDto.Phone));
         }
 
         //验证角色等级
@@ -156,7 +163,7 @@ public class UserService : BaseServices<User>, IUserService
         //角色
         if (user.Roles.Count < 1)
         {
-            throw new BadRequestException("角色至少选择一个！");
+            throw new BadRequestException(Localized.Get("AtLeastOne", Localized.Get("Role")));
         }
 
         await _userRoleService.DeleteByUserIdAsync(user.Id);
@@ -167,7 +174,7 @@ public class UserService : BaseServices<User>, IUserService
         //岗位
         if (user.Jobs.Count < 1)
         {
-            throw new BadRequestException("岗位至少选择一个！");
+            throw new BadRequestException(Localized.Get("AtLeastOne", Localized.Get("Job")));
         }
 
         await _userJobsService.DeleteByUserIdAsync(user.Id);
@@ -191,7 +198,7 @@ public class UserService : BaseServices<User>, IUserService
         await _roleService.VerificationUserRoleLevelAsync(await _roleService.QueryUserRoleLevelAsync(ids));
         if (ids.Contains(CurrentUser.Id))
         {
-            throw new BadRequestException("不可删除自己！");
+            throw new BadRequestException("ForbidToDeleteYourself");
         }
 
         var users = await QueryByIdsAsync(ids);
@@ -388,19 +395,19 @@ public class UserService : BaseServices<User>, IUserService
     public async Task<bool> UpdateCenterAsync(UpdateUserCenterDto updateUserCenterDto)
     {
         if (updateUserCenterDto.Id != CurrentUser.Id)
-            throw new BadRequestException("You do not have the right to modify other user data");
+            throw new BadRequestException(Localized.Get("OperationProhibited"));
 
         var user = await QueryFirstAsync(x => x.Id == updateUserCenterDto.Id);
         if (user.IsNull())
-            throw new BadRequestException(nameof(user) + " does not exist");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         if (!updateUserCenterDto.Phone.IsPhone())
-            throw new BadRequestException(nameof(updateUserCenterDto.Phone) +
-                                          " please enter the correct phone number！");
+            throw new BadRequestException(Localized.Get("ValueIsInvalidAccessor", "Phone"));
 
         var checkUser = await BaseDal.QueryFirstAsync(x =>
             x.Phone == updateUserCenterDto.Phone && x.Id != updateUserCenterDto.Id);
         if (checkUser.IsNotNull())
-            throw new BadRequestException($"Mobile phone number {updateUserCenterDto.Phone} already exists");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("User"),
+                checkUser.Phone));
 
         user.NickName = updateUserCenterDto.NickName;
         user.Gender = updateUserCenterDto.Gender;
@@ -415,16 +422,16 @@ public class UserService : BaseServices<User>, IUserService
         string newPassword = jsEncryptHelper.Decrypt(userPassDto.NewPassword);
 
         if (oldPassword == newPassword)
-            throw new BadRequestException("新密码不能与旧密码相同！");
+            throw new BadRequestException(Localized.Get("PasswordsCannotBeTheSame"));
 
         var curUser = await QueryFirstAsync(x => x.Id == CurrentUser.Id);
         if (curUser.IsNull())
-            throw new BadRequestException(nameof(curUser) + " does not exist");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         if (curUser.Password !=
             (oldPassword + curUser.SaltKey).ToHmacsha256String(
                 AppSettings.GetValue(new[] { "HmacSecret" })))
         {
-            throw new BadRequestException("修改失败，旧密码错误！");
+            throw new BadRequestException(Localized.Get("PasswrodWrong"));
         }
 
         //设置用户密码
@@ -456,20 +463,20 @@ public class UserService : BaseServices<User>, IUserService
     {
         var curUser = await QueryFirstAsync(x => x.Id == CurrentUser.Id);
         if (curUser.IsNull())
-            throw new BadRequestException("用户不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         var jsEncryptHelper = new JsEncryptHelper();
         string password = jsEncryptHelper.Decrypt(updateUserEmailDto.Password);
         if (curUser.Password !=
             (password + curUser.SaltKey).ToHmacsha256String(AppSettings.GetValue("HmacSecret")))
         {
-            throw new BadRequestException("修改失败，密码错误！");
+            throw new BadRequestException(Localized.Get("PasswrodWrong"));
         }
 
         var code = await _redisCacheService.GetCacheAsync(
             RedisKey.EmailCaptchaKey + updateUserEmailDto.Email.ToMd5String16());
         if (code.IsNullOrEmpty() || !code.Equals(updateUserEmailDto.Code))
         {
-            throw new BadRequestException("修改失败，验证码错误或已失效！");
+            throw new BadRequestException(Localized.Get("CodeWrong"));
         }
 
         curUser.Email = updateUserEmailDto.Email;
@@ -480,7 +487,7 @@ public class UserService : BaseServices<User>, IUserService
     {
         var curUser = await QueryFirstAsync(x => x.Id == CurrentUser.Id);
         if (curUser.IsNull())
-            throw new BadRequestException("用户不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
 
         string avatarName = GuidHelper.GenerateKey().ToLower() + "_" + file.FileName;
         string avatarPath = Path.Combine(AppSettings.WebRootPath, "file", "avatar");

@@ -12,6 +12,7 @@ using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
@@ -59,24 +60,26 @@ public class MenuService : BaseServices<Menu>, IMenuService
     {
         if (await IsExistAsync(m => m.Title == createUpdateMenuDto.Title))
         {
-            throw new BadRequestException($"菜单名称=》{createUpdateMenuDto.Title}=》已存在");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Menu"),
+                createUpdateMenuDto.Title));
         }
 
         if (await IsExistAsync(m => m.ComponentName == createUpdateMenuDto.ComponentName))
         {
-            throw new BadRequestException($"菜单组件=》{createUpdateMenuDto.ComponentName}=》已存在");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Menu"),
+                createUpdateMenuDto.ComponentName));
         }
 
         if (createUpdateMenuDto.Type != (int)MenuType.Catalog)
         {
             if (createUpdateMenuDto.LinkUrl.IsNullOrEmpty())
             {
-                throw new BadRequestException("URL不能为空！");
+                throw new BadRequestException(Localized.Get("{0}required", "LinkUrl"));
             }
 
             if (createUpdateMenuDto.Permission.IsNullOrEmpty())
             {
-                throw new BadRequestException("权限标识不能为空！");
+                throw new BadRequestException(Localized.Get("{0}required", "Permission"));
             }
         }
 
@@ -122,18 +125,20 @@ public class MenuService : BaseServices<Menu>, IMenuService
         var oldMenu = await QueryFirstAsync(x => x.Id == createUpdateMenuDto.Id);
         if (oldMenu.IsNull())
         {
-            throw new BadRequestException("更新失败=》待更新数据不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
         if (oldMenu.Title != createUpdateMenuDto.Title && await IsExistAsync(x => x.Title == createUpdateMenuDto.Title))
         {
-            throw new BadRequestException($"菜单标题=>{createUpdateMenuDto.Title}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Menu"),
+                createUpdateMenuDto.Title));
         }
 
         if (oldMenu.Permission != createUpdateMenuDto.Permission && await IsExistAsync(x =>
                 x.Permission == createUpdateMenuDto.Permission))
         {
-            throw new BadRequestException($"角色代码=>{createUpdateMenuDto.Permission}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Menu"),
+                createUpdateMenuDto.Permission));
         }
 
 
@@ -147,19 +152,14 @@ public class MenuService : BaseServices<Menu>, IMenuService
             }
         }
 
-        var menu = await BaseDal.QueryFirstAsync(m => m.Title.Equals(createUpdateMenuDto.Title));
-        if (menu != null && menu.Id != createUpdateMenuDto.Id)
-        {
-            throw new BadRequestException($"菜单名称=>{createUpdateMenuDto.Title}=>已存在");
-        }
-
         if (!createUpdateMenuDto.ComponentName.IsNullOrEmpty())
         {
             var menu1 = await BaseDal.QueryFirstAsync(m =>
                 m.ComponentName.Equals(createUpdateMenuDto.ComponentName));
             if (menu1 != null && menu1.Id != createUpdateMenuDto.Id)
             {
-                throw new BadRequestException($"菜单组件=>{createUpdateMenuDto.ComponentName}=>已存在");
+                throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Menu"),
+                    createUpdateMenuDto.ComponentName));
             }
         }
 

@@ -21,7 +21,7 @@ public class ServiceMonitoringController : BaseApiController
 
     [HttpGet]
     [Route("service/monitor/info")]
-    [Description("获取服务器信息")]
+    [Description("{0}Info")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public ActionResult<object> QueryServiceInfo()
     {

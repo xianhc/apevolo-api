@@ -1,8 +1,13 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
+using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
+using ApeVolo.Entity.Do.Core;
 using ApeVolo.Entity.Do.Dictionary;
 using ApeVolo.IBusiness.Dto.Dictionary;
 using ApeVolo.IBusiness.EditDto.Dict;
@@ -38,7 +43,8 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
                 dd.Label == createUpdateDictDetailDto.Label &&
                 dd.Value == createUpdateDictDetailDto.Value))
         {
-            throw new BadRequestException($"字典详情资源=>{createUpdateDictDetailDto.Label}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("DictDetail"),
+                createUpdateDictDetailDto.Label));
         }
 
         var dictDetail = Mapper.Map<DictDetail>(createUpdateDictDetailDto);
@@ -50,7 +56,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
     {
         if (!await IsExistAsync(dd => dd.Id == createUpdateDictDetailDto.Id))
         {
-            throw new BadRequestException($"字典详情资源=>{createUpdateDictDetailDto.Label}=>不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
         var dictDetail = Mapper.Map<DictDetail>(createUpdateDictDetailDto);
@@ -63,7 +69,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
         var dictDetail = await QuerySingleAsync(id);
         if (dictDetail == null)
         {
-            throw new BadRequestException("删除的资源不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
         return await DeleteEntityAsync(dictDetail);

@@ -9,6 +9,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
@@ -52,13 +53,13 @@ public class MenusController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("新增菜单")]
+    [Description("{0}Add")]
     public async Task<ActionResult<object>> CreateMenu(
         [FromBody] CreateUpdateMenuDto createUpdateMenuDto)
     {
         RequiredHelper.IsValid(createUpdateMenuDto);
         await _menuService.CreateAsync(createUpdateMenuDto);
-        return Create("添加成功");
+        return Create();
     }
 
     /// <summary>
@@ -68,13 +69,13 @@ public class MenusController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("更新菜单")]
+    [Description("{0}Edit")]
     public async Task<ActionResult<object>> UpdateDept(
         [FromBody] CreateUpdateMenuDto createUpdateMenuDto)
     {
         RequiredHelper.IsValid(createUpdateMenuDto);
         await _menuService.UpdateAsync(createUpdateMenuDto);
-        return NoContent("更新成功");
+        return NoContent();
     }
 
     /// <summary>
@@ -84,7 +85,7 @@ public class MenusController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("删除菜单")]
+    [Description("{0}Delete")]
     [NoJsonParamter]
     public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
     {
@@ -94,7 +95,7 @@ public class MenusController : BaseApiController
         }
 
         await _menuService.DeleteAsync(ids);
-        return Success("删除成功");
+        return Success();
     }
 
     /// <summary>
@@ -102,7 +103,7 @@ public class MenusController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Description("构建树形菜单")]
+    [Description("BuildMenu")]
     [Route("build")]
     [ApeVoloAuthorize(new[] { "admin", "menu_list", "guest" })]
     public async Task<ActionResult<object>> Build()
@@ -117,7 +118,7 @@ public class MenusController : BaseApiController
     /// <param name="pid">父级ID</param>
     /// <returns></returns>
     [HttpGet]
-    [Description("获取子菜单")]
+    [Description("Submenu")]
     [Route("lazy")]
     [ApeVoloAuthorize(new[] { "admin", "menu_list", "guest" })]
     public async Task<ActionResult<object>> GetMenuLazy(long pid)
@@ -138,7 +139,7 @@ public class MenusController : BaseApiController
     /// <param name="pagination"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("查看菜单列表")]
+    [Description("{0}List")]
     [Route("query")]
     public async Task<ActionResult<object>> Query(MenuQueryCriteria menuQueryCriteria,
         Pagination pagination)
@@ -158,15 +159,14 @@ public class MenusController : BaseApiController
     /// <param name="menuQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("导出菜单")]
+    [Description("{0}Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(MenuQueryCriteria menuQueryCriteria)
     {
         var exportRowModels = await _menuService.DownloadAsync(menuQueryCriteria);
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, "菜单列表");
+        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("Menu"));
 
-        var provider = new FileExtensionContentTypeProvider();
         FileInfo fileInfo = new FileInfo(filepath);
         var ext = fileInfo.Extension;
         new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
@@ -180,7 +180,7 @@ public class MenusController : BaseApiController
     /// <param name="ids"></param>
     /// <returns></returns>
     [HttpPost]
-    [Description("获取同级与上级菜单")]
+    [Description("SiblingParentMenu")]
     [Route("superior")]
     [NoJsonParamter]
     [ApeVoloAuthorize(new[] { "admin", "menu_list" })]
@@ -196,7 +196,7 @@ public class MenusController : BaseApiController
     }
 
     [HttpGet]
-    [Description("获取所有子级菜单ID")]
+    [Description("AllChildID")]
     [Route("child")]
     [ApeVoloAuthorize(new[] { "admin", "menu_list" })]
     [NoJsonParamter]

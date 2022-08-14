@@ -17,7 +17,7 @@ namespace ApeVolo.Api.Controllers.Email;
 /// <summary>
 /// 邮箱账户
 /// </summary>
-[Area("emailMessageTemplate")]
+[Area("EmailMessageTemplate")]
 [Route("/api/email/template")]
 public class EmailMessageTemplateController : BaseApiController
 {
@@ -45,7 +45,7 @@ public class EmailMessageTemplateController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("新增邮件消息模板")]
+    [Description("{0}Add")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto)
     {
@@ -61,7 +61,7 @@ public class EmailMessageTemplateController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("更新邮件消息模板")]
+    [Description("{0}Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto)
     {
@@ -77,7 +77,7 @@ public class EmailMessageTemplateController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("删除邮件消息模板")]
+    [Description("{0}Delete")]
     [NoJsonParamter]
     public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
     {
@@ -95,7 +95,7 @@ public class EmailMessageTemplateController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("邮件消息模板列表")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> Query(EmailMessageTemplateQueryCriteria messageTemplateQueryCriteria,
         Pagination pagination)
     {

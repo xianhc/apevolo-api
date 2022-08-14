@@ -46,7 +46,7 @@ public class AuditingController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("查看审计列表")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> Query(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
     {
@@ -67,7 +67,7 @@ public class AuditingController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("current")]
-    [Description("用户行为")]
+    [Description("UserBehavior")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> FindListByCurrent(Pagination pagination)
     {

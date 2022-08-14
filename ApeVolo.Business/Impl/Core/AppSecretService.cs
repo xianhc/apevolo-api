@@ -8,6 +8,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Dto.Core;
@@ -44,7 +45,8 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
     {
         if (await IsExistAsync(r => r.AppName == createUpdateAppSecretDto.AppName))
         {
-            throw new BadRequestException($"应用名称=>{createUpdateAppSecretDto.AppName}=>已存在!");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("AppSecret"),
+                createUpdateAppSecretDto.AppName));
         }
 
         var id = IdHelper.GetId();
@@ -61,13 +63,14 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
         var oldAppSecret = await QueryFirstAsync(x => x.Id == createUpdateAppSecretDto.Id);
         if (oldAppSecret.IsNull())
         {
-            throw new BadRequestException("更新失败=》待更新数据不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
         if (oldAppSecret.AppName != createUpdateAppSecretDto.AppName &&
             await IsExistAsync(x => x.AppName == createUpdateAppSecretDto.AppName))
         {
-            throw new BadRequestException($"应用名称=>{createUpdateAppSecretDto.AppName}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("AppSecret"),
+                createUpdateAppSecretDto.AppName));
         }
 
         var appSecret = Mapper.Map<AppSecret>(createUpdateAppSecretDto);

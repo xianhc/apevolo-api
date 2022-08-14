@@ -22,6 +22,7 @@ public class TokenFilterAttribute : BaseActionFilter
     /// <param name="context">过滤器上下文</param>
     public override async Task OnActionExecuting(ActionExecutingContext context)
     {
+        HttpContext = context.HttpContext;
         try
         {
             //如果项目使用自定义jwt模式 需要在这里验证token是否有效或过期

@@ -12,6 +12,8 @@ namespace ApeVolo.Api.ActionExtension;
 
 public class BaseActionFilter : Attribute, IAsyncActionFilter
 {
+    protected HttpContext HttpContext;
+
     public async virtual Task OnActionExecuting(ActionExecutingContext context)
     {
         await Task.CompletedTask;
@@ -35,76 +37,23 @@ public class BaseActionFilter : Attribute, IAsyncActionFilter
     /// <summary>
     /// 返回JSON
     /// </summary>
-    /// <param name="json">json字符串</param>
+    /// <param name="vm"></param>
     /// <returns></returns>
-    public ContentResult JsonContent(string json)
+    public ContentResult JsonContent(ActionResultVm vm)
     {
         return new ContentResult
-            { Content = json, StatusCode = StatusCodes.Status200OK, ContentType = "application/json; charset=utf-8" };
-    }
-
-    /// <summary>
-    /// 返回成功
-    /// </summary>
-    /// <returns></returns>
-    public ContentResult Success()
-    {
-        ActionResultVm res = new ActionResultVm
         {
-            Message = "请求成功！",
-            Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+            Content = new ActionResultVm
+            {
+                Status = vm.Status,
+                Error = vm.Error,
+                Message = vm.Message,
+                Timestamp = DateTime.Now.ToUnixTimeStampMillisecond().ToString(),
+                Path = HttpContext.Request.Path.Value?.ToLower()
+            }.ToJson(),
+            ContentType = "application/json; charset=utf-8",
+            StatusCode = vm.Status
         };
-
-        return JsonContent(res.ToJson());
-    }
-
-    /// <summary>
-    /// 返回成功
-    /// </summary>
-    /// <param name="msg">消息</param>
-    /// <returns></returns>
-    public ContentResult Success(string msg)
-    {
-        ActionResultVm res = new ActionResultVm
-        {
-            Message = msg,
-            Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
-        };
-
-        return JsonContent(res.ToJson());
-    }
-
-    /// <summary>
-    /// 返回成功
-    /// </summary>
-    /// <param name="data">返回的数据</param>
-    /// <returns></returns>
-    public ContentResult Success<T>(List<T> data)
-    {
-        ActionResultVm<T> res = new ActionResultVm<T>
-        {
-            Content = data,
-            TotalElements = 0
-        };
-
-        return JsonContent(res.ToJson());
-    }
-
-    /// <summary>
-    /// 返回错误
-    /// </summary>
-    /// <returns></returns>
-    public ContentResult Error()
-    {
-        ActionResultVm res = new ActionResultVm
-        {
-            Status = StatusCodes.Status400BadRequest,
-            Error = "BadRequest",
-            Message = "请求失败！",
-            Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
-        };
-
-        return JsonContent(res.ToJson());
     }
 
     /// <summary>
@@ -114,15 +63,14 @@ public class BaseActionFilter : Attribute, IAsyncActionFilter
     /// <returns></returns>
     public ContentResult Error(string msg)
     {
-        ActionResultVm res = new ActionResultVm
+        var vm = new ActionResultVm
         {
             Status = StatusCodes.Status400BadRequest,
             Error = "BadRequest",
-            Message = msg,
-            Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+            Message = msg
         };
 
-        return JsonContent(res.ToJson());
+        return JsonContent(vm);
     }
 
     /// <summary>
@@ -133,14 +81,13 @@ public class BaseActionFilter : Attribute, IAsyncActionFilter
     /// <returns></returns>
     public ContentResult Error(string msg, int errorCode)
     {
-        ActionResultVm res = new ActionResultVm
+        var vm = new ActionResultVm
         {
             Status = errorCode,
             Error = "BadRequest",
-            Message = msg,
-            Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+            Message = msg
         };
 
-        return JsonContent(res.ToJson());
+        return JsonContent(vm);
     }
 }

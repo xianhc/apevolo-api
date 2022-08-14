@@ -7,6 +7,7 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Entity.Do.Email;
 using ApeVolo.IBusiness.Dto.Email;
 using ApeVolo.IBusiness.EditDto.Email;
@@ -44,7 +45,8 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
     {
         if (await IsExistAsync(x => x.Email == createUpdateEmailAccountDto.Email))
         {
-            throw new BadRequestException($"邮箱=>{createUpdateEmailAccountDto.Email}=>已存在!");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("EmailAccount"),
+                createUpdateEmailAccountDto.Email));
         }
 
         var emailAccount = Mapper.Map<EmailAccount>(createUpdateEmailAccountDto);
@@ -58,9 +60,18 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
     /// <returns></returns>
     public async Task<bool> UpdateAsync(CreateUpdateEmailAccountDto createUpdateEmailAccountDto)
     {
-        if (!await IsExistAsync(x => x.Id == createUpdateEmailAccountDto.Id))
+        var oldEmailAccount =
+            await QueryFirstAsync(x => x.Id == createUpdateEmailAccountDto.Id);
+        if (oldEmailAccount.IsNull())
         {
-            throw new BadRequestException($"邮箱=>{nameof(EmailAccount)}=>不存在!");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
+        }
+
+        if (oldEmailAccount.Email != createUpdateEmailAccountDto.Email &&
+            await IsExistAsync(j => j.Id == createUpdateEmailAccountDto.Id))
+        {
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("EmailAccount"),
+                createUpdateEmailAccountDto.Email));
         }
 
         var emailAccount = Mapper.Map<EmailAccount>(createUpdateEmailAccountDto);

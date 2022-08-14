@@ -10,6 +10,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Entity.Do.Queued;
 using ApeVolo.IBusiness.Dto.Queued;
 using ApeVolo.IBusiness.EditDto.Email;
@@ -83,7 +84,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
     {
         if (!await IsExistAsync(x => x.Id == createUpdateQueuedEmailDto.Id))
         {
-            throw new BadRequestException($"({nameof(QueuedEmail)})不存在!");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
         var queuedEmail = Mapper.Map<QueuedEmail>(createUpdateQueuedEmailDto);

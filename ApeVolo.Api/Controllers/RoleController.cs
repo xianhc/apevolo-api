@@ -9,6 +9,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
 using ApeVolo.IBusiness.Interface.Core;
@@ -51,12 +52,12 @@ public class RoleController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("添加角色")]
+    [Description("{0}Add")]
     public async Task<ActionResult<object>> Create(CreateUpdateRoleDto createUpdateRoleDto)
     {
         RequiredHelper.IsValid(createUpdateRoleDto);
         await _roleService.CreateAsync(createUpdateRoleDto);
-        return Create("添加成功");
+        return Create();
     }
 
     /// <summary>
@@ -65,7 +66,7 @@ public class RoleController : BaseApiController
     /// <param name="createUpdateRoleDto"></param>
     /// <returns></returns>
     [HttpPut]
-    [Description("更新角色")]
+    [Description("{0}Edit")]
     [Route("edit")]
     public async Task<ActionResult<object>> Update([FromBody] CreateUpdateRoleDto createUpdateRoleDto)
     {
@@ -80,12 +81,12 @@ public class RoleController : BaseApiController
     /// <param name="ids"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Description("删除角色")]
+    [Description("{0}Delete")]
     [Route("delete")]
     [NoJsonParamter]
     public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
     {
-        if (ids == null || ids.Count < 0)
+        if (ids == null || ids.Count < 1)
         {
             return Error("ids is null");
         }
@@ -94,7 +95,7 @@ public class RoleController : BaseApiController
         var userRoles = await _userRolesService.QueryByRoleIdsAsync(ids);
         if (!userRoles.IsNullOrEmpty() && userRoles.Count > 0)
         {
-            return Error("所选角色存在用户关联，请解除关联再试！");
+            return Error(Localized.Get("DataCannotDelete"));
         }
 
         await _roleService.DeleteAsync(ids);
@@ -108,7 +109,7 @@ public class RoleController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("{id}")]
-    [Description("查看单一角色")]
+    [Description("ViewRole")]
     [ApeVoloAuthorize(new[] { "roles_list" })]
     public async Task<ActionResult<object>> QuerySingle(string id)
     {
@@ -124,7 +125,7 @@ public class RoleController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("获取角色列表")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> Query(RoleQueryCriteria roleQueryCriteria,
         Pagination pagination)
     {
@@ -143,15 +144,14 @@ public class RoleController : BaseApiController
     /// <param name="roleQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("导出角色列表")]
+    [Description("{0}Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(RoleQueryCriteria roleQueryCriteria)
     {
         var exportRowModels = await _roleService.DownloadAsync(roleQueryCriteria);
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, "角色列表");
+        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("Role"));
 
-        var provider = new FileExtensionContentTypeProvider();
         FileInfo fileInfo = new FileInfo(filepath);
         var ext = fileInfo.Extension;
         new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
@@ -165,8 +165,8 @@ public class RoleController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("all")]
-    [Description("获取全部角色")]
-    [ApeVoloAuthorize(new[] { "roles_list" })]
+    [Description("{0}List")]
+    [ApeVoloAuthorize(new[] { "admin", "roles_list" })]
     public async Task<ActionResult<object>> GetAllRoles()
     {
         var allRoles = await _roleService.QueryAllAsync();
@@ -181,8 +181,8 @@ public class RoleController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("level")]
-    [Description("获取当前用户角色等级")]
-    [ApeVoloAuthorize(new[] { "roles_list" })]
+    [Description("UserRoleLevel")]
+    [ApeVoloAuthorize(new[] { "admin", "roles_list" })]
     public async Task<ActionResult<object>> GetRoleLevel(int? level)
     {
         var curLevel = await _roleService.VerificationUserRoleLevelAsync(level);

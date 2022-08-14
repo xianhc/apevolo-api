@@ -4,37 +4,11 @@
         <name>ApeVolo.Api</name>
     </assembly>
     <members>
-        <member name="M:ApeVolo.Api.ActionExtension.BaseActionFilter.JsonContent(System.String)">
+        <member name="M:ApeVolo.Api.ActionExtension.BaseActionFilter.JsonContent(ApeVolo.Common.Model.ActionResultVm)">
             <summary>
             返回JSON
             </summary>
-            <param name="json">json字符串</param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.ActionExtension.BaseActionFilter.Success">
-            <summary>
-            返回成功
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.ActionExtension.BaseActionFilter.Success(System.String)">
-            <summary>
-            返回成功
-            </summary>
-            <param name="msg">消息</param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.ActionExtension.BaseActionFilter.Success``1(System.Collections.Generic.List{``0})">
-            <summary>
-            返回成功
-            </summary>
-            <param name="data">返回的数据</param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.ActionExtension.BaseActionFilter.Error">
-            <summary>
-            返回错误
-            </summary>
+            <param name="vm"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.ActionExtension.BaseActionFilter.Error(System.String)">
@@ -380,18 +354,11 @@
             基控制器
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Base.BaseController.JsonContent(System.String)">
+        <member name="M:ApeVolo.Api.Controllers.Base.BaseController.JsonContent(ApeVolo.Common.Model.ActionResultVm)">
             <summary>
-            返回JSON
+            
             </summary>
-            <param name="jsonStr">json字符串</param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.Base.BaseController.HtmlContent(System.String)">
-            <summary>
-            返回html
-            </summary>
-            <param name="body">html内容</param>
+            <param name="vm"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.Base.BaseController.Success(System.String)">
@@ -1072,6 +1039,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:ApeVolo.Api.Controllers.TestController.Test123456">
+            <summary>
+            redismq测试
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:ApeVolo.Api.Controllers.UserController">
             <summary>
             用户管理
@@ -1232,6 +1205,14 @@
             <param name="deviceType">设备类型</param>
             <param name="browserName">浏览器名称</param>
             <param name="version">版本号</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Filter.ExceptionLogFormat.GetResourcesDescription(System.String,System.String)">
+            <summary>
+            获取描述本地化语言
+            </summary>
+            <param name="description"></param>
+            <param name="area"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Filter.GlobalExceptionFilter.CreateLog(Microsoft.AspNetCore.Mvc.Filters.ExceptionContext)">

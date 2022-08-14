@@ -44,7 +44,7 @@ public class ExceptionLogController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("查看异常日志列表")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> FindList(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
     {
@@ -64,7 +64,7 @@ public class ExceptionLogController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("detail/{id}")]
-    [Description("查看日志堆栈详情")]
+    [Description("LogStack")]
     [ApeVoloAuthorize(new[] { "admin", "log_list" })]
     public async Task<ActionResult<object>> QueryDetail(string id)
     {

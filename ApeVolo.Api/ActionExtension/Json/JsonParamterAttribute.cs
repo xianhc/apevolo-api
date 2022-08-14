@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ApeVolo.Api.ActionExtension.Json;
@@ -14,7 +15,7 @@ public class JsonParamterAttribute : BaseActionFilter
     {
         if (filterContext.ContainsFilter<NoJsonParamterAttribute>())
             return;
-
+        HttpContext = filterContext.HttpContext;
         //参数映射：支持application/json
         string contentType = filterContext.HttpContext.Request.ContentType;
         if (!contentType.IsNullOrEmpty() && contentType.Contains("application/json"))

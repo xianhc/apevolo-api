@@ -7,6 +7,7 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
@@ -40,7 +41,8 @@ public class JobService : BaseServices<Job>, IJobService
     {
         if (await IsExistAsync(j => j.Name == createUpdateJobDto.Name))
         {
-            throw new BadRequestException($"岗位=>{createUpdateJobDto.Name}=>已存在!");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Job"),
+                createUpdateJobDto.Name));
         }
 
         var job = Mapper.Map<Job>(createUpdateJobDto);
@@ -49,9 +51,17 @@ public class JobService : BaseServices<Job>, IJobService
 
     public async Task<bool> UpdateAsync(CreateUpdateJobDto createUpdateJobDto)
     {
-        if (!await IsExistAsync(j => j.Id == createUpdateJobDto.Id))
+        var oldJob =
+            await QueryFirstAsync(x => x.Id == createUpdateJobDto.Id);
+        if (oldJob.IsNull())
         {
-            throw new BadRequestException($"岗位=>{createUpdateJobDto.Name}=>不存在!");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
+        }
+
+        if (oldJob.Name != createUpdateJobDto.Name && await IsExistAsync(j => j.Id == createUpdateJobDto.Id))
+        {
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Job"),
+                createUpdateJobDto.Name));
         }
 
         var job = Mapper.Map<Job>(createUpdateJobDto);
@@ -63,7 +73,7 @@ public class JobService : BaseServices<Job>, IJobService
         var jobs = await QueryByIdsAsync(ids);
         if (jobs.Count < 1)
         {
-            throw new BadRequestException("删除的资源不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
         var userJobs = await BaseDal.QueryMuchAsync<UserJobs, User, UserJobs>(
@@ -76,7 +86,7 @@ public class JobService : BaseServices<Job>, IJobService
         );
         if (userJobs.Count > 0)
         {
-            throw new BadRequestException("所选岗位存在用户关联，请解除后再试！");
+            throw new BadRequestException(Localized.Get("DataCannotDelete"));
         }
 
         return await DeleteEntityListAsync(jobs);

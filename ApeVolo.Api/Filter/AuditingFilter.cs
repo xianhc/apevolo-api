@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
+using ApeVolo.Common.Resources;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Do.Logs;
@@ -115,13 +116,15 @@ public class AuditingFilter : IAsyncActionFilter
     private AuditLog CreateAuditLog(ActionExecutingContext context)
     {
         var routeValues = context.ActionDescriptor.RouteValues;
-        Attribute desc =
+        var desc =
             ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.GetCustomAttribute(
                 typeof(DescriptionAttribute), true);
 
         var httpContext = context.HttpContext;
         var remoteIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-        var decs = HttpHelper.GetAllRequestParams(httpContext); //context.ActionArguments;
+        var arguments = HttpHelper.GetAllRequestParams(httpContext); //context.ActionArguments;
+        var description = desc == null ? "" : ((DescriptionAttribute)desc).Description;
+
         var auditLog = new AuditLog
         {
             Id = IdHelper.GetLongId(),
@@ -131,9 +134,9 @@ public class AuditingFilter : IAsyncActionFilter
             Controller = routeValues["controller"],
             Action = routeValues["action"],
             Method = httpContext.Request.Method,
-            Description = desc.IsNull() ? "" : ((DescriptionAttribute)desc)?.Description,
+            Description = ExceptionLogFormat.GetResourcesDescription(description, routeValues["area"]),
             RequestUrl = httpContext.Request.GetDisplayUrl(),
-            RequestParameters = decs.ToJson(),
+            RequestParameters = arguments.ToJson(),
             RequestIp = remoteIp,
             IpAddress = IpHelper.GetIpAddress(remoteIp),
             OperatingSystem = _browserDetector.Browser.OS,
@@ -146,7 +149,7 @@ public class AuditingFilter : IAsyncActionFilter
         var reqUrl = httpContext.Request.Path.Value?.ToLower();
         if (reqUrl is "/auth/login")
         {
-            var (_, value) = decs.SingleOrDefault(k => k.Key == "username");
+            var (_, value) = arguments.SingleOrDefault(k => k.Key == "username");
             if (!value.IsNullOrEmpty())
             {
                 auditLog.CreateBy = value.ToString();

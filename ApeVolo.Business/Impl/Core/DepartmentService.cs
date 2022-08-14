@@ -9,6 +9,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Entity.Do.Core;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
@@ -40,7 +41,8 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     {
         if (await IsExistAsync(d => d.Name == createUpdateDepartmentDto.Name))
         {
-            throw new BadRequestException($"部门=》{createUpdateDepartmentDto.Name}=》已存在!");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Department"),
+                createUpdateDepartmentDto.Name));
         }
 
         Department dept = Mapper.Map<Department>(createUpdateDepartmentDto);
@@ -69,13 +71,14 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
             await QueryFirstAsync(x => x.Id == createUpdateDepartmentDto.Id);
         if (oldUseDepartment.IsNull())
         {
-            throw new BadRequestException("更新失败=》待更新数据不存在！");
+            throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
         if (oldUseDepartment.Name != createUpdateDepartmentDto.Name && await IsExistAsync(x =>
                 x.Name == createUpdateDepartmentDto.Name))
         {
-            throw new BadRequestException($"部门名称=>{createUpdateDepartmentDto.Name}=>已存在！");
+            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Department"),
+                createUpdateDepartmentDto.Name));
         }
 
         Department dept = Mapper.Map<Department>(createUpdateDepartmentDto);

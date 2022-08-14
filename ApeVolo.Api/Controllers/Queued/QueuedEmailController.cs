@@ -18,7 +18,7 @@ namespace ApeVolo.Api.Controllers.Queued;
 /// <summary>
 /// 邮箱账户
 /// </summary>
-[Area("emailAccount")]
+[Area("QueuedEmail")]
 [Route("/api/queued/email")]
 public class QueuedEmailController : BaseApiController
 {
@@ -37,7 +37,7 @@ public class QueuedEmailController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("新增邮件队列")]
+    [Description("{0}Add")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto)
     {
@@ -53,7 +53,7 @@ public class QueuedEmailController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("更新邮件队列")]
+    [Description("{0}Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto)
     {
@@ -69,7 +69,7 @@ public class QueuedEmailController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("删除邮件队列")]
+    [Description("{0}Delete")]
     [NoJsonParamter]
     public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
     {
@@ -87,7 +87,7 @@ public class QueuedEmailController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("邮件队列列表")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> Query(QueuedEmailQueryCriteria queuedEmailQueryCriteria,
         Pagination pagination)
     {

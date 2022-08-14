@@ -7,6 +7,7 @@ using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.Core;
 using ApeVolo.IBusiness.EditDto.Core;
 using ApeVolo.IBusiness.Interface.Core;
@@ -47,7 +48,7 @@ public class AppSecretController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("新增应用秘钥")]
+    [Description("{0}Add")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateAppSecretDto createUpdateAppSecretDto)
     {
@@ -62,7 +63,7 @@ public class AppSecretController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("更新应用秘钥")]
+    [Description("{0}Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateAppSecretDto createUpdateAppSecretDto)
     {
@@ -77,7 +78,7 @@ public class AppSecretController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("删除应用秘钥")]
+    [Description("{0}Delete")]
     [NoJsonParamter]
     public async Task<ActionResult<object>> Delete([FromBody] HashSet<long> ids)
     {
@@ -98,7 +99,7 @@ public class AppSecretController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("获取应用秘钥列表")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> Query(AppsecretQueryCriteria appsecretQueryCriteria,
         Pagination pagination)
     {
@@ -118,15 +119,14 @@ public class AppSecretController : BaseApiController
     /// <param name="appsecretQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("导出应用秘钥")]
+    [Description("{0}Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(AppsecretQueryCriteria appsecretQueryCriteria)
     {
         var exportRowModels = await _appSecretService.DownloadAsync(appsecretQueryCriteria);
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, "应用秘钥");
+        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("AppSecret"));
 
-        var provider = new FileExtensionContentTypeProvider();
         FileInfo fileInfo = new FileInfo(filepath);
         var ext = fileInfo.Extension;
         new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);

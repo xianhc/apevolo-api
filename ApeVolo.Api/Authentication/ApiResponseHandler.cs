@@ -5,6 +5,7 @@ using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -39,7 +40,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
         {
             Status = StatusCodes.Status401Unauthorized,
             Error = "Unauthorized",
-            Message = "抱歉，您无权访问该接口!!!",
+            Message = Localized.Get("HttpUnauthorized"),
             Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
         }.ToJson());
     }
@@ -56,7 +57,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
             {
                 Status = StatusCodes.Status401Unauthorized,
                 Error = "Unauthorized",
-                Message = "抱歉，您无权访问该接口!!!",
+                Message = Localized.Get("HttpUnauthorized"),
                 Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
             }.ToJson());
         }
@@ -68,7 +69,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
             {
                 Status = StatusCodes.Status403Forbidden,
                 Error = "Forbidden",
-                Message = "抱歉，您访问权限等级不够!!!",
+                Message = Localized.Get("HttpForbidden"),
                 Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
             }.ToJson());
         }

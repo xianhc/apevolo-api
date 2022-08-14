@@ -42,7 +42,7 @@ public class DictDetailController : BaseApiController
     /// <param name="createUpdateDictDto"></param>
     /// <returns></returns>
     [HttpPost]
-    [Description("新增字典详情")]
+    [Description("{0}Add")]
     [ApeVoloAuthorize(new[] { "admin", "dict_add" })]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateDictDetailDto createUpdateDictDto)
@@ -58,7 +58,7 @@ public class DictDetailController : BaseApiController
     /// <param name="createUpdateDictDetailDto"></param>
     /// <returns></returns>
     [HttpPut]
-    [Description("更新字典详情")]
+    [Description("{0}Edit")]
     [ApeVoloAuthorize(new[] { "admin", "dict_edit" })]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateDictDetailDto createUpdateDictDetailDto)
@@ -73,7 +73,7 @@ public class DictDetailController : BaseApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Description("删除字典详情")]
+    [Description("{0}Delete")]
     [ApeVoloAuthorize(new[] { "admin", "dict_del" })]
     public async Task<ActionResult<object>> Delete(string id)
     {
@@ -93,7 +93,7 @@ public class DictDetailController : BaseApiController
     /// <param name="pagination"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("查看字典详情列表")]
+    [Description("{0}List")]
     [ApeVoloAuthorize(new[] { "admin", "dict_list" })]
     public async Task<ActionResult<object>> Query(DictDetailQueryCriteria dictDetailQueryCriteria,
         Pagination pagination)

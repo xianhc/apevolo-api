@@ -11,6 +11,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -20,7 +21,8 @@ namespace ApeVolo.Api.Controllers;
 /// <summary>
 /// 在线用户
 /// </summary>
-[Area("Online")]
+[Area("OnlineUser")]
+[Route("/api/online")]
 public class OnlineController : BaseApiController
 {
     private readonly IRedisCacheService _redisCacheService;
@@ -38,8 +40,8 @@ public class OnlineController : BaseApiController
     /// <param name="pagination"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("/api/online/query")]
-    [Description("在线用户")]
+    [Route("query")]
+    [Description("{0}List")]
     public async Task<ActionResult<object>> QueryPageList(Pagination pagination)
     {
         List<OnlineUser> onlineUsers = new List<OnlineUser>();
@@ -78,8 +80,8 @@ public class OnlineController : BaseApiController
     /// <param name="keys"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Route("/api/online/out")]
-    [Description("强制登出用户")]
+    [Route("out")]
+    [Description("OutOnlineUser")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> DropOut([FromBody] HashSet<string> keys)
     {
@@ -101,8 +103,8 @@ public class OnlineController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Description("导出在线用户")]
-    [Route("/api/online/download")]
+    [Description("{0}Export")]
+    [Route("download")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Download()
     {
@@ -152,9 +154,8 @@ public class OnlineController : BaseApiController
             exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
         });
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, "在线用户列表");
+        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("OnlineUser"));
 
-        var provider = new FileExtensionContentTypeProvider();
         FileInfo fileInfo = new FileInfo(filepath);
         var ext = fileInfo.Extension;
         new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
