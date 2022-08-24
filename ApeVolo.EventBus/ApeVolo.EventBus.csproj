@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-      <PackageReference Include="Polly" Version="7.2.3" />
-      <PackageReference Include="RabbitMQ.Client" Version="6.2.4" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+        <PackageReference Include="Polly" Version="7.2.3"/>
+        <PackageReference Include="RabbitMQ.Client" Version="6.2.4"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ApeVolo.Common\ApeVolo.Common.csproj" />
+        <ProjectReference Include="..\ApeVolo.Common\ApeVolo.Common.csproj"/>
     </ItemGroup>
 
 </Project>

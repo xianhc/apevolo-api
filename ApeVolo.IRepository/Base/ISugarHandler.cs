@@ -512,7 +512,7 @@ public interface ISugarHandler<TEntity> where TEntity : class
     /// <param name="procedureName">存储过程名称</param>
     /// <param name="parameters">参数集合</param>
     /// <returns>DataSet</returns>
-    Task<DataSet> QueryProcedureDataSetAsync(string procedureName, List<SqlParameter> parameters);
+    Task<DataSet> QueryProcedureDataSetAsync(string procedureName, List<SugarParameter> parameters);
 
     /// <summary>
     /// 执行存储过程DataTable
@@ -520,7 +520,7 @@ public interface ISugarHandler<TEntity> where TEntity : class
     /// <param name="procedureName">存储过程名称</param>
     /// <param name="parameters">参数集合</param>
     /// <returns>DataTable</returns>
-    Task<DataTable> QueryProcedureAsync(string procedureName, List<SqlParameter> parameters);
+    Task<DataTable> QueryProcedureAsync(string procedureName, List<SugarParameter> parameters);
 
     /// <summary>
     /// 执行存储过程Object
@@ -528,7 +528,7 @@ public interface ISugarHandler<TEntity> where TEntity : class
     /// <param name="procedureName">存储过程名称</param>
     /// <param name="parameters">参数集合</param>
     /// <returns>Object</returns>
-    Task<object> QueryProcedureScalarAsync(string procedureName, List<SqlParameter> parameters);
+    Task<object> QueryProcedureScalarAsync(string procedureName, List<SugarParameter> parameters);
 
     #endregion
 

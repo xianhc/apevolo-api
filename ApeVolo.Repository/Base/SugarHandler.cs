@@ -1126,7 +1126,7 @@ public class SugarHandler<TEntity> : IDependencyRepository, ISugarHandler<TEntit
     /// <param name="procedureName">存储过程名称</param>
     /// <param name="parameters">参数集合</param>
     /// <returns>DataSet</returns>
-    public async Task<DataSet> QueryProcedureDataSetAsync(string procedureName, List<SqlParameter> parameters)
+    public async Task<DataSet> QueryProcedureDataSetAsync(string procedureName, List<SugarParameter> parameters)
     {
         var listParams = ConvetParameter(parameters);
         var datas = await _db.Ado.UseStoredProcedure().GetDataSetAllAsync(procedureName, listParams);
@@ -1139,7 +1139,7 @@ public class SugarHandler<TEntity> : IDependencyRepository, ISugarHandler<TEntit
     /// <param name="procedureName">存储过程名称</param>
     /// <param name="parameters">参数集合</param>
     /// <returns>DataTable</returns>
-    public async Task<DataTable> QueryProcedureAsync(string procedureName, List<SqlParameter> parameters)
+    public async Task<DataTable> QueryProcedureAsync(string procedureName, List<SugarParameter> parameters)
     {
         var listParams = ConvetParameter(parameters);
         var datas = await _db.Ado.UseStoredProcedure().GetDataTableAsync(procedureName, listParams);
@@ -1152,7 +1152,7 @@ public class SugarHandler<TEntity> : IDependencyRepository, ISugarHandler<TEntit
     /// <param name="procedureName">存储过程名称</param>
     /// <param name="parameters">参数集合</param>
     /// <returns>Object</returns>
-    public async Task<object> QueryProcedureScalarAsync(string procedureName, List<SqlParameter> parameters)
+    public async Task<object> QueryProcedureScalarAsync(string procedureName, List<SugarParameter> parameters)
     {
         var listParams = ConvetParameter(parameters);
         var datas = await _db.Ado.UseStoredProcedure().GetScalarAsync(procedureName, listParams);
@@ -1289,7 +1289,7 @@ public class SugarHandler<TEntity> : IDependencyRepository, ISugarHandler<TEntit
     /// </summary>
     /// <param name="parameters">????</param>
     /// <returns></returns>
-    private List<SugarParameter> ConvetParameter(List<SqlParameter> parameters)
+    private List<SugarParameter> ConvetParameter(List<SugarParameter> parameters)
     {
         var listParams = new List<SugarParameter>();
         foreach (var p in parameters)

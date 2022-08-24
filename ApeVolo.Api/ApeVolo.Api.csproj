@@ -1,50 +1,54 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-     <OutputType>Exe</OutputType>
-     <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>ApeVolo.Api.xml</DocumentationFile>
-    <NoWarn>1701;1702;1591</NoWarn>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DocumentationFile>ApeVolo.Api.xml</DocumentationFile>
+        <NoWarn>1701;1702;1591</NoWarn>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="index.html" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="index.html" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="index.html" />
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="index.html" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.4" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="3.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
-    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.1.0" />
-    <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.1.0" />
-    <PackageReference Include="Shyjus.BrowserDetector" Version="1.0.8" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.2" />
-    <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Autofac" Version="6.4.0" />
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="6.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.8" />
+        <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.22" />
+        <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.2.22" />
+        <PackageReference Include="Shyjus.BrowserDetector" Version="2.0.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.4" />
+        <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ApeVolo.Business\ApeVolo.Business.csproj" />
-    <ProjectReference Include="..\ApeVolo.Common\ApeVolo.Common.csproj" />
-    <ProjectReference Include="..\ApeVolo.EventBus\ApeVolo.EventBus.csproj" />
-    <ProjectReference Include="..\ApeVolo.QuartzNetService\ApeVolo.QuartzNetService.csproj" />
-    <ProjectReference Include="..\ApeVolo.Repository\ApeVolo.Repository.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ApeVolo.Business\ApeVolo.Business.csproj" />
+        <ProjectReference Include="..\ApeVolo.Common\ApeVolo.Common.csproj" />
+        <ProjectReference Include="..\ApeVolo.EventBus\ApeVolo.EventBus.csproj" />
+        <ProjectReference Include="..\ApeVolo.QuartzNetService\ApeVolo.QuartzNetService.csproj" />
+        <ProjectReference Include="..\ApeVolo.Repository\ApeVolo.Repository.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="MQ\Rabbit" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="MQ\Rabbit" />
+    </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="http://json.schemastore.org/band-manifest" /></VisualStudio></ProjectExtensions>
+    <ProjectExtensions>
+        <VisualStudio>
+            <UserProperties appsettings_1json__JsonSchema="http://json.schemastore.org/band-manifest" />
+        </VisualStudio>
+    </ProjectExtensions>
 </Project>
