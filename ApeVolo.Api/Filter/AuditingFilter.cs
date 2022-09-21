@@ -102,8 +102,8 @@ public class AuditingFilter : IAsyncActionFilter
         catch (Exception ex)
         {
             Log.Error(ExceptionLogFormat.WriteLog(context.HttpContext, ex, _currentUser?.Name,
-                _browserDetector.Browser.OS, _browserDetector.Browser.DeviceType, _browserDetector.Browser.Name,
-                _browserDetector.Browser.Version));
+                _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
+                _browserDetector.Browser?.Version));
             ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
         }
     }
@@ -139,10 +139,10 @@ public class AuditingFilter : IAsyncActionFilter
             RequestParameters = arguments.ToJson(),
             RequestIp = remoteIp,
             IpAddress = IpHelper.GetIpAddress(remoteIp),
-            OperatingSystem = _browserDetector.Browser.OS,
-            DeviceType = _browserDetector.Browser.DeviceType,
-            BrowserName = _browserDetector.Browser.Name,
-            Version = _browserDetector.Browser.Version
+            OperatingSystem = _browserDetector.Browser?.OS,
+            DeviceType = _browserDetector.Browser?.DeviceType,
+            BrowserName = _browserDetector.Browser?.Name,
+            Version = _browserDetector.Browser?.Version
         };
 
 
