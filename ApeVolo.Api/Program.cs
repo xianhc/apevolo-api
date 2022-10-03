@@ -37,12 +37,14 @@ public class Program
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder
-                    .ConfigureKestrel(serverOptions => { serverOptions.AllowSynchronousIO = true; })
+                    //.ConfigureKestrel(serverOptions => { serverOptions.AllowSynchronousIO = true; })
                     .UseStartup<Startup>()
                     .UseUrls("http://*:8002")
                     .ConfigureLogging((hostingContext, builder) =>
                     {
                         builder.ClearProviders();
+                        builder.AddFilter("System", LogLevel.Error);
+                        builder.AddFilter("Microsoft", LogLevel.Error);
                         builder.SetMinimumLevel(LogLevel.Trace);
                         builder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                         builder.AddConsole();
