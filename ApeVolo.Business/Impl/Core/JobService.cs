@@ -58,7 +58,7 @@ public class JobService : BaseServices<Job>, IJobService
             throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
-        if (oldJob.Name != createUpdateJobDto.Name && await IsExistAsync(j => j.Id == createUpdateJobDto.Id))
+        if (oldJob.Name != createUpdateJobDto.Name && await IsExistAsync(j => j.Name == createUpdateJobDto.Name))
         {
             throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Job"),
                 createUpdateJobDto.Name));
