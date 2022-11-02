@@ -190,7 +190,8 @@ public class AuthorizationController : BaseApiController
     [HttpDelete]
     [Route("/auth/logout")]
     [Description("LoginOut")]
-    [ApeVoloOnline]
+    //[ApeVoloOnline]
+    [AllowAnonymous]
     public async Task<ActionResult<object>> Logout()
     {
         //清理缓存
