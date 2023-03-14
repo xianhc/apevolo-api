@@ -8,4 +8,8 @@
     <ProjectReference Include="..\ApeVolo.Entity\ApeVolo.Entity.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dto\Message" />
+  </ItemGroup>
+
 </Project>

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Text;
 using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
-using ApeVolo.Common.WebApp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,7 +26,7 @@ public class BaseController : ControllerBase
             Content = new ActionResultVm
             {
                 Status = vm.Status,
-                Error = vm.Error,
+                ActionError = vm.ActionError,
                 Message = vm.Message,
                 Timestamp = DateTime.Now.ToUnixTimeStampMillisecond().ToString(),
                 Path = Request.Path.Value?.ToLower() //HttpContext.Request.Path.Value?.ToLower()
@@ -99,8 +97,26 @@ public class BaseController : ControllerBase
         var vm = new ActionResultVm
         {
             Status = StatusCodes.Status400BadRequest,
-            Error = "BadRequest",
-            Message = msg
+            Message = msg,
+            ActionError = new ActionError()
+        };
+
+        return JsonContent(vm);
+    }
+
+    /// <summary>
+    /// 返回错误
+    /// </summary>
+    /// <param name="actionError">错误集合</param>
+    /// <returns></returns>
+    protected ContentResult Error(ActionError actionError)
+    {
+        var vm = new ActionResultVm
+        {
+            Status = StatusCodes.Status400BadRequest,
+            ActionError = actionError,
+            //Message = Localized.Get("HttpBadRequest")
+            Message = actionError.GetFirstError()
         };
 
         return JsonContent(vm);

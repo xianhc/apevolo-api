@@ -3,7 +3,7 @@
 /// <summary>
 /// 权限
 /// </summary>
-public class PermissionVO
+public class PermissionVo
 {
     /// <summary>
     /// 路由

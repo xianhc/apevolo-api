@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ApeVolo.IBusiness.Interface.Tasks;
+using ApeVolo.IBusiness.Interface.System.Task;
 using ApeVolo.QuartzNetService.service;
 using Quartz;
 

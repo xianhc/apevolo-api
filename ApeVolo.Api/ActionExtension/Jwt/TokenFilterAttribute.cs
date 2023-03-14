@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ApeVolo.Common.DI;
-using ApeVolo.Common.WebApp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ApeVolo.Api.ActionExtension.Jwt;
 

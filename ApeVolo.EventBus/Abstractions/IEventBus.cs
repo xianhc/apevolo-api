@@ -1,5 +1,4 @@
-﻿using ApeVolo.Common.DI;
-using ApeVolo.EventBus.Events;
+﻿using ApeVolo.EventBus.Events;
 
 namespace ApeVolo.EventBus.Abstractions;
 

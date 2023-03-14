@@ -1,5 +1,4 @@
-﻿using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
+﻿using ApeVolo.Common.Global;
 using ApeVolo.Common.Log4Net;
 using Microsoft.Extensions.Logging;
 

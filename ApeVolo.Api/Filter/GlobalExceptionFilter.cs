@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using ApeVolo.Common.Exception;
@@ -8,19 +8,17 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Do.Logs;
-using ApeVolo.IBusiness.Interface.Core;
-using ApeVolo.IBusiness.Interface.Logs;
+using ApeVolo.IBusiness.Interface.Monitor.Exception;
+using ApeVolo.IBusiness.Interface.System.Setting;
 using log4net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
 using Shyjus.BrowserDetection;
 using StackExchange.Profiling;
 using LogLevel = ApeVolo.Common.Global.LogLevel;
@@ -38,11 +36,12 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         LogManager.GetLogger(typeof(GlobalExceptionFilter));
 
 
-    public GlobalExceptionFilter(ICurrentUser currentUser, IExceptionLogService exceptionLogService,
+    public GlobalExceptionFilter(ICurrentUser currentUser,
+        IExceptionLogService exceptionLogService,
         ISettingService settingService, IBrowserDetector browserDetector)
     {
-        _exceptionLogService = exceptionLogService;
         _currentUser = currentUser;
+        _exceptionLogService = exceptionLogService;
         _settingService = settingService;
         _browserDetector = browserDetector;
     }
@@ -63,13 +62,15 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         }
 
         string throwMsg = context.Exception.Message; //错误信息
+        var actionError = new ActionError() { Errors = new Dictionary<string, string>() };
         context.Result = new ContentResult
         {
             Content = new ActionResultVm
             {
                 Status = statusCode,
-                Error = GetExceptionError(statusCode),
+                ActionError = actionError,
                 Message = throwMsg,
+                Timestamp = DateTime.Now.ToUnixTimeStampMillisecond().ToString(),
                 Path = context.HttpContext.Request.Path.Value?.ToLower()
             }.ToJson(),
             ContentType = "application/json; charset=utf-8",

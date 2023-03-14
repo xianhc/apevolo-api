@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using ApeVolo.Common.Caches.Redis.Models;
-using log4net;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 

@@ -5,7 +5,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Entity.Do.Tasks;
-using ApeVolo.IBusiness.Interface.Tasks;
+using ApeVolo.IBusiness.Interface.System.Task;
 using ApeVolo.QuartzNetService.service;
 using Quartz;
 

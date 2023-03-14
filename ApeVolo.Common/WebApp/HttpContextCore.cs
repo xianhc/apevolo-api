@@ -1,5 +1,4 @@
 ﻿using ApeVolo.Common.DI;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
 namespace ApeVolo.Common.WebApp;

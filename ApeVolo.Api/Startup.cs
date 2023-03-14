@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Reflection;
 using ApeVolo.Api.Extensions;
 using ApeVolo.Api.Filter;
@@ -9,15 +8,15 @@ using ApeVolo.Common.Global;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Seed;
-using ApeVolo.IBusiness.Interface.Tasks;
+using ApeVolo.IBusiness.Interface.System.Task;
 using ApeVolo.QuartzNetService.service;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -65,19 +64,8 @@ public class Startup
         services.AddIpStrategyRateLimitSetup(Configuration);
         services.AddRabbitMQSetup();
         services.AddEventBusSetup();
-        services.Configure<RequestLocalizationOptions>(options =>
-        {
-            var supportedCultures = new[]
-            {
-                new CultureInfo("zh-CN"),
-                new CultureInfo("en-US")
-            };
-
-            options.DefaultRequestCulture = new RequestCulture(culture: "zh-CN", uiCulture: "zh-CN");
-            options.SupportedCultures = supportedCultures;
-            options.SupportedUICultures = supportedCultures;
-        });
-
+        services.AddLocalization(options => options.ResourcesPath = "Resources");
+        services.AddMultiLanguages(op => op.LocalizationType = typeof(Common.Language));
 
         services.AddControllers(options =>
             {
@@ -86,12 +74,14 @@ public class Startup
                 // 审计过滤器
                 options.Filters.Add<AuditingFilter>();
             })
+            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+            .AddDataAnnotationsLocalization(typeof(Common.Language))
             .AddControllersAsServices()
             .AddNewtonsoftJson(options =>
                 {
                     //全局忽略循环引用
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    //options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    // options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
                     options.SerializerSettings.ContractResolver = new CustomContractResolver();
                 }

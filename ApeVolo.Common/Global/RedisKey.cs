@@ -20,7 +20,7 @@ public static class RedisKey
     /// <summary>
     /// 验证码
     /// </summary>
-    public const string CodeKey = "CodeKey:";
+    public const string CaptchaId = "CaptchaId:";
 
     /// <summary>
     /// 邮箱验证码

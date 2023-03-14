@@ -1,5 +1,4 @@
-﻿using ApeVolo.Common.DI;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 
 namespace ApeVolo.EventBus.EventBusRabbitMQ;
 

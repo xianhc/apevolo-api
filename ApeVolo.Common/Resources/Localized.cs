@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,8 +12,8 @@ public static class Localized
 {
     private static readonly IStringLocalizer StringLocalizer =
         new ResourceManagerStringLocalizerFactory(
-            Options.Create(new LocalizationOptions { ResourcesPath = "" }),
-            new LoggerFactory()).Create(typeof(Localized));
+            Options.Create(new LocalizationOptions { ResourcesPath = "Resources" }),
+            new LoggerFactory()).Create(typeof(Language));
 
     /// <summary>
     /// Gets the string resource with the given name.

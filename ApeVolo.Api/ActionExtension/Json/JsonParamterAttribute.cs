@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ApeVolo.Api.ActionExtension.Json;

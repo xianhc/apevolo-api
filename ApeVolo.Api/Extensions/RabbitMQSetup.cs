@@ -2,7 +2,6 @@
 using ApeVolo.Common.Global;
 using ApeVolo.EventBus.EventBusRabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace ApeVolo.Api.Extensions;

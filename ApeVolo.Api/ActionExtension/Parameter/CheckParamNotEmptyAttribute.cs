@@ -41,7 +41,6 @@ public class CheckParamNotEmptyAttribute : Attribute, IActionFilter
             ActionResultVm res = new ActionResultVm
             {
                 Status = StatusCodes.Status400BadRequest,
-                Error = "BadRequest",
                 Message = $"参数:{string.Join(",", needParamters)}不能为空！",
                 Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
             };

@@ -1,6 +1,4 @@
-﻿using System;
-using ApeVolo.Common.Extention;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace ApeVolo.Common.Model;
 
@@ -17,7 +15,7 @@ public class ActionResultVm
     /// <summary>
     /// 错误
     /// </summary>
-    public string Error { get; set; }
+    public ActionError ActionError { get; set; }
 
     /// <summary>
     /// 返回消息

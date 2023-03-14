@@ -159,7 +159,7 @@
             验证方案提供对象
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Authentication.PermissionHandler.#ctor(Microsoft.AspNetCore.Authentication.IAuthenticationSchemeProvider,Microsoft.AspNetCore.Http.IHttpContextAccessor,ApeVolo.IBusiness.Interface.Core.IPermissionService,ApeVolo.Common.WebApp.ICurrentUser,ApeVolo.IBusiness.Interface.Core.ISettingService,ApeVolo.Common.Caches.Redis.Service.IRedisCacheService)">
+        <member name="M:ApeVolo.Api.Authentication.PermissionHandler.#ctor(Microsoft.AspNetCore.Authentication.IAuthenticationSchemeProvider,Microsoft.AspNetCore.Http.IHttpContextAccessor,ApeVolo.IBusiness.Interface.Permission.User.IPermissionService,ApeVolo.Common.WebApp.ICurrentUser,ApeVolo.IBusiness.Interface.System.Setting.ISettingService,ApeVolo.Common.Caches.Redis.Service.IRedisCacheService)">
             <summary>
             构造函数注入
             </summary>
@@ -253,97 +253,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:ApeVolo.Api.Controllers.AppSecretController">
-            <summary>
-            全局设置管理
-            </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.AppSecretController.Create(ApeVolo.IBusiness.EditDto.Core.CreateUpdateAppSecretDto)">
-            <summary>
-            新增设置
-            </summary>
-            <param name="createUpdateAppSecretDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.AppSecretController.Update(ApeVolo.IBusiness.EditDto.Core.CreateUpdateAppSecretDto)">
-            <summary>
-            更新设置
-            </summary>
-            <param name="createUpdateAppSecretDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.AppSecretController.Delete(System.Collections.Generic.HashSet{System.Int64})">
-            <summary>
-            删除设置
-            </summary>
-            <param name="ids"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.AppSecretController.Query(ApeVolo.IBusiness.QueryModel.AppsecretQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            获取设置列表
-            </summary>
-            <param name="appsecretQueryCriteria"></param>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.AppSecretController.Download(ApeVolo.IBusiness.QueryModel.AppsecretQueryCriteria)">
-            <summary>
-            导出设置
-            </summary>
-            <param name="appsecretQueryCriteria"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.AuditingController">
-            <summary>
-            审计管理
-            </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.AuditingController.Query(ApeVolo.IBusiness.QueryModel.LogQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            审计列表
-            </summary>
-            <param name="logQueryCriteria">查询对象</param>
-            <param name="pagination">分页对象</param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.AuditingController.FindListByCurrent(ApeVolo.Common.Model.Pagination)">
-            <summary>
-            当前用户行为
-            </summary>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.AuthorizationController">
-            <summary>
-            授权管理
-            </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.AuthorizationController.Login(ApeVolo.IBusiness.QueryModel.LoginAuthUser)">
-            <summary>
-            用户登录
-            </summary>
-            <param name="authUser"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.AuthorizationController.GetCode">
-            <summary>
-            获取图片验证码
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.AuthorizationController.ResetEmail(System.String)">
-            <summary>
-            获取验证码，申请变更邮箱
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.AuthorizationController.Logout">
-            <summary>
-            系统用户登出
-            </summary>
-            <returns></returns>
-        </member>
         <member name="T:ApeVolo.Api.Controllers.Base.BaseApiController">
             <summary>
             API对外接口基控制器
@@ -387,156 +296,40 @@
             <param name="msg">错误提示</param>
             <returns></returns>
         </member>
-        <member name="T:ApeVolo.Api.Controllers.DeptController">
+        <member name="M:ApeVolo.Api.Controllers.Base.BaseController.Error(ApeVolo.Common.Model.ActionError)">
             <summary>
-            部门管理
+            返回错误
             </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DeptController.Create(ApeVolo.IBusiness.EditDto.Core.CreateUpdateDepartmentDto)">
-            <summary>
-            新增部门
-            </summary>
-            <param name="createUpdateDepartmentDto"></param>
+            <param name="actionError">错误集合</param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.DeptController.Update(ApeVolo.IBusiness.EditDto.Core.CreateUpdateDepartmentDto)">
-            <summary>
-            更新部门
-            </summary>
-            <param name="createUpdateDepartmentDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DeptController.Delete(System.Collections.Generic.HashSet{System.Int64})">
-            <summary>
-            删除部门
-            </summary>
-            <param name="ids"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DeptController.Query(ApeVolo.IBusiness.QueryModel.DeptQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            查看部门列表
-            </summary>
-            <param name="deptQueryCriteria"></param>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DeptController.Download(ApeVolo.IBusiness.QueryModel.DeptQueryCriteria)">
-            <summary>
-            导出部门
-            </summary>
-            <param name="deptQueryCriteria"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DeptController.GetSuperior(System.Collections.Generic.List{System.Int64})">
-            <summary>
-            获取同级与父级部门
-            </summary>
-            <param name="ids"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.DictController">
-            <summary>
-            字典管理
-            </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DictController.Create(ApeVolo.IBusiness.EditDto.Dict.CreateUpdateDictDto)">
-            <summary>
-            新增字典
-            </summary>
-            <param name="createUpdateDictDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DictController.Update(ApeVolo.IBusiness.EditDto.Dict.CreateUpdateDictDto)">
-            <summary>
-            更新字典
-            </summary>
-            <param name="createUpdateDictDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DictController.Delete(System.Collections.Generic.HashSet{System.Int64})">
-            <summary>
-            删除字典
-            </summary>
-            <param name="ids"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DictController.Query(ApeVolo.IBusiness.QueryModel.DictQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            查看字典列表
-            </summary>
-            <param name="dictQueryCriteria"></param>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DictController.Download(ApeVolo.IBusiness.QueryModel.DictQueryCriteria)">
-            <summary>
-            导出字典
-            </summary>
-            <param name="dictQueryCriteria"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.DictDetailController">
-            <summary>
-            字典详情管理
-            </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DictDetailController.Create(ApeVolo.IBusiness.EditDto.Dict.CreateUpdateDictDetailDto)">
-            <summary>
-            新增字典详情
-            </summary>
-            <param name="createUpdateDictDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DictDetailController.Update(ApeVolo.IBusiness.EditDto.Dict.CreateUpdateDictDetailDto)">
-            <summary>
-            更新字典详情
-            </summary>
-            <param name="createUpdateDictDetailDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DictDetailController.Delete(System.String)">
-            <summary>
-            删除字典详情
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.DictDetailController.Query(ApeVolo.IBusiness.QueryModel.DictDetailQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            查看字典详情列表
-            </summary>
-            <param name="dictDetailQueryCriteria"></param>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.Email.EmailAccountController">
+        <member name="T:ApeVolo.Api.Controllers.Message.Email.Account.EmailAccountController">
             <summary>
             邮箱账户
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailAccountController.Create(ApeVolo.IBusiness.EditDto.Email.CreateUpdateEmailAccountDto)">
+        <member name="M:ApeVolo.Api.Controllers.Message.Email.Account.EmailAccountController.Create(ApeVolo.IBusiness.Dto.Message.Email.Account.CreateUpdateEmailAccountDto)">
             <summary>
             新增邮箱账户
             </summary>
             <param name="createUpdateEmailAccountDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailAccountController.Update(ApeVolo.IBusiness.EditDto.Email.CreateUpdateEmailAccountDto)">
+        <member name="M:ApeVolo.Api.Controllers.Message.Email.Account.EmailAccountController.Update(ApeVolo.IBusiness.Dto.Message.Email.Account.CreateUpdateEmailAccountDto)">
             <summary>
             更新邮箱账户
             </summary>
             <param name="createUpdateEmailAccountDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailAccountController.Delete(System.Collections.Generic.HashSet{System.Int64})">
+        <member name="M:ApeVolo.Api.Controllers.Message.Email.Account.EmailAccountController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
             <summary>
             删除邮箱账户
             </summary>
-            <param name="ids"></param>
+            <param name="collection"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailAccountController.FindList(ApeVolo.IBusiness.QueryModel.EmailAccountQueryCriteria,ApeVolo.Common.Model.Pagination)">
+        <member name="M:ApeVolo.Api.Controllers.Message.Email.Account.EmailAccountController.FindList(ApeVolo.IBusiness.QueryModel.EmailAccountQueryCriteria,ApeVolo.Common.Model.Pagination)">
             <summary>
             邮箱账户列表
             </summary>
@@ -544,40 +337,40 @@
             <param name="pagination"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailAccountController.Download(ApeVolo.IBusiness.QueryModel.EmailAccountQueryCriteria)">
+        <member name="M:ApeVolo.Api.Controllers.Message.Email.Account.EmailAccountController.Download(ApeVolo.IBusiness.QueryModel.EmailAccountQueryCriteria)">
             <summary>
             导出邮箱账户
             </summary>
             <param name="emailAccountQueryCriteria"></param>
             <returns></returns>
         </member>
-        <member name="T:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController">
+        <member name="T:ApeVolo.Api.Controllers.Message.Email.Template.EmailMessageTemplateController">
             <summary>
             邮箱账户
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController.Create(ApeVolo.IBusiness.EditDto.Email.CreateUpdateEmailMessageTemplateDto)">
+        <member name="M:ApeVolo.Api.Controllers.Message.Email.Template.EmailMessageTemplateController.Create(ApeVolo.IBusiness.Dto.Message.Email.Template.CreateUpdateEmailMessageTemplateDto)">
             <summary>
             新增邮箱账户
             </summary>
             <param name="createUpdateEmailMessageTemplateDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController.Update(ApeVolo.IBusiness.EditDto.Email.CreateUpdateEmailMessageTemplateDto)">
+        <member name="M:ApeVolo.Api.Controllers.Message.Email.Template.EmailMessageTemplateController.Update(ApeVolo.IBusiness.Dto.Message.Email.Template.CreateUpdateEmailMessageTemplateDto)">
             <summary>
             更新邮箱账户
             </summary>
             <param name="createUpdateEmailMessageTemplateDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController.Delete(System.Collections.Generic.HashSet{System.Int64})">
+        <member name="M:ApeVolo.Api.Controllers.Message.Email.Template.EmailMessageTemplateController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
             <summary>
             删除邮箱账户
             </summary>
-            <param name="ids"></param>
+            <param name="collection"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Email.EmailMessageTemplateController.Query(ApeVolo.IBusiness.QueryModel.EmailMessageTemplateQueryCriteria,ApeVolo.Common.Model.Pagination)">
+        <member name="M:ApeVolo.Api.Controllers.Message.Email.Template.EmailMessageTemplateController.Query(ApeVolo.IBusiness.QueryModel.EmailMessageTemplateQueryCriteria,ApeVolo.Common.Model.Pagination)">
             <summary>
             邮箱账户列表
             </summary>
@@ -585,12 +378,32 @@
             <param name="pagination"></param>
             <returns></returns>
         </member>
-        <member name="T:ApeVolo.Api.Controllers.ExceptionLogController">
+        <member name="T:ApeVolo.Api.Controllers.Monitor.Auditing.AuditingController">
+            <summary>
+            审计管理
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Monitor.Auditing.AuditingController.Query(ApeVolo.IBusiness.QueryModel.LogQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            审计列表
+            </summary>
+            <param name="logQueryCriteria">查询对象</param>
+            <param name="pagination">分页对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Monitor.Auditing.AuditingController.FindListByCurrent(ApeVolo.Common.Model.Pagination)">
+            <summary>
+            当前用户行为
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.Monitor.Exception.ExceptionLogController">
             <summary>
             系统异常日志管理
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.ExceptionLogController.FindList(ApeVolo.IBusiness.QueryModel.LogQueryCriteria,ApeVolo.Common.Model.Pagination)">
+        <member name="M:ApeVolo.Api.Controllers.Monitor.Exception.ExceptionLogController.Query(ApeVolo.IBusiness.QueryModel.LogQueryCriteria,ApeVolo.Common.Model.Pagination)">
             <summary>
             查看异常日志列表
             </summary>
@@ -598,82 +411,148 @@
             <param name="pagination"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.ExceptionLogController.QueryDetail(System.String)">
+        <member name="M:ApeVolo.Api.Controllers.Monitor.Exception.ExceptionLogController.QueryDetail(System.String)">
             <summary>
             查看日志堆栈详情
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="T:ApeVolo.Api.Controllers.FileRecordController">
+        <member name="T:ApeVolo.Api.Controllers.Monitor.Online.OnlineUserController">
             <summary>
-            文件存储管理
+            在线用户
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.FileRecordController.Upload(System.String,Microsoft.AspNetCore.Http.IFormFile)">
+        <member name="M:ApeVolo.Api.Controllers.Monitor.Online.OnlineUserController.Query(ApeVolo.Common.Model.Pagination)">
             <summary>
-            新增文件
+            在线用户列表
             </summary>
-            <param name="file"></param>
-            <param name="description"></param>
+            <param name="pagination"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.FileRecordController.Update(ApeVolo.IBusiness.EditDto.Core.CreateUpdateFileRecordDto)">
+        <member name="M:ApeVolo.Api.Controllers.Monitor.Online.OnlineUserController.DropOut(System.Collections.Generic.HashSet{System.String})">
             <summary>
-            更新文件描述
+            强制登出用户
             </summary>
-            <param name="createUpdateAppSecretDto"></param>
+            <param name="keys"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.FileRecordController.Delete(System.Collections.Generic.HashSet{System.Int64})">
+        <member name="M:ApeVolo.Api.Controllers.Monitor.Online.OnlineUserController.Download">
             <summary>
-            删除文件
+            导出在线用户
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.Monitor.Server.ServerResourcesController">
+            <summary>
+            服务器监控
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.Permission.Auth.AuthorizationController">
+            <summary>
+            授权管理
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Permission.Auth.AuthorizationController.Login(ApeVolo.IBusiness.RequestModel.LoginAuthUser)">
+            <summary>
+            用户登录
+            </summary>
+            <param name="authUser"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Permission.Auth.AuthorizationController.Captcha">
+            <summary>
+            获取图片验证码
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Permission.Auth.AuthorizationController.ResetEmail(System.String)">
+            <summary>
+            获取验证码，申请变更邮箱
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Permission.Auth.AuthorizationController.Logout">
+            <summary>
+            系统用户登出
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.Permission.Department.DeptController">
+            <summary>
+            部门管理
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Permission.Department.DeptController.Create(ApeVolo.IBusiness.Dto.Permission.Department.CreateUpdateDepartmentDto)">
+            <summary>
+            新增部门
+            </summary>
+            <param name="createUpdateDepartmentDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Permission.Department.DeptController.Update(ApeVolo.IBusiness.Dto.Permission.Department.CreateUpdateDepartmentDto)">
+            <summary>
+            更新部门
+            </summary>
+            <param name="createUpdateDepartmentDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Permission.Department.DeptController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
+            <summary>
+            删除部门
+            </summary>
+            <param name="collection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Permission.Department.DeptController.Query(ApeVolo.IBusiness.QueryModel.DeptQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            查看部门列表
+            </summary>
+            <param name="deptQueryCriteria"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Permission.Department.DeptController.Download(ApeVolo.IBusiness.QueryModel.DeptQueryCriteria)">
+            <summary>
+            导出部门
+            </summary>
+            <param name="deptQueryCriteria"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Permission.Department.DeptController.GetSuperior(System.Collections.Generic.List{System.Int64})">
+            <summary>
+            获取同级与父级部门
             </summary>
             <param name="ids"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.FileRecordController.Query(ApeVolo.IBusiness.QueryModel.FileRecordQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            获取文件列表
-            </summary>
-            <param name="fileRecordQueryCriteria"></param>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.FileRecordController.Download(ApeVolo.IBusiness.QueryModel.FileRecordQueryCriteria)">
-            <summary>
-            导出文件记录
-            </summary>
-            <param name="fileRecordQueryCriteria"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.JobController">
+        <member name="T:ApeVolo.Api.Controllers.Permission.Job.JobController">
             <summary>
             岗位管理
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.JobController.Create(ApeVolo.IBusiness.EditDto.Core.CreateUpdateJobDto)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Job.JobController.Create(ApeVolo.IBusiness.Dto.Permission.Job.CreateUpdateJobDto)">
             <summary>
             新增岗位
             </summary>
             <param name="createUpdateJobDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.JobController.Update(ApeVolo.IBusiness.EditDto.Core.CreateUpdateJobDto)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Job.JobController.Update(ApeVolo.IBusiness.Dto.Permission.Job.CreateUpdateJobDto)">
             <summary>
             更新岗位
             </summary>
             <param name="createUpdateJobDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.JobController.Delete(System.Collections.Generic.HashSet{System.Int64})">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Job.JobController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
             <summary>
             删除岗位
             </summary>
-            <param name="ids"></param>
+            <param name="collection"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.JobController.Query(ApeVolo.IBusiness.QueryModel.JobQueryCriteria,ApeVolo.Common.Model.Pagination)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Job.JobController.Query(ApeVolo.IBusiness.QueryModel.JobQueryCriteria,ApeVolo.Common.Model.Pagination)">
             <summary>
             查看岗位列表
             </summary>
@@ -681,59 +560,59 @@
             <param name="pagination"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.JobController.QueryAll">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Job.JobController.QueryAll">
             <summary>
             获取所有岗位
             </summary>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.JobController.Download(ApeVolo.IBusiness.QueryModel.JobQueryCriteria)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Job.JobController.Download(ApeVolo.IBusiness.QueryModel.JobQueryCriteria)">
             <summary>
             导出岗位
             </summary>
             <param name="jobQueryCriteria"></param>
             <returns></returns>
         </member>
-        <member name="T:ApeVolo.Api.Controllers.MenusController">
+        <member name="T:ApeVolo.Api.Controllers.Permission.Menu.MenusController">
             <summary>
             菜单管理
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.MenusController.CreateMenu(ApeVolo.IBusiness.EditDto.Core.CreateUpdateMenuDto)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Menu.MenusController.CreateMenu(ApeVolo.IBusiness.Dto.Permission.Menu.CreateUpdateMenuDto)">
             <summary>
             新增菜单
             </summary>
             <param name="createUpdateMenuDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.MenusController.UpdateDept(ApeVolo.IBusiness.EditDto.Core.CreateUpdateMenuDto)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Menu.MenusController.UpdateDept(ApeVolo.IBusiness.Dto.Permission.Menu.CreateUpdateMenuDto)">
             <summary>
             更新菜单
             </summary>
             <param name="createUpdateMenuDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.MenusController.Delete(System.Collections.Generic.HashSet{System.Int64})">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Menu.MenusController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
             <summary>
             删除菜单
             </summary>
-            <param name="ids"></param>
+            <param name="collection"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.MenusController.Build">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Menu.MenusController.Build">
             <summary>
             构建树形菜单
             </summary>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.MenusController.GetMenuLazy(System.Int64)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Menu.MenusController.GetMenuLazy(System.Int64)">
             <summary>
             获取子菜单
             </summary>
             <param name="pid">父级ID</param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.MenusController.Query(ApeVolo.IBusiness.QueryModel.MenuQueryCriteria,ApeVolo.Common.Model.Pagination)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Menu.MenusController.Query(ApeVolo.IBusiness.QueryModel.MenuQueryCriteria,ApeVolo.Common.Model.Pagination)">
             <summary>
             查看菜单列表
             </summary>
@@ -741,190 +620,54 @@
             <param name="pagination"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.MenusController.Download(ApeVolo.IBusiness.QueryModel.MenuQueryCriteria)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Menu.MenusController.Download(ApeVolo.IBusiness.QueryModel.MenuQueryCriteria)">
             <summary>
             导出菜单
             </summary>
             <param name="menuQueryCriteria"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.MenusController.GetSuperior(System.Collections.Generic.List{System.Int64})">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Menu.MenusController.GetSuperior(System.Collections.Generic.List{System.Int64})">
             <summary>
             获取同级与上级菜单
             </summary>
             <param name="ids"></param>
             <returns></returns>
         </member>
-        <member name="T:ApeVolo.Api.Controllers.OnlineController">
-            <summary>
-            在线用户
-            </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.OnlineController.QueryPageList(ApeVolo.Common.Model.Pagination)">
-            <summary>
-            在线用户列表
-            </summary>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.OnlineController.DropOut(System.Collections.Generic.HashSet{System.String})">
-            <summary>
-            强制登出用户
-            </summary>
-            <param name="keys"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.OnlineController.Download">
-            <summary>
-            导出在线用户
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.QuartzNetController">
-            <summary>
-            作业调度管理
-            </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.QuartzNetController.Create(ApeVolo.IBusiness.EditDto.Tasks.CreateUpdateQuartzNetDto)">
-            <summary>
-            新增作业
-            </summary>
-            <param name="createUpdateQuartzNetDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.QuartzNetController.Update(ApeVolo.IBusiness.EditDto.Tasks.CreateUpdateQuartzNetDto)">
-            <summary>
-            更新作业
-            </summary>
-            <param name="createUpdateQuartzNetDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.QuartzNetController.Delete(System.Collections.Generic.HashSet{System.Int64})">
-            <summary>
-            删除作业
-            </summary>
-            <param name="ids"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.QuartzNetController.Query(ApeVolo.IBusiness.QueryModel.QuartzNetQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            获取作业调度任务列表
-            </summary>
-            <param name="quartzNetQueryCriteria"></param>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.QuartzNetController.Download(ApeVolo.IBusiness.QueryModel.QuartzNetQueryCriteria)">
-            <summary>
-            导出作业调度
-            </summary>
-            <param name="quartzNetQueryCriteria"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.QuartzNetController.Execute(System.Int64)">
-            <summary>
-            执行作业
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.QuartzNetController.Pause(System.Int64)">
-            <summary>
-            暂停作业
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.QuartzNetController.Resume(System.Int64)">
-            <summary>
-            恢复作业
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.QuartzNetController.QueryLog(ApeVolo.IBusiness.QueryModel.QuartzNetLogQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            作业调度执行日志
-            </summary>
-            <param name="quartzNetLogQueryCriteria"></param>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.QuartzNetController.Download(ApeVolo.IBusiness.QueryModel.QuartzNetLogQueryCriteria)">
-            <summary>
-            导出作业日志
-            </summary>
-            <param name="quartzNetLogQueryCriteria"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.Queued.QueuedEmailController">
-            <summary>
-            邮箱账户
-            </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.Queued.QueuedEmailController.Create(ApeVolo.IBusiness.EditDto.Queued.CreateUpdateQueuedEmailDto)">
-            <summary>
-            新增邮箱账户
-            </summary>
-            <param name="createUpdateQueuedEmailDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.Queued.QueuedEmailController.Update(ApeVolo.IBusiness.EditDto.Queued.CreateUpdateQueuedEmailDto)">
-            <summary>
-            更新邮箱账户
-            </summary>
-            <param name="createUpdateQueuedEmailDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.Queued.QueuedEmailController.Delete(System.Collections.Generic.HashSet{System.Int64})">
-            <summary>
-            删除邮箱账户
-            </summary>
-            <param name="ids"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.Queued.QueuedEmailController.Query(ApeVolo.IBusiness.QueryModel.QueuedEmailQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            邮箱账户列表
-            </summary>
-            <param name="queuedEmailQueryCriteria"></param>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.RoleController">
+        <member name="T:ApeVolo.Api.Controllers.Permission.Role.RoleController">
             <summary>
             角色管理
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.RoleController.Create(ApeVolo.IBusiness.EditDto.Core.CreateUpdateRoleDto)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Role.RoleController.Create(ApeVolo.IBusiness.Dto.Permission.Role.CreateUpdateRoleDto)">
             <summary>
             添加角色
             </summary>
             <param name="createUpdateRoleDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.RoleController.Update(ApeVolo.IBusiness.EditDto.Core.CreateUpdateRoleDto)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Role.RoleController.Update(ApeVolo.IBusiness.Dto.Permission.Role.CreateUpdateRoleDto)">
             <summary>
             更新角色
             </summary>
             <param name="createUpdateRoleDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.RoleController.Delete(System.Collections.Generic.HashSet{System.Int64})">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Role.RoleController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
             <summary>
             删除角色
             </summary>
-            <param name="ids"></param>
+            <param name="collection"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.RoleController.QuerySingle(System.String)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Role.RoleController.QuerySingle(System.String)">
             <summary>
             查看单一角色
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.RoleController.Query(ApeVolo.IBusiness.QueryModel.RoleQueryCriteria,ApeVolo.Common.Model.Pagination)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Role.RoleController.Query(ApeVolo.IBusiness.QueryModel.RoleQueryCriteria,ApeVolo.Common.Model.Pagination)">
             <summary>
             查看角色列表
             </summary>
@@ -932,132 +675,51 @@
             <param name="pagination"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.RoleController.Download(ApeVolo.IBusiness.QueryModel.RoleQueryCriteria)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Role.RoleController.Download(ApeVolo.IBusiness.QueryModel.RoleQueryCriteria)">
             <summary>
             导出角色列表
             </summary>
             <param name="roleQueryCriteria"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.RoleController.GetAllRoles">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Role.RoleController.GetAllRoles">
             <summary>
             获取全部角色
             </summary>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.RoleController.GetRoleLevel(System.Nullable{System.Int32})">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Role.RoleController.GetRoleLevel(System.Nullable{System.Int32})">
             <summary>
             获取当前用户角色等级
             </summary>
             <param name="level"></param>
             <returns></returns>
         </member>
-        <member name="T:ApeVolo.Api.Controllers.RoleMenuController">
+        <member name="T:ApeVolo.Api.Controllers.Permission.Role.RoleMenuController">
             <summary>
             角色与菜单管理
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.RoleMenuController.UpdateRolesMenus(ApeVolo.IBusiness.EditDto.Core.CreateUpdateRoleDto)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Role.RoleMenuController.UpdateRolesMenus(ApeVolo.IBusiness.Dto.Permission.Role.CreateUpdateRoleDto)">
             <summary>
             更新角色菜单关联
             </summary>
             <param name="createUpdateRoleDto"></param>
             <returns></returns>
         </member>
-        <member name="T:ApeVolo.Api.Controllers.ServiceMonitoringController">
-            <summary>
-            服务器监控
-            </summary>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.SettingController">
-            <summary>
-            全局设置管理
-            </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.SettingController.Create(ApeVolo.IBusiness.EditDto.Core.CreateUpdateSettingDto)">
-            <summary>
-            新增设置
-            </summary>
-            <param name="createUpdateSettingDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.SettingController.Update(ApeVolo.IBusiness.EditDto.Core.CreateUpdateSettingDto)">
-            <summary>
-            更新设置
-            </summary>
-            <param name="createUpdateSettingDto"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.SettingController.Delete(System.Collections.Generic.HashSet{System.Int64})">
-            <summary>
-            删除设置
-            </summary>
-            <param name="ids"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.SettingController.Query(ApeVolo.IBusiness.QueryModel.SettingQueryCriteria,ApeVolo.Common.Model.Pagination)">
-            <summary>
-            获取设置列表
-            </summary>
-            <param name="settingQueryCriteria"></param>
-            <param name="pagination"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.SettingController.Download(ApeVolo.IBusiness.QueryModel.SettingQueryCriteria)">
-            <summary>
-            导出设置
-            </summary>
-            <param name="settingQueryCriteria"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.TestController">
-            <summary>
-            测试
-            </summary>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.TestController.TestSecret">
-            <summary>
-            邮件测试
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.TestController.AddApeVolo">
-            <summary>
-            Apache JMeter 性能测试
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.TestController.TestSign">
-            <summary>
-            签名测试
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.TestController.TestRedisMq">
-            <summary>
-            redismq测试
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Controllers.TestController.Test123456">
-            <summary>
-            redismq测试
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:ApeVolo.Api.Controllers.UserController">
+        <member name="T:ApeVolo.Api.Controllers.Permission.User.UserController">
             <summary>
             用户管理
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.UserController.Create(ApeVolo.IBusiness.EditDto.Core.CreateUpdateUserDto)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.User.UserController.Create(ApeVolo.IBusiness.Dto.Permission.User.CreateUpdateUserDto)">
             <summary>
             新增用户
             </summary>
             <param name="createUpdateUserDto"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.UserController.Update(ApeVolo.IBusiness.EditDto.Core.CreateUpdateUserDto)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.User.UserController.Update(ApeVolo.IBusiness.Dto.Permission.User.CreateUpdateUserDto)">
             <summary>
             更新用户
             </summary>
@@ -1065,14 +727,14 @@
             <returns></returns>
             <exception cref="T:System.Exception"></exception>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.UserController.Delete(System.Collections.Generic.HashSet{System.Int64})">
+        <member name="M:ApeVolo.Api.Controllers.Permission.User.UserController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
             <summary>
             删除用户
             </summary>
-            <param name="ids"></param>
+            <param name="collection"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.UserController.Query(ApeVolo.IBusiness.QueryModel.UserQueryCriteria,ApeVolo.Common.Model.Pagination)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.User.UserController.Query(ApeVolo.IBusiness.QueryModel.UserQueryCriteria,ApeVolo.Common.Model.Pagination)">
             <summary>
             查看用户列表
             </summary>
@@ -1080,11 +742,356 @@
             <param name="pagination"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.UserController.Download(ApeVolo.IBusiness.QueryModel.UserQueryCriteria)">
+        <member name="M:ApeVolo.Api.Controllers.Permission.User.UserController.Download(ApeVolo.IBusiness.QueryModel.UserQueryCriteria)">
             <summary>
             导出用户列表
             </summary>
             <param name="userQueryCriteria"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.Queued.Email.QueuedEmailController">
+            <summary>
+            邮箱账户
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Queued.Email.QueuedEmailController.Create(ApeVolo.IBusiness.Dto.Queued.Email.CreateUpdateQueuedEmailDto)">
+            <summary>
+            新增邮箱账户
+            </summary>
+            <param name="createUpdateQueuedEmailDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Queued.Email.QueuedEmailController.Update(ApeVolo.IBusiness.Dto.Queued.Email.CreateUpdateQueuedEmailDto)">
+            <summary>
+            更新邮箱账户
+            </summary>
+            <param name="createUpdateQueuedEmailDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Queued.Email.QueuedEmailController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
+            <summary>
+            删除邮箱账户
+            </summary>
+            <param name="collection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Queued.Email.QueuedEmailController.Query(ApeVolo.IBusiness.QueryModel.QueuedEmailQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            邮箱账户列表
+            </summary>
+            <param name="queuedEmailQueryCriteria"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.System.AppSecret.AppSecretController">
+            <summary>
+            全局设置管理
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.AppSecret.AppSecretController.Create(ApeVolo.IBusiness.Dto.System.AppSecret.CreateUpdateAppSecretDto)">
+            <summary>
+            新增设置
+            </summary>
+            <param name="createUpdateAppSecretDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.AppSecret.AppSecretController.Update(ApeVolo.IBusiness.Dto.System.AppSecret.CreateUpdateAppSecretDto)">
+            <summary>
+            更新设置
+            </summary>
+            <param name="createUpdateAppSecretDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.AppSecret.AppSecretController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
+            <summary>
+            删除设置
+            </summary>
+            <param name="collection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.AppSecret.AppSecretController.Query(ApeVolo.IBusiness.QueryModel.AppsecretQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            获取设置列表
+            </summary>
+            <param name="appsecretQueryCriteria"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.AppSecret.AppSecretController.Download(ApeVolo.IBusiness.QueryModel.AppsecretQueryCriteria)">
+            <summary>
+            导出设置
+            </summary>
+            <param name="appsecretQueryCriteria"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.System.Dictionary.DictController">
+            <summary>
+            字典管理
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Dictionary.DictController.Create(ApeVolo.IBusiness.Dto.System.Dict.CreateUpdateDictDto)">
+            <summary>
+            新增字典
+            </summary>
+            <param name="createUpdateDictDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Dictionary.DictController.Update(ApeVolo.IBusiness.Dto.System.Dict.CreateUpdateDictDto)">
+            <summary>
+            更新字典
+            </summary>
+            <param name="createUpdateDictDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Dictionary.DictController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
+            <summary>
+            删除字典
+            </summary>
+            <param name="collection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Dictionary.DictController.Query(ApeVolo.IBusiness.QueryModel.DictQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            查看字典列表
+            </summary>
+            <param name="dictQueryCriteria"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Dictionary.DictController.Download(ApeVolo.IBusiness.QueryModel.DictQueryCriteria)">
+            <summary>
+            导出字典
+            </summary>
+            <param name="dictQueryCriteria"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.System.Dictionary.DictDetailController">
+            <summary>
+            字典详情管理
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Dictionary.DictDetailController.Create(ApeVolo.IBusiness.Dto.System.Dict.Detail.CreateUpdateDictDetailDto)">
+            <summary>
+            新增字典详情
+            </summary>
+            <param name="createUpdateDictDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Dictionary.DictDetailController.Update(ApeVolo.IBusiness.Dto.System.Dict.Detail.CreateUpdateDictDetailDto)">
+            <summary>
+            更新字典详情
+            </summary>
+            <param name="createUpdateDictDetailDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Dictionary.DictDetailController.Delete(System.String)">
+            <summary>
+            删除字典详情
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Dictionary.DictDetailController.Query(ApeVolo.IBusiness.QueryModel.DictDetailQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            查看字典详情列表
+            </summary>
+            <param name="dictDetailQueryCriteria"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.System.FileRecord.FileRecordController">
+            <summary>
+            文件存储管理
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.FileRecord.FileRecordController.Upload(System.String,Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            新增文件
+            </summary>
+            <param name="file"></param>
+            <param name="description"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.FileRecord.FileRecordController.Update(ApeVolo.IBusiness.Dto.System.FileRecord.CreateUpdateFileRecordDto)">
+            <summary>
+            更新文件描述
+            </summary>
+            <param name="createUpdateAppSecretDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.FileRecord.FileRecordController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
+            <summary>
+            删除文件
+            </summary>
+            <param name="collection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.FileRecord.FileRecordController.Query(ApeVolo.IBusiness.QueryModel.FileRecordQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            获取文件列表
+            </summary>
+            <param name="fileRecordQueryCriteria"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.FileRecord.FileRecordController.Download(ApeVolo.IBusiness.QueryModel.FileRecordQueryCriteria)">
+            <summary>
+            导出文件记录
+            </summary>
+            <param name="fileRecordQueryCriteria"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.System.Setting.SettingController">
+            <summary>
+            全局设置管理
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Setting.SettingController.Create(ApeVolo.IBusiness.Dto.System.Setting.CreateUpdateSettingDto)">
+            <summary>
+            新增设置
+            </summary>
+            <param name="createUpdateSettingDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Setting.SettingController.Update(ApeVolo.IBusiness.Dto.System.Setting.CreateUpdateSettingDto)">
+            <summary>
+            更新设置
+            </summary>
+            <param name="createUpdateSettingDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Setting.SettingController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
+            <summary>
+            删除设置
+            </summary>
+            <param name="collection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Setting.SettingController.Query(ApeVolo.IBusiness.QueryModel.SettingQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            获取设置列表
+            </summary>
+            <param name="settingQueryCriteria"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Setting.SettingController.Download(ApeVolo.IBusiness.QueryModel.SettingQueryCriteria)">
+            <summary>
+            导出设置
+            </summary>
+            <param name="settingQueryCriteria"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.System.Task.QuartzNetController">
+            <summary>
+            作业调度管理
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Task.QuartzNetController.Create(ApeVolo.IBusiness.Dto.System.Task.CreateUpdateQuartzNetDto)">
+            <summary>
+            新增作业
+            </summary>
+            <param name="createUpdateQuartzNetDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Task.QuartzNetController.Update(ApeVolo.IBusiness.Dto.System.Task.CreateUpdateQuartzNetDto)">
+            <summary>
+            更新作业
+            </summary>
+            <param name="createUpdateQuartzNetDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Task.QuartzNetController.Delete(ApeVolo.IBusiness.RequestModel.IdCollection)">
+            <summary>
+            删除作业
+            </summary>
+            <param name="collection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Task.QuartzNetController.Query(ApeVolo.IBusiness.QueryModel.QuartzNetQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            获取作业调度任务列表
+            </summary>
+            <param name="quartzNetQueryCriteria"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Task.QuartzNetController.Download(ApeVolo.IBusiness.QueryModel.QuartzNetQueryCriteria)">
+            <summary>
+            导出作业调度
+            </summary>
+            <param name="quartzNetQueryCriteria"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Task.QuartzNetController.Execute(System.Int64)">
+            <summary>
+            执行作业
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Task.QuartzNetController.Pause(System.Int64)">
+            <summary>
+            暂停作业
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Task.QuartzNetController.Resume(System.Int64)">
+            <summary>
+            恢复作业
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Task.QuartzNetController.QueryLog(ApeVolo.IBusiness.QueryModel.QuartzNetLogQueryCriteria,ApeVolo.Common.Model.Pagination)">
+            <summary>
+            作业调度执行日志
+            </summary>
+            <param name="quartzNetLogQueryCriteria"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.System.Task.QuartzNetController.Download(ApeVolo.IBusiness.QueryModel.QuartzNetLogQueryCriteria)">
+            <summary>
+            导出作业日志
+            </summary>
+            <param name="quartzNetLogQueryCriteria"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Api.Controllers.Test.TestController">
+            <summary>
+            测试
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Test.TestController.TestSecret">
+            <summary>
+            邮件测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Test.TestController.AddApeVolo">
+            <summary>
+            Apache JMeter 性能测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Test.TestController.TestSign">
+            <summary>
+            签名测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Test.TestController.TestRedisMq">
+            <summary>
+            redismq测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Test.TestController.Test123456">
+            <summary>
+            redismq测试
+            </summary>
             <returns></returns>
         </member>
         <member name="T:ApeVolo.Api.Extensions.AuthorizationSetup">
@@ -1131,6 +1138,14 @@
             <summary>
             MiniProfiler性能监控启动器
             </summary>
+        </member>
+        <member name="M:ApeVolo.Api.Extensions.MultiLanguagesSetup.AddMultiLanguages(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{ApeVolo.Common.Model.LocalizationOption})">
+            <summary>
+            多语言支持
+            </summary>
+            <param name="services"></param>
+            <param name="op"></param>
+            <returns></returns>
         </member>
         <member name="T:ApeVolo.Api.Extensions.QuartzNetJobSetup">
             <summary>

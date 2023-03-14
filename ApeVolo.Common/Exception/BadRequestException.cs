@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
 namespace ApeVolo.Common.Exception;
@@ -9,7 +10,9 @@ public class BadRequestException : System.Exception
 {
     public int statusCode { get; set; } = StatusCodes.Status400BadRequest;
 
-    public BadRequestException(string message) : base(message)
+    public Dictionary<string, string> Errors { get; set; }
+
+    public BadRequestException(string message, Dictionary<string, string> errors = null) : base(message)
     {
     }
 }

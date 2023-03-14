@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.WebApp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -46,7 +44,6 @@ public class BaseActionFilter : Attribute, IAsyncActionFilter
             Content = new ActionResultVm
             {
                 Status = vm.Status,
-                Error = vm.Error,
                 Message = vm.Message,
                 Timestamp = DateTime.Now.ToUnixTimeStampMillisecond().ToString(),
                 Path = HttpContext.Request.Path.Value?.ToLower()
@@ -66,7 +63,6 @@ public class BaseActionFilter : Attribute, IAsyncActionFilter
         var vm = new ActionResultVm
         {
             Status = StatusCodes.Status400BadRequest,
-            Error = "BadRequest",
             Message = msg
         };
 
@@ -84,7 +80,6 @@ public class BaseActionFilter : Attribute, IAsyncActionFilter
         var vm = new ActionResultVm
         {
             Status = errorCode,
-            Error = "BadRequest",
             Message = msg
         };
 

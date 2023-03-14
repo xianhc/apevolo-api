@@ -1,7 +1,6 @@
 ﻿using System;
 using ApeVolo.Api.AutoMapper;
 using ApeVolo.Common.Extention;
-using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ApeVolo.Api.Extensions;

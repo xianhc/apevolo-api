@@ -39,7 +39,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
         await Response.WriteAsync(new ActionResultVm
         {
             Status = StatusCodes.Status401Unauthorized,
-            Error = "Unauthorized",
+            ActionError = new ActionError(),
             Message = Localized.Get("HttpUnauthorized"),
             Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
         }.ToJson());
@@ -56,7 +56,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
             await Response.WriteAsync(new ActionResultVm
             {
                 Status = StatusCodes.Status401Unauthorized,
-                Error = "Unauthorized",
+                ActionError = new ActionError(),
                 Message = Localized.Get("HttpUnauthorized"),
                 Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
             }.ToJson());
@@ -68,7 +68,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
             await Response.WriteAsync(new ActionResultVm
             {
                 Status = StatusCodes.Status403Forbidden,
-                Error = "Forbidden",
+                ActionError = new ActionError(),
                 Message = Localized.Get("HttpForbidden"),
                 Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
             }.ToJson());

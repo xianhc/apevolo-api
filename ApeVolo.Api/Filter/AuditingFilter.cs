@@ -6,14 +6,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Do.Logs;
-using ApeVolo.IBusiness.Interface.Core;
-using ApeVolo.IBusiness.Interface.Logs;
+using ApeVolo.IBusiness.Interface.Monitor.Auditing;
+using ApeVolo.IBusiness.Interface.System.Setting;
 using log4net;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -75,21 +73,22 @@ public class AuditingFilter : IAsyncActionFilter
                     var lgnoreAuditLogUrlPathList = settingDto.Value.Split("|");
                     if (!lgnoreAuditLogUrlPathList.Contains(reqUrlPath))
                     {
-                        AuditLog auditInfo = CreateAuditLog(context);
-                        if (result != null && result.GetType().FullName == "Microsoft.AspNetCore.Mvc.ObjectResult")
+                        var auditInfo = CreateAuditLog(context);
+                        switch (result?.GetType().FullName)
                         {
-                            var value = ((ObjectResult)result).Value;
-                            if (value != null)
-                                auditInfo.ResponseData = value.ToString();
-                        }
-                        else if (result != null &&
-                                 result.GetType().FullName == "Microsoft.AspNetCore.Mvc.FileContentResult")
-                        {
-                            auditInfo.ResponseData = ((FileContentResult)result).FileDownloadName;
-                        }
-                        else
-                        {
-                            auditInfo.ResponseData = ((ContentResult)result)?.Content;
+                            case "Microsoft.AspNetCore.Mvc.ObjectResult":
+                            {
+                                var value = ((ObjectResult)result).Value;
+                                if (value != null)
+                                    auditInfo.ResponseData = value.ToString();
+                                break;
+                            }
+                            case "Microsoft.AspNetCore.Mvc.FileContentResult":
+                                auditInfo.ResponseData = ((FileContentResult)result).FileDownloadName;
+                                break;
+                            default:
+                                auditInfo.ResponseData = ((ContentResult)result)?.Content;
+                                break;
                         }
 
                         //用时

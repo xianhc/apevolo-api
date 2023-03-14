@@ -4,11 +4,8 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
-using ApeVolo.Common.DI;
 using ApeVolo.Common.Global;
-using ApeVolo.Common.WebApp;
 using IP2Region;
-using Shyjus.BrowserDetection;
 
 namespace ApeVolo.Common.Helper;
 

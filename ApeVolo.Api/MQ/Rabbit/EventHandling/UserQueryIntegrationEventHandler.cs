@@ -2,7 +2,7 @@
 using ApeVolo.Api.MQ.Rabbit.Events;
 using ApeVolo.Common.Helper;
 using ApeVolo.EventBus.Abstractions;
-using ApeVolo.IBusiness.Interface.Core;
+using ApeVolo.IBusiness.Interface.Permission.User;
 using log4net;
 
 namespace ApeVolo.Api.MQ.Rabbit.EventHandling

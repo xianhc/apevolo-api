@@ -1,0 +1,759 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!-- 
+      Microsoft ResX Schema 
+      
+      Version 2.0
+      
+      The primary goals of this format is to allow a simple XML format 
+      that is mostly human readable. The generation and parsing of the 
+      various data types are done through the TypeConverter classes 
+      associated with the data types.
+      
+      Example:
+      
+      ... ado.net/XML headers & schema ...
+      <resheader name="resmimetype">text/microsoft-resx</resheader>
+      <resheader name="version">2.0</resheader>
+      <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+      <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+      <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+      <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+      <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+          <value>[base64 mime encoded serialized .NET Framework object]</value>
+      </data>
+      <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+          <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+          <comment>This is a comment</comment>
+      </data>
+                  
+      There are any number of "resheader" rows that contain simple 
+      name/value pairs.
+      
+      Each data row contains a name, and value. The row also contains a 
+      type or mimetype. Type corresponds to a .NET class that support 
+      text/value conversion through the TypeConverter architecture. 
+      Classes that don't support this are serialized and stored with the 
+      mimetype set.
+      
+      The mimetype is used for serialized objects, and tells the 
+      ResXResourceReader how to depersist the object. This is currently not 
+      extensible. For a given mimetype the value must be set accordingly:
+      
+      Note - application/x-microsoft.net.object.binary.base64 is the format 
+      that the ResXResourceWriter will generate, however the reader can 
+      read any of the formats listed below.
+      
+      mimetype: application/x-microsoft.net.object.binary.base64
+      value   : The object must be serialized with 
+              : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+              : and then encoded with base64 encoding.
+      
+      mimetype: application/x-microsoft.net.object.soap.base64
+      value   : The object must be serialized with 
+              : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+              : and then encoded with base64 encoding.
+  
+      mimetype: application/x-microsoft.net.object.bytearray.base64
+      value   : The object must be serialized into a byte array 
+              : using a System.ComponentModel.TypeConverter
+              : and then encoded with base64 encoding.
+      -->
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string"/>
+                            <xsd:attribute name="type" type="xsd:string"/>
+                            <xsd:attribute name="mimetype" type="xsd:string"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string"/>
+                            <xsd:attribute name="name" type="xsd:string"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="User" xml:space="preserve">
+    <value>用户</value>
+    </data>
+    <data name="Department" xml:space="preserve">
+    <value>部门</value>
+    </data>
+    <data name="Job" xml:space="preserve">
+    <value>岗位</value>
+    </data>
+    <data name="Role" xml:space="preserve">
+    <value>角色</value>
+    </data>
+    <data name="AppSecret" xml:space="preserve">
+    <value>应用</value>
+    </data>
+    <data name="FileRecord" xml:space="preserve">
+    <value>文件</value>
+    </data>
+    <data name="Menu" xml:space="preserve">
+    <value>菜单</value>
+    </data>
+    <data name="Setting" xml:space="preserve">
+    <value>设置</value>
+    </data>
+    <data name="Dict" xml:space="preserve">
+    <value>字典</value>
+    </data>
+    <data name="DictDetail" xml:space="preserve">
+    <value>字典明细</value>
+    </data>
+    <data name="EmailAccount" xml:space="preserve">
+    <value>邮件账户</value>
+    </data>
+    <data name="EmailMessageTemplate" xml:space="preserve">
+    <value>邮件模板</value>
+    </data>
+    <data name="AuditLog" xml:space="preserve">
+    <value>审计日志</value>
+  </data>
+    <data name="ExceptionLog" xml:space="preserve">
+    <value>异常日志</value>
+  </data>
+    <data name="QueuedEmail" xml:space="preserve">
+    <value>队列邮件</value>
+  </data>
+    <data name="QuartzNet" xml:space="preserve">
+    <value>作业调度</value>
+  </data>
+    <data name="QuartzNetLog" xml:space="preserve">
+    <value>作业调度日志</value>
+  </data>
+    <data name="ServiceMonitoring" xml:space="preserve">
+    <value>服务器监控</value>
+  </data>
+    <data name="OnlineUser" xml:space="preserve">
+    <value>在线用户</value>
+    </data>
+    <data name="UserBehavior" xml:space="preserve">
+    <value>用户行为</value>
+    </data>
+    <data name="UserInfo" xml:space="preserve">
+    <value>用户信息</value>
+    </data>
+    <data name="LoginOut" xml:space="preserve">
+    <value>登出</value>
+    </data>
+    <data name="OutOnlineUser" xml:space="preserve">
+    <value>登出在线用户</value>
+    </data>
+    <data name="HttpOK" xml:space="preserve">
+    <value>请求成功</value>
+  </data>
+    <data name="HttpCreated" xml:space="preserve">
+    <value>创建成功</value>
+  </data>
+    <data name="HttpNoContent" xml:space="preserve">
+    <value>编辑成功</value>
+  </data>
+    <data name="HttpBadRequest" xml:space="preserve">
+    <value>请求失败</value>
+  </data>
+    <data name="HttpUnauthorized" xml:space="preserve">
+    <value>抱歉，您无权访问该接口</value>
+  </data>
+    <data name="HttpForbidden" xml:space="preserve">
+    <value>抱歉，您访问权限等级不够</value>
+  </data>
+    <data name="HttpInternalServerError" xml:space="preserve">
+    <value>系统异常</value>
+  </data>
+    <data name="GetCode" xml:space="preserve">
+    <value>获取验证码</value>
+  </data>
+    <data name="CodeNotExist" xml:space="preserve">
+    <value>验证码不存在或已过期</value>
+  </data>
+    <data name="CodeWrong" xml:space="preserve">
+    <value>验证码错误</value>
+  </data>
+    <data name="DataCannotDelete" xml:space="preserve">
+    <value>数据被使用，无法删除</value>
+  </data>
+    <data name="DataNotExist" xml:space="preserve">
+    <value>数据不存在</value>
+  </data>
+    <data name="{0}NotExist" xml:space="preserve">
+    <value>{0}不存在</value>
+  </data>
+    <data name="{0}{1}IsExist" xml:space="preserve">
+    <value>{0}=>{1}=>已存在!</value>
+  </data>
+    <data name="{0}NotActivated" xml:space="preserve">
+    <value>{0}未激活</value>
+  </data>
+    <data name="PasswrodWrong" xml:space="preserve">
+    <value>密码错误</value>
+  </data>
+    <data name="{0}required" xml:space="preserve">
+    <value>{0}是必填项</value>
+  </data>
+    <data name="{0}AtLeastOne" xml:space="preserve">
+    <value>{0}至少选择一个</value>
+  </data>
+    <data name="ForbidToDeleteYourself" xml:space="preserve">
+    <value>禁止删除自己</value>
+  </data>
+    <data name="OperationProhibited" xml:space="preserve">
+    <value>禁止操作他人数据</value>
+  </data>
+    <data name="{0}Add" xml:space="preserve">
+    <value>{0}新增</value>
+  </data>
+    <data name="{0}Edit" xml:space="preserve">
+    <value>{0}编辑</value>
+  </data>
+    <data name="{0}Delete" xml:space="preserve">
+    <value>{0}删除</value>
+  </data>
+    <data name="{0}List" xml:space="preserve">
+    <value>{0}列表</value>
+  </data>
+    <data name="{0}Export" xml:space="preserve">
+    <value>{0}导出</value>
+  </data>
+    <data name="{0}Execute" xml:space="preserve">
+    <value>{0}执行</value>
+  </data>
+    <data name="{0}Stop" xml:space="preserve">
+    <value>{0}暂停</value>
+  </data>
+    <data name="{0}Info" xml:space="preserve">
+    <value>{0}信息</value>
+  </data>
+    <data name="{0}ExecutionLog" xml:space="preserve">
+    <value>{0}执行日志</value>
+  </data>
+    <data name="SiblingParentDepartment" xml:space="preserve">
+    <value>获取同级、父级部门</value>
+  </data>
+    <data name="LogStack" xml:space="preserve">
+    <value>日志堆栈</value>
+  </data>
+    <data name="BuildMenu" xml:space="preserve">
+    <value>构建菜单</value>
+  </data>
+    <data name="Submenu" xml:space="preserve">
+    <value>子菜单</value>
+  </data>
+    <data name="SiblingParentMenu" xml:space="preserve">
+    <value>获取同级、父级菜单</value>
+  </data>
+    <data name="AllChildID" xml:space="preserve">
+    <value>获取所有子级菜单ID</value>
+  </data>
+    <data name="RetryFailure" xml:space="preserve">
+    <value>执行失败,请重试！</value>
+  </data>
+    <data name="StopFailure" xml:space="preserve">
+    <value>暂停失败,请重试！</value>
+  </data>
+    <data name="RecoveryFailed" xml:space="preserve">
+    <value>恢复失败,请重试！</value>
+  </data>
+    <data name="DoNotTurnOn" xml:space="preserve">
+    <value>已在运行,请勿重复开启！</value>
+  </data>
+    <data name="UserRoleLevel" xml:space="preserve">
+    <value>当前用户等级</value>
+  </data>
+    <data name="ViewRole" xml:space="preserve">
+    <value>查看角色</value>
+  </data>
+    <data name="RoleMenu" xml:space="preserve">
+    <value>角色菜单</value>
+  </data>
+    <data name="UpdatePersonalInfo" xml:space="preserve">
+    <value>更新个人信息</value>
+  </data>
+    <data name="UpdatePassword" xml:space="preserve">
+    <value>更新密码</value>
+  </data>
+    <data name="UpdateAvatar" xml:space="preserve">
+    <value>更新头像</value>
+  </data>
+    <data name="UpdateEmail" xml:space="preserve">
+    <value>更新邮箱</value>
+  </data>
+    <data name="PasswordsCannotBeTheSame" xml:space="preserve">
+    <value>新密码不能与旧密码相同</value>
+  </data>
+    <data name="AttemptedValueIsInvalidAccessor" xml:space="preserve">
+    <value>'{0}' 不是 {1} 的有效格式</value>
+  </data>
+    <data name="{0}formaterror" xml:space="preserve">
+    <value>{0}格式错误</value>
+  </data>
+    <data name="{0}number" xml:space="preserve">
+    <value>{0}必须是数字</value>
+  </data>
+    <data name="{0}range{1}" xml:space="preserve">
+    <value>{0}至少是{1}</value>
+  </data>
+    <data name="{0}range{1}{2}" xml:space="preserve">
+    <value>{0}必须是{1}到{2}之间的数</value>
+  </data>
+    <data name="{0}range{2}" xml:space="preserve">
+    <value>{0}最多是{1}</value>
+  </data>
+    <data name="{0}stringmax{1}" xml:space="preserve">
+    <value>{0}最多输入{1}个字符</value>
+  </data>
+    <data name="{0}ValueNotExist" xml:space="preserve">
+    <value>{0}输入的值在数据库中不存在</value>
+  </data>
+    <data name="{0}ValueTypeNotAllowed" xml:space="preserve">
+    <value>{0}输入的值不在允许的数据类型范围内</value>
+  </data>
+    <data name="Captcha" xml:space="preserve">
+      <value>验证码</value>
+    </data>
+    <data name="CaptchaId" xml:space="preserve">
+      <value>验证码ID</value>
+    </data>
+    <data name="{0}ValueIsInvalidAccessor" xml:space="preserve">
+      <value>{0} 格式错误</value>
+    </data>
+    <data name="FailedVerificationTwice" xml:space="preserve">
+      <value>两次输入不匹配</value>
+    </data>
+    <data name="OldPassword" xml:space="preserve">
+      <value>旧密码</value>
+    </data>
+    <data name="NewPassword" xml:space="preserve">
+      <value>新密码</value>
+    </data>
+    <data name="ConfirmPassword" xml:space="preserve">
+      <value>确认新密码</value>
+    </data>
+
+
+    <!-- 必须属性 -->
+    <data name="Sys.ID" xml:space="preserve">
+      <value>ID</value>
+    </data>
+    <data name="Sys.CreateBy" xml:space="preserve">
+      <value>创建人</value>
+    </data>
+    <data name="Sys.CreateTime" xml:space="preserve">
+      <value>创建时间</value>
+    </data>
+    <data name="Sys.UpdateBy" xml:space="preserve">
+      <value>更新人</value>
+    </data>
+    <data name="Sys.UpdateTime" xml:space="preserve">
+      <value>更新时间</value>
+    </data>
+    <data name="Sys.IsDeleted" xml:space="preserve">
+      <value>是否删除</value>
+    </data>
+    <data name="Sys.DeletedTime" xml:space="preserve">
+      <value>删除时间</value>
+    </data>
+
+    <!-- 用户 -->
+    <data name="User.Name" xml:space="preserve">
+      <value>用户名称</value>
+    </data>
+    <data name="User.NickName" xml:space="preserve">
+      <value>用户昵称</value>
+    </data>
+    <data name="User.Email" xml:space="preserve">
+      <value>用户邮箱</value>
+    </data>
+    <data name="User.IsAdmin" xml:space="preserve">
+      <value>是否管理员</value>
+    </data>
+    <data name="User.Enabled" xml:space="preserve">
+      <value>是否激活</value>
+    </data>
+    <data name="User.Password" xml:space="preserve">
+      <value>用户密码</value>
+    </data>
+    <data name="User.SaltKey" xml:space="preserve">
+      <value>随机盐</value>
+    </data>
+    <data name="User.DeptId" xml:space="preserve">
+      <value>部门ID</value>
+    </data>
+    <data name="User.Phone" xml:space="preserve">
+      <value>用户电话</value>
+    </data>
+    <data name="User.AvatarName" xml:space="preserve">
+      <value>头像文件名</value>
+    </data>
+    <data name="User.AvatarPath" xml:space="preserve">
+      <value>头像路径</value>
+    </data>
+    <data name="User.Sex" xml:space="preserve">
+      <value>性别</value>
+    </data>
+    <data name="User.Gender" xml:space="preserve">
+      <value>性别</value>
+    </data>
+    <data name="User.PasswordReSetTime" xml:space="preserve">
+      <value>最后修改密码时间</value>
+    </data>
+
+    <!-- 部门 -->
+    <data name="Dept.Name" xml:space="preserve">
+      <value>部门名称</value>
+    </data>
+    <data name="Dept.PId" xml:space="preserve">
+      <value>部门父ID</value>
+    </data>
+    <data name="Dept.Sort" xml:space="preserve">
+      <value>排序</value>
+    </data>
+    <data name="Dept.Enabled" xml:space="preserve">
+      <value>是否启用</value>
+    </data>
+    <data name="Dept.SubCount" xml:space="preserve">
+      <value>子部门个数</value>
+    </data>
+
+    <!-- 岗位 -->
+    <data name="Job.Name" xml:space="preserve">
+      <value>岗位名称</value>
+    </data>
+    <data name="Job.Sort" xml:space="preserve">
+      <value>排序</value>
+    </data>
+    <data name="Job.Enabled" xml:space="preserve">
+      <value>是否启用</value>
+    </data>
+
+    <!-- 角色 -->
+    <data name="Role.Name" xml:space="preserve">
+      <value>角色名称</value>
+    </data>
+    <data name="Role.Level" xml:space="preserve">
+      <value>角色等级</value>
+    </data>
+    <data name="Role.Description" xml:space="preserve">
+      <value>角色描述</value>
+    </data>
+    <data name="Role.DataScope" xml:space="preserve">
+      <value>数据范围</value>
+    </data>
+    <data name="Role.Permission" xml:space="preserve">
+      <value>角色代码</value>
+    </data>
+
+    <!-- 菜单 -->
+    <data name="Menu.Title" xml:space="preserve">
+      <value>菜单标题</value>
+    </data>
+    <data name="Menu.LinkUrl" xml:space="preserve">
+      <value>菜单URL</value>
+    </data>
+    <data name="Menu.Path" xml:space="preserve">
+      <value>组件路径</value>
+    </data>
+    <data name="Menu.Permission" xml:space="preserve">
+      <value>角色名称</value>
+    </data>
+    <data name="Menu.IFrame" xml:space="preserve">
+      <value>权限标识符</value>
+    </data>
+    <data name="Menu.Component" xml:space="preserve">
+      <value>组件</value>
+    </data>
+    <data name="Menu.ComponentName" xml:space="preserve">
+      <value>组件名称</value>
+    </data>
+    <data name="Menu.PId" xml:space="preserve">
+      <value>菜单父ID</value>
+    </data>
+    <data name="Menu.MenuSort" xml:space="preserve">
+      <value>排序</value>
+    </data>
+    <data name="Menu.Icon" xml:space="preserve">
+      <value>Icon图标</value>
+    </data>
+    <data name="Menu.Type" xml:space="preserve">
+      <value>菜单类型</value>
+    </data>
+    <data name="Menu.Cache" xml:space="preserve">
+      <value>是否缓存</value>
+    </data>
+    <data name="Menu.Hidden" xml:space="preserve">
+      <value>是否隐藏</value>
+    </data>
+    <data name="Menu.SubCount" xml:space="preserve">
+      <value>子菜单个数</value>
+    </data>
+
+    <!-- 应用 -->
+    <data name="App.AppId" xml:space="preserve">
+      <value>应用ID</value>
+    </data>
+    <data name="App.AppSecretKey" xml:space="preserve">
+      <value>应用密钥</value>
+    </data>
+    <data name="App.AppName" xml:space="preserve">
+      <value>应用名称</value>
+    </data>
+    <data name="App.Remark" xml:space="preserve">
+      <value>备注</value>
+    </data>
+
+    <!-- 字典 -->
+    <data name="Dict.Name" xml:space="preserve">
+      <value>字典名称</value>
+    </data>
+    <data name="Dict.Description" xml:space="preserve">
+      <value>字典描述</value>
+    </data>
+
+    <!-- 字典详情 -->
+    <data name="Dict.Detail.Name" xml:space="preserve">
+      <value>字典详情名称</value>
+    </data>
+    <data name="Dict.Detail.Description" xml:space="preserve">
+      <value>字典详情描述</value>
+    </data>
+
+    <!-- 文件 -->
+    <data name="File.Description" xml:space="preserve">
+      <value>文件描述</value>
+    </data>
+    <data name="File.ContentType" xml:space="preserve">
+      <value>文件类型</value>
+    </data>
+    <data name="File.ContentTypeName" xml:space="preserve">
+      <value>文件类型</value>
+    </data>
+    <data name="File.ContentTypeNameEn" xml:space="preserve">
+      <value>文件类型(en)</value>
+    </data>
+    <data name="File.OriginalName" xml:space="preserve">
+      <value>源名称</value>
+    </data>
+    <data name="File.NewName" xml:space="preserve">
+      <value>新名称</value>
+    </data>
+    <data name="File.FilePath" xml:space="preserve">
+      <value>存储路径</value>
+    </data>
+    <data name="File.Size" xml:space="preserve">
+      <value>文件大小</value>
+    </data>
+
+    <!-- 设置 -->
+    <data name="Setting.Name" xml:space="preserve">
+      <value>名称</value>
+    </data>
+    <data name="Setting.Value" xml:space="preserve">
+      <value>值</value>
+    </data>
+    <data name="Setting.Enabled" xml:space="preserve">
+      <value>是否启用</value>
+    </data>
+    <data name="Setting.Description" xml:space="preserve">
+      <value>描述</value>
+    </data>
+
+    <!-- 任务 -->
+    <data name="Task.TaskName" xml:space="preserve">
+      <value>任务名称</value>
+    </data>
+    <data name="Task.TaskGroup" xml:space="preserve">
+      <value>任务组</value>
+    </data>
+    <data name="Task.Cron" xml:space="preserve">
+      <value>Cron表达式</value>
+    </data>
+    <data name="Task.AssemblyName" xml:space="preserve">
+      <value>命名空间</value>
+    </data>
+    <data name="Task.ClassName" xml:space="preserve">
+      <value>执行类</value>
+    </data>
+    <data name="Task.Description" xml:space="preserve">
+      <value>描述</value>
+    </data>
+    <data name="Task.Principal" xml:space="preserve">
+      <value>负责人</value>
+    </data>
+    <data name="Task.AlertEmail" xml:space="preserve">
+      <value>告警邮箱</value>
+    </data>
+    <data name="Task.PauseAfterFailure" xml:space="preserve">
+      <value>是否是否继续</value>
+    </data>
+    <data name="Task.RunTimes" xml:space="preserve">
+      <value>执行次数</value>
+    </data>
+    <data name="Task.StartTime" xml:space="preserve">
+      <value>开始时间</value>
+    </data>
+    <data name="Task.EndTime" xml:space="preserve">
+      <value>结束时间</value>
+    </data>
+    <data name="Task.TriggerType" xml:space="preserve">
+      <value>任务类型</value>
+    </data>
+    <data name="Task.IntervalSecond" xml:space="preserve">
+      <value>执行间隔时间</value>
+    </data>
+    <data name="Task.CycleRunTimes" xml:space="preserve">
+      <value>循环执行次数</value>
+    </data>
+    <data name="Task.IsEnable" xml:space="preserve">
+      <value>是否启动</value>
+    </data>
+    <data name="Task.RunParams" xml:space="preserve">
+      <value>执行传参</value>
+    </data>
+    <data name="Task.TriggerStatus" xml:space="preserve">
+      <value>触发器状态</value>
+    </data>
+    <data name="Task.TriggerTypeStr" xml:space="preserve">
+      <value>触发器模式</value>
+    </data>
+
+    <!-- 电子邮件账户 -->
+    <data name="EmailAccount.Email" xml:space="preserve">
+      <value>电子邮件</value>
+    </data>
+    <data name="EmailAccount.DisplayName" xml:space="preserve">
+      <value>显示名称</value>
+    </data>
+    <data name="EmailAccount.Host" xml:space="preserve">
+      <value>主机</value>
+    </data>
+    <data name="EmailAccount.Port" xml:space="preserve">
+      <value>端口</value>
+    </data>
+    <data name="EmailAccount.Username" xml:space="preserve">
+      <value>账户名称</value>
+    </data>
+    <data name="EmailAccount.Password" xml:space="preserve">
+      <value>密码</value>
+    </data>
+    <data name="EmailAccount.EnableSsl" xml:space="preserve">
+      <value>是否SSL</value>
+    </data>
+    <data name="EmailAccount.UseDefaultCredentials" xml:space="preserve">
+      <value>发送默认系统凭据</value>
+    </data>
+
+    <!-- 电子邮件账户 -->
+    <data name="EmailTemplate.Name" xml:space="preserve">
+      <value>模板名称</value>
+    </data>
+    <data name="EmailTemplate.BccEmailAddresses" xml:space="preserve">
+      <value>抄送邮箱地址</value>
+    </data>
+    <data name="EmailTemplate.Subject" xml:space="preserve">
+      <value>发送主题</value>
+    </data>
+    <data name="EmailTemplate.Body" xml:space="preserve">
+      <value>发送内容</value>
+    </data>
+    <data name="EmailTemplate.IsActive" xml:space="preserve">
+      <value>是否激活</value>
+    </data>
+    <data name="EmailTemplate.EmailAccountId" xml:space="preserve">
+      <value>发送邮箱账户</value>
+    </data>
+
+    <!-- 邮件消息队列 -->
+    <data name="QueuedEmail.From" xml:space="preserve">
+      <value>发件邮箱</value>
+    </data>
+    <data name="QueuedEmail.FromName" xml:space="preserve">
+      <value>发件人名称</value>
+    </data>
+    <data name="QueuedEmail.To" xml:space="preserve">
+      <value>收件邮箱</value>
+    </data>
+    <data name="QueuedEmail.ToName" xml:space="preserve">
+      <value>收件人名称</value>
+    </data>
+    <data name="QueuedEmail.ReplyTo" xml:space="preserve">
+      <value>回复邮箱</value>
+    </data>
+    <data name="QueuedEmail.ReplyToName" xml:space="preserve">
+      <value>回复人名称</value>
+    </data>
+    <data name="QueuedEmail.Priority" xml:space="preserve">
+      <value>优先级</value>
+    </data>
+    <data name="QueuedEmail.CC" xml:space="preserve">
+      <value>抄送</value>
+    </data>
+    <data name="QueuedEmail.Bcc" xml:space="preserve">
+      <value>密件抄送</value>
+    </data>
+    <data name="QueuedEmail.Subject" xml:space="preserve">
+      <value>标题</value>
+    </data>
+    <data name="QueuedEmail.Body" xml:space="preserve">
+      <value>内容</value>
+    </data>
+    <data name="QueuedEmail.SentTries" xml:space="preserve">
+      <value>发送上限次数</value>
+    </data>
+    <data name="QueuedEmail.SendTime" xml:space="preserve">
+      <value>发送时间</value>
+    </data>
+    <data name="QueuedEmail.EmailAccountId" xml:space="preserve">
+      <value>发件邮箱ID</value>
+    </data>
+</root>

@@ -1,7 +1,7 @@
 ﻿using System;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
-using ApeVolo.IBusiness.Interface.Tasks;
+using ApeVolo.IBusiness.Interface.System.Task;
 using ApeVolo.QuartzNetService.service;
 using log4net;
 using Microsoft.AspNetCore.Builder;

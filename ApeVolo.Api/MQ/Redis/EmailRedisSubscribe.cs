@@ -3,7 +3,7 @@ using ApeVolo.Common.Caches.Redis.Attributes;
 using ApeVolo.Common.Caches.Redis.Models;
 using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
 using ApeVolo.Common.Helper;
-using ApeVolo.IBusiness.Interface.Email;
+using ApeVolo.IBusiness.Interface.Message.Email;
 
 namespace ApeVolo.Api.MQ.Redis;
 

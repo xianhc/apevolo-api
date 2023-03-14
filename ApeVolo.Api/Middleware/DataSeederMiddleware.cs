@@ -1,5 +1,4 @@
 using System;
-using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Entity.Seed;
 using log4net;
