@@ -5,7 +5,7 @@ using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Permission.Role;
 
-[AutoMapping(typeof(Entity.Do.Core.Role), typeof(CreateUpdateRoleDto))]
+[AutoMapping(typeof(Entity.Permission.Role.Role), typeof(CreateUpdateRoleDto))]
 public class CreateUpdateRoleDto : EntityDtoRoot<long>
 {
     [Display(Name = "Role.Name")]

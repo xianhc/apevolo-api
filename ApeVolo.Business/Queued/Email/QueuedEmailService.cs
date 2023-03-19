@@ -11,7 +11,7 @@ using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
-using ApeVolo.Entity.Do.Queued;
+using ApeVolo.Entity.Queued;
 using ApeVolo.IBusiness.Dto.Queued.Email;
 using ApeVolo.IBusiness.Interface.Message.Email.Account;
 using ApeVolo.IBusiness.Interface.Message.Email.Template;

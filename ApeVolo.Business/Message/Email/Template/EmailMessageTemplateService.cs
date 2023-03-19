@@ -7,7 +7,7 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
-using ApeVolo.Entity.Do.Email;
+using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Dto.Message.Email.Template;
 using ApeVolo.IBusiness.Interface.Message.Email.Template;
 using ApeVolo.IBusiness.QueryModel;

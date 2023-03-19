@@ -1,4 +1,4 @@
-﻿using ApeVolo.Entity.Do.Dictionary;
+﻿using ApeVolo.Entity.System.Dictionary;
 using ApeVolo.IRepository.Base;
 
 namespace ApeVolo.IRepository.System.Dictionary;

@@ -15,7 +15,7 @@ using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Dto.Permission.Job;
 using ApeVolo.IBusiness.Dto.Permission.User;
 using ApeVolo.IBusiness.Interface.Permission.Department;
@@ -33,7 +33,7 @@ namespace ApeVolo.Business.Permission.User;
 /// <summary>
 /// 用户服务
 /// </summary>
-public class UserService : BaseServices<Entity.Do.Core.User>, IUserService
+public class UserService : BaseServices<Entity.Permission.User.User>, IUserService
 {
     #region 字段
 
@@ -91,7 +91,7 @@ public class UserService : BaseServices<Entity.Do.Core.User>, IUserService
                 createUpdateUserDto.Phone));
         }
 
-        var user = Mapper.Map<Entity.Do.Core.User>(createUpdateUserDto);
+        var user = Mapper.Map<Entity.Permission.User.User>(createUpdateUserDto);
 
         //设置用户密码
         user.SaltKey = SaltKeyHelper.CreateSalt(6);
@@ -157,7 +157,7 @@ public class UserService : BaseServices<Entity.Do.Core.User>, IUserService
         //验证角色等级
         var levels = (await _roleService.QueryByUserIdAsync(oldUser.Id)).Select(x => x.Level);
         await _roleService.VerificationUserRoleLevelAsync(levels.Min());
-        var user = Mapper.Map<Entity.Do.Core.User>(createUpdateUserDto);
+        var user = Mapper.Map<Entity.Permission.User.User>(createUpdateUserDto);
         user.DeptId = user.Dept.Id;
         //更新用户
         await UpdateEntityAsync(user, new List<string> { "password", "salt_key", "avatar_name", "avatar_path" });
@@ -219,7 +219,7 @@ public class UserService : BaseServices<Entity.Do.Core.User>, IUserService
     /// <returns></returns>
     public async Task<List<UserDto>> QueryAsync(UserQueryCriteria userQueryCriteria, Pagination pagination)
     {
-        Expression<Func<Entity.Do.Core.User, bool>> whereExpression = u => true;
+        Expression<Func<Entity.Permission.User.User, bool>> whereExpression = u => true;
         if (userQueryCriteria.Id > 0)
         {
             whereExpression = whereExpression.AndAlso(u => u.Id == userQueryCriteria.Id);
@@ -261,9 +261,9 @@ public class UserService : BaseServices<Entity.Do.Core.User>, IUserService
             }
         }
 
-        Expression<Func<Entity.Do.Core.User, Entity.Do.Core.Department>> navigationExpression = user => user.Dept;
-        Expression<Func<Entity.Do.Core.User, List<UserJobs>>> navigationUserJobs = user => user.UserJobList;
-        Expression<Func<Entity.Do.Core.User, List<UserRoles>>> navigationUserRoles = user => user.UserRoleList;
+        Expression<Func<Entity.Permission.User.User, Entity.Permission.Department>> navigationExpression = user => user.Dept;
+        Expression<Func<Entity.Permission.User.User, List<UserJobs>>> navigationUserJobs = user => user.UserJobList;
+        Expression<Func<Entity.Permission.User.User, List<UserRoles>>> navigationUserRoles = user => user.UserRoleList;
         var users = await BaseDal.QueryPageListAsync(whereExpression, pagination, null, navigationExpression,
             navigationUserJobs, navigationUserRoles);
         foreach (var user in users)
@@ -349,7 +349,7 @@ public class UserService : BaseServices<Entity.Do.Core.User>, IUserService
     [RedisCaching(Expiration = 30, KeyPrefix = RedisKey.UserInfoByName)]
     public async Task<UserDto> QueryByNameAsync(string userName)
     {
-        Entity.Do.Core.User user;
+        Entity.Permission.User.User user;
         if (userName.IsEmail())
         {
             user = await BaseDal.QueryFirstAsync(s => s.Email == userName);
@@ -365,7 +365,7 @@ public class UserService : BaseServices<Entity.Do.Core.User>, IUserService
 
     public async Task<List<UserDto>> QueryByRoleIdAsync(long roleId)
     {
-        var users = await BaseDal.QueryMuchAsync<Entity.Do.Core.User, UserRoles, Entity.Do.Core.User>(
+        var users = await BaseDal.QueryMuchAsync<Entity.Permission.User.User, UserRoles, Entity.Permission.User.User>(
             (u, ur) => new object[]
             {
                 JoinType.Left, u.Id == ur.UserId,
@@ -533,7 +533,7 @@ public class UserService : BaseServices<Entity.Do.Core.User>, IUserService
 
     private async Task<List<JobSmallDto>> GetJobListAsync(long userId)
     {
-        var jobs = await BaseDal.QueryMuchAsync<Entity.Do.Core.User, UserJobs, Entity.Do.Core.Job, Entity.Do.Core.Job>(
+        var jobs = await BaseDal.QueryMuchAsync<Entity.Permission.User.User, UserJobs, Entity.Permission.Job, Entity.Permission.Job>(
             (u, uj, j) => new object[]
             {
                 JoinType.Left, u.Id == uj.UserId,
@@ -546,7 +546,7 @@ public class UserService : BaseServices<Entity.Do.Core.User>, IUserService
     }
 
 
-    private async Task ClearUserCache(Entity.Do.Core.User user)
+    private async Task ClearUserCache(Entity.Permission.User.User user)
     {
         //清理缓存
         await _redisCacheService.RemoveAsync(RedisKey.UserInfoById + user.Id.ToString().ToMd5String16());

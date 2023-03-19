@@ -2,6 +2,6 @@
 
 namespace ApeVolo.IRepository.System.FileRecord;
 
-public interface IFileRecordRepository : ISugarHandler<Entity.Do.Core.FileRecord>
+public interface IFileRecordRepository : ISugarHandler<Entity.System.FileRecord>
 {
 }

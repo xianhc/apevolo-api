@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Global;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Dto.Permission.User;
 using ApeVolo.IBusiness.Interface.Permission.User;
 using ApeVolo.IRepository.Permission.User;
@@ -49,7 +49,7 @@ public class UserRolesService : BaseServices<UserRoles>, IUserRolesService
 
     public async Task<List<UserRoles>> QueryByRoleIdsAsync(HashSet<long> roleIds)
     {
-        var list = await BaseDal.QueryMuchAsync<UserRoles, Entity.Do.Core.User, UserRoles>(
+        var list = await BaseDal.QueryMuchAsync<UserRoles, Entity.Permission.User.User, UserRoles>(
             (ur, u) => new object[]
             {
                 JoinType.Left, ur.UserId == u.Id

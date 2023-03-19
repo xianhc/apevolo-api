@@ -2,7 +2,7 @@
 
 namespace ApeVolo.IBusiness.Dto.Permission.Role;
 
-[AutoMapping(typeof(Entity.Do.Core.Role), typeof(RoleSmallDto))]
+[AutoMapping(typeof(Entity.Permission.Role.Role), typeof(RoleSmallDto))]
 public class RoleSmallDto
 {
     public long Id { get; set; }

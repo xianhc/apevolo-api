@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Global;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.Role;
+using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Interface.Permission.User;
 using ApeVolo.IBusiness.Vo;
 using ApeVolo.IRepository.Permission.Role;
@@ -11,7 +12,7 @@ using SqlSugar;
 
 namespace ApeVolo.Business.Permission.User;
 
-public class PermissionService : BaseServices<Entity.Do.Core.Role>, IPermissionService
+public class PermissionService : BaseServices<Entity.Permission.Role.Role>, IPermissionService
 {
     #region 字段
 
@@ -36,7 +37,7 @@ public class PermissionService : BaseServices<Entity.Do.Core.Role>, IPermissionS
     [RedisCaching(Expiration = 30, KeyPrefix = RedisKey.UserPermissionById)]
     public async Task<List<PermissionVo>> QueryUserPermissionAsync(long userId)
     {
-        var permissionLists = await BaseDal.QueryMuchAsync<Entity.Do.Core.Menu, RoleMenu, UserRoles, PermissionVo>(
+        var permissionLists = await BaseDal.QueryMuchAsync<Entity.Permission.Menu, RoleMenu, UserRoles, PermissionVo>(
             (m, rm, ur) => new object[]
             {
                 JoinType.Left, m.Id == rm.MenuId,

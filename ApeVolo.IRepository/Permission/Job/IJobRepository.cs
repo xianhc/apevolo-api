@@ -2,6 +2,6 @@
 
 namespace ApeVolo.IRepository.Permission.Job;
 
-public interface IJobRepository : ISugarHandler<Entity.Do.Core.Job>
+public interface IJobRepository : ISugarHandler<Entity.Permission.Job>
 {
 }

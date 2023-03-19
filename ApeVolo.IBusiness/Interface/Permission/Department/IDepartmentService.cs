@@ -11,7 +11,7 @@ namespace ApeVolo.IBusiness.Interface.Permission.Department;
 /// <summary>
 /// 部门接口
 /// </summary>
-public interface IDepartmentService : IBaseServices<Entity.Do.Core.Department>
+public interface IDepartmentService : IBaseServices<Entity.Permission.Department>
 {
     #region 基础接口
 

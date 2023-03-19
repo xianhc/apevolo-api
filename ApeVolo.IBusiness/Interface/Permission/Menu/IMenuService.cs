@@ -9,7 +9,7 @@ using ApeVolo.IBusiness.Vo;
 
 namespace ApeVolo.IBusiness.Interface.Permission.Menu;
 
-public interface IMenuService : IBaseServices<Entity.Do.Core.Menu>
+public interface IMenuService : IBaseServices<Entity.Permission.Menu>
 {
     #region 基础接口
 

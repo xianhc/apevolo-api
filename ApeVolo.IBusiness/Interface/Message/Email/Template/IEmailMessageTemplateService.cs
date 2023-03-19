@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Common.Model;
-using ApeVolo.Entity.Do.Email;
+using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.Message.Email.Template;
 using ApeVolo.IBusiness.QueryModel;

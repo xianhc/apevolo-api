@@ -8,7 +8,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Dto.Permission.Job;
 using ApeVolo.IBusiness.Interface.Permission.Job;
 using ApeVolo.IBusiness.QueryModel;
@@ -18,7 +18,7 @@ using SqlSugar;
 
 namespace ApeVolo.Business.Permission.Job;
 
-public class JobService : BaseServices<Entity.Do.Core.Job>, IJobService
+public class JobService : BaseServices<Entity.Permission.Job>, IJobService
 {
     #region 字段
 
@@ -44,7 +44,7 @@ public class JobService : BaseServices<Entity.Do.Core.Job>, IJobService
                 createUpdateJobDto.Name));
         }
 
-        var job = Mapper.Map<Entity.Do.Core.Job>(createUpdateJobDto);
+        var job = Mapper.Map<Entity.Permission.Job>(createUpdateJobDto);
         return await AddEntityAsync(job);
     }
 
@@ -63,7 +63,7 @@ public class JobService : BaseServices<Entity.Do.Core.Job>, IJobService
                 createUpdateJobDto.Name));
         }
 
-        var job = Mapper.Map<Entity.Do.Core.Job>(createUpdateJobDto);
+        var job = Mapper.Map<Entity.Permission.Job>(createUpdateJobDto);
         return await UpdateEntityAsync(job);
     }
 
@@ -75,7 +75,7 @@ public class JobService : BaseServices<Entity.Do.Core.Job>, IJobService
             throw new BadRequestException(Localized.Get("DataNotExist"));
         }
 
-        var userJobs = await BaseDal.QueryMuchAsync<UserJobs, Entity.Do.Core.User, UserJobs>(
+        var userJobs = await BaseDal.QueryMuchAsync<UserJobs, Entity.Permission.User.User, UserJobs>(
             (uj, u) => new object[]
             {
                 JoinType.Left, uj.UserId == u.Id
@@ -94,7 +94,7 @@ public class JobService : BaseServices<Entity.Do.Core.Job>, IJobService
 
     public async Task<List<JobDto>> QueryAsync(JobQueryCriteria jobQueryCriteria, Pagination pagination)
     {
-        Expression<Func<Entity.Do.Core.Job, bool>> whereExpression = x => true;
+        Expression<Func<Entity.Permission.Job, bool>> whereExpression = x => true;
         if (!jobQueryCriteria.JobName.IsNullOrEmpty())
         {
             whereExpression = whereExpression.AndAlso(x => x.Name.Contains(jobQueryCriteria.JobName));
@@ -146,7 +146,7 @@ public class JobService : BaseServices<Entity.Do.Core.Job>, IJobService
 
     public async Task<List<JobDto>> QueryAllAsync()
     {
-        Expression<Func<Entity.Do.Core.Job, bool>> whereExpression = x => x.Enabled;
+        Expression<Func<Entity.Permission.Job, bool>> whereExpression = x => x.Enabled;
 
 
         return Mapper.Map<List<JobDto>>(await BaseDal.QueryListAsync(whereExpression, x => x.Sort,

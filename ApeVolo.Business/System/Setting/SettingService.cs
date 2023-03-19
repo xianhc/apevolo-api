@@ -19,7 +19,7 @@ using AutoMapper;
 
 namespace ApeVolo.Business.System.Setting;
 
-public class SettingService : BaseServices<Entity.Do.Core.Setting>, ISettingService
+public class SettingService : BaseServices<Entity.System.Setting>, ISettingService
 {
     #region 字段
 
@@ -49,7 +49,7 @@ public class SettingService : BaseServices<Entity.Do.Core.Setting>, ISettingServ
                 createUpdateSettingDto.Name));
         }
 
-        var setting = Mapper.Map<Entity.Do.Core.Setting>(createUpdateSettingDto);
+        var setting = Mapper.Map<Entity.System.Setting>(createUpdateSettingDto);
         return await AddEntityAsync(setting);
     }
 
@@ -70,7 +70,7 @@ public class SettingService : BaseServices<Entity.Do.Core.Setting>, ISettingServ
         }
 
         await _redisCacheService.RemoveAsync(RedisKey.LoadSettingByName + oldSetting.Name.ToMd5String16());
-        var setting = Mapper.Map<Entity.Do.Core.Setting>(createUpdateSettingDto);
+        var setting = Mapper.Map<Entity.System.Setting>(createUpdateSettingDto);
         return await UpdateEntityAsync(setting);
     }
 
@@ -87,7 +87,7 @@ public class SettingService : BaseServices<Entity.Do.Core.Setting>, ISettingServ
 
     public async Task<List<SettingDto>> QueryAsync(SettingQueryCriteria settingQueryCriteria, Pagination pagination)
     {
-        Expression<Func<Entity.Do.Core.Setting, bool>> whereLambda = r => true;
+        Expression<Func<Entity.System.Setting, bool>> whereLambda = r => true;
         if (!settingQueryCriteria.KeyWords.IsNullOrEmpty())
         {
             whereLambda = whereLambda.AndAlso(r =>

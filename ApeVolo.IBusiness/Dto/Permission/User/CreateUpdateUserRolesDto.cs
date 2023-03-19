@@ -1,5 +1,5 @@
 ﻿using ApeVolo.Common.AttributeExt;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Permission.User;

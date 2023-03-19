@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace ApeVolo.IBusiness.Dto.Permission.Role;
 
-[AutoMapping(typeof(Entity.Do.Core.Role), typeof(RoleDto))]
+[AutoMapping(typeof(Entity.Permission.Role.Role), typeof(RoleDto))]
 public class RoleDto : EntityDtoRoot<long>
 {
     [Display(Name = "Role.Name")]

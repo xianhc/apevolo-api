@@ -1,4 +1,4 @@
-﻿using ApeVolo.Entity.Do.Logs;
+﻿using ApeVolo.Entity.Monitor.Logs;
 using ApeVolo.IRepository.Monitor.Auditing;
 using ApeVolo.IRepository.UnitOfWork;
 using ApeVolo.Repository.Base;

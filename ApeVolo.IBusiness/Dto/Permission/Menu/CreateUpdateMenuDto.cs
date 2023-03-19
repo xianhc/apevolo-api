@@ -4,7 +4,7 @@ using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Permission.Menu;
 
-[AutoMapping(typeof(Entity.Do.Core.Menu), typeof(CreateUpdateMenuDto))]
+[AutoMapping(typeof(Entity.Permission.Menu), typeof(CreateUpdateMenuDto))]
 public class CreateUpdateMenuDto : EntityDtoRoot<long>
 {
     [Display(Name = "Mneu.Title")]

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ApeVolo.Common.DI;
-using ApeVolo.Entity.Do.Email;
+using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Interface.Message.Email;
 using MimeKit;
 using MimeKit.Text;

@@ -5,7 +5,7 @@ using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Permission.Menu;
 
-[AutoMapping(typeof(Entity.Do.Core.Menu), typeof(MenuDto))]
+[AutoMapping(typeof(Entity.Permission.Menu), typeof(MenuDto))]
 public class MenuDto : EntityDtoRoot<long>
 {
     [Display(Name = "Menu.Title")]

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Entity.Do.Tasks;
+using ApeVolo.Entity.System.Task;
 using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.System.Task;

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Entity.Do.Email;
+using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Message.Email.Template;

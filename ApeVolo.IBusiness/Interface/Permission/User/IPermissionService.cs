@@ -8,7 +8,7 @@ namespace ApeVolo.IBusiness.Interface.Permission.User;
 /// <summary>
 /// 权限信息接口
 /// </summary>
-public interface IPermissionService : IBaseServices<Entity.Do.Core.Role>
+public interface IPermissionService : IBaseServices<Entity.Permission.Role.Role>
 {
     Task<List<PermissionVo>> QueryUserPermissionAsync(long userId);
 }

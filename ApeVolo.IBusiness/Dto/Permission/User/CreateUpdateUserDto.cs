@@ -5,7 +5,7 @@ using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Permission.User;
 
-[AutoMapping(typeof(Entity.Do.Core.User), typeof(CreateUpdateUserDto))]
+[AutoMapping(typeof(Entity.Permission.User.User), typeof(CreateUpdateUserDto))]
 public class CreateUpdateUserDto : EntityDtoRoot<long>
 {
     /// <summary>

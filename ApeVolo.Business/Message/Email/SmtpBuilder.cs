@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using ApeVolo.Common.DI;
 using ApeVolo.Common.Extention;
-using ApeVolo.Entity.Do.Email;
+using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Interface.Message.Email;
 using ApeVolo.IBusiness.Interface.Message.Email.Account;
 using ApeVolo.IBusiness.Interface.System.Setting;

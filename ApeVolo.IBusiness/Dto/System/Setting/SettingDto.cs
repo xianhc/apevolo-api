@@ -4,7 +4,7 @@ using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.System.Setting;
 
-[AutoMapping(typeof(Entity.Do.Core.Setting), typeof(SettingDto))]
+[AutoMapping(typeof(Entity.System.Setting), typeof(SettingDto))]
 public class SettingDto : EntityDtoRoot<long>
 {
     [Display(Name = "Setting.Name")]

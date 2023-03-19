@@ -4,7 +4,7 @@ using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Permission.Department;
 
-[AutoMapping(typeof(Entity.Do.Core.Department), typeof(CreateUpdateDepartmentDto))]
+[AutoMapping(typeof(Entity.Permission.Department), typeof(CreateUpdateDepartmentDto))]
 public class CreateUpdateDepartmentDto : EntityDtoRoot<long>
 {
     [Display(Name = "Dept.Name")]

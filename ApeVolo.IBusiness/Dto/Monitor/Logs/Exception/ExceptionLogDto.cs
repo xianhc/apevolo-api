@@ -1,5 +1,5 @@
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Entity.Do.Logs;
+using ApeVolo.Entity.Monitor.Logs;
 using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Monitor.Logs.Exception;

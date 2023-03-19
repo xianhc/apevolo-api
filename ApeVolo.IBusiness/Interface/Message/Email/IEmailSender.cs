@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Entity.Do.Email;
+using ApeVolo.Entity.Message.Email;
 
 namespace ApeVolo.IBusiness.Interface.Message.Email;
 

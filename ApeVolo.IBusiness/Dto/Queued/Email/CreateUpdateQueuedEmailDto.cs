@@ -1,6 +1,6 @@
 ﻿using System;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Entity.Do.Queued;
+using ApeVolo.Entity.Queued;
 using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Queued.Email;

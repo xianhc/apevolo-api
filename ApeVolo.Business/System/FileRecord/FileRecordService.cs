@@ -21,7 +21,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ApeVolo.Business.System.FileRecord;
 
-public class FileRecordService : BaseServices<Entity.Do.Core.FileRecord>, IFileRecordService
+public class FileRecordService : BaseServices<Entity.System.FileRecord>, IFileRecordService
 {
     #region 字段
 
@@ -66,7 +66,7 @@ public class FileRecordService : BaseServices<Entity.Do.Core.FileRecord>, IFileR
             fs.Flush();
         }
 
-        var fileRecord = new Entity.Do.Core.FileRecord
+        var fileRecord = new Entity.System.FileRecord
         {
             Description = description,
             OriginalName = file.FileName,
@@ -96,7 +96,7 @@ public class FileRecordService : BaseServices<Entity.Do.Core.FileRecord>, IFileR
                 createUpdateFileRecordDto.Description));
         }
 
-        var fileRecord = Mapper.Map<Entity.Do.Core.FileRecord>(createUpdateFileRecordDto);
+        var fileRecord = Mapper.Map<Entity.System.FileRecord>(createUpdateFileRecordDto);
         return await UpdateEntityAsync(fileRecord);
     }
 
@@ -115,7 +115,7 @@ public class FileRecordService : BaseServices<Entity.Do.Core.FileRecord>, IFileR
     public async Task<List<FileRecordDto>> QueryAsync(FileRecordQueryCriteria fileRecordQueryCriteria,
         Pagination pagination)
     {
-        Expression<Func<Entity.Do.Core.FileRecord, bool>> whereLambda = r => true;
+        Expression<Func<Entity.System.FileRecord, bool>> whereLambda = r => true;
         if (!fileRecordQueryCriteria.KeyWords.IsNullOrEmpty())
         {
             whereLambda = whereLambda.AndAlso(r =>

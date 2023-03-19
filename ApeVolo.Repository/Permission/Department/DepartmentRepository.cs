@@ -4,7 +4,7 @@ using ApeVolo.Repository.Base;
 
 namespace ApeVolo.Repository.Permission.Department;
 
-public class DepartmentRepository : SugarHandler<Entity.Do.Core.Department>, IDepartmentRepository
+public class DepartmentRepository : SugarHandler<Entity.Permission.Department>, IDepartmentRepository
 {
     public DepartmentRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
     {

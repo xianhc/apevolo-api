@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using ApeVolo.Entity.Do.Tasks;
+using ApeVolo.Entity.System.Task;
 using ApeVolo.IBusiness.Dto.System.Task;
 
 namespace ApeVolo.QuartzNetService.service;

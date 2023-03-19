@@ -1,4 +1,4 @@
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.Test;
 using ApeVolo.IRepository.Test;
 using ApeVolo.IRepository.UnitOfWork;
 using ApeVolo.Repository.Base;

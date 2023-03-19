@@ -4,7 +4,7 @@ using ApeVolo.Repository.Base;
 
 namespace ApeVolo.Repository.System.FileRecord;
 
-public class FileRecordRepository : SugarHandler<Entity.Do.Core.FileRecord>, IFileRecordRepository
+public class FileRecordRepository : SugarHandler<Entity.System.FileRecord>, IFileRecordRepository
 {
     public FileRecordRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
     {

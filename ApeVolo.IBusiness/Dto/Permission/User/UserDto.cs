@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace ApeVolo.IBusiness.Dto.Permission.User;
 
-[AutoMapping(typeof(Entity.Do.Core.User), typeof(UserDto))]
+[AutoMapping(typeof(Entity.Permission.User.User), typeof(UserDto))]
 public class UserDto : EntityDtoRoot<long>
 {
     public UserDto()

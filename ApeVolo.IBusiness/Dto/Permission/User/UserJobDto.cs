@@ -4,7 +4,7 @@ using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Permission.User;
 
-[AutoMapping(typeof(Entity.Do.Core.Job), typeof(UserJobDto))]
+[AutoMapping(typeof(Entity.Permission.Job), typeof(UserJobDto))]
 public class UserJobDto : RootId<long>
 {
     [Display(Name = "Job.Name")]

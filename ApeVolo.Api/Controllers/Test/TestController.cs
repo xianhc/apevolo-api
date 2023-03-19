@@ -4,7 +4,7 @@ using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
 using ApeVolo.Common.Resources;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.Test;
 using ApeVolo.IBusiness.Interface.Message.Email;
 using ApeVolo.IBusiness.Interface.Permission.Role;
 using ApeVolo.IBusiness.Interface.Permission.User;

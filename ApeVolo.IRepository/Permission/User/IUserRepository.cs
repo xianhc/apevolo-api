@@ -2,6 +2,6 @@
 
 namespace ApeVolo.IRepository.Permission.User;
 
-public interface IUserRepository : ISugarHandler<Entity.Do.Core.User>
+public interface IUserRepository : ISugarHandler<Entity.Permission.User.User>
 {
 }

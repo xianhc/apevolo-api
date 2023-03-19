@@ -2,6 +2,6 @@
 
 namespace ApeVolo.IRepository.Permission.Department;
 
-public interface IDepartmentRepository : ISugarHandler<Entity.Do.Core.Department>
+public interface IDepartmentRepository : ISugarHandler<Entity.Permission.Department>
 {
 }

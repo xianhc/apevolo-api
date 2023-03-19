@@ -13,7 +13,8 @@ using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.Role;
+using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Dto.Permission.Role;
 using ApeVolo.IBusiness.Interface.Permission.Department;
 using ApeVolo.IBusiness.Interface.Permission.Menu;
@@ -30,7 +31,7 @@ namespace ApeVolo.Business.Permission.Role;
 /// <summary>
 /// 角色服务
 /// </summary>
-public class RoleService : BaseServices<Entity.Do.Core.Role>, IRoleService
+public class RoleService : BaseServices<Entity.Permission.Role.Role>, IRoleService
 {
     #region 字段
 
@@ -81,7 +82,7 @@ public class RoleService : BaseServices<Entity.Do.Core.Role>, IRoleService
                 createUpdateRoleDto.Permission));
         }
 
-        var role = Mapper.Map<Entity.Do.Core.Role>(createUpdateRoleDto);
+        var role = Mapper.Map<Entity.Permission.Role.Role>(createUpdateRoleDto);
         await AddEntityAsync(role);
 
         if (!createUpdateRoleDto.Depts.IsNullOrEmpty() && createUpdateRoleDto.Depts.Count > 0)
@@ -119,7 +120,7 @@ public class RoleService : BaseServices<Entity.Do.Core.Role>, IRoleService
         }
 
         await VerificationUserRoleLevelAsync(createUpdateRoleDto.Level);
-        var role = Mapper.Map<Entity.Do.Core.Role>(createUpdateRoleDto);
+        var role = Mapper.Map<Entity.Permission.Role.Role>(createUpdateRoleDto);
         await UpdateEntityAsync(role);
 
         //删除部门权限关联
@@ -153,7 +154,7 @@ public class RoleService : BaseServices<Entity.Do.Core.Role>, IRoleService
 
     public async Task<List<RoleDto>> QueryAsync(RoleQueryCriteria roleQueryCriteria, Pagination pagination)
     {
-        Expression<Func<Entity.Do.Core.Role, bool>> whereLambda = r => true;
+        Expression<Func<Entity.Permission.Role.Role, bool>> whereLambda = r => true;
         if (!roleQueryCriteria.RoleName.IsNullOrEmpty())
         {
             whereLambda = whereLambda.AndAlso(r =>
@@ -170,12 +171,12 @@ public class RoleService : BaseServices<Entity.Do.Core.Role>, IRoleService
         foreach (var role in roleList)
         {
             //菜单
-            var menus = Mapper.Map<List<Entity.Do.Core.Menu>>(await _menuService.FindByRoleIdAsync(role.Id));
+            var menus = Mapper.Map<List<Entity.Permission.Menu>>(await _menuService.FindByRoleIdAsync(role.Id));
             role.MenuList = menus;
 
             //部门
             var departments =
-                Mapper.Map<List<Entity.Do.Core.Department>>(await _departmentService.QueryByRoleIdAsync(role.Id));
+                Mapper.Map<List<Entity.Permission.Department>>(await _departmentService.QueryByRoleIdAsync(role.Id));
             role.DepartmentList = departments;
         }
 
@@ -230,7 +231,7 @@ public class RoleService : BaseServices<Entity.Do.Core.Role>, IRoleService
     /// <returns></returns>
     public async Task<List<RoleSmallDto>> QueryByUserIdAsync(long id)
     {
-        var roleSmallList = await BaseDal.QueryMuchAsync<Entity.Do.Core.Role, UserRoles, Entity.Do.Core.Role>(
+        var roleSmallList = await BaseDal.QueryMuchAsync<Entity.Permission.Role.Role, UserRoles, Entity.Permission.Role.Role>(
             (r, ur) => new object[]
             {
                 JoinType.Left, r.Id == ur.RoleId
@@ -248,11 +249,11 @@ public class RoleService : BaseServices<Entity.Do.Core.Role>, IRoleService
         foreach (var role in roleList)
         {
             //菜单
-            var menus = Mapper.Map<List<Entity.Do.Core.Menu>>(await _menuService.FindByRoleIdAsync(role.Id));
+            var menus = Mapper.Map<List<Entity.Permission.Menu>>(await _menuService.FindByRoleIdAsync(role.Id));
             role.MenuList = menus;
 
             //部门
-            var depts = Mapper.Map<List<Entity.Do.Core.Department>>(
+            var depts = Mapper.Map<List<Entity.Permission.Department>>(
                 await _departmentService.QueryByRoleIdAsync(role.Id));
             role.DepartmentList = depts;
         }
@@ -263,7 +264,7 @@ public class RoleService : BaseServices<Entity.Do.Core.Role>, IRoleService
     public async Task<int> QueryUserRoleLevelAsync(HashSet<long> ids)
     {
         List<int> levels = new List<int>();
-        var roles = await BaseDal.QueryMuchAsync<Entity.Do.Core.Role, UserRoles, Entity.Do.Core.Role>(
+        var roles = await BaseDal.QueryMuchAsync<Entity.Permission.Role.Role, UserRoles, Entity.Permission.Role.Role>(
             (r, ur) => new object[]
             {
                 JoinType.Left, r.Id == ur.RoleId
@@ -279,7 +280,7 @@ public class RoleService : BaseServices<Entity.Do.Core.Role>, IRoleService
     public async Task<int> VerificationUserRoleLevelAsync(int? level)
     {
         List<int> levels = new List<int>();
-        var roles = await BaseDal.QueryMuchAsync<Entity.Do.Core.Role, UserRoles, Entity.Do.Core.Role>(
+        var roles = await BaseDal.QueryMuchAsync<Entity.Permission.Role.Role, UserRoles, Entity.Permission.Role.Role>(
             (r, ur) => new object[]
             {
                 JoinType.Left, r.Id == ur.RoleId

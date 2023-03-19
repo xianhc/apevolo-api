@@ -4,7 +4,7 @@ using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.System.FileRecord;
 
-[AutoMapping(typeof(Entity.Do.Core.FileRecord), typeof(CreateUpdateFileRecordDto))]
+[AutoMapping(typeof(Entity.System.FileRecord), typeof(CreateUpdateFileRecordDto))]
 public class CreateUpdateFileRecordDto : EntityDtoRoot<long>
 {
     [Display(Name = "FileRecord.Name")]

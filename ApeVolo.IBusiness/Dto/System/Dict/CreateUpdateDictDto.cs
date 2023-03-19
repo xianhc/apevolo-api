@@ -6,7 +6,7 @@ using ApeVolo.IBusiness.Dto.System.Dict.Detail;
 
 namespace ApeVolo.IBusiness.Dto.System.Dict;
 
-[AutoMapping(typeof(Entity.Do.Dictionary.Dict), typeof(CreateUpdateDictDto))]
+[AutoMapping(typeof(Entity.System.Dictionary.Dict), typeof(CreateUpdateDictDto))]
 public class CreateUpdateDictDto : EntityDtoRoot<long>
 {
     [Display(Name = "Dict.Detail.Name")]

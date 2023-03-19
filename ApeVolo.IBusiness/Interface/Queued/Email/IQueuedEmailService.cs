@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Common.Model;
-using ApeVolo.Entity.Do.Queued;
+using ApeVolo.Entity.Queued;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.Queued.Email;
 using ApeVolo.IBusiness.QueryModel;

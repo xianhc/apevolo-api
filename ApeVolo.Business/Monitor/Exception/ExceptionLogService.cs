@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
-using ApeVolo.Entity.Do.Logs;
+using ApeVolo.Entity.Monitor.Logs;
 using ApeVolo.IBusiness.Dto.Monitor.Logs.Exception;
 using ApeVolo.IBusiness.Interface.Monitor.Exception;
 using ApeVolo.IBusiness.QueryModel;

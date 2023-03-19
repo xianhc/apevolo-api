@@ -21,7 +21,7 @@ namespace ApeVolo.Business.System.AppSecret;
 /// <summary>
 /// 应用秘钥
 /// </summary>
-public class AppSecretService : BaseServices<Entity.Do.Core.AppSecret>, IAppSecretService
+public class AppSecretService : BaseServices<Entity.System.AppSecret>, IAppSecretService
 {
     #region 字段
 
@@ -51,7 +51,7 @@ public class AppSecretService : BaseServices<Entity.Do.Core.AppSecret>, IAppSecr
         createUpdateAppSecretDto.AppId = DateTime.Now.ToString("yyyyMMdd") + id[..8];
         createUpdateAppSecretDto.AppSecretKey =
             (createUpdateAppSecretDto.AppId + id).ToHmacsha256String(AppSettings.GetValue("HmacSecret"));
-        var appSecret = Mapper.Map<Entity.Do.Core.AppSecret>(createUpdateAppSecretDto);
+        var appSecret = Mapper.Map<Entity.System.AppSecret>(createUpdateAppSecretDto);
         return await AddEntityAsync(appSecret);
     }
 
@@ -71,7 +71,7 @@ public class AppSecretService : BaseServices<Entity.Do.Core.AppSecret>, IAppSecr
                 createUpdateAppSecretDto.AppName));
         }
 
-        var appSecret = Mapper.Map<Entity.Do.Core.AppSecret>(createUpdateAppSecretDto);
+        var appSecret = Mapper.Map<Entity.System.AppSecret>(createUpdateAppSecretDto);
         return await UpdateEntityAsync(appSecret);
     }
 
@@ -84,7 +84,7 @@ public class AppSecretService : BaseServices<Entity.Do.Core.AppSecret>, IAppSecr
     public async Task<List<AppSecretDto>> QueryAsync(AppsecretQueryCriteria appsecretQueryCriteria,
         Pagination pagination)
     {
-        Expression<Func<Entity.Do.Core.AppSecret, bool>> whereLambda = r => true;
+        Expression<Func<Entity.System.AppSecret, bool>> whereLambda = r => true;
         if (!appsecretQueryCriteria.KeyWords.IsNullOrEmpty())
         {
             whereLambda = whereLambda.AndAlso(r =>

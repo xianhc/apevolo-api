@@ -11,7 +11,7 @@ namespace ApeVolo.IBusiness.Interface.System.AppSecret;
 /// <summary>
 /// 应用秘钥
 /// </summary>
-public interface IAppSecretService : IBaseServices<Entity.Do.Core.AppSecret>
+public interface IAppSecretService : IBaseServices<Entity.System.AppSecret>
 {
     #region 基础接口
 

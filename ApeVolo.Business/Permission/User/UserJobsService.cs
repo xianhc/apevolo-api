@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Global;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Dto.Permission.User;
 using ApeVolo.IBusiness.Interface.Permission.User;
 using ApeVolo.IRepository.Permission.User;

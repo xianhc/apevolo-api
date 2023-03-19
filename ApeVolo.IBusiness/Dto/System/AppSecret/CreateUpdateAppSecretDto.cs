@@ -4,7 +4,7 @@ using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.System.AppSecret;
 
-[AutoMapping(typeof(Entity.Do.Core.AppSecret), typeof(CreateUpdateAppSecretDto))]
+[AutoMapping(typeof(Entity.System.AppSecret), typeof(CreateUpdateAppSecretDto))]
 public class CreateUpdateAppSecretDto : EntityDtoRoot<long>
 {
     public string AppId { get; set; }

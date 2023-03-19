@@ -11,7 +11,7 @@ namespace ApeVolo.IBusiness.Interface.Permission.Role;
 /// <summary>
 /// 角色接口
 /// </summary>
-public interface IRoleService : IBaseServices<Entity.Do.Core.Role>
+public interface IRoleService : IBaseServices<Entity.Permission.Role.Role>
 {
     #region 基础接口
 

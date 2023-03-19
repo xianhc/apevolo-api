@@ -1,5 +1,5 @@
 ﻿using ApeVolo.Common.AttributeExt;
-using ApeVolo.Entity.Do.Dictionary;
+using ApeVolo.Entity.System.Dictionary;
 using ApeVolo.IBusiness.Base;
 using Newtonsoft.Json;
 

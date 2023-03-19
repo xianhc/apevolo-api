@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.Role;
 using ApeVolo.IBusiness.Interface.Permission.Role;
 using ApeVolo.IRepository.Permission.Role;
 using SqlSugar;
@@ -40,7 +40,7 @@ public class RoleDeptService : BaseServices<RolesDepartments>, IRoleDeptService
 
     public async Task<List<RolesDepartments>> QueryByDeptIdsAsync(List<long> deptIds)
     {
-        var list = await BaseDal.QueryMuchAsync<RolesDepartments, Entity.Do.Core.Role, RolesDepartments>(
+        var list = await BaseDal.QueryMuchAsync<RolesDepartments, Entity.Permission.Role.Role, RolesDepartments>(
             (rd, r) => new object[]
             {
                 JoinType.Left, rd.RoleId == r.Id

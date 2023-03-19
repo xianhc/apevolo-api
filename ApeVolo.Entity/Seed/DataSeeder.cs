@@ -9,10 +9,13 @@ using ApeVolo.Common.DI;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
-using ApeVolo.Entity.Do.Core;
-using ApeVolo.Entity.Do.Dictionary;
-using ApeVolo.Entity.Do.Email;
-using ApeVolo.Entity.Do.Tasks;
+using ApeVolo.Entity.Message.Email;
+using ApeVolo.Entity.Permission;
+using ApeVolo.Entity.Permission.Role;
+using ApeVolo.Entity.Permission.User;
+using ApeVolo.Entity.System;
+using ApeVolo.Entity.System.Dictionary;
+using ApeVolo.Entity.System.Task;
 using Newtonsoft.Json;
 using SqlSugar;
 

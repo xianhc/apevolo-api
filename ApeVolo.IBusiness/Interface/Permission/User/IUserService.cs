@@ -12,7 +12,7 @@ namespace ApeVolo.IBusiness.Interface.Permission.User;
 /// <summary>
 /// 用户接口
 /// </summary>
-public interface IUserService : IBaseServices<Entity.Do.Core.User>
+public interface IUserService : IBaseServices<Entity.Permission.User.User>
 {
     #region 基础接口
 

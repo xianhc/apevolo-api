@@ -4,7 +4,7 @@ using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
-using ApeVolo.Entity.Do.Dictionary;
+using ApeVolo.Entity.System.Dictionary;
 using ApeVolo.IBusiness.Dto.System.Dict;
 using ApeVolo.IBusiness.Dto.System.Dict.Detail;
 using ApeVolo.IBusiness.Interface.System.Dictionary;

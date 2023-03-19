@@ -2,6 +2,6 @@
 
 namespace ApeVolo.IRepository.Permission.Menu;
 
-public interface IMenuRepository : ISugarHandler<Entity.Do.Core.Menu>
+public interface IMenuRepository : ISugarHandler<Entity.Permission.Menu>
 {
 }

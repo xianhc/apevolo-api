@@ -1,4 +1,4 @@
-﻿using ApeVolo.Entity.Do.Email;
+﻿using ApeVolo.Entity.Message.Email;
 using ApeVolo.IRepository.Base;
 
 namespace ApeVolo.IRepository.Message.Email.Account;

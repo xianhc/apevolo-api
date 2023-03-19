@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.Role;
 using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Interface.Permission.Role;

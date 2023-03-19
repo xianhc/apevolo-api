@@ -2,7 +2,7 @@
 
 namespace ApeVolo.IBusiness.Dto.Permission.Department;
 
-[AutoMapping(typeof(Entity.Do.Core.Department), typeof(DepartmentSmallDto))]
+[AutoMapping(typeof(Entity.Permission.Department), typeof(DepartmentSmallDto))]
 public class DepartmentSmallDto
 {
     public string Id { get; set; }

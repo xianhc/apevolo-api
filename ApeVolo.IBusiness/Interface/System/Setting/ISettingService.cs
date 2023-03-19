@@ -8,7 +8,7 @@ using ApeVolo.IBusiness.QueryModel;
 
 namespace ApeVolo.IBusiness.Interface.System.Setting;
 
-public interface ISettingService : IBaseServices<Entity.Do.Core.Setting>
+public interface ISettingService : IBaseServices<Entity.System.Setting>
 {
     #region 基础接口
 

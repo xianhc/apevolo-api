@@ -1,4 +1,4 @@
-﻿using ApeVolo.Entity.Do.Core;
+﻿using ApeVolo.Entity.Permission.User;
 using ApeVolo.IRepository.Permission.User;
 using ApeVolo.IRepository.UnitOfWork;
 using ApeVolo.Repository.Base;

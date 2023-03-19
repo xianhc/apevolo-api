@@ -1,4 +1,4 @@
-﻿using ApeVolo.Entity.Do.Queued;
+﻿using ApeVolo.Entity.Queued;
 using ApeVolo.IRepository.Queued.Email;
 using ApeVolo.IRepository.UnitOfWork;
 using ApeVolo.Repository.Base;

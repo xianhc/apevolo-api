@@ -9,7 +9,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
-using ApeVolo.Entity.Do.Dictionary;
+using ApeVolo.Entity.System.Dictionary;
 using ApeVolo.IBusiness.Dto.System.Dict;
 using ApeVolo.IBusiness.Interface.System.Dictionary;
 using ApeVolo.IBusiness.QueryModel;

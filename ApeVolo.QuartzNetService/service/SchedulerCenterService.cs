@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
-using ApeVolo.Entity.Do.Tasks;
+using ApeVolo.Entity.System.Task;
 using ApeVolo.IBusiness.Dto.System.Task;
 using Quartz;
 using Quartz.Impl;

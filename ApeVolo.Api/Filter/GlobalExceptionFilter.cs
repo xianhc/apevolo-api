@@ -10,7 +10,7 @@ using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
-using ApeVolo.Entity.Do.Logs;
+using ApeVolo.Entity.Monitor.Logs;
 using ApeVolo.IBusiness.Interface.Monitor.Exception;
 using ApeVolo.IBusiness.Interface.System.Setting;
 using log4net;

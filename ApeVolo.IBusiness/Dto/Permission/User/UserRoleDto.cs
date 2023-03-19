@@ -4,7 +4,7 @@ using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Permission.User;
 
-[AutoMapping(typeof(Entity.Do.Core.Role), typeof(UserRoleDto))]
+[AutoMapping(typeof(Entity.Permission.Role.Role), typeof(UserRoleDto))]
 public class UserRoleDto : RootId<long>
 {
     [Display(Name = "Role.Name")]

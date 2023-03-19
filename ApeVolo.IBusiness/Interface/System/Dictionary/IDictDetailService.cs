@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Common.Model;
-using ApeVolo.Entity.Do.Dictionary;
+using ApeVolo.Entity.System.Dictionary;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.System.Dict.Detail;
 using ApeVolo.IBusiness.QueryModel;

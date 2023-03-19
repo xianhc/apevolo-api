@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ApeVolo.IBusiness.Interface.System.FileRecord;
 
-public interface IFileRecordService : IBaseServices<Entity.Do.Core.FileRecord>
+public interface IFileRecordService : IBaseServices<Entity.System.FileRecord>
 {
     #region 基础接口
 

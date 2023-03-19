@@ -13,7 +13,7 @@ using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.Role;
 using ApeVolo.IBusiness.Dto.Permission.Menu;
 using ApeVolo.IBusiness.Interface.Permission.Menu;
 using ApeVolo.IBusiness.Interface.Permission.User;
@@ -25,7 +25,7 @@ using SqlSugar;
 
 namespace ApeVolo.Business.Permission.Menu;
 
-public class MenuService : BaseServices<Entity.Do.Core.Menu>, IMenuService
+public class MenuService : BaseServices<Entity.Permission.Menu>, IMenuService
 {
     #region 字段
 
@@ -97,7 +97,7 @@ public class MenuService : BaseServices<Entity.Do.Core.Menu>, IMenuService
             createUpdateMenuDto.PId = null;
         }
 
-        var menu = Mapper.Map<Entity.Do.Core.Menu>(createUpdateMenuDto);
+        var menu = Mapper.Map<Entity.Permission.Menu>(createUpdateMenuDto);
 
         await AddEntityAsync(menu);
         if (createUpdateMenuDto.PId.IsNotNull())
@@ -167,7 +167,7 @@ public class MenuService : BaseServices<Entity.Do.Core.Menu>, IMenuService
             createUpdateMenuDto.PId = null;
         }
 
-        var menu2 = Mapper.Map<Entity.Do.Core.Menu>(createUpdateMenuDto);
+        var menu2 = Mapper.Map<Entity.Permission.Menu>(createUpdateMenuDto);
         //清理缓存
         await _redisCacheService.RemoveAsync(RedisKey.LoadMenusById + menu2.Id.ToString().ToMd5String16());
         if (menu2.PId.IsNotNull())
@@ -238,7 +238,7 @@ public class MenuService : BaseServices<Entity.Do.Core.Menu>, IMenuService
 
     public async Task<List<MenuDto>> QueryAsync(MenuQueryCriteria menuQueryCriteria, Pagination pagination)
     {
-        Expression<Func<Entity.Do.Core.Menu, bool>> whereLambda = m => true;
+        Expression<Func<Entity.Permission.Menu, bool>> whereLambda = m => true;
         if (!menuQueryCriteria.Title.IsNullOrEmpty())
         {
             whereLambda = whereLambda.AndAlso(m =>
@@ -323,7 +323,7 @@ public class MenuService : BaseServices<Entity.Do.Core.Menu>, IMenuService
         var userRoles = await _userRolesService.QueryAsync(userId);
         var roleIds = new List<long>();
         roleIds.AddRange(userRoles.Select(r => r.RoleId));
-        var menuList = await BaseDal.QueryMuchAsync<Entity.Do.Core.Menu, RoleMenu, MenuDto>(
+        var menuList = await BaseDal.QueryMuchAsync<Entity.Permission.Menu, RoleMenu, MenuDto>(
             (m, rm) => new object[]
             {
                 JoinType.Left, m.Id == rm.MenuId
@@ -356,7 +356,7 @@ public class MenuService : BaseServices<Entity.Do.Core.Menu>, IMenuService
     [RedisCaching(Expiration = 30, KeyPrefix = RedisKey.LoadMenusById)]
     public async Task<List<MenuDto>> FindSuperiorAsync(long id)
     {
-        Expression<Func<Entity.Do.Core.Menu, bool>> whereLambda = m => true;
+        Expression<Func<Entity.Permission.Menu, bool>> whereLambda = m => true;
         var menu = await QuerySingleAsync(id);
         List<MenuDto> menuDtoList;
         if (menu.PId.IsNull())
@@ -468,7 +468,7 @@ public class MenuService : BaseServices<Entity.Do.Core.Menu>, IMenuService
     public async Task<List<MenuDto>> FindByPIdAsync(long pid = 0)
     {
         List<MenuDto> menuDtos = null;
-        Expression<Func<Entity.Do.Core.Menu, bool>> whereLambda = m => true;
+        Expression<Func<Entity.Permission.Menu, bool>> whereLambda = m => true;
         whereLambda = pid == 0 ? whereLambda.AndAlso(m => m.PId == null) : whereLambda.AndAlso(m => m.PId == pid);
 
         menuDtos = Mapper.Map<List<MenuDto>>(await BaseDal.QueryListAsync(whereLambda, o => o.MenuSort,
@@ -488,7 +488,7 @@ public class MenuService : BaseServices<Entity.Do.Core.Menu>, IMenuService
     /// <returns></returns>
     public async Task<List<MenuDto>> FindByRoleIdAsync(long roleId)
     {
-        var menuList = await BaseDal.QueryMuchAsync<Entity.Do.Core.Menu, RoleMenu, MenuDto>(
+        var menuList = await BaseDal.QueryMuchAsync<Entity.Permission.Menu, RoleMenu, MenuDto>(
             (m, rm) => new object[]
             {
                 JoinType.Left, m.Id == rm.MenuId
@@ -515,7 +515,7 @@ public class MenuService : BaseServices<Entity.Do.Core.Menu>, IMenuService
         return menuList;
     }
 
-    private async Task<List<long>> GetParentIdsAsync(Entity.Do.Core.Menu m, List<long> parentIds)
+    private async Task<List<long>> GetParentIdsAsync(Entity.Permission.Menu m, List<long> parentIds)
     {
         var menu = await BaseDal.QueryFirstAsync(x => x.Id == m.PId);
         if (menu.IsNull() || menu.PId.IsNull())
@@ -534,7 +534,7 @@ public class MenuService : BaseServices<Entity.Do.Core.Menu>, IMenuService
     /// <param name="menuList"></param>
     /// <param name="ids"></param>
     /// <returns></returns>
-    private async Task FindChildIdsAsync(List<Entity.Do.Core.Menu> menuList, List<long> ids)
+    private async Task FindChildIdsAsync(List<Entity.Permission.Menu> menuList, List<long> ids)
     {
         if (menuList is { Count: > 0 })
         {
@@ -545,7 +545,7 @@ public class MenuService : BaseServices<Entity.Do.Core.Menu>, IMenuService
                     ids.Add(menu.Id);
                 }
 
-                List<Entity.Do.Core.Menu> menus = await BaseDal.QueryListAsync(m => m.PId == menu.Id);
+                List<Entity.Permission.Menu> menus = await BaseDal.QueryListAsync(m => m.PId == menu.Id);
                 if (menus is { Count: > 0 })
                 {
                     await FindChildIdsAsync(menus, ids);

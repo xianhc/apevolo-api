@@ -11,7 +11,7 @@ namespace ApeVolo.IBusiness.Interface.Permission.Job;
 /// <summary>
 /// 岗位接口
 /// </summary>
-public interface IJobService : IBaseServices<Entity.Do.Core.Job>
+public interface IJobService : IBaseServices<Entity.Permission.Job>
 {
     #region 基础接口
 

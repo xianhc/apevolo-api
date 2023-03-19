@@ -4,7 +4,7 @@ using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Permission.Job;
 
-[AutoMapping(typeof(Entity.Do.Core.Job), typeof(JobDto))]
+[AutoMapping(typeof(Entity.Permission.Job), typeof(JobDto))]
 public class JobDto : EntityDtoRoot<long>
 {
     [Display(Name = "Job.Name")]

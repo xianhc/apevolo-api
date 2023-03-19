@@ -4,7 +4,7 @@ using ApeVolo.Repository.Base;
 
 namespace ApeVolo.Repository.Permission.Job;
 
-public class JobRepository : SugarHandler<Entity.Do.Core.Job>, IJobRepository
+public class JobRepository : SugarHandler<Entity.Permission.Job>, IJobRepository
 {
     public JobRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
     {

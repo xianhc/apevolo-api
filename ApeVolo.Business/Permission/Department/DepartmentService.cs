@@ -10,7 +10,7 @@ using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
-using ApeVolo.Entity.Do.Core;
+using ApeVolo.Entity.Permission.Role;
 using ApeVolo.IBusiness.Dto.Permission.Department;
 using ApeVolo.IBusiness.Interface.Permission.Department;
 using ApeVolo.IBusiness.QueryModel;
@@ -21,7 +21,7 @@ using SqlSugar;
 
 namespace ApeVolo.Business.Permission.Department;
 
-public class DepartmentService : BaseServices<Entity.Do.Core.Department>, IDepartmentService
+public class DepartmentService : BaseServices<Entity.Permission.Department>, IDepartmentService
 {
     #region 构造函数
 
@@ -44,7 +44,7 @@ public class DepartmentService : BaseServices<Entity.Do.Core.Department>, IDepar
                 createUpdateDepartmentDto.Name));
         }
 
-        Entity.Do.Core.Department dept = Mapper.Map<Entity.Do.Core.Department>(createUpdateDepartmentDto);
+        Entity.Permission.Department dept = Mapper.Map<Entity.Permission.Department>(createUpdateDepartmentDto);
         await AddEntityAsync(dept);
 
         //重新计算子节点个数
@@ -80,7 +80,7 @@ public class DepartmentService : BaseServices<Entity.Do.Core.Department>, IDepar
                 createUpdateDepartmentDto.Name));
         }
 
-        Entity.Do.Core.Department dept = Mapper.Map<Entity.Do.Core.Department>(createUpdateDepartmentDto);
+        Entity.Permission.Department dept = Mapper.Map<Entity.Permission.Department>(createUpdateDepartmentDto);
         dept.SubCount = oldUseDepartment.SubCount;
         await UpdateEntityAsync(dept);
 
@@ -163,7 +163,7 @@ public class DepartmentService : BaseServices<Entity.Do.Core.Department>, IDepar
     public async Task<List<DepartmentDto>> QueryAsync(DeptQueryCriteria deptQueryCriteria,
         Pagination pagination)
     {
-        Expression<Func<Entity.Do.Core.Department, bool>> whereExpression = x => true;
+        Expression<Func<Entity.Permission.Department, bool>> whereExpression = x => true;
         whereExpression = deptQueryCriteria.PId.IsNotNull()
             ? whereExpression.AndAlso(x => x.PId == deptQueryCriteria.PId)
             : whereExpression.AndAlso(x => x.PId == null);
@@ -248,14 +248,14 @@ public class DepartmentService : BaseServices<Entity.Do.Core.Department>, IDepar
     public async Task<List<DepartmentDto>> QueryByRoleIdAsync(long roleId)
     {
         var departments =
-            await BaseDal.QueryMuchAsync<Entity.Do.Core.Department, RolesDepartments, Entity.Do.Core.Department>(
+            await BaseDal.QueryMuchAsync<Entity.Permission.Department, RolesDepartments, Entity.Permission.Department>(
                 (d, rd) => new object[]
                 {
                     JoinType.Left, d.Id == rd.DeptId
                 }, (d, rd) => d,
                 (d, rd) => roleId == rd.RoleId
             );
-        departments = TreeHelper<Entity.Do.Core.Department>.SetLeafProperty(departments, "Id", "PId", null);
+        departments = TreeHelper<Entity.Permission.Department>.SetLeafProperty(departments, "Id", "PId", null);
         return Mapper.Map<List<DepartmentDto>>(departments);
     }
 
@@ -321,7 +321,7 @@ public class DepartmentService : BaseServices<Entity.Do.Core.Department>, IDepar
     /// <param name="departmentList"></param>
     /// <param name="ids"></param>
     /// <returns></returns>
-    private async Task FindChildIds(List<Entity.Do.Core.Department> departmentList, List<long> ids)
+    private async Task FindChildIds(List<Entity.Permission.Department> departmentList, List<long> ids)
     {
         if (departmentList is { Count: > 0 })
         {
@@ -332,7 +332,7 @@ public class DepartmentService : BaseServices<Entity.Do.Core.Department>, IDepar
                     ids.Add(department.Id);
                 }
 
-                List<Entity.Do.Core.Department> departments =
+                List<Entity.Permission.Department> departments =
                     await BaseDal.QueryListAsync(m => m.PId == department.Id);
                 if (departments is { Count: > 0 })
                 {

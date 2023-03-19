@@ -4,7 +4,7 @@ using ApeVolo.Repository.Base;
 
 namespace ApeVolo.Repository.Permission.Role;
 
-public class RoleRepository : SugarHandler<Entity.Do.Core.Role>, IRoleRepository
+public class RoleRepository : SugarHandler<Entity.Permission.Role.Role>, IRoleRepository
 {
     public RoleRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
     {
