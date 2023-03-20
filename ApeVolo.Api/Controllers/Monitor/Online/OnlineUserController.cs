@@ -9,6 +9,7 @@ using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Interface.Monitor.Online;
+using ApeVolo.IBusiness.RequestModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
@@ -52,20 +53,21 @@ public class OnlineUserController : BaseApiController
     /// <summary>
     /// 强制登出用户
     /// </summary>
-    /// <param name="keys"></param>
+    /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpDelete]
     [Route("out")]
     [Description("OutOnlineUser")]
     [ApeVoloAuthorize(new[] { "admin" })]
-    public async Task<ActionResult<object>> DropOut([FromBody] HashSet<string> keys)
+    public async Task<ActionResult<object>> DropOut([FromBody] IdCollectionString idCollection)
     {
-        if (keys == null || keys.Count < 1)
+        if (!ModelState.IsValid)
         {
-            return Error("keys is null");
+            var actionError = ModelState.GetErrors();
+            return Error(actionError);
         }
 
-        await _onlineUserService.DropOutAsync(keys);
+        await _onlineUserService.DropOutAsync(idCollection.IdArray);
 
         return Success();
     }

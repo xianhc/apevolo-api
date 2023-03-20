@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ApeVolo.IBusiness.RequestModel;
 
-[Serializable]
 public class IdCollection
 {
     [Required]
