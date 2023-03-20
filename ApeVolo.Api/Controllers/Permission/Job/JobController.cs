@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using ApeVolo.Api.ActionExtension.Json;
@@ -80,13 +81,12 @@ public class JobController : BaseApiController
     /// <summary>
     /// 删除岗位
     /// </summary>
-    /// <param name="collection"></param>
+    /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
     [Description("{0}Delete")]
-    [NoJsonParamter]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection collection)
+    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -94,7 +94,7 @@ public class JobController : BaseApiController
             return Error(actionError);
         }
 
-        await _jobService.DeleteAsync(collection.IdArray);
+        await _jobService.DeleteAsync(idCollection.IdArray);
         return Success();
     }
 

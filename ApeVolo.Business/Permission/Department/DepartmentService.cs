@@ -10,6 +10,7 @@ using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission.Role;
 using ApeVolo.IBusiness.Dto.Permission.Department;
 using ApeVolo.IBusiness.Interface.Permission.Department;
@@ -25,10 +26,11 @@ public class DepartmentService : BaseServices<Entity.Permission.Department>, IDe
 {
     #region 构造函数
 
-    public DepartmentService(IMapper mapper, IDepartmentRepository departmentRepository)
+    public DepartmentService(IMapper mapper, IDepartmentRepository departmentRepository, ICurrentUser currentUser)
     {
         BaseDal = departmentRepository;
         Mapper = mapper;
+        CurrentUser = currentUser;
     }
 
     #endregion
@@ -216,7 +218,7 @@ public class DepartmentService : BaseServices<Entity.Permission.Department>, IDe
 
     #region 扩展方法
 
-    public async Task<List<DepartmentDto>> QuerySuperiorDeptAsync(List<long> ids)
+    public async Task<List<DepartmentDto>> QuerySuperiorDeptAsync(HashSet<long> ids)
     {
         var departmentList = new List<DepartmentDto>();
         foreach (var id in ids)

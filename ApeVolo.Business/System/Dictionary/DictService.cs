@@ -9,6 +9,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.System.Dictionary;
 using ApeVolo.IBusiness.Dto.System.Dict;
 using ApeVolo.IBusiness.Interface.System.Dictionary;
@@ -25,10 +26,11 @@ public class DictService : BaseServices<Dict>, IDictService
 {
     #region 构造函数
 
-    public DictService(IDictRepository dictRepository, IMapper mapper)
+    public DictService(IDictRepository dictRepository, IMapper mapper, ICurrentUser currentUser)
     {
         BaseDal = dictRepository;
         Mapper = mapper;
+        CurrentUser = currentUser;
     }
 
     #endregion

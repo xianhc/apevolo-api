@@ -76,13 +76,12 @@ public class EmailAccountController : BaseApiController
     /// <summary>
     /// 删除邮箱账户
     /// </summary>
-    /// <param name="collection"></param>
+    /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
     [Description("{0}Delete")]
-    [NoJsonParamter]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection collection)
+    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -90,7 +89,7 @@ public class EmailAccountController : BaseApiController
             return Error(actionError);
         }
 
-        await _emailAccountService.DeleteAsync(collection.IdArray);
+        await _emailAccountService.DeleteAsync(idCollection.IdArray);
         return Success();
     }
 

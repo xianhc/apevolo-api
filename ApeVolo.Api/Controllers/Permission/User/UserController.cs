@@ -81,13 +81,12 @@ public class UserController : BaseApiController
     /// <summary>
     /// 删除用户
     /// </summary>
-    /// <param name="collection"></param>
+    /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpDelete]
     [Description("{0}Delete")]
     [Route("delete")]
-    [NoJsonParamter]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection collection)
+    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -95,7 +94,7 @@ public class UserController : BaseApiController
             return Error(actionError);
         }
 
-        await _userService.DeleteAsync(collection.IdArray);
+        await _userService.DeleteAsync(idCollection.IdArray);
         return Success();
     }
 

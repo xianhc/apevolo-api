@@ -326,7 +326,7 @@
             <summary>
             删除邮箱账户
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.Message.Email.Account.EmailAccountController.FindList(ApeVolo.IBusiness.QueryModel.EmailAccountQueryCriteria,ApeVolo.Common.Model.Pagination)">
@@ -367,7 +367,7 @@
             <summary>
             删除邮箱账户
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.Message.Email.Template.EmailMessageTemplateController.Query(ApeVolo.IBusiness.QueryModel.EmailMessageTemplateQueryCriteria,ApeVolo.Common.Model.Pagination)">
@@ -501,7 +501,7 @@
             <summary>
             删除部门
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.Permission.Department.DeptController.Query(ApeVolo.IBusiness.QueryModel.DeptQueryCriteria,ApeVolo.Common.Model.Pagination)">
@@ -519,11 +519,11 @@
             <param name="deptQueryCriteria"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Permission.Department.DeptController.GetSuperior(System.Collections.Generic.List{System.Int64})">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Department.DeptController.GetSuperior(ApeVolo.IBusiness.RequestModel.IdCollection)">
             <summary>
             获取同级与父级部门
             </summary>
-            <param name="ids"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="T:ApeVolo.Api.Controllers.Permission.Job.JobController">
@@ -549,7 +549,7 @@
             <summary>
             删除岗位
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.Permission.Job.JobController.Query(ApeVolo.IBusiness.QueryModel.JobQueryCriteria,ApeVolo.Common.Model.Pagination)">
@@ -596,7 +596,7 @@
             <summary>
             删除菜单
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.Permission.Menu.MenusController.Build">
@@ -627,11 +627,11 @@
             <param name="menuQueryCriteria"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Permission.Menu.MenusController.GetSuperior(System.Collections.Generic.List{System.Int64})">
+        <member name="M:ApeVolo.Api.Controllers.Permission.Menu.MenusController.GetSuperior(ApeVolo.IBusiness.RequestModel.IdCollection)">
             <summary>
             获取同级与上级菜单
             </summary>
-            <param name="ids"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="T:ApeVolo.Api.Controllers.Permission.Role.RoleController">
@@ -657,7 +657,7 @@
             <summary>
             删除角色
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.Permission.Role.RoleController.QuerySingle(System.String)">
@@ -731,7 +731,7 @@
             <summary>
             删除用户
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.Permission.User.UserController.Query(ApeVolo.IBusiness.QueryModel.UserQueryCriteria,ApeVolo.Common.Model.Pagination)">
@@ -772,7 +772,7 @@
             <summary>
             删除邮箱账户
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.Queued.Email.QueuedEmailController.Query(ApeVolo.IBusiness.QueryModel.QueuedEmailQueryCriteria,ApeVolo.Common.Model.Pagination)">
@@ -806,7 +806,7 @@
             <summary>
             删除设置
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.System.AppSecret.AppSecretController.Query(ApeVolo.IBusiness.QueryModel.AppsecretQueryCriteria,ApeVolo.Common.Model.Pagination)">
@@ -847,7 +847,7 @@
             <summary>
             删除字典
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.System.Dictionary.DictController.Query(ApeVolo.IBusiness.QueryModel.DictQueryCriteria,ApeVolo.Common.Model.Pagination)">
@@ -923,7 +923,7 @@
             <summary>
             删除文件
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.System.FileRecord.FileRecordController.Query(ApeVolo.IBusiness.QueryModel.FileRecordQueryCriteria,ApeVolo.Common.Model.Pagination)">
@@ -964,7 +964,7 @@
             <summary>
             删除设置
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.System.Setting.SettingController.Query(ApeVolo.IBusiness.QueryModel.SettingQueryCriteria,ApeVolo.Common.Model.Pagination)">
@@ -1005,7 +1005,7 @@
             <summary>
             删除作业
             </summary>
-            <param name="collection"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.System.Task.QuartzNetController.Query(ApeVolo.IBusiness.QueryModel.QuartzNetQueryCriteria,ApeVolo.Common.Model.Pagination)">

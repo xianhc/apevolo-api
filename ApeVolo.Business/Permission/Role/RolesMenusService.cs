@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission.Role;
 using ApeVolo.IBusiness.Interface.Permission.Role;
 using ApeVolo.IRepository.Permission.Role;
@@ -14,9 +15,10 @@ public class RolesMenusService : BaseServices<RoleMenu>, IRolesMenusService
 {
     #region 构造函数
 
-    public RolesMenusService(IRolesMenusRepository rolesMenusRepository)
+    public RolesMenusService(IRolesMenusRepository rolesMenusRepository, ICurrentUser currentUser)
     {
         BaseDal = rolesMenusRepository;
+        CurrentUser = currentUser;
     }
 
     #endregion

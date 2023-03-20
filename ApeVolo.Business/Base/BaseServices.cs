@@ -18,8 +18,6 @@ namespace ApeVolo.Business.Base;
 /// <typeparam name="TEntity"></typeparam>
 public class BaseServices<TEntity> : IDependencyService, IBaseServices<TEntity> where TEntity : class, new()
 {
-    #region 字段
-
     /// <summary>
     /// 仓储DAL
     /// </summary>
@@ -35,45 +33,47 @@ public class BaseServices<TEntity> : IDependencyService, IBaseServices<TEntity> 
     /// </summary>
     protected IMapper Mapper;
 
+    #region 字段
+
     #endregion
 
     #region 通用方法
 
     public async Task<bool> AddEntityAsync(TEntity entity)
     {
-        entity.InitEntity();
+        entity.InitEntity(CurrentUser);
         return await BaseDal.AddReturnBoolAsync(entity);
     }
 
     public async Task<bool> AddEntityListAsync(List<TEntity> entityList)
     {
-        entityList.ForEach(u => { u.InitEntity(); });
+        entityList.ForEach(u => { u.InitEntity(CurrentUser); });
         return await BaseDal.AddReturnBoolAsync(entityList);
     }
 
     public async Task<bool> UpdateEntityAsync(TEntity entity, List<string> lstIgnoreColumns = null,
         bool isLock = true)
     {
-        entity.EditEntity();
+        entity.EditEntity(CurrentUser);
         return await BaseDal.UpdateAsync(entity, lstIgnoreColumns, isLock) > 0;
     }
 
     public async Task<bool> UpdateEntityListAsync(List<TEntity> entityList)
     {
-        entityList.ForEach(u => { u.EditEntity(); });
+        entityList.ForEach(u => { u.EditEntity(CurrentUser); });
         return await BaseDal.UpdateAsync(entityList) > 0;
     }
 
 
     public async Task<bool> DeleteEntityAsync(TEntity entity)
     {
-        entity.DelEntity();
+        entity.DelEntity(CurrentUser);
         return await BaseDal.UpdateAsync(entity) > 0;
     }
 
     public async Task<bool> DeleteEntityListAsync(List<TEntity> entityList)
     {
-        entityList.ForEach(u => { u.DelEntity(); });
+        entityList.ForEach(u => { u.DelEntity(CurrentUser); });
         return await BaseDal.UpdateAsync(entityList) > 0;
     }
 

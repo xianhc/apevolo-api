@@ -96,13 +96,12 @@ public class DeptController : BaseApiController
     /// <summary>
     /// 删除部门
     /// </summary>
-    /// <param name="collection"></param>
+    /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
     [Description("{0}Delete")]
-    [NoJsonParamter]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection collection)
+    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -111,7 +110,7 @@ public class DeptController : BaseApiController
         }
 
         var deptIds = new List<long>();
-        foreach (var id in collection.IdArray)
+        foreach (var id in idCollection.IdArray)
         {
             deptIds.Add(id);
             var deptDtolist = await _departmentService.QueryByPIdAsync(id);
@@ -127,7 +126,7 @@ public class DeptController : BaseApiController
         var users = await _userService.QueryByDeptIdsAsync(deptIds);
         if (users.Count > 0) return Error("所选部门存在用户关联，请解除后再试！");
 
-        await _departmentService.DeleteAsync(collection.IdArray);
+        await _departmentService.DeleteAsync(idCollection.IdArray);
         return Success();
     }
 
@@ -179,17 +178,21 @@ public class DeptController : BaseApiController
     /// <summary>
     /// 获取同级与父级部门
     /// </summary>
-    /// <param name="ids"></param>
+    /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpPost]
     [Route("superior")]
     [Description("SiblingParentDepartment")]
     [ApeVoloAuthorize(new[] { "admin", "dept_list" })]
-    public async Task<ActionResult<object>> GetSuperior([FromBody] List<long> ids)
+    public async Task<ActionResult<object>> GetSuperior([FromBody] IdCollection idCollection)
     {
-        if (ids == null || ids.Count < 1) return Error("ids is null");
+        if (!ModelState.IsValid)
+        {
+            var actionError = ModelState.GetErrors();
+            return Error(actionError);
+        }
 
-        var deptList = await _departmentService.QuerySuperiorDeptAsync(ids);
+        var deptList = await _departmentService.QuerySuperiorDeptAsync(idCollection.IdArray);
 
         return new ActionResultVm<DepartmentDto>
         {

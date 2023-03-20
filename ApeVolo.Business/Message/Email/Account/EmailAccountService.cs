@@ -8,6 +8,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Dto.Message.Email.Account;
 using ApeVolo.IBusiness.Interface.Message.Email.Account;
@@ -25,10 +26,11 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
 
     #region 构造函数
 
-    public EmailAccountService(IEmailAccountRepository emailAccountRepository, IMapper mapper)
+    public EmailAccountService(IEmailAccountRepository emailAccountRepository, IMapper mapper, ICurrentUser currentUser)
     {
         BaseDal = emailAccountRepository;
         Mapper = mapper;
+        CurrentUser = currentUser;
     }
 
     #endregion

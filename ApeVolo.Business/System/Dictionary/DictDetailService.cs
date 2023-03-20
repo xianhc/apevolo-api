@@ -4,6 +4,7 @@ using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.System.Dictionary;
 using ApeVolo.IBusiness.Dto.System.Dict;
 using ApeVolo.IBusiness.Dto.System.Dict.Detail;
@@ -22,10 +23,11 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
 {
     #region 构造函数
 
-    public DictDetailService(IMapper mapper, IDictDetailRepository repository)
+    public DictDetailService(IMapper mapper, IDictDetailRepository repository, ICurrentUser currentUser)
     {
         Mapper = mapper;
         BaseDal = repository;
+        CurrentUser = currentUser;
     }
 
     #endregion

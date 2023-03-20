@@ -10,6 +10,7 @@ using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.SnowflakeIdHelper;
+using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Dto.System.AppSecret;
 using ApeVolo.IBusiness.Interface.System.AppSecret;
 using ApeVolo.IBusiness.QueryModel;
@@ -29,10 +30,11 @@ public class AppSecretService : BaseServices<Entity.System.AppSecret>, IAppSecre
 
     #region 构造函数
 
-    public AppSecretService(IMapper mapper, IAppSecretRepository appSecretRepository)
+    public AppSecretService(IMapper mapper, IAppSecretRepository appSecretRepository, ICurrentUser currentUser)
     {
         Mapper = mapper;
         BaseDal = appSecretRepository;
+        CurrentUser = currentUser;
     }
 
     #endregion

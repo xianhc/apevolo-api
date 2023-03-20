@@ -68,7 +68,6 @@ public class QuartzNetController : BaseApiController
             return Error(actionError);
         }
 
-        createUpdateQuartzNetDto.InitEntity();
         var quartzNet = await _quartzNetService.CreateAsync(createUpdateQuartzNetDto);
         if (quartzNet.IsNotNull())
         {
@@ -123,13 +122,12 @@ public class QuartzNetController : BaseApiController
     /// <summary>
     /// 删除作业
     /// </summary>
-    /// <param name="collection"></param>
+    /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
     [Description("{0}Delete")]
-    [NoJsonParamter]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection collection)
+    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -137,18 +135,15 @@ public class QuartzNetController : BaseApiController
             return Error(actionError);
         }
 
-        var quartzList = await _quartzNetService.QueryByIdsAsync(collection.IdArray);
-        if (quartzList.Count > 0)
+        var quartzList = await _quartzNetService.QueryByIdsAsync(idCollection.IdArray);
+        if (quartzList.Count > 0 && await _quartzNetService.DeleteAsync(quartzList))
         {
-            if (await _quartzNetService.DeleteAsync(quartzList))
+            foreach (var item in quartzList)
             {
-                foreach (var item in quartzList)
-                {
-                    await _schedulerCenterService.StopScheduleJobAsync(item);
-                }
-
-                return Success();
+                await _schedulerCenterService.StopScheduleJobAsync(item);
             }
+
+            return Success();
         }
 
         return Error();

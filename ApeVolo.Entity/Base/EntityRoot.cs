@@ -44,4 +44,16 @@ public class EntityRoot<T> where T : IEquatable<T>
     /// </summary>
     [SugarColumn(ColumnName = "is_deleted", IsNullable = true, ColumnDescription = "软删除(1:删除，0:未删除)")]
     public bool IsDeleted { get; set; } = false;
+
+    /// <summary>
+    /// 删除者名称
+    /// </summary>
+    [SugarColumn(ColumnName = "delete_by", IsNullable = true, ColumnDescription = "删除者账号")]
+    public string DeletedBy { get; set; }
+
+    /// <summary>
+    /// 删除时间
+    /// </summary>
+    [SugarColumn(ColumnName = "delete_time", IsNullable = true, ColumnDescription = "删除时间")]
+    public DateTime? DeletedTime { get; set; }
 }

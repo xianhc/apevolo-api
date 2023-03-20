@@ -7,6 +7,7 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Dto.Message.Email.Template;
 using ApeVolo.IBusiness.Interface.Message.Email.Template;
@@ -23,10 +24,12 @@ public class EmailMessageTemplateService : BaseServices<EmailMessageTemplate>, I
 {
     #region 构造函数
 
-    public EmailMessageTemplateService(IEmailMessageTemplateRepository messageTemplateRepository, IMapper mapper)
+    public EmailMessageTemplateService(IEmailMessageTemplateRepository messageTemplateRepository, IMapper mapper,
+        ICurrentUser currentUser)
     {
         BaseDal = messageTemplateRepository;
         Mapper = mapper;
+        CurrentUser = currentUser;
     }
 
     #endregion

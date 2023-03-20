@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission.Test;
 using ApeVolo.IBusiness.Interface.Test;
 using ApeVolo.IRepository.Test;
@@ -12,9 +13,10 @@ namespace ApeVolo.Business.Test;
 
 public class TestApeVoloService : BaseServices<TestApeVolo>, ITestApeVoloService
 {
-    public TestApeVoloService(ITestApeVoloRepostiory testApeVoloRepostiory)
+    public TestApeVoloService(ITestApeVoloRepostiory testApeVoloRepostiory, ICurrentUser currentUser)
     {
         BaseDal = testApeVoloRepostiory;
+        CurrentUser = currentUser;
     }
 
     public async Task<bool> CreateAsync(TestApeVolo testApeVolo)

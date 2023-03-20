@@ -51,7 +51,7 @@ public interface IDepartmentService : IBaseServices<Entity.Permission.Department
     /// </summary>
     /// <param name="ids"></param>
     /// <returns></returns>
-    Task<List<DepartmentDto>> QuerySuperiorDeptAsync(List<long> ids);
+    Task<List<DepartmentDto>> QuerySuperiorDeptAsync(HashSet<long> ids);
 
     /// <summary>
     /// 查找所有子级ID

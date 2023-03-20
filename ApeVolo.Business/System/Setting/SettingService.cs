@@ -11,6 +11,7 @@ using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
+using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Dto.System.Setting;
 using ApeVolo.IBusiness.Interface.System.Setting;
 using ApeVolo.IBusiness.QueryModel;
@@ -29,11 +30,12 @@ public class SettingService : BaseServices<Entity.System.Setting>, ISettingServi
 
     #region 构造函数
 
-    public SettingService(IMapper mapper, ISettingRepository settingRepository,
+    public SettingService(IMapper mapper, ISettingRepository settingRepository, ICurrentUser currentUser,
         IRedisCacheService redisCacheService)
     {
         Mapper = mapper;
         BaseDal = settingRepository;
+        CurrentUser = currentUser;
         _redisCacheService = redisCacheService;
     }
 

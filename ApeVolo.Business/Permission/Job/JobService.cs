@@ -8,6 +8,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Dto.Permission.Job;
 using ApeVolo.IBusiness.Interface.Permission.Job;
@@ -26,10 +27,11 @@ public class JobService : BaseServices<Entity.Permission.Job>, IJobService
 
     #region 构造函数
 
-    public JobService(IJobRepository jobRepository, IMapper mapper)
+    public JobService(IJobRepository jobRepository, IMapper mapper, ICurrentUser currentUser)
     {
         BaseDal = jobRepository;
         Mapper = mapper;
+        CurrentUser = currentUser;
     }
 
     #endregion

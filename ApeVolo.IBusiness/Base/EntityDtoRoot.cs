@@ -22,16 +22,17 @@ namespace ApeVolo.IBusiness.Base
         public string CreateBy { get; set; }
 
         /// <summary>
+        /// 创建时间
+        /// </summary>
+        [Display(Name = "Sys.CreateTime")]
+        public DateTime? CreateTime { get; set; }
+
+        /// <summary>
         /// 更新者名称
         /// </summary>
         [Display(Name = "Sys.UpdateBy")]
         public string UpdateBy { get; set; }
 
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        [Display(Name = "Sys.CreateTime")]
-        public DateTime? CreateTime { get; set; }
 
         /// <summary>
         /// 最后更新时间
@@ -45,5 +46,17 @@ namespace ApeVolo.IBusiness.Base
         [JsonIgnore]
         [Display(Name = "Sys.IsDeleted")]
         public bool IsDeleted { get; set; } = false;
+
+        /// <summary>
+        /// 删除者名称
+        /// </summary>
+        [Display(Name = "Sys.UpdateBy")]
+        public string DeletedBy { get; set; }
+
+        /// <summary>
+        /// 删除时间
+        /// </summary>
+        [Display(Name = "Sys.UpdateTime")]
+        public DateTime? DeletedTime { get; set; }
     }
 }

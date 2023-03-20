@@ -13,6 +13,7 @@ using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission.Role;
 using ApeVolo.IBusiness.Dto.Permission.Menu;
 using ApeVolo.IBusiness.Interface.Permission.Menu;
@@ -37,10 +38,11 @@ public class MenuService : BaseServices<Entity.Permission.Menu>, IMenuService
     #region 构造函数
 
     public MenuService(IMenuRepository menuRepository, IMapper mapper, IUserRolesService userRolesService,
-        IRedisCacheService redisCacheService)
+        IRedisCacheService redisCacheService, ICurrentUser currentUser)
     {
         BaseDal = menuRepository;
         Mapper = mapper;
+        CurrentUser = currentUser;
         _userRolesService = userRolesService;
         _redisCacheService = redisCacheService;
     }

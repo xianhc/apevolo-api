@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Global;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Dto.Permission.User;
 using ApeVolo.IBusiness.Interface.Permission.User;
@@ -19,10 +20,11 @@ public class UserRolesService : BaseServices<UserRoles>, IUserRolesService
 {
     #region 构造函数
 
-    public UserRolesService(IUserRolesRepository userRolesRepository, IMapper mapper)
+    public UserRolesService(IUserRolesRepository userRolesRepository, IMapper mapper, ICurrentUser currentUser)
     {
         BaseDal = userRolesRepository;
         Mapper = mapper;
+        CurrentUser = currentUser;
     }
 
     #endregion

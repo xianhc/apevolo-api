@@ -212,6 +212,7 @@ public static class HttpHelper
         }
         catch
         {
+            // ignored
         }
 
         paramKeys.AddRange(getParams);
@@ -246,32 +247,13 @@ public static class HttpHelper
         {
             var stream = request.Body;
             string str = stream.ReadToString(Encoding.UTF8);
-            //若为delete 请求参数key为ids
-            if (request.Method.ToLower() == "delete")
+
+            if (!str.IsNullOrEmpty())
             {
-                if (!str.IsNullOrEmpty())
+                var obj = str.ToJObject();
+                foreach (var aProperty in obj)
                 {
-                    //allParams["idList"] = str;
-                    allParams.Add("ids", str);
-                }
-            }
-            else
-            {
-                if (!str.IsNullOrEmpty())
-                {
-                    if (request.Path.Value.ToLower().Equals("/api/dept/superior") ||
-                        request.Path.Value.ToLower().Equals("/api/menu/superior"))
-                    {
-                        allParams["\"ids\""] = str;
-                    }
-                    else
-                    {
-                        var obj = str.ToJObject();
-                        foreach (var aProperty in obj)
-                        {
-                            allParams[aProperty.Key] = aProperty.Value;
-                        }
-                    }
+                    allParams[aProperty.Key] = aProperty.Value;
                 }
             }
         }

@@ -12,6 +12,7 @@ using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.SnowflakeIdHelper;
+using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Dto.System.FileRecord;
 using ApeVolo.IBusiness.Interface.System.FileRecord;
 using ApeVolo.IBusiness.QueryModel;
@@ -29,10 +30,11 @@ public class FileRecordService : BaseServices<Entity.System.FileRecord>, IFileRe
 
     #region 构造函数
 
-    public FileRecordService(IMapper mapper, IFileRecordRepository fileRecordRepository)
+    public FileRecordService(IMapper mapper, IFileRecordRepository fileRecordRepository, ICurrentUser currentUser)
     {
         Mapper = mapper;
         BaseDal = fileRecordRepository;
+        CurrentUser = currentUser;
     }
 
     #endregion

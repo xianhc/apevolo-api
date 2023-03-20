@@ -11,48 +11,42 @@ public static partial class ExtObject
     /// 初始实体信息
     /// </summary>
     /// <param name="entity"></param>
-    public static void InitEntity(this object entity)
+    /// <param name="currentUser"></param>
+    public static void InitEntity(this object entity, ICurrentUser currentUser)
     {
-        var curUser = AutofacHelper.GetScopeService<ICurrentUser>();
         if (entity.ContainsProperty("Id"))
             entity.SetPropertyValue("Id", IdHelper.GetLongId());
+        if (entity.ContainsProperty("CreateBy"))
+            entity.SetPropertyValue("CreateBy", currentUser?.Name);
         if (entity.ContainsProperty("CreateTime"))
             entity.SetPropertyValue("CreateTime", DateTime.Now);
-        //if (entity.ContainsProperty("UpdateTime"))
-        //    entity.SetPropertyValue("UpdateTime", DateTime.Now);
-        if (entity.ContainsProperty("CreateBy"))
-            entity.SetPropertyValue("CreateBy", curUser?.Name);
-        if (entity.ContainsProperty("IsDeleted"))
-            entity.SetPropertyValue("IsDeleted", false);
     }
 
     /// <summary>
     /// 编辑实体信息
     /// </summary>
     /// <param name="entity"></param>
-    public static void EditEntity(this object entity)
+    /// <param name="currentUser"></param>
+    public static void EditEntity(this object entity, ICurrentUser currentUser)
     {
-        var curUser = AutofacHelper.GetScopeService<ICurrentUser>();
-
+        if (entity.ContainsProperty("UpdateBy"))
+            entity.SetPropertyValue("UpdateBy", currentUser?.Name);
         if (entity.ContainsProperty("UpdateTime"))
             entity.SetPropertyValue("UpdateTime", DateTime.Now);
-        if (entity.ContainsProperty("UpdateBy"))
-            entity.SetPropertyValue("UpdateBy", curUser?.Name);
     }
 
     /// <summary>
-    /// 编辑实体信息
+    /// 删除实体信息
     /// </summary>
     /// <param name="entity"></param>
-    public static void DelEntity(this object entity)
+    /// <param name="currentUser"></param>
+    public static void DelEntity(this object entity, ICurrentUser currentUser)
     {
-        var curUser = AutofacHelper.GetScopeService<ICurrentUser>();
-
-        if (entity.ContainsProperty("UpdateTime"))
-            entity.SetPropertyValue("UpdateTime", DateTime.Now);
-        if (entity.ContainsProperty("UpdateBy"))
-            entity.SetPropertyValue("UpdateBy", curUser?.Name);
         if (entity.ContainsProperty("IsDeleted"))
             entity.SetPropertyValue("IsDeleted", true);
+        if (entity.ContainsProperty("DeletedBy"))
+            entity.SetPropertyValue("DeletedBy", currentUser?.Name);
+        if (entity.ContainsProperty("DeletedTime"))
+            entity.SetPropertyValue("DeletedTime", DateTime.Now);
     }
 }

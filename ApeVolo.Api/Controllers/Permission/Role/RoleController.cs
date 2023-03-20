@@ -88,13 +88,12 @@ public class RoleController : BaseApiController
     /// <summary>
     /// 删除角色
     /// </summary>
-    /// <param name="collection"></param>
+    /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpDelete]
     [Description("{0}Delete")]
     [Route("delete")]
-    [NoJsonParamter]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection collection)
+    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -103,13 +102,13 @@ public class RoleController : BaseApiController
         }
 
         //检查待删除的角色是否有用户存在
-        var userRoles = await _userRolesService.QueryByRoleIdsAsync(collection.IdArray);
+        var userRoles = await _userRolesService.QueryByRoleIdsAsync(idCollection.IdArray);
         if (!userRoles.IsNullOrEmpty() && userRoles.Count > 0)
         {
             return Error(Localized.Get("DataCannotDelete"));
         }
 
-        await _roleService.DeleteAsync(collection.IdArray);
+        await _roleService.DeleteAsync(idCollection.IdArray);
         return Success();
     }
 

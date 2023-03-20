@@ -7,6 +7,7 @@ using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.System.Task;
 using ApeVolo.IBusiness.Dto.System.Task;
 using ApeVolo.IBusiness.Interface.System.Task;
@@ -30,10 +31,11 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
     #region 构造函数
 
     public QuartzNetService(IQuartzNetRepository taskQuartzRepository, IMapper mapper,
-        IQuartzNetLogService quartzNetLogService)
+        IQuartzNetLogService quartzNetLogService, ICurrentUser currentUser)
     {
         BaseDal = taskQuartzRepository;
         Mapper = mapper;
+        CurrentUser = currentUser;
         _quartzNetLogService = quartzNetLogService;
     }
 
@@ -50,6 +52,7 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
     public async Task<QuartzNet> CreateAsync(CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
         var quartzNet = Mapper.Map<QuartzNet>(createUpdateQuartzNetDto);
+        quartzNet.InitEntity(CurrentUser);
         return await BaseDal.AddReturnEntityAsync(quartzNet);
     }
 
@@ -70,7 +73,6 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
 
     public async Task<bool> DeleteAsync(List<QuartzNet> quartzNets)
     {
-        quartzNets.DelEntity();
         return await DeleteEntityListAsync(quartzNets);
     }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
@@ -90,13 +91,12 @@ public class MenusController : BaseApiController
     /// <summary>
     /// 删除菜单
     /// </summary>
-    /// <param name="collection"></param>
+    /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
     [Description("{0}Delete")]
-    [NoJsonParamter]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection collection)
+    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -104,7 +104,7 @@ public class MenusController : BaseApiController
             return Error(actionError);
         }
 
-        await _menuService.DeleteAsync(collection.IdArray);
+        await _menuService.DeleteAsync(idCollection.IdArray);
         return Success();
     }
 
@@ -187,14 +187,13 @@ public class MenusController : BaseApiController
     /// <summary>
     /// 获取同级与上级菜单
     /// </summary>
-    /// <param name="ids"></param>
+    /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpPost]
     [Description("SiblingParentMenu")]
     [Route("superior")]
-    [NoJsonParamter]
     [ApeVoloAuthorize(new[] { "admin", "menu_list" })]
-    public async Task<ActionResult<object>> GetSuperior([FromBody] List<long> ids)
+    public async Task<ActionResult<object>> GetSuperior([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -202,7 +201,7 @@ public class MenusController : BaseApiController
             return Error(actionError);
         }
 
-        var menuVos = await _menuService.FindSuperiorAsync(ids[0]);
+        var menuVos = await _menuService.FindSuperiorAsync(idCollection.IdArray.FirstOrDefault());
         return menuVos.ToJsonByIgnore();
     }
 
@@ -210,7 +209,6 @@ public class MenusController : BaseApiController
     [Description("AllChildID")]
     [Route("child")]
     [ApeVoloAuthorize(new[] { "admin", "menu_list" })]
-    [NoJsonParamter]
     public async Task<ActionResult<object>> GetChild(long id)
     {
         if (id.IsNullOrEmpty())

@@ -11,6 +11,7 @@ using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
+using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Queued;
 using ApeVolo.IBusiness.Dto.Queued.Email;
 using ApeVolo.IBusiness.Interface.Message.Email.Account;
@@ -39,10 +40,11 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
 
     public QueuedEmailService(IQueuedEmailRepository queuedEmailRepository, IMapper mapper,
         IEmailMessageTemplateService emailMessageTemplateService, IEmailAccountService emailAccountService,
-        IRedisCacheService redisCacheService)
+        IRedisCacheService redisCacheService, ICurrentUser currentUser)
     {
         BaseDal = queuedEmailRepository;
         Mapper = mapper;
+        CurrentUser = currentUser;
         _emailMessageTemplateService = emailMessageTemplateService;
         _emailAccountService = emailAccountService;
         _redisCacheService = redisCacheService;
@@ -177,7 +179,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
         var captcha = ImgVerifyCodeHelper.BuilEmailCaptcha(6);
 
         QueuedEmail queuedEmail = new QueuedEmail();
-        queuedEmail.InitEntity();
+        queuedEmail.InitEntity(CurrentUser);
         queuedEmail.From = emailAccount.Email;
         queuedEmail.FromName = emailAccount.DisplayName;
         queuedEmail.To = emailAddres;
