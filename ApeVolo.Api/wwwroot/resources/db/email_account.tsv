@@ -7,12 +7,14 @@
         "port":465,
         "username":"your name",
         "password":"your pass",
-        "enable_ssl":1,
+        "enableSsl":true,
         "useDefaultCredentials":0,
         "createBy":"apevolo",
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     }
 ]

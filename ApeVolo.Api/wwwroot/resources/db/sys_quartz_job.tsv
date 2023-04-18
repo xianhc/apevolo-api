@@ -16,13 +16,15 @@
         "triggerType":1,
         "intervalSecond":0,
         "cycleRunTimes":0,
-        "isEnable":0,
+        "isEnable":false,
         "runParams":null,
         "createBy":"apevolo",
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     },
     {
         "id":"1380932818854481920",
@@ -41,12 +43,14 @@
         "triggerType":1,
         "intervalSecond":0,
         "cycleRunTimes":0,
-        "isEnable":0,
+        "isEnable":false,
         "runParams":null,
         "createBy":"apevolo",
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     }
 ]

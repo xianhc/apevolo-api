@@ -430,11 +430,11 @@
             <param name="pagination"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Controllers.Monitor.Online.OnlineUserController.DropOut(System.Collections.Generic.HashSet{System.String})">
+        <member name="M:ApeVolo.Api.Controllers.Monitor.Online.OnlineUserController.DropOut(ApeVolo.IBusiness.RequestModel.IdCollectionString)">
             <summary>
             强制登出用户
             </summary>
-            <param name="keys"></param>
+            <param name="idCollection"></param>
             <returns></returns>
         </member>
         <member name="M:ApeVolo.Api.Controllers.Monitor.Online.OnlineUserController.Download">

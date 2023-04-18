@@ -9,7 +9,9 @@
         "createTime":"/Date(1609430400000+0800)/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":false
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     },
     {
         "id":"1431883253819641856",
@@ -21,7 +23,9 @@
         "createTime":"/Date(1609430400000+0800)/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":false
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     },
     {
         "id":"1431883929337466880",
@@ -33,7 +37,9 @@
         "createTime":"/Date(1609430400000+0800)/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":false
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     },
     {
         "id":"1431884349287960576",
@@ -45,7 +51,9 @@
         "createTime":"/Date(1609430400000+0800)/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":false
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     },
     {
         "id":"1431890848454283264",
@@ -57,6 +65,8 @@
         "createTime":"/Date(1609430400000+0800)/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":false
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     }
 ]

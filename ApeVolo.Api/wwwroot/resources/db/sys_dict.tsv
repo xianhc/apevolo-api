@@ -7,7 +7,9 @@
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     },
     {
         "id":"1306054134645919765",
@@ -17,7 +19,9 @@
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null,
     },
     {
         "id":"1306054134645919766",
@@ -27,7 +31,9 @@
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     },
     {
         "id":"1380547002701451264",
@@ -37,7 +43,9 @@
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null,
     },
     {
         "id":"1425449857383927808",
@@ -47,6 +55,8 @@
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null,
     }
 ]

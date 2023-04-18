@@ -10,7 +10,9 @@
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     },
     {
         "id":"1521439155194695680",
@@ -23,6 +25,8 @@
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0
+        "isDeleted":false,
+        "deletedBy":null,
+        "deletedTime":null
     }
 ]

@@ -14,12 +14,14 @@
         "avatarPath":"/file/avatar/",
         "passwordResetTime":null,
         "sex":0,
+        "gender":"男",
         "createBy":"apevolo",
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0,
-        "gender":"男"
+        "isDeleted":false,
+        "DeletedBy":null,
+        "DeletedTime":null
     },
     {
         "id":"1306054134645919751",
@@ -36,11 +38,13 @@
         "avatarPath":"/file/avatar/",
         "passwordResetTime":null,
         "sex":0,
+        "gender":"男",
         "createBy":"apevolo",
         "createTime":"\/Date(1609430400000+0800)\/",
         "updateBy":null,
         "updateTime":null,
-        "isDeleted":0,
-        "gender":"男"
+        "isDeleted":false,
+        "DeletedBy":null,
+        "DeletedTime":null
     }
 ]
