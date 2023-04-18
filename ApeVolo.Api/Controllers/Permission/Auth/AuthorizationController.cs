@@ -158,7 +158,10 @@ public class AuthorizationController : BaseApiController
     [AllowAnonymous]
     public async Task<ActionResult<object>> Captcha()
     {
+        //在linux平台下会报异常 The type initializer for ‘Gdip‘ threw an exception
+        //可安装libgdiplus包重启服务器解决或使用下面的SixLabors.ImageSharp库支持跨平台
         var (imgBytes, code) = ImgVerifyCodeHelper.BuildVerifyCode();
+        //var (imgBytes, code) = SixLaborsImageHelper.BuildVerifyCode();
         var imgUrl = ImgHelper.ToBase64StringUrl(imgBytes);
         var captchaId = RedisKey.CaptchaId + GuidHelper.GenerateKey();
 

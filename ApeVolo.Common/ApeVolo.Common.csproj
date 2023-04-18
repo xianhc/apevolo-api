@@ -29,6 +29,9 @@
     <PackageReference Include="Quartz" Version="3.4.0" />
     <PackageReference Include="runtime.osx.10.10-x64.CoreCompat.System.Drawing" Version="6.0.5.128" />
     <PackageReference Include="Shyjus.BrowserDetector" Version="2.0.0" />
+    <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta19" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta15" />
     <PackageReference Include="StackExchange.Redis" Version="2.1.28" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
