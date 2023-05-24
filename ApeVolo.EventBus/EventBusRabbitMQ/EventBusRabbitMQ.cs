@@ -1,10 +1,11 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Serilog;
 using ApeVolo.EventBus.Abstractions;
 using ApeVolo.EventBus.Events;
 using Autofac;
-using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,6 +13,7 @@ using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
+using Serilog;
 
 namespace ApeVolo.EventBus.EventBusRabbitMQ;
 
@@ -22,9 +24,9 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 {
     #region 字段
 
+    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(EventBusRabbitMQ));
     const string BrokerName = "apevolo_event_bus";
     const string AutofacScopeName = "apevolo_event_bus";
-    private static readonly ILog Log = LogManager.GetLogger(typeof(EventBusRabbitMQ));
     private readonly IRabbitMQPersistentConnection _persistentConnection;
     private readonly IEventBusSubscriptionsManager _subsManager;
     private readonly ILifetimeScope _autofac;
@@ -51,7 +53,6 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         _autofac = autofac;
         _retryCount = retryCount;
         _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
-
         _serviceProvider = serviceProvider;
     }
 
@@ -75,14 +76,15 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                 (ex, time) =>
                 {
-                    Log.Warn($"Could not publish event: {@event.Id} after {time.TotalSeconds:n1}s ({ex.Message})");
+                    Logger.Warning(
+                        $"Could not publish event: {@event.Id} after {time.TotalSeconds:n1}s ({ex.Message})");
                 });
         var eventName = @event.GetType().Name;
 
-        Log.Info($"Creating RabbitMQ channel to publish event: {@event.Id} ({eventName})");
+        Logger.Information($"Creating RabbitMQ channel to publish event: {@event.Id} ({eventName})");
         using (var channel = _persistentConnection.CreateModel())
         {
-            Log.Info($"Declaring RabbitMQ exchange to publish event: {@event.Id}");
+            Logger.Information($"Declaring RabbitMQ exchange to publish event: {@event.Id}");
             channel.ExchangeDeclare(exchange: BrokerName, type: "direct");
 
             var message = JsonConvert.SerializeObject(@event);
@@ -93,7 +95,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                 var properties = channel.CreateBasicProperties();
                 properties.DeliveryMode = 2; // persistent
 
-                Log.Info($"Publishing event to RabbitMQ: {@event.Id}");
+                Logger.Information($"Publishing event to RabbitMQ: {@event.Id}");
                 channel.BasicPublish(
                     exchange: BrokerName,
                     routingKey: eventName,
@@ -116,7 +118,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         var eventName = _subsManager.GetEventKey<T>();
         DoInternalSubscription(eventName);
 
-        Log.Info($"Subscribing to event {eventName} with {typeof(TH).GetGenericTypeName()}");
+        Logger.Information($"Subscribing to event {eventName} with {typeof(TH).GetGenericTypeName()}");
         _subsManager.AddSubscription<T, TH>();
         StartBasicConsume();
     }
@@ -133,7 +135,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     {
         var eventName = _subsManager.GetEventKey<T>();
 
-        Log.Info($"Unsubscribing from event {eventName}");
+        Logger.Information($"Unsubscribing from event {eventName}");
         _subsManager.RemoveSubscription<T, TH>();
     }
 
@@ -146,7 +148,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     public void SubscribeDynamic<TH>(string eventName)
         where TH : IDynamicIntegrationEventHandler
     {
-        Log.Info($"Subscribing to dynamic event {eventName} with {typeof(TH).GetGenericTypeName()}");
+        Logger.Information($"Subscribing to dynamic event {eventName} with {typeof(TH).GetGenericTypeName()}");
 
         DoInternalSubscription(eventName);
         _subsManager.AddDynamicSubscription<TH>(eventName);
@@ -224,7 +226,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     /// </summary>
     private void StartBasicConsume()
     {
-        Log.Info("Starting RabbitMQ basic consume");
+        Logger.Information("Starting RabbitMQ basic consume");
         if (_consumerChannel != null)
         {
             var consumer = new AsyncEventingBasicConsumer(_consumerChannel);
@@ -238,7 +240,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         }
         else
         {
-            Log.Error("StartBasicConsume can't call on _consumerChannel == null");
+            Logger.Error("StartBasicConsume can't call on _consumerChannel == null");
         }
     }
 
@@ -265,7 +267,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         }
         catch (Exception ex)
         {
-            Log.Error($"ERROR Processing message {message} ex:{ex.Message}");
+            Logger.Error($"ERROR Processing message {message} ex:{ex.Message}");
         }
 
         // Even on exception we take the message off the queue.
@@ -289,7 +291,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             _persistentConnection.TryConnect();
         }
 
-        Log.Info("Creating RabbitMQ consumer channel");
+        Logger.Information("Creating RabbitMQ consumer channel");
 
         var channel = _persistentConnection.CreateModel();
 
@@ -304,7 +306,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
         channel.CallbackException += (sender, ea) =>
         {
-            Log.Warn("Recreating RabbitMQ consumer channel");
+            Logger.Warning("Recreating RabbitMQ consumer channel");
             _consumerChannel.Dispose();
             _consumerChannel = CreateConsumerChannel();
             StartBasicConsume();
@@ -325,7 +327,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     /// <returns></returns>
     private async Task ProcessEvent(string eventName, string message)
     {
-        Log.Info($"Processing RabbitMQ event: {eventName}");
+        Logger.Information($"Processing RabbitMQ event: {eventName}");
         if (_subsManager.HasSubscriptionsForEvent(eventName))
         {
             using (var scope = _autofac.BeginLifetimeScope(AutofacScopeName))
@@ -358,7 +360,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         }
         else
         {
-            Log.Warn($"No subscription for RabbitMQ event: {eventName}");
+            Logger.Warning($"No subscription for RabbitMQ event: {eventName}");
         }
     }
 
@@ -370,7 +372,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     /// <returns></returns>
     private async Task ProcessEventByNetCore(string eventName, string message)
     {
-        Log.Info($"Processing RabbitMQ event: {eventName}");
+        Logger.Information($"Processing RabbitMQ event: {eventName}");
         if (_subsManager.HasSubscriptionsForEvent(eventName))
         {
             //安装 Microsoft.Extensions.DependencyInjection扩展包
@@ -406,7 +408,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         }
         else
         {
-            Log.Warn($"No subscription for RabbitMQ event: {eventName}");
+            Logger.Warning($"No subscription for RabbitMQ event: {eventName}");
         }
     }
 

@@ -22,7 +22,7 @@ namespace ApeVolo.Api.Controllers.System.FileRecord;
 /// <summary>
 /// 文件存储管理
 /// </summary>
-[Area("FileRecord")]
+[Area("System")]
 [Route("/api/storage")]
 public class FileRecordController : BaseApiController
 {

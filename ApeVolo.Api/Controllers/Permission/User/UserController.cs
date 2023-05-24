@@ -22,7 +22,7 @@ namespace ApeVolo.Api.Controllers.Permission.User;
 /// <summary>
 /// 用户管理
 /// </summary>
-[Area("User")]
+[Area("Permission")]
 [Route("/api/user")]
 public class UserController : BaseApiController
 {

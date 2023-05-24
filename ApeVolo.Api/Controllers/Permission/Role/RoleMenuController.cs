@@ -11,7 +11,7 @@ namespace ApeVolo.Api.Controllers.Permission.Role;
 /// <summary>
 /// 角色与菜单管理
 /// </summary>
-[Area("RoleMenu")]
+[Area("Permission")]
 [Route("/api/")]
 public class RoleMenuController : BaseApiController
 {

@@ -3,9 +3,11 @@ using System.IO;
 using System.Runtime.InteropServices;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
-using log4net;
+using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Serilog;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace ApeVolo.Api.Extensions;
@@ -15,8 +17,7 @@ namespace ApeVolo.Api.Extensions;
 /// </summary>
 public static class SwaggerSetup
 {
-    private static readonly ILog Log =
-        LogManager.GetLogger(typeof(SwaggerSetup));
+    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(SwaggerSetup));
 
     public static void AddSwaggerSetup(this IServiceCollection services)
     {
@@ -39,7 +40,7 @@ public static class SwaggerSetup
             }
             catch (Exception ex)
             {
-                Log.Error("swaggerSetup启动失败\n" + ex.Message);
+                Logger.Error("swaggerSetup启动失败\n" + ex.Message);
             }
 
             // 开启加权小锁

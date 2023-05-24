@@ -15,7 +15,7 @@ namespace ApeVolo.Api.Controllers.Monitor.Auditing;
 /// <summary>
 /// 审计管理
 /// </summary>
-[Area("Auditing")]
+[Area("Monitor")]
 [Route("/api/auditing")]
 public class AuditingController : BaseApiController
 {

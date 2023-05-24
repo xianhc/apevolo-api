@@ -1,10 +1,12 @@
 ﻿using System;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
+using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Serilog;
 using ApeVolo.IBusiness.Interface.System.Task;
 using ApeVolo.QuartzNetService.service;
-using log4net;
 using Microsoft.AspNetCore.Builder;
+using Serilog;
 
 namespace ApeVolo.Api.Middleware;
 
@@ -13,7 +15,7 @@ namespace ApeVolo.Api.Middleware;
 /// </summary>
 public static class QuartzNetJobMiddleware
 {
-    private static readonly ILog Log = LogManager.GetLogger(typeof(QuartzNetJobMiddleware));
+    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(QuartzNetJobMiddleware));
 
     public static void UseQuartzNetJobMiddleware(this IApplicationBuilder app, IQuartzNetService taskQuartzService,
         ISchedulerCenterService schedulerCenter)
@@ -30,13 +32,13 @@ public static class QuartzNetJobMiddleware
                 {
                     if (!item.IsEnable) continue;
                     var results = schedulerCenter.AddScheduleJobAsync(item).Result;
-                    Log.Error(results ? $"作业=>{item.TaskName}=>启动成功！" : $"作业=>{item.TaskName}=>启动失败！");
+                    Logger.Information(results ? $"作业=>{item.TaskName}=>启动成功！" : $"作业=>{item.TaskName}=>启动失败！");
                 }
             }
         }
         catch (Exception e)
         {
-            Log.Error($"启动作业调度服务失败。\n{e.Message}");
+            Logger.Error($"启动作业调度服务失败。\n{e.Message}");
             throw;
         }
     }

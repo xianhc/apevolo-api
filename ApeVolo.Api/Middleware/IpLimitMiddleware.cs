@@ -1,9 +1,11 @@
 ﻿using System;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
+using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Serilog;
 using AspNetCoreRateLimit;
-using log4net;
 using Microsoft.AspNetCore.Builder;
+using Serilog;
 
 namespace ApeVolo.Api.Middleware;
 
@@ -12,7 +14,7 @@ namespace ApeVolo.Api.Middleware;
 /// </summary>
 public static class IpLimitMiddleware
 {
-    private static readonly ILog Log = LogManager.GetLogger(typeof(IpLimitMiddleware));
+    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(IpLimitMiddleware));
 
     public static void UseIpLimitMiddleware(this IApplicationBuilder app)
     {
@@ -28,7 +30,7 @@ public static class IpLimitMiddleware
         }
         catch (Exception e)
         {
-            Log.Error($"Error occured limiting ip rate.\n{e.Message}");
+            Logger.Error($"Error occured limiting ip rate.\n{e.Message}");
             throw;
         }
     }

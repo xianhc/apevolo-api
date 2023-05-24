@@ -21,7 +21,7 @@ namespace ApeVolo.Api.Controllers.Permission.Job;
 /// <summary>
 /// 岗位管理
 /// </summary>
-[Area("Job")]
+[Area("Permission")]
 [Route("/api/job")]
 public class JobController : BaseApiController
 {

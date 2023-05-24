@@ -1,9 +1,11 @@
 ﻿using System.Net.Sockets;
-using log4net;
+using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Serilog;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
+using Serilog;
 
 namespace ApeVolo.EventBus.EventBusRabbitMQ;
 
@@ -12,12 +14,11 @@ namespace ApeVolo.EventBus.EventBusRabbitMQ;
 /// </summary>
 public class RabbitMQPersistentConnection : IRabbitMQPersistentConnection
 {
-    private static readonly ILog Log = LogManager.GetLogger(typeof(RabbitMQPersistentConnection));
+    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(RabbitMQPersistentConnection));
     private readonly IConnectionFactory _connectionFactory;
     private readonly int _retryCount;
     IConnection _connection;
     bool _disposed;
-
     object sync_root = new object();
 
     public RabbitMQPersistentConnection(IConnectionFactory connectionFactory, int retryCount = 5)
@@ -28,10 +29,7 @@ public class RabbitMQPersistentConnection : IRabbitMQPersistentConnection
 
     public bool IsConnected
     {
-        get
-        {
-            return _connection != null && _connection.IsOpen && !_disposed;
-        }
+        get { return _connection != null && _connection.IsOpen && !_disposed; }
     }
 
     /// <summary>
@@ -63,7 +61,7 @@ public class RabbitMQPersistentConnection : IRabbitMQPersistentConnection
         }
         catch (IOException ex)
         {
-            Log.Fatal(ex.ToString());
+            Logger.Fatal(ex.ToString());
         }
     }
 
@@ -73,7 +71,7 @@ public class RabbitMQPersistentConnection : IRabbitMQPersistentConnection
     /// <returns></returns>
     public bool TryConnect()
     {
-        Log.Info("RabbitMQ Client is trying to connect");
+        Logger.Information("RabbitMQ Client is trying to connect");
 
         lock (sync_root)
         {
@@ -82,7 +80,8 @@ public class RabbitMQPersistentConnection : IRabbitMQPersistentConnection
                 .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                     (ex, time) =>
                     {
-                        Log.Warn($"RabbitMQ Client could not connect after {time.TotalSeconds:n1}s ({ex.Message})");
+                        Logger.Warning(
+                            $"RabbitMQ Client could not connect after {time.TotalSeconds:n1}s ({ex.Message})");
                     }
                 );
 
@@ -98,13 +97,13 @@ public class RabbitMQPersistentConnection : IRabbitMQPersistentConnection
                 _connection.CallbackException += OnCallbackException;
                 _connection.ConnectionBlocked += OnConnectionBlocked;
 
-                Log.Info(
+                Logger.Information(
                     $"RabbitMQ Client acquired a persistent connection to '{_connection.Endpoint.HostName}' and is subscribed to failure events");
 
                 return true;
             }
 
-            Log.Fatal("FATAL ERROR: RabbitMQ connections could not be created and opened");
+            Logger.Fatal("FATAL ERROR: RabbitMQ connections could not be created and opened");
             return false;
         }
     }
@@ -118,7 +117,7 @@ public class RabbitMQPersistentConnection : IRabbitMQPersistentConnection
     {
         if (_disposed) return;
 
-        Log.Warn("A RabbitMQ connection is shutdown. Trying to re-connect...");
+        Logger.Warning("A RabbitMQ connection is shutdown. Trying to re-connect...");
         TryConnect();
     }
 
@@ -131,7 +130,7 @@ public class RabbitMQPersistentConnection : IRabbitMQPersistentConnection
     {
         if (_disposed) return;
 
-        Log.Warn("A RabbitMQ connection throw exception. Trying to re-connect...");
+        Logger.Warning("A RabbitMQ connection throw exception. Trying to re-connect...");
         TryConnect();
     }
 
@@ -144,7 +143,7 @@ public class RabbitMQPersistentConnection : IRabbitMQPersistentConnection
     {
         if (_disposed) return;
 
-        Log.Warn("A RabbitMQ connection is on shutdown. Trying to re-connect...");
+        Logger.Warning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
         TryConnect();
     }
 }

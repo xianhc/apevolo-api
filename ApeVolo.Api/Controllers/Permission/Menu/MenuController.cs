@@ -23,7 +23,7 @@ namespace ApeVolo.Api.Controllers.Permission.Menu;
 /// <summary>
 /// 菜单管理
 /// </summary>
-[Area("Menu")]
+[Area("Permission")]
 [Route("/api/menu")]
 public class MenusController : BaseApiController
 {

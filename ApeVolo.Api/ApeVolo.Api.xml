@@ -1267,11 +1267,6 @@
             IP限流策略中间件
             </summary>
         </member>
-        <member name="T:ApeVolo.Api.Middleware.Log4NetExtensions">
-            <summary>
-            log4net扩展
-            </summary>
-        </member>
         <member name="T:ApeVolo.Api.Middleware.MiniProfilerMiddleware">
             <summary>
             性能监控中间件

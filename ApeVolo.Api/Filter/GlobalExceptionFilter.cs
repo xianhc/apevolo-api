@@ -13,14 +13,15 @@ using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Monitor.Logs;
 using ApeVolo.IBusiness.Interface.Monitor.Exception;
 using ApeVolo.IBusiness.Interface.System.Setting;
-using log4net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 using Shyjus.BrowserDetection;
 using StackExchange.Profiling;
+using static ApeVolo.Api.Filter.ExceptionLogFormat;
 using LogLevel = ApeVolo.Common.Global.LogLevel;
 
 namespace ApeVolo.Api.Filter;
@@ -31,19 +32,16 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
     private readonly ICurrentUser _currentUser;
     private readonly ISettingService _settingService;
     private readonly IBrowserDetector _browserDetector;
+    private readonly ILogger<GlobalExceptionFilter> _logger;
 
-    private static readonly ILog Log =
-        LogManager.GetLogger(typeof(GlobalExceptionFilter));
-
-
-    public GlobalExceptionFilter(ICurrentUser currentUser,
-        IExceptionLogService exceptionLogService,
-        ISettingService settingService, IBrowserDetector browserDetector)
+    public GlobalExceptionFilter(ICurrentUser currentUser, IExceptionLogService exceptionLogService,
+        ISettingService settingService, IBrowserDetector browserDetector, ILogger<GlobalExceptionFilter> logger)
     {
         _currentUser = currentUser;
         _exceptionLogService = exceptionLogService;
         _settingService = settingService;
         _browserDetector = browserDetector;
+        _logger = logger;
     }
 
     public async Task OnExceptionAsync(ExceptionContext context)
@@ -82,9 +80,9 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         }
 
         //记录日志
-        Log.Error(ExceptionLogFormat.WriteLog(context.HttpContext, context.Exception, _currentUser?.Name,
+        _logger.LogError(WriteLog(context.HttpContext, context.Exception, _currentUser?.Name,
             _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
-            _browserDetector.Browser?.Version));
+            _browserDetector.Browser?.Version), context.Exception);
         if ((await _settingService.FindSettingByName("IsExceptionLogSaveDB")).Value.ToBool() &&
             exceptionType != typeof(DemoRequestException))
         {
@@ -99,7 +97,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             }
             catch (Exception ex)
             {
-                Log.Error(ExceptionLogFormat.WriteLog(context.HttpContext, ex, _currentUser?.Name,
+                _logger.LogCritical(WriteLog(context.HttpContext, ex, _currentUser?.Name,
                     _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                     _browserDetector.Browser?.Version));
                 ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
@@ -135,7 +133,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 Controller = routeValues["controller"],
                 Action = routeValues["action"],
                 Method = httpContext.Request.Method,
-                Description = ExceptionLogFormat.GetResourcesDescription(description, routeValues["area"]),
+                Description = GetResourcesDescription(description, routeValues["area"]),
                 RequestUrl = httpContext.Request.GetDisplayUrl(),
                 RequestParameters = arguments.ToJson(),
                 ExceptionMessage = context.Exception.Message,

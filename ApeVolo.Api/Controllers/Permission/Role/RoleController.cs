@@ -22,7 +22,7 @@ namespace ApeVolo.Api.Controllers.Permission.Role;
 /// <summary>
 /// 角色管理
 /// </summary>
-[Area("Role")]
+[Area("Permission")]
 [Route("/api/role")]
 public class RoleController : BaseApiController
 {

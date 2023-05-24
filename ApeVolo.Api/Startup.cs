@@ -24,6 +24,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace ApeVolo.Api;
 
@@ -101,10 +102,9 @@ public class Startup
         if (locOptions != null) app.UseRequestLocalization(locOptions.Value);
         //获取远程真实ip,如果不是nginx代理部署可以不要
         app.UseMiddleware<RealIpMiddleware>();
+        app.UseSerilogRequestLogging();
         //IP限流
         app.UseIpLimitMiddleware();
-        //日志
-        loggerFactory.AddLog4Net();
         if (WebHostEnvironment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

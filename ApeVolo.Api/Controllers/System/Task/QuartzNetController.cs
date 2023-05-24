@@ -23,7 +23,7 @@ namespace ApeVolo.Api.Controllers.System.Task;
 /// <summary>
 /// 作业调度管理
 /// </summary>
-[Area("QuartzNet")]
+[Area("System")]
 [Route("/api/tasks")]
 public class QuartzNetController : BaseApiController
 {

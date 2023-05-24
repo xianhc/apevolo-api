@@ -20,9 +20,9 @@ public class RealIpMiddleware
     public Task Invoke(HttpContext context)
     {
         var headers = context.Request.Headers;
-        if (headers.ContainsKey("X-Forwarded-For"))
+        if (headers.TryGetValue("X-Forwarded-For", out var header))
         {
-            context.Connection.RemoteIpAddress = IPAddress.Parse(headers["X-Forwarded-For"].ToString()
+            context.Connection.RemoteIpAddress = IPAddress.Parse(header.ToString()
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)[0]);
         }
 

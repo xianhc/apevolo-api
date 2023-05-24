@@ -15,7 +15,7 @@ namespace ApeVolo.Api.Controllers.Queued.Email;
 /// <summary>
 /// 邮箱账户
 /// </summary>
-[Area("QueuedEmail")]
+[Area("Queued")]
 [Route("/api/queued/email")]
 public class QueuedEmailController : BaseApiController
 {

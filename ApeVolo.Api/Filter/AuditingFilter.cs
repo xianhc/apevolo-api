@@ -11,11 +11,11 @@ using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Monitor.Logs;
 using ApeVolo.IBusiness.Interface.Monitor.Auditing;
 using ApeVolo.IBusiness.Interface.System.Setting;
-using log4net;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 using Shyjus.BrowserDetection;
 
 namespace ApeVolo.Api.Filter;
@@ -29,17 +29,16 @@ public class AuditingFilter : IAsyncActionFilter
     private readonly ICurrentUser _currentUser;
     private readonly ISettingService _settingService;
     private readonly IBrowserDetector _browserDetector;
-
-    private static readonly ILog Log =
-        LogManager.GetLogger(typeof(GlobalExceptionFilter));
+    private readonly ILogger<AuditingFilter> _logger;
 
     public AuditingFilter(IAuditLogService auditInfoService, ICurrentUser currentUser,
-        ISettingService settingService, IBrowserDetector browserDetector)
+        ISettingService settingService, IBrowserDetector browserDetector, ILogger<AuditingFilter> logger)
     {
         _auditInfoService = auditInfoService;
         _currentUser = currentUser;
         _settingService = settingService;
         _browserDetector = browserDetector;
+        _logger = logger;
     }
 
     public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -100,7 +99,7 @@ public class AuditingFilter : IAsyncActionFilter
         }
         catch (Exception ex)
         {
-            Log.Error(ExceptionLogFormat.WriteLog(context.HttpContext, ex, _currentUser?.Name,
+            _logger.LogCritical(ExceptionLogFormat.WriteLog(context.HttpContext, ex, _currentUser?.Name,
                 _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                 _browserDetector.Browser?.Version));
             ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);

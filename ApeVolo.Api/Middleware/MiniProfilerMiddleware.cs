@@ -1,8 +1,10 @@
 ﻿using System;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
-using log4net;
+using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Serilog;
 using Microsoft.AspNetCore.Builder;
+using Serilog;
 
 namespace ApeVolo.Api.Middleware;
 
@@ -11,7 +13,7 @@ namespace ApeVolo.Api.Middleware;
 /// </summary>
 public static class MiniProfilerMiddleware
 {
-    private static readonly ILog Log = LogManager.GetLogger(typeof(MiniProfilerMiddleware));
+    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(MiniProfilerMiddleware));
 
     public static void UseMiniProfilerMiddleware(this IApplicationBuilder app)
     {
@@ -28,7 +30,7 @@ public static class MiniProfilerMiddleware
         }
         catch (Exception e)
         {
-            Log.Error($"MiniProfilerMiddleware启动失败.\n{e.Message}");
+            Logger.Error($"MiniProfilerMiddleware启动失败.\n{e.Message}");
             throw;
         }
     }

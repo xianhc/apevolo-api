@@ -15,7 +15,7 @@ namespace ApeVolo.Api.Controllers.Monitor.Exception;
 /// <summary>
 /// 系统异常日志管理
 /// </summary>
-[Area("Exception")]
+[Area("Monitor")]
 [Route("/api/exception")]
 public class ExceptionLogController : BaseApiController
 {

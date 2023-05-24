@@ -68,7 +68,7 @@ public class ExceptionLog : EntityRoot<long>, ILocalizedTable
     /// <summary>
     /// 异常堆栈信息
     /// </summary>
-    [SugarColumn(ColumnName = "exception_stack", Length = 2048, IsNullable = true, ColumnDescription = "异常堆栈信息")]
+    [SugarColumn(ColumnName = "exception_stack", Length = 4096, IsNullable = true, ColumnDescription = "异常堆栈信息")]
     public string ExceptionStack { get; set; }
 
     /// <summary>

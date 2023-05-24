@@ -14,7 +14,7 @@ namespace ApeVolo.Api.Controllers.System.Dictionary;
 /// <summary>
 /// 字典详情管理
 /// </summary>
-[Area("DictDetail")]
+[Area("System")]
 [Route("/api/dictDetail")]
 public class DictDetailController : BaseApiController
 {

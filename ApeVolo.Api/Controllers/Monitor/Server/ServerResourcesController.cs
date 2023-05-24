@@ -11,7 +11,7 @@ namespace ApeVolo.Api.Controllers.Monitor.Server;
 /// <summary>
 /// 服务器监控
 /// </summary>
-[Area("ServerResources")]
+[Area("Monitor")]
 [Route("/api/")]
 public class ServerResourcesController : BaseApiController
 {

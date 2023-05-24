@@ -17,7 +17,6 @@
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IP2Region" Version="1.2.0" />
-    <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="MailKit" Version="3.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
@@ -28,6 +27,9 @@
     <PackageReference Include="NodaTime" Version="3.1.1" />
     <PackageReference Include="Quartz" Version="3.4.0" />
     <PackageReference Include="runtime.osx.10.10-x64.CoreCompat.System.Drawing" Version="6.0.5.128" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
+    <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="9.0.0" />
     <PackageReference Include="Shyjus.BrowserDetector" Version="2.0.0" />
     <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta19" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />

@@ -2,11 +2,11 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Entity.System.Task;
 using ApeVolo.IBusiness.Interface.System.Task;
 using ApeVolo.QuartzNetService.service;
+using Microsoft.Extensions.Logging;
 using Quartz;
 
 namespace ApeVolo.QuartzNetService;
@@ -21,6 +21,7 @@ public class JobBase
     public IQuartzNetService QuartzNetService;
     public IQuartzNetLogService QuartzNetLogService;
     public ISchedulerCenterService SchedulerCenterService;
+    public ILogger<JobBase> Logger;
 
     #endregion
 
@@ -112,8 +113,7 @@ public class JobBase
             }
         }
 
-        LogHelper.WriteLog(jobHistory,
-            new[] { "QuartzInfo", quartzNet?.TaskGroup + "_" + quartzNet?.TaskName });
+        Logger.LogInformation(quartzNet?.TaskGroup + "_" + quartzNet?.TaskName);
     }
 
     #endregion

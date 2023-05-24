@@ -4,12 +4,14 @@ using System.Reflection;
 using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Serilog;
 using ApeVolo.Entity.System.Task;
 using ApeVolo.IBusiness.Dto.System.Task;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Impl.Triggers;
 using Quartz.Spi;
+using Serilog;
 
 namespace ApeVolo.QuartzNetService.service;
 
@@ -18,6 +20,7 @@ namespace ApeVolo.QuartzNetService.service;
 /// </summary>
 public class SchedulerCenterService : ISchedulerCenterService
 {
+    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(SchedulerCenterService));
     private Task<IScheduler> _scheduler;
     private readonly IJobFactory _iocjobFactory;
 
@@ -61,7 +64,7 @@ public class SchedulerCenterService : ISchedulerCenterService
         }
         catch (Exception ex)
         {
-            LogHelper.WriteError(ex.Message + "\n" + ex.StackTrace, new[] { "QuartzException" });
+            Logger.Error(ex.Message + "\n" + ex.StackTrace);
             isTrue = false;
         }
 
@@ -88,7 +91,7 @@ public class SchedulerCenterService : ISchedulerCenterService
         }
         catch (Exception ex)
         {
-            LogHelper.WriteError(ex.Message + "\n" + ex.StackTrace, new[] { "QuartzException" });
+            Logger.Error(ex.Message + "\n" + ex.StackTrace);
             isTrue = false;
         }
 
@@ -167,7 +170,7 @@ public class SchedulerCenterService : ISchedulerCenterService
             }
             catch (Exception ex)
             {
-                LogHelper.WriteError(ex.Message + "\n" + ex.StackTrace, new[] { "QuartzException" });
+                Logger.Error(ex.Message + "\n" + ex.StackTrace);
                 isTrue = false;
             }
         }
@@ -207,7 +210,7 @@ public class SchedulerCenterService : ISchedulerCenterService
         }
         catch (Exception ex)
         {
-            LogHelper.WriteError(ex.Message + "\n" + ex.StackTrace, new[] { "QuartzException" });
+            Logger.Error(ex.Message + "\n" + ex.StackTrace);
             isTrue = false;
         }
 
@@ -233,7 +236,7 @@ public class SchedulerCenterService : ISchedulerCenterService
         }
         catch (Exception ex)
         {
-            LogHelper.WriteError(ex.Message + "\n" + ex.StackTrace, new[] { "QuartzException" });
+            Logger.Error(ex.Message + "\n" + ex.StackTrace);
             isTrue = false;
         }
 
@@ -259,7 +262,7 @@ public class SchedulerCenterService : ISchedulerCenterService
         }
         catch (Exception ex)
         {
-            LogHelper.WriteError(ex.Message + "\n" + ex.StackTrace, new[] { "QuartzException" });
+            Logger.Error(ex.Message + "\n" + ex.StackTrace);
             isTrue = false;
         }
 

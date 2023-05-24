@@ -7,7 +7,7 @@ using ApeVolo.IBusiness.Interface.Message.Email;
 using ApeVolo.IBusiness.Interface.Message.Email.Account;
 using ApeVolo.IBusiness.Interface.Queued.Email;
 using ApeVolo.IBusiness.QueryModel;
-using log4net;
+using Microsoft.Extensions.Logging;
 
 namespace ApeVolo.Business.Message.Email;
 
@@ -18,22 +18,22 @@ public class EmailScheduleTask : IEmailScheduleTask, IDependencyService
 {
     #region Fields
 
-    private readonly ILog _log = LogManager.GetLogger(typeof(EmailScheduleTask));
     private readonly IEmailAccountService _emailAccountService;
     private readonly IEmailSender _emailSender;
     private readonly IQueuedEmailService _queuedEmailService;
+    private readonly ILogger<EmailScheduleTask> _logger;
 
     #endregion
 
     #region Ctor
 
-    public EmailScheduleTask(IEmailAccountService emailAccountService,
-        IEmailSender emailSender,
-        IQueuedEmailService queuedEmailService)
+    public EmailScheduleTask(IEmailAccountService emailAccountService, IEmailSender emailSender,
+        IQueuedEmailService queuedEmailService, ILogger<EmailScheduleTask> logger)
     {
         _emailAccountService = emailAccountService;
         _emailSender = emailSender;
         _queuedEmailService = queuedEmailService;
+        _logger = logger;
     }
 
     #endregion
@@ -89,7 +89,7 @@ public class EmailScheduleTask : IEmailScheduleTask, IDependencyService
             }
             catch (Exception exc)
             {
-                _log.Error($"Error sending e-mail. {exc.Message}");
+                _logger.LogError($"Error sending e-mail. {exc.Message}");
             }
             finally
             {

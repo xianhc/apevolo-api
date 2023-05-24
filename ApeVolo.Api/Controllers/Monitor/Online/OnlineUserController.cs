@@ -18,7 +18,7 @@ namespace ApeVolo.Api.Controllers.Monitor.Online;
 /// <summary>
 /// 在线用户
 /// </summary>
-[Area("OnlineUser")]
+[Area("Monitor")]
 [Route("/api/online")]
 public class OnlineUserController : BaseApiController
 {

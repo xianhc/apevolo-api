@@ -3,7 +3,7 @@ using ApeVolo.Api.MQ.Rabbit.Events;
 using ApeVolo.Common.Helper;
 using ApeVolo.EventBus.Abstractions;
 using ApeVolo.IBusiness.Interface.Permission.User;
-using log4net;
+using Microsoft.Extensions.Logging;
 
 namespace ApeVolo.Api.MQ.Rabbit.EventHandling
 {
@@ -12,12 +12,14 @@ namespace ApeVolo.Api.MQ.Rabbit.EventHandling
     /// </summary>
     public class UserQueryIntegrationEventHandler : IIntegrationEventHandler<UserQueryIntegrationEvent>
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(UserQueryIntegrationEventHandler));
+        private readonly ILogger<UserQueryIntegrationEventHandler> _logger;
         private readonly IUserService _userService;
 
-        public UserQueryIntegrationEventHandler(IUserService userService)
+        public UserQueryIntegrationEventHandler(IUserService userService,
+            ILogger<UserQueryIntegrationEventHandler> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -26,7 +28,7 @@ namespace ApeVolo.Api.MQ.Rabbit.EventHandling
         /// <param name="event"></param>
         public async Task Handle(UserQueryIntegrationEvent @event)
         {
-            Log.Info($"----- Handling integration event: {@event.Id} at {@event}");
+            _logger.LogInformation($"----- Handling integration event: {@event.Id} at {@event}");
             ConsoleHelper.WriteLine($"----- Handling integration event: {@event.Id} at ApeVolo - ({@event})");
             await _userService.QueryByIdAsync(@event.UserId);
         }

@@ -19,7 +19,7 @@ namespace ApeVolo.Api.Controllers.System.AppSecret;
 /// <summary>
 /// 全局设置管理
 /// </summary>
-[Area("AppSecret")]
+[Area("System")]
 [Route("/api/appSecret")]
 public class AppSecretController : BaseApiController
 {

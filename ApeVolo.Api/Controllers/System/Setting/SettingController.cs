@@ -19,7 +19,7 @@ namespace ApeVolo.Api.Controllers.System.Setting;
 /// <summary>
 /// 全局设置管理
 /// </summary>
-[Area("Setting")]
+[Area("System")]
 [Route("/api/setting")]
 public class SettingController : BaseApiController
 {

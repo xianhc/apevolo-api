@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
-using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
@@ -23,7 +22,7 @@ namespace ApeVolo.Api.Controllers.Permission.Department;
 /// <summary>
 /// 部门管理
 /// </summary>
-[Area("Department")]
+[Area("Permission")]
 [Route("/api/dept")]
 public class DeptController : BaseApiController
 {

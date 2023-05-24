@@ -2,9 +2,11 @@
 using System.IO;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
+using ApeVolo.Common.Helper;
+using ApeVolo.Common.Helper.Serilog;
 using JetBrains.Annotations;
-using log4net;
 using Microsoft.AspNetCore.Builder;
+using Serilog;
 
 namespace ApeVolo.Api.Middleware;
 
@@ -13,7 +15,7 @@ namespace ApeVolo.Api.Middleware;
 /// </summary>
 public static class SwaggerMiddleware
 {
-    private static readonly ILog Log = LogManager.GetLogger(typeof(SwaggerMiddleware));
+    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(SwaggerMiddleware));
 
     public static void UseSwaggerMiddleware(this IApplicationBuilder app, [CanBeNull] Func<Stream> streamHtml)
     {
@@ -31,7 +33,7 @@ public static class SwaggerMiddleware
                 if (stream == null)
                 {
                     const string msg = "index.html属性错误";
-                    Log.Error(msg);
+                    Logger.Error(msg);
                     throw new Exception(msg);
                 }
 

@@ -30,7 +30,7 @@ namespace ApeVolo.Api.Controllers.Permission.Auth;
 /// <summary>
 /// 授权管理
 /// </summary>
-[Area("Security")]
+[Area("Permission")]
 [Route("[controller]/[action]")]
 public class AuthorizationController : BaseApiController
 {

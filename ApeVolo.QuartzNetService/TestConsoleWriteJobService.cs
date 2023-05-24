@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using ApeVolo.IBusiness.Interface.System.Task;
 using ApeVolo.QuartzNetService.service;
+using Microsoft.Extensions.Logging;
 using Quartz;
 
 namespace ApeVolo.QuartzNetService;
@@ -12,11 +13,13 @@ namespace ApeVolo.QuartzNetService;
 public class TestConsoleWriteJobService : JobBase, IJob
 {
     public TestConsoleWriteJobService(ISchedulerCenterService schedulerCenterService,
-        IQuartzNetService quartzNetService, IQuartzNetLogService quartzNetLogService)
+        IQuartzNetService quartzNetService, IQuartzNetLogService quartzNetLogService,
+        ILogger<TestConsoleWriteJobService> logger)
     {
         QuartzNetService = quartzNetService;
         QuartzNetLogService = quartzNetLogService;
         SchedulerCenterService = schedulerCenterService;
+        Logger = logger;
     }
 
     public async Task Execute(IJobExecutionContext context)
