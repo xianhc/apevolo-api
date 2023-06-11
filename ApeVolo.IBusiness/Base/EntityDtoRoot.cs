@@ -25,7 +25,7 @@ namespace ApeVolo.IBusiness.Base
         /// 创建时间
         /// </summary>
         [Display(Name = "Sys.CreateTime")]
-        public DateTime? CreateTime { get; set; }
+        public DateTime CreateTime { get; set; }
 
         /// <summary>
         /// 更新者名称

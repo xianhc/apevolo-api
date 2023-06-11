@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.Permission.Role;
+using ApeVolo.IBusiness.ExportModel;
 using ApeVolo.IBusiness.QueryModel;
 
 namespace ApeVolo.IBusiness.Interface.Permission.Role;
@@ -19,7 +19,7 @@ public interface IRoleService : IBaseServices<Entity.Permission.Role.Role>
     Task<bool> UpdateAsync(CreateUpdateRoleDto createUpdateRoleDto);
     Task<bool> DeleteAsync(HashSet<long> ids);
     Task<List<RoleDto>> QueryAsync(RoleQueryCriteria roleQueryCriteria, Pagination pagination);
-    Task<List<ExportRowModel>> DownloadAsync(RoleQueryCriteria roleQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(RoleQueryCriteria roleQueryCriteria);
 
     #endregion
 

@@ -1,18 +1,14 @@
 ﻿using System.ComponentModel;
-using System.IO;
 using System.Threading.Tasks;
-using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.Message.Email.Account;
 using ApeVolo.IBusiness.Interface.Message.Email.Account;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IBusiness.RequestModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace ApeVolo.Api.Controllers.Message.Email.Account;
 
@@ -38,7 +34,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("{0}Add")]
+    [Description("Add")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateEmailAccountDto createUpdateEmailAccountDto)
     {
@@ -59,7 +55,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("{0}Edit")]
+    [Description("Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateEmailAccountDto createUpdateEmailAccountDto)
     {
@@ -80,7 +76,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("{0}Delete")]
+    [Description("Delete")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -101,7 +97,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("{0}List")]
+    [Description("List")]
     public async Task<ActionResult<object>> FindList(EmailAccountQueryCriteria emailAccountQueryCriteria,
         Pagination pagination)
     {
@@ -121,18 +117,12 @@ public class EmailAccountController : BaseApiController
     /// <param name="emailAccountQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("{0}Export")]
+    [Description("Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(EmailAccountQueryCriteria emailAccountQueryCriteria)
     {
-        var exportRowModels = await _emailAccountService.DownloadAsync(emailAccountQueryCriteria);
-
-        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("EmailAccount"));
-
-        FileInfo fileInfo = new FileInfo(filepath);
-        var ext = fileInfo.Extension;
-        new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
-        return File(await global::System.IO.File.ReadAllBytesAsync(filepath), contently ?? "application/octet-stream",
-            fileInfo.Name);
+        var emailAccountExports = await _emailAccountService.DownloadAsync(emailAccountQueryCriteria);
+        var data = new ExcelHelper().GenerateExcel(emailAccountExports, out var mimeType);
+        return File(data, mimeType);
     }
 }

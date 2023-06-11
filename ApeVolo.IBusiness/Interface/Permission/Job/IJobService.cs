@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.Permission.Job;
+using ApeVolo.IBusiness.ExportModel;
 using ApeVolo.IBusiness.QueryModel;
 
 namespace ApeVolo.IBusiness.Interface.Permission.Job;
@@ -19,7 +19,7 @@ public interface IJobService : IBaseServices<Entity.Permission.Job>
     Task<bool> UpdateAsync(CreateUpdateJobDto createUpdateJobDto);
     Task<bool> DeleteAsync(HashSet<long> ids);
     Task<List<JobDto>> QueryAsync(JobQueryCriteria jobQueryCriteria, Pagination pagination);
-    Task<List<ExportRowModel>> DownloadAsync(JobQueryCriteria jobQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(JobQueryCriteria jobQueryCriteria);
 
     #endregion
 

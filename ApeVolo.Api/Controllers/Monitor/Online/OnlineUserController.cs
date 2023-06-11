@@ -1,17 +1,13 @@
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Interface.Monitor.Online;
 using ApeVolo.IBusiness.RequestModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace ApeVolo.Api.Controllers.Monitor.Online;
 
@@ -38,7 +34,7 @@ public class OnlineUserController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("{0}List")]
+    [Description("List")]
     public async Task<ActionResult<object>> Query(Pagination pagination)
     {
         var onlineUserList = await _onlineUserService.QueryAsync(pagination);
@@ -77,20 +73,14 @@ public class OnlineUserController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Description("{0}Export")]
+    [Description("Export")]
     [Route("download")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Download()
     {
-        var exportRowModels = await _onlineUserService.DownloadAsync();
-
-        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("OnlineUser"));
-
-        FileInfo fileInfo = new FileInfo(filepath);
-        var ext = fileInfo.Extension;
-        new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
-        return File(await global::System.IO.File.ReadAllBytesAsync(filepath), contently ?? "application/octet-stream",
-            fileInfo.Name);
+        var appSecretExports = await _onlineUserService.DownloadAsync();
+        var data = new ExcelHelper().GenerateExcel(appSecretExports, out var mimeType);
+        return File(data, mimeType);
     }
 
     #endregion

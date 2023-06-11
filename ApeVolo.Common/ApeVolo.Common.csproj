@@ -11,10 +11,10 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="3.0.0" />
-    <PackageReference Include="Aspose.Cells" Version="22.8.0" />
     <PackageReference Include="Autofac" Version="6.4.0" />
     <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
     <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IP2Region" Version="1.2.0" />
     <PackageReference Include="MailKit" Version="3.3.0" />

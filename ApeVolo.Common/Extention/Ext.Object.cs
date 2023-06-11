@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using ApeVolo.Common.ClassLibrary;
+using ApeVolo.Common.Global;
 using Newtonsoft.Json;
 
 namespace ApeVolo.Common.Extention;
@@ -371,7 +372,20 @@ public static partial class ExtObject
     /// <returns></returns>
     public static object GetPropertyValue(this object obj, string propertyName)
     {
-        return obj.GetType().GetProperty(propertyName, BindingFlags)?.GetValue(obj);
+        var pi = obj.GetType().GetProperty(propertyName, BindingFlags);
+        if (pi == null) return null;
+        var type = pi.PropertyType;
+        if (type == typeof(DateTime))
+        {
+            return Convert.ToDateTime(pi.GetValue(obj)).ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+        if (type.IsEnum)
+        {
+            return (int)pi.GetValue(obj)!;
+        }
+
+        return pi.GetValue(obj);
     }
 
     /// <summary>

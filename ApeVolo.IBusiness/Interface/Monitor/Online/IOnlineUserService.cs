@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.WebApp;
 
@@ -14,7 +13,7 @@ public interface IOnlineUserService
 
     Task DropOutAsync(HashSet<string> ids);
 
-    Task<List<ExportRowModel>> DownloadAsync();
+    Task<List<ExportBase>> DownloadAsync();
 
     #endregion
 }

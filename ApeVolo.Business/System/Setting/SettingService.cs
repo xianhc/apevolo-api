@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
@@ -8,11 +9,11 @@ using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Dto.System.Setting;
+using ApeVolo.IBusiness.ExportModel.System;
 using ApeVolo.IBusiness.Interface.System.Setting;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.System.Setting;
@@ -112,37 +113,19 @@ public class SettingService : BaseServices<Entity.System.Setting>, ISettingServi
         return Mapper.Map<List<SettingDto>>(await BaseDal.QueryPageListAsync(whereLambda, pagination));
     }
 
-    public async Task<List<ExportRowModel>> DownloadAsync(SettingQueryCriteria settingQueryCriteria)
+    public async Task<List<ExportBase>> DownloadAsync(SettingQueryCriteria settingQueryCriteria)
     {
-        var settingDtos = await QueryAsync(settingQueryCriteria, new Pagination { PageSize = 9999 });
-
-        List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
-        List<ExportColumnModel> exportColumnModels;
-        int point;
-        settingDtos.ForEach(setting =>
+        var settings = await QueryAsync(settingQueryCriteria, new Pagination { PageSize = 9999 });
+        List<ExportBase> settingExports = new List<ExportBase>();
+        settingExports.AddRange(settings.Select(x => new SettingExport()
         {
-            point = 0;
-            exportColumnModels = new List<ExportColumnModel>
-            {
-                new() { Key = "ID", Value = setting.Id.ToString(), Point = point++ },
-                new() { Key = "名称", Value = setting.Name, Point = point++ },
-                new() { Key = "值", Value = setting.Value.ToString(), Point = point++ },
-                new() { Key = "状态", Value = setting.Enabled ? "启用" : "停用", Point = point++ },
-                new() { Key = "描述", Value = setting.Description, Point = point++ },
-                new()
-                {
-                    Key = "创建时间", Value = setting.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
-                },
-                new()
-                {
-                    Key = "更新时间", Value = setting.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
-                },
-                new() { Key = "创建人", Value = setting.CreateBy, Point = point++ },
-                new() { Key = "更新人", Value = setting.UpdateBy, Point = point++ },
-            };
-            exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
-        });
-        return exportRowModels;
+            Name = x.Name,
+            Value = x.Value,
+            EnabledState = x.Enabled ? EnabledState.Enabled : EnabledState.Disabled,
+            Description = x.Description,
+            CreateTime = x.CreateTime
+        }));
+        return settingExports;
     }
 
     [RedisCaching(Expiration = 20, KeyPrefix = RedisKey.LoadSettingByName)]

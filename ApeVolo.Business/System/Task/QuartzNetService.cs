@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.System.Task;
 using ApeVolo.IBusiness.Dto.System.Task;
+using ApeVolo.IBusiness.ExportModel.System;
 using ApeVolo.IBusiness.Interface.System.Task;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.System.Task;
@@ -95,59 +97,34 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
         return Mapper.Map<List<QuartzNetDto>>(await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 
-    public async Task<List<ExportRowModel>> DownloadAsync(QuartzNetQueryCriteria quartzNetQueryCriteria)
+    public async Task<List<ExportBase>> DownloadAsync(QuartzNetQueryCriteria quartzNetQueryCriteria)
     {
         var quartzNets = await QueryAsync(quartzNetQueryCriteria, new Pagination { PageSize = 9999 });
-        List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
-        List<ExportColumnModel> exportColumnModels;
-        int point;
-        quartzNets.ForEach(quartzNet =>
+        List<ExportBase> quartzExports = new List<ExportBase>();
+        quartzExports.AddRange(quartzNets.Select(x => new QuartzNetExport()
         {
-            point = 0;
-            exportColumnModels = new List<ExportColumnModel>();
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "ID", Value = quartzNet.Id.ToString(), Point = point++ });
-            exportColumnModels.Add(
-                new ExportColumnModel { Key = "作业名称", Value = quartzNet.TaskName, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "作业分组", Value = quartzNet.TaskGroup, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "Cron表达式", Value = quartzNet.Cron, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "程序集名称", Value = quartzNet.AssemblyName, Point = point++ });
-            exportColumnModels.Add(
-                new ExportColumnModel { Key = "执行类", Value = quartzNet.ClassName, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "作业描述", Value = quartzNet.Description, Point = point++ });
-            exportColumnModels.Add(
-                new ExportColumnModel { Key = "负责人", Value = quartzNet.Principal, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "告警邮箱", Value = quartzNet.AlertEmail, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "失败后是否继续", Value = quartzNet.PauseAfterFailure ? "是" : "否", Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "已执行次数", Value = quartzNet.RunTimes.ToString(), Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "开始时间", Value = quartzNet.StartTime?.ToString(), Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "结束时间", Value = quartzNet.EndTime?.ToString(), Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "触发器类型", Value = quartzNet.TriggerType == 1 ? "cron" : "simple", Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "间隔时间(秒)", Value = quartzNet.IntervalSecond.ToString(), Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "循环次数", Value = quartzNet.CycleRunTimes.ToString(), Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "是否启用", Value = quartzNet.IsEnable ? "是" : "否", Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "执行参数", Value = quartzNet.RunParams, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "创建人", Value = quartzNet.CreateBy, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "创建时间", Value = quartzNet.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++ });
-            exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
-        });
-        return exportRowModels;
+            TaskName = x.TaskName,
+            TaskGroup = x.TaskGroup,
+            Cron = x.Cron,
+            AssemblyName = x.AssemblyName,
+            ClassName = x.ClassName,
+            Description = x.Description,
+            Principal = x.Principal,
+            AlertEmail = x.AlertEmail,
+            PauseAfterFailure = x.PauseAfterFailure,
+            RunTimes = x.RunTimes,
+            StartTime = x.StartTime,
+            EndTime = x.EndTime,
+            TriggerType = x.TriggerType,
+            IntervalSecond = x.IntervalSecond,
+            CycleRunTimes = x.CycleRunTimes,
+            IsEnable = x.IsEnable ? BoolState.True : BoolState.False,
+            RunParams = x.RunParams,
+            TriggerStatus = x.TriggerStatus,
+            TriggerTypeStr = x.TriggerType == 1 ? "cron" : "simple",
+            CreateTime = x.CreateTime
+        }));
+        return quartzExports;
     }
 
     #endregion

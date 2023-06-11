@@ -39,7 +39,7 @@ public class RoleMenuController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("role/menu/edit")]
-    [Description("{0}Edit")]
+    [Description("Edit")]
     [ApeVoloAuthorize(new[] { "admin", "roles_edit" })]
     public async Task<ActionResult<object>> UpdateRolesMenus(CreateUpdateRoleDto createUpdateRoleDto)
     {

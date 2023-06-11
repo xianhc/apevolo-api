@@ -254,32 +254,32 @@
     <data name="OperationProhibited" xml:space="preserve">
     <value>Prohibit manipulation of other people's data</value>
   </data>
-    <data name="{0}Add" xml:space="preserve">
-    <value>{0} added</value>
+    <data name="Add" xml:space="preserve">
+    <value>added</value>
   </data>
-    <data name="{0}Edit" xml:space="preserve">
-    <value>{0} edit</value>
+    <data name="Edit" xml:space="preserve">
+    <value>edit</value>
   </data>
-    <data name="{0}Delete" xml:space="preserve">
-    <value>{0} delte</value>
+    <data name="Delete" xml:space="preserve">
+    <value>delte</value>
   </data>
-    <data name="{0}List" xml:space="preserve">
-    <value>{0} list</value>
+    <data name="List" xml:space="preserve">
+    <value>list</value>
   </data>
-    <data name="{0}Export" xml:space="preserve">
-    <value>{0} export</value>
+    <data name="Export" xml:space="preserve">
+    <value>export</value>
   </data>
-    <data name="{0}Execute" xml:space="preserve">
-    <value>{0} execute</value>
+    <data name="Execute" xml:space="preserve">
+    <value>execute</value>
   </data>
-    <data name="{0}Stop" xml:space="preserve">
-    <value>{0} stop</value>
+    <data name="Stop" xml:space="preserve">
+    <value>stop</value>
   </data>
-    <data name="{0}Info" xml:space="preserve">
-    <value>{0} info</value>
+    <data name="Info" xml:space="preserve">
+    <value>info</value>
   </data>
-    <data name="{0}ExecutionLog" xml:space="preserve">
-    <value>{0} execution log</value>
+    <data name="ExecutionLog" xml:space="preserve">
+    <value>execution log</value>
   </data>
     <data name="SiblingParentDepartment" xml:space="preserve">
     <value>Get sibling, parent department</value>
@@ -404,6 +404,18 @@
     <data name="Sys.DeletedTime" xml:space="preserve">
       <value>delete time</value>
     </data>
+    <data name="Sys.Enabled" xml:space="preserve">
+      <value>Enabled</value>
+    </data>
+    <data name="Sys.Disabled" xml:space="preserve">
+      <value>Disabled</value>
+    </data>
+    <data name="Sys.True" xml:space="preserve">
+      <value>true</value>
+    </data>
+    <data name="Sys.False" xml:space="preserve">
+      <value>false</value>
+    </data>
 
     <!-- 用户 -->
     <data name="User.Name" xml:space="preserve">
@@ -490,6 +502,9 @@
     <data name="Role.DataScope" xml:space="preserve">
       <value>DataScope</value>
     </data>
+    <data name="Role.DataDept" xml:space="preserve">
+      <value>data department</value>
+    </data>
     <data name="Role.Permission" xml:space="preserve">
       <value>Permission</value>
     </data>
@@ -561,11 +576,11 @@
     </data>
 
     <!-- 字典详情 -->
-    <data name="Dict.Detail.Name" xml:space="preserve">
-      <value>DictDetailName</value>
+    <data name="Dict.Detail.Lable" xml:space="preserve">
+      <value>dict lable</value>
     </data>
-    <data name="Dict.Detail.Description" xml:space="preserve">
-      <value>Description</value>
+    <data name="Dict.Detail.Value" xml:space="preserve">
+      <value>dict value</value>
     </data>
 
     <!-- 文件 -->
@@ -667,6 +682,22 @@
       <value>TriggerTypeStr</value>
     </data>
 
+
+    <!-- 任务日志 -->
+    <data name="TaskLog.TaskId" xml:space="preserve">
+      <value>task ID</value>
+    </data>
+    <data name="TaskLog.ExceptionDetail" xml:space="preserve">
+      <value>Exception Details</value>
+    </data>
+    <data name="TaskLog.ExecutionDuration" xml:space="preserve">
+      <value>Execution time-consuming</value>
+    </data>
+    <data name="TaskLog.IsSuccess" xml:space="preserve">
+      <value>whether succeed</value>
+    </data>
+
+
     <!-- 电子邮件账户 -->
     <data name="EmailAccount.Email" xml:space="preserve">
       <value>Email</value>
@@ -755,5 +786,32 @@
     </data>
     <data name="QueuedEmail.EmailAccountId" xml:space="preserve">
       <value>EmailAccountId</value>
+    </data>
+
+
+    <!-- 在线用户 -->
+    <data name="Online.LoginIp" xml:space="preserve">
+      <value>Login IP</value>
+    </data>
+    <data name="Online.IpAddress" xml:space="preserve">
+      <value>IP address</value>
+    </data>
+    <data name="Online.OperatingSystem" xml:space="preserve">
+      <value>operating system</value>
+    </data>
+    <data name="Online.DeviceType" xml:space="preserve">
+      <value>Equipment type</value>
+    </data>
+    <data name="Online.BrowserName" xml:space="preserve">
+      <value>浏览器名称</value>
+    </data>
+    <data name="Online.Version" xml:space="preserve">
+      <value>browser name</value>
+    </data>
+    <data name="Online.LoginTime" xml:space="preserve">
+      <value>Log in time</value>
+    </data>
+    <data name="Online.Onlinekey" xml:space="preserve">
+      <value>Online Key value</value>
     </data>
 </root>

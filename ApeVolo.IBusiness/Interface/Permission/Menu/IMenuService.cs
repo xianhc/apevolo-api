@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.Permission.Menu;
+using ApeVolo.IBusiness.ExportModel;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IBusiness.Vo;
 
@@ -17,7 +17,7 @@ public interface IMenuService : IBaseServices<Entity.Permission.Menu>
     Task<bool> UpdateAsync(CreateUpdateMenuDto createUpdateMenuDto);
     Task<bool> DeleteAsync(HashSet<long> ids);
     Task<List<MenuDto>> QueryAsync(MenuQueryCriteria menuQueryCriteria, Pagination pagination);
-    Task<List<ExportRowModel>> DownloadAsync(MenuQueryCriteria menuQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(MenuQueryCriteria menuQueryCriteria);
 
     #endregion
 

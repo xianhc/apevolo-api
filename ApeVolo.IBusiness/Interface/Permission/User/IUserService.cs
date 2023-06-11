@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.Permission.User;
+using ApeVolo.IBusiness.ExportModel;
 using ApeVolo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Http;
 
@@ -21,7 +21,7 @@ public interface IUserService : IBaseServices<Entity.Permission.User.User>
     Task<bool> DeleteAsync(HashSet<long> ids);
     Task<List<UserDto>> QueryAsync(UserQueryCriteria userQueryCriteria, Pagination pagination);
 
-    Task<List<ExportRowModel>> DownloadAsync(UserQueryCriteria userQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(UserQueryCriteria userQueryCriteria);
 
     #endregion
 

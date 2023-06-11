@@ -9,13 +9,13 @@ using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission.Role;
 using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Dto.Permission.Role;
+using ApeVolo.IBusiness.ExportModel.Permission;
 using ApeVolo.IBusiness.Interface.Permission.Department;
 using ApeVolo.IBusiness.Interface.Permission.Menu;
 using ApeVolo.IBusiness.Interface.Permission.Role;
@@ -188,36 +188,22 @@ public class RoleService : BaseServices<Entity.Permission.Role.Role>, IRoleServi
     /// </summary>
     /// <param name="roleQueryCriteria"></param>
     /// <returns></returns>
-    public async Task<List<ExportRowModel>> DownloadAsync(RoleQueryCriteria roleQueryCriteria)
+    public async Task<List<ExportBase>> DownloadAsync(RoleQueryCriteria roleQueryCriteria)
     {
         var roles = await QueryAsync(roleQueryCriteria, new Pagination { PageSize = 9999 });
-        List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
-        List<ExportColumnModel> exportColumnModels;
-        int point;
-        roles.ForEach(role =>
+        List<ExportBase> roleExports = new List<ExportBase>();
+        roleExports.AddRange(roles.Select(x => new RoleExport()
         {
-            point = 0;
-            exportColumnModels = new List<ExportColumnModel>
-            {
-                new() { Key = "角色名称", Value = role.Name, Point = point++ },
-                new() { Key = "等级", Value = role.Level.ToString(), Point = point++ },
-                new() { Key = "描述", Value = role.Description, Point = point++ },
-                new() { Key = "权限数据", Value = role.DataScope, Point = point++ },
-                new()
-                {
-                    Key = "权限部门",
-                    Value = string.Join(",", role.DepartmentList.Select(x => x.Name).ToArray()),
-                    Point = point++
-                },
-                new() { Key = "权限代码", Value = role.Permission, Point = point++ },
-                new()
-                {
-                    Key = "创建时间", Value = role.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
-                }
-            };
-            exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
-        });
-        return exportRowModels;
+            Id = x.Id,
+            Name = x.Name,
+            Level = x.Level,
+            Description = x.Description,
+            DataScope = x.DataScope,
+            DataDept = string.Join(",", x.DepartmentList.Select(d => d.Name).ToArray()),
+            Permission = x.Permission,
+            CreateTime = x.CreateTime
+        }));
+        return roleExports;
     }
 
     #endregion
@@ -231,14 +217,15 @@ public class RoleService : BaseServices<Entity.Permission.Role.Role>, IRoleServi
     /// <returns></returns>
     public async Task<List<RoleSmallDto>> QueryByUserIdAsync(long id)
     {
-        var roleSmallList = await BaseDal.QueryMuchAsync<Entity.Permission.Role.Role, UserRoles, Entity.Permission.Role.Role>(
-            (r, ur) => new object[]
-            {
-                JoinType.Left, r.Id == ur.RoleId
-            },
-            (r, ur) => r,
-            (r, ur) => ur.UserId == id
-        );
+        var roleSmallList =
+            await BaseDal.QueryMuchAsync<Entity.Permission.Role.Role, UserRoles, Entity.Permission.Role.Role>(
+                (r, ur) => new object[]
+                {
+                    JoinType.Left, r.Id == ur.RoleId
+                },
+                (r, ur) => r,
+                (r, ur) => ur.UserId == id
+            );
 
         return Mapper.Map<List<RoleSmallDto>>(roleSmallList);
     }

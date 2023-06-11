@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.System.FileRecord;
@@ -17,7 +16,7 @@ public interface IFileRecordService : IBaseServices<Entity.System.FileRecord>
     Task<bool> UpdateAsync(CreateUpdateFileRecordDto createUpdateFileRecordDto);
     Task<bool> DeleteAsync(HashSet<long> ids);
     Task<List<FileRecordDto>> QueryAsync(FileRecordQueryCriteria fileRecordQueryCriteria, Pagination pagination);
-    Task<List<ExportRowModel>> DownloadAsync(FileRecordQueryCriteria fileRecordQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(FileRecordQueryCriteria fileRecordQueryCriteria);
 
     #endregion
 }

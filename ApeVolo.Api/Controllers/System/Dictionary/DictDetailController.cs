@@ -41,7 +41,7 @@ public class DictDetailController : BaseApiController
     /// <param name="createUpdateDictDto"></param>
     /// <returns></returns>
     [HttpPost]
-    [Description("{0}Add")]
+    [Description("Add")]
     [ApeVoloAuthorize(new[] { "admin", "dict_add" })]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateDictDetailDto createUpdateDictDto)
@@ -57,7 +57,7 @@ public class DictDetailController : BaseApiController
     /// <param name="createUpdateDictDetailDto"></param>
     /// <returns></returns>
     [HttpPut]
-    [Description("{0}Edit")]
+    [Description("Edit")]
     [ApeVoloAuthorize(new[] { "admin", "dict_edit" })]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateDictDetailDto createUpdateDictDetailDto)
@@ -72,7 +72,7 @@ public class DictDetailController : BaseApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Description("{0}Delete")]
+    [Description("Delete")]
     [ApeVoloAuthorize(new[] { "admin", "dict_del" })]
     public async Task<ActionResult<object>> Delete(string id)
     {
@@ -92,7 +92,7 @@ public class DictDetailController : BaseApiController
     /// <param name="pagination"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("{0}List")]
+    [Description("List")]
     [ApeVoloAuthorize(new[] { "admin", "dict_list" })]
     public async Task<ActionResult<object>> Query(DictDetailQueryCriteria dictDetailQueryCriteria,
         Pagination pagination)

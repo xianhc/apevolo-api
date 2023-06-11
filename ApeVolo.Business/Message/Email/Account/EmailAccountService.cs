@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Dto.Message.Email.Account;
+using ApeVolo.IBusiness.ExportModel.Message.Email.Account;
 using ApeVolo.IBusiness.Interface.Message.Email.Account;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.Message.Email.Account;
@@ -124,43 +126,22 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
         return Mapper.Map<List<EmailAccountDto>>(await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 
-    public async Task<List<ExportRowModel>> DownloadAsync(EmailAccountQueryCriteria emailAccountQueryCriteria)
+    public async Task<List<ExportBase>> DownloadAsync(EmailAccountQueryCriteria emailAccountQueryCriteria)
     {
-        var emailAccountDtos =
-            await QueryAsync(emailAccountQueryCriteria, new Pagination { PageSize = 9999 });
-        List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
-        List<ExportColumnModel> exportColumnModels;
-        int point;
-        emailAccountDtos.ForEach(emailAccountDto =>
+        var emailAccounts = await QueryAsync(emailAccountQueryCriteria, new Pagination { PageSize = 9999 });
+        List<ExportBase> emailAccountExports = new List<ExportBase>();
+        emailAccountExports.AddRange(emailAccounts.Select(x => new EmailAccountExport()
         {
-            point = 0;
-            exportColumnModels = new List<ExportColumnModel>();
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "ID", Value = emailAccountDto.Id.ToString(), Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "邮箱地址", Value = emailAccountDto.Email, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "显示名称", Value = emailAccountDto.DisplayName, Point = point++ });
-            exportColumnModels.Add(
-                new ExportColumnModel { Key = "主机", Value = emailAccountDto.Host, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "端口", Value = emailAccountDto.Port.ToString(), Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "用户名", Value = emailAccountDto.Username, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "是否SSL", Value = emailAccountDto.EnableSsl ? "是" : "否", Point = point++ });
-            ;
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "发送系统票据", Value = emailAccountDto.UseDefaultCredentials ? "是" : "否", Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "创建人", Value = emailAccountDto.CreateBy, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-            {
-                Key = "创建时间", Value = emailAccountDto.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
-            });
-            exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
-        });
-        return exportRowModels;
+            Email = x.Email,
+            DisplayName = x.DisplayName,
+            Host = x.Host,
+            Port = x.Port,
+            Username = x.Username,
+            EnableSsl = x.EnableSsl ? BoolState.True : BoolState.False,
+            UseDefaultCredentials = x.UseDefaultCredentials ? BoolState.True : BoolState.False,
+            CreateTime = x.CreateTime
+        }));
+        return emailAccountExports;
     }
 
     #endregion

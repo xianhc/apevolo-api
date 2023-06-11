@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Entity.System.Dictionary;
 using ApeVolo.IBusiness.Base;
@@ -24,7 +23,7 @@ public interface IDictService : IBaseServices<Dict>
 
     Task<List<DictDto>> QueryAsync(DictQueryCriteria dictQueryCriteria, Pagination pagination);
 
-    Task<List<ExportRowModel>> DownloadAsync(DictQueryCriteria dictQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(DictQueryCriteria dictQueryCriteria);
 
     #endregion
 }

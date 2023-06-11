@@ -11,13 +11,13 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Dto.Permission.Job;
 using ApeVolo.IBusiness.Dto.Permission.User;
+using ApeVolo.IBusiness.ExportModel.Permission;
 using ApeVolo.IBusiness.Interface.Permission.Department;
 using ApeVolo.IBusiness.Interface.Permission.Job;
 using ApeVolo.IBusiness.Interface.Permission.Role;
@@ -261,7 +261,8 @@ public class UserService : BaseServices<Entity.Permission.User.User>, IUserServi
             }
         }
 
-        Expression<Func<Entity.Permission.User.User, Entity.Permission.Department>> navigationExpression = user => user.Dept;
+        Expression<Func<Entity.Permission.User.User, Entity.Permission.Department>> navigationExpression =
+            user => user.Dept;
         Expression<Func<Entity.Permission.User.User, List<UserJobs>>> navigationUserJobs = user => user.UserJobList;
         Expression<Func<Entity.Permission.User.User, List<UserRoles>>> navigationUserRoles = user => user.UserRoleList;
         var users = await BaseDal.QueryPageListAsync(whereExpression, pagination, null, navigationExpression,
@@ -282,44 +283,25 @@ public class UserService : BaseServices<Entity.Permission.User.User>, IUserServi
     }
 
 
-    public async Task<List<ExportRowModel>> DownloadAsync(UserQueryCriteria userQueryCriteria)
+    public async Task<List<ExportBase>> DownloadAsync(UserQueryCriteria userQueryCriteria)
     {
         var users = await QueryAsync(userQueryCriteria, new Pagination { PageSize = 9999 });
-        List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
-        foreach (var item in users)
+        List<ExportBase> userExports = new List<ExportBase>();
+        userExports.AddRange(users.Select(x => new UserExport()
         {
-            var point = 0;
-            var exportColumnModels = new List<ExportColumnModel>
-            {
-                new() { Key = "ID", Value = item.Id.ToString(), Point = point++ },
-                new() { Key = "用户名", Value = item.Username, Point = point++ },
-                new()
-                {
-                    Key = "角色",
-                    Value = string.Join(",", item.Roles.Select(x => x.Name).ToArray()),
-                    Point = point++
-                },
-                new() { Key = "昵称", Value = item.NickName, Point = point++ },
-                new() { Key = "电话", Value = item.Phone, Point = point++ },
-                new() { Key = "邮箱", Value = item.Email, Point = point++ },
-                new() { Key = "状态", Value = item.Enabled ? "激活" : "停用", Point = point++ },
-                new() { Key = "部门", Value = item.Dept.Name, Point = point++ },
-                new()
-                {
-                    Key = "岗位",
-                    Value = string.Join(",", item.Jobs.Select(x => x.Name).ToArray()),
-                    Point = point++
-                },
-                new() { Key = "性别", Value = item.Gender, Point = point++ },
-                new()
-                {
-                    Key = "创建时间", Value = item.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point
-                }
-            };
-            exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
-        }
-
-        return exportRowModels;
+            Id = x.Id,
+            Username = x.Username,
+            Role = string.Join(",", x.Roles.Select(r => r.Name).ToArray()),
+            NickName = x.NickName,
+            Phone = x.Phone,
+            Email = x.Email,
+            Enabled = x.Enabled ? EnabledState.Enabled : EnabledState.Disabled,
+            Dept = x.Dept.Name,
+            Job = string.Join(",", x.Jobs.Select(j => j.Name).ToArray()),
+            Gender = x.Gender,
+            CreateTime = x.CreateTime
+        }));
+        return userExports;
     }
 
     #endregion
@@ -533,15 +515,16 @@ public class UserService : BaseServices<Entity.Permission.User.User>, IUserServi
 
     private async Task<List<JobSmallDto>> GetJobListAsync(long userId)
     {
-        var jobs = await BaseDal.QueryMuchAsync<Entity.Permission.User.User, UserJobs, Entity.Permission.Job, Entity.Permission.Job>(
-            (u, uj, j) => new object[]
-            {
-                JoinType.Left, u.Id == uj.UserId,
-                JoinType.Left, uj.JobId == j.Id
-            },
-            (u, uj, j) => j,
-            (u, uj, j) => u.Id == userId
-        );
+        var jobs = await BaseDal
+            .QueryMuchAsync<Entity.Permission.User.User, UserJobs, Entity.Permission.Job, Entity.Permission.Job>(
+                (u, uj, j) => new object[]
+                {
+                    JoinType.Left, u.Id == uj.UserId,
+                    JoinType.Left, uj.JobId == j.Id
+                },
+                (u, uj, j) => j,
+                (u, uj, j) => u.Id == userId
+            );
         return Mapper.Map<List<JobSmallDto>>(jobs);
     }
 

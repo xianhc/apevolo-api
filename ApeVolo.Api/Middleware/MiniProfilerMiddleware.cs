@@ -1,7 +1,6 @@
 ﻿using System;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
-using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Serilog;
 using Microsoft.AspNetCore.Builder;
 using Serilog;

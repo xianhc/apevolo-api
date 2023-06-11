@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.System.AppSecret;
@@ -19,7 +18,7 @@ public interface IAppSecretService : IBaseServices<Entity.System.AppSecret>
     Task<bool> UpdateAsync(CreateUpdateAppSecretDto createUpdateAppSecretDto);
     Task<bool> DeleteAsync(HashSet<long> ids);
     Task<List<AppSecretDto>> QueryAsync(AppsecretQueryCriteria appsecretQueryCriteria, Pagination pagination);
-    Task<List<ExportRowModel>> DownloadAsync(AppsecretQueryCriteria appsecretQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(AppsecretQueryCriteria appsecretQueryCriteria);
 
     #endregion
 }

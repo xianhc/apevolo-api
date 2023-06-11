@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Entity.System.Task;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.System.Task;
+using ApeVolo.IBusiness.ExportModel;
+using ApeVolo.IBusiness.ExportModel.System;
 using ApeVolo.IBusiness.QueryModel;
 
 namespace ApeVolo.IBusiness.Interface.System.Task;
@@ -28,7 +29,7 @@ public interface IQuartzNetService : IBaseServices<QuartzNet>
 
     Task<List<QuartzNetDto>> QueryAsync(QuartzNetQueryCriteria quartzNetQueryCriteria, Pagination pagination);
 
-    Task<List<ExportRowModel>> DownloadAsync(QuartzNetQueryCriteria quartzNetQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(QuartzNetQueryCriteria quartzNetQueryCriteria);
 
     #endregion
 }

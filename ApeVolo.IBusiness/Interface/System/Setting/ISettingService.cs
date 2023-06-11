@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.System.Setting;
@@ -16,7 +15,7 @@ public interface ISettingService : IBaseServices<Entity.System.Setting>
     Task<bool> UpdateAsync(CreateUpdateSettingDto createUpdateSettingDto);
     Task<bool> DeleteAsync(HashSet<long> ids);
     Task<List<SettingDto>> QueryAsync(SettingQueryCriteria settingQueryCriteria, Pagination pagination);
-    Task<List<ExportRowModel>> DownloadAsync(SettingQueryCriteria settingQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(SettingQueryCriteria settingQueryCriteria);
 
     Task<SettingDto> FindSettingByName(string settingName);
 

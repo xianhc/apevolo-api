@@ -1,18 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
+using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission.Role;
 using ApeVolo.IBusiness.Dto.Permission.Department;
+using ApeVolo.IBusiness.ExportModel.Permission;
 using ApeVolo.IBusiness.Interface.Permission.Department;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.Permission.Department;
@@ -186,32 +188,21 @@ public class DepartmentService : BaseServices<Entity.Permission.Department>, IDe
         return deptDatalist;
     }
 
-    public async Task<List<ExportRowModel>> DownloadAsync(DeptQueryCriteria deptQueryCriteria)
+    public async Task<List<ExportBase>> DownloadAsync(DeptQueryCriteria deptQueryCriteria)
     {
-        var deptList = await QueryAsync(deptQueryCriteria, new Pagination { PageSize = 9999 });
-        List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
-        List<ExportColumnModel> exportColumnModels;
-        int point = 0;
-        deptList.ForEach(dept =>
+        var depts = await QueryAsync(deptQueryCriteria, new Pagination { PageSize = 9999 });
+        List<ExportBase> roleExports = new List<ExportBase>();
+        roleExports.AddRange(depts.Select(x => new DepartmentExport()
         {
-            point = 0;
-            exportColumnModels = new List<ExportColumnModel>();
-            exportColumnModels.Add(
-                new ExportColumnModel { Key = "ID", Value = dept.Id.ToString(), Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel { Key = "部门名称", Value = dept.Name, Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "父级ID", Value = dept.PId.ToString(), Point = point++ });
-            exportColumnModels.Add(
-                new ExportColumnModel { Key = "排序", Value = dept.Sort.ToString(), Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "状态", Value = dept.Enabled ? "正常" : "停用", Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "子部门数量", Value = dept.SubCount.ToString(), Point = point++ });
-            exportColumnModels.Add(new ExportColumnModel
-                { Key = "创建时间", Value = dept.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++ });
-            exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
-        });
-        return exportRowModels;
+            Id = x.Id,
+            Name = x.Name,
+            ParentId = x.PId ?? 0,
+            Sort = x.Sort,
+            EnabledState = x.Enabled ? EnabledState.Enabled : EnabledState.Disabled,
+            SubCount = x.SubCount,
+            CreateTime = x.CreateTime
+        }));
+        return roleExports;
     }
 
     #endregion

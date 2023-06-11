@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Dto.System.AppSecret;
+using ApeVolo.IBusiness.ExportModel.System;
 using ApeVolo.IBusiness.Interface.System.AppSecret;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.System.AppSecret;
@@ -105,37 +106,19 @@ public class AppSecretService : BaseServices<Entity.System.AppSecret>, IAppSecre
         return Mapper.Map<List<AppSecretDto>>(await BaseDal.QueryPageListAsync(whereLambda, pagination));
     }
 
-    public async Task<List<ExportRowModel>> DownloadAsync(AppsecretQueryCriteria appsecretQueryCriteria)
+    public async Task<List<ExportBase>> DownloadAsync(AppsecretQueryCriteria appsecretQueryCriteria)
     {
-        var appSecretList = await QueryAsync(appsecretQueryCriteria, new Pagination { PageSize = 9999 });
-
-        List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
-        List<ExportColumnModel> exportColumnModels;
-        int point;
-        appSecretList.ForEach(appsecret =>
+        var appSecrets = await QueryAsync(appsecretQueryCriteria, new Pagination { PageSize = 9999 });
+        List<ExportBase> appSecretExports = new List<ExportBase>();
+        appSecretExports.AddRange(appSecrets.Select(x => new AppSecretExport()
         {
-            point = 0;
-            exportColumnModels = new List<ExportColumnModel>
-            {
-                new() { Key = "ID", Value = appsecret.Id.ToString(), Point = point++ },
-                new() { Key = "应用ID", Value = appsecret.AppId, Point = point++ },
-                new() { Key = "应用名称", Value = appsecret.AppName, Point = point++ },
-                new() { Key = "应用秘钥", Value = appsecret.AppSecretKey, Point = point++ },
-                new() { Key = "备注", Value = appsecret.Remark, Point = point++ },
-                new()
-                {
-                    Key = "创建时间", Value = appsecret.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
-                },
-                new()
-                {
-                    Key = "更新时间", Value = appsecret.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
-                },
-                new() { Key = "创建人", Value = appsecret.CreateBy, Point = point++ },
-                new() { Key = "更新人", Value = appsecret.UpdateBy, Point = point++ },
-            };
-            exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
-        });
-        return exportRowModels;
+            AppId = x.AppId,
+            AppSecretKey = x.AppSecretKey,
+            AppName = x.AppName,
+            Remark = x.Remark,
+            CreateTime = x.CreateTime
+        }));
+        return appSecretExports;
     }
 
     #endregion

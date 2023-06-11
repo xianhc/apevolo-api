@@ -26,7 +26,7 @@ public class ServerResourcesController : BaseApiController
 
     [HttpGet]
     [Route("service/resources/info")]
-    [Description("{0}Info")]
+    [Description("Info")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Query()
     {

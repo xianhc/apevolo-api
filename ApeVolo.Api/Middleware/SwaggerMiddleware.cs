@@ -2,7 +2,6 @@
 using System.IO;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
-using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Serilog;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;

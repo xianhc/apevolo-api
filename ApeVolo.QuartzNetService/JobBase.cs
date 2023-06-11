@@ -106,7 +106,7 @@ public class JobBase
                         RunParams = quartzNet.RunParams,
                         IsSuccess = isSucceed,
                         CreateBy = "QuartzNet Task",
-                        CreateTime = quartzNet.UpdateTime
+                        CreateTime = quartzNet.UpdateTime ?? DateTime.MinValue
                     };
                     await QuartzNetService.UpdateJobInfoAsync(quartzNet, quartzNetLog);
                 }

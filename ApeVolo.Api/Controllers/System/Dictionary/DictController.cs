@@ -1,18 +1,14 @@
 using System.ComponentModel;
-using System.IO;
 using System.Threading.Tasks;
-using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.System.Dict;
 using ApeVolo.IBusiness.Interface.System.Dictionary;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IBusiness.RequestModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace ApeVolo.Api.Controllers.System.Dictionary;
 
@@ -47,7 +43,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("{0}Add")]
+    [Description("Add")]
     public async Task<ActionResult<object>> Create([FromBody] CreateUpdateDictDto createUpdateDictDto)
     {
         await _dictService.CreateAsync(createUpdateDictDto);
@@ -62,7 +58,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("{0}Edit")]
+    [Description("Edit")]
     public async Task<ActionResult<object>> Update([FromBody] CreateUpdateDictDto createUpdateDictDto)
     {
         await _dictService.UpdateAsync(createUpdateDictDto);
@@ -76,7 +72,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("{0}Delete")]
+    [Description("Delete")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -97,7 +93,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("{0}List")]
+    [Description("List")]
     public async Task<ActionResult<object>> Query(DictQueryCriteria dictQueryCriteria,
         Pagination pagination)
     {
@@ -116,19 +112,13 @@ public class DictController : BaseApiController
     /// <param name="dictQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("{0}Export")]
+    [Description("Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(DictQueryCriteria dictQueryCriteria)
     {
-        var exportRowModels = await _dictService.DownloadAsync(dictQueryCriteria);
-
-        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("Dict"));
-
-        FileInfo fileInfo = new FileInfo(filepath);
-        var ext = fileInfo.Extension;
-        new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
-        return File(await global::System.IO.File.ReadAllBytesAsync(filepath), contently ?? "application/octet-stream",
-            fileInfo.Name);
+        var dictExports = await _dictService.DownloadAsync(dictQueryCriteria);
+        var data = new ExcelHelper().GenerateExcel(dictExports, out var mimeType);
+        return File(data, mimeType);
     }
 
     #endregion

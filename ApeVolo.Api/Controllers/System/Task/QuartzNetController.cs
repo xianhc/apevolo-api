@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel;
-using System.IO;
 using System.Threading.Tasks;
-using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Entity.System.Task;
@@ -16,7 +14,6 @@ using ApeVolo.IBusiness.RequestModel;
 using ApeVolo.QuartzNetService.service;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace ApeVolo.Api.Controllers.System.Task;
 
@@ -58,7 +55,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("{0}Add")]
+    [Description("Add")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
@@ -90,7 +87,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("{0}Edit")]
+    [Description("Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
@@ -126,7 +123,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("{0}Delete")]
+    [Description("Delete")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -157,7 +154,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("{0}List")]
+    [Description("List")]
     public async Task<ActionResult<object>> Query(QuartzNetQueryCriteria quartzNetQueryCriteria,
         Pagination pagination)
     {
@@ -181,19 +178,13 @@ public class QuartzNetController : BaseApiController
     /// <param name="quartzNetQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("{0}Export")]
+    [Description("Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(QuartzNetQueryCriteria quartzNetQueryCriteria)
     {
-        var exportRowModels = await _quartzNetService.DownloadAsync(quartzNetQueryCriteria);
-
-        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("QuartzNet"));
-
-        FileInfo fileInfo = new FileInfo(filepath);
-        var ext = fileInfo.Extension;
-        new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
-        return File(await global::System.IO.File.ReadAllBytesAsync(filepath), contently ?? "application/octet-stream",
-            fileInfo.Name);
+        var quartzNetExports = await _quartzNetService.DownloadAsync(quartzNetQueryCriteria);
+        var data = new ExcelHelper().GenerateExcel(quartzNetExports, out var mimeType);
+        return File(data, mimeType);
     }
 
 
@@ -203,7 +194,7 @@ public class QuartzNetController : BaseApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpPut]
-    [Description("{0}Execute")]
+    [Description("Execute")]
     [Route("execute/{id}")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Execute(long id)
@@ -242,7 +233,7 @@ public class QuartzNetController : BaseApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpPut]
-    [Description("{0}Stop")]
+    [Description("Stop")]
     [Route("pause/{id}")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Pause(long id)
@@ -307,7 +298,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("logs/query/{id}")]
-    [Description("{0}ExecutionLog")]
+    [Description("ExecutionLog")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> QueryLog(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria,
         Pagination pagination)
@@ -327,20 +318,14 @@ public class QuartzNetController : BaseApiController
     /// <param name="quartzNetLogQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("{0}Export")]
+    [Description("Export")]
     [Route("logs/download/{id}")]
-    //[ApeVoloAuthorize(new string[] { "admin" })]
+    [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Download(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria)
     {
-        var exportRowModels = await _quartzNetLogService.DownloadAsync(quartzNetLogQueryCriteria);
-
-        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("QuartzNet"));
-
-        FileInfo fileInfo = new FileInfo(filepath);
-        var ext = fileInfo.Extension;
-        new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
-        return File(await global::System.IO.File.ReadAllBytesAsync(filepath), contently ?? "application/octet-stream",
-            fileInfo.Name);
+        var quartzNetLogExports = await _quartzNetLogService.DownloadAsync(quartzNetLogQueryCriteria);
+        var data = new ExcelHelper().GenerateExcel(quartzNetLogExports, out var mimeType);
+        return File(data, mimeType);
     }
 
     #endregion

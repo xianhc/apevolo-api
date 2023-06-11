@@ -10,12 +10,12 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission.Role;
 using ApeVolo.IBusiness.Dto.Permission.Menu;
+using ApeVolo.IBusiness.ExportModel.Permission;
 using ApeVolo.IBusiness.Interface.Permission.Menu;
 using ApeVolo.IBusiness.Interface.Permission.User;
 using ApeVolo.IBusiness.QueryModel;
@@ -258,39 +258,29 @@ public class MenuService : BaseServices<Entity.Permission.Menu>, IMenuService
     }
 
 
-    public async Task<List<ExportRowModel>> DownloadAsync(MenuQueryCriteria menuQueryCriteria)
+    public async Task<List<ExportBase>> DownloadAsync(MenuQueryCriteria menuQueryCriteria)
     {
         var menus = await QueryAsync(menuQueryCriteria, new Pagination { PageSize = 9999 });
-        List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
-        List<ExportColumnModel> exportColumnModels;
-        int point;
-        menus.ForEach(menu =>
+        List<ExportBase> roleExports = new List<ExportBase>();
+        roleExports.AddRange(menus.Select(x => new MenuExport()
         {
-            point = 0;
-            exportColumnModels = new List<ExportColumnModel>
-            {
-                new() { Key = "菜单标题", Value = menu.Title, Point = point++ },
-                new() { Key = "api路径", Value = menu.LinkUrl, Point = point++ },
-                new() { Key = "路径", Value = menu.Path, Point = point++ },
-                new() { Key = "权限代码", Value = menu.Permission, Point = point++ },
-                new() { Key = "IFrame", Value = menu.IFrame ? "是" : "否", Point = point++ },
-                new() { Key = "组件", Value = menu.Component, Point = point++ },
-                new() { Key = "组件名称", Value = menu.ComponentName, Point = point++ },
-                new() { Key = "父级ID", Value = menu.PId.IsNull() ? "null" : menu.PId.ToString(), Point = point++ },
-                new() { Key = "排序", Value = menu.MenuSort.ToString(), Point = point++ },
-                new() { Key = "Icon", Value = menu.Icon, Point = point++ },
-                new() { Key = "类型", Value = GetMenuTypeName(menu.Type), Point = point++ },
-                new() { Key = "缓存", Value = menu.Cache ? "是" : "否", Point = point++ },
-                new() { Key = "显示", Value = menu.Hidden ? "否" : "是", Point = point++ },
-                new() { Key = "子菜单数量", Value = menu.SubCount.ToString(), Point = point++ },
-                new()
-                {
-                    Key = "创建时间", Value = menu.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
-                }
-            };
-            exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
-        });
-        return exportRowModels;
+            Title = x.Title,
+            LinkUrl = x.LinkUrl,
+            Path = x.Path,
+            Permission = x.Permission,
+            IsFrame = x.IFrame ? BoolState.True : BoolState.False,
+            Component = x.Component,
+            ComponentName = x.ComponentName,
+            PId = x.PId ?? 0,
+            MenuSort = x.MenuSort,
+            Icon = x.Icon,
+            MenuType = GetMenuTypeName(x.Type),
+            IsCache = x.Cache ? BoolState.True : BoolState.False,
+            IsHidden = x.Hidden ? BoolState.True : BoolState.False,
+            SubCount = x.SubCount,
+            CreateTime = x.CreateTime
+        }));
+        return roleExports;
     }
 
     #endregion

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
-using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
@@ -43,7 +42,7 @@ public class EmailMessageTemplateController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("{0}Add")]
+    [Description("Add")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto)
     {
@@ -64,7 +63,7 @@ public class EmailMessageTemplateController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("{0}Edit")]
+    [Description("Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto)
     {
@@ -85,7 +84,7 @@ public class EmailMessageTemplateController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("{0}Delete")]
+    [Description("Delete")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -106,7 +105,7 @@ public class EmailMessageTemplateController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("{0}List")]
+    [Description("List")]
     public async Task<ActionResult<object>> Query(EmailMessageTemplateQueryCriteria messageTemplateQueryCriteria,
         Pagination pagination)
     {

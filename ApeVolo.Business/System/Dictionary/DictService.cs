@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.System.Dictionary;
 using ApeVolo.IBusiness.Dto.System.Dict;
+using ApeVolo.IBusiness.ExportModel.System;
 using ApeVolo.IBusiness.Interface.System.Dictionary;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.System.Dictionary;
@@ -92,35 +92,24 @@ public class DictService : BaseServices<Dict>, IDictService
         return dicts;
     }
 
-    public async Task<List<ExportRowModel>> DownloadAsync(DictQueryCriteria dictQueryCriteria)
+    public async Task<List<ExportBase>> DownloadAsync(DictQueryCriteria dictQueryCriteria)
     {
-        var dictList = await QueryAsync(dictQueryCriteria, new Pagination { PageSize = 9999 });
-        List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
-        List<ExportColumnModel> exportColumnModels;
-        int point;
-        dictList.ForEach(dict =>
+        var dicts = await QueryAsync(dictQueryCriteria, new Pagination { PageSize = 9999 });
+        List<ExportBase> dictExports = new List<ExportBase>();
+
+        dicts.ForEach(x =>
         {
-            dict.DictDetails.ForEach(item =>
+            dictExports.AddRange(x.DictDetails.Select(d => new DictExport()
             {
-                point = 0;
-                exportColumnModels = new List<ExportColumnModel>();
-                exportColumnModels.Add(new ExportColumnModel
-                    { Key = "ID", Value = dict.Id.ToString(), Point = point++ });
-                exportColumnModels.Add(new ExportColumnModel
-                    { Key = "详情ID", Value = item.Id.ToString(), Point = point++ });
-                exportColumnModels.Add(new ExportColumnModel { Key = "字典代码", Value = dict.Name, Point = point++ });
-                exportColumnModels.Add(new ExportColumnModel
-                    { Key = "字典名称", Value = dict.Description.ToString(), Point = point++ });
-                exportColumnModels.Add(new ExportColumnModel { Key = "字典标签", Value = item.Label, Point = point++ });
-                exportColumnModels.Add(new ExportColumnModel { Key = "字典值", Value = item.Value, Point = point++ });
-                exportColumnModels.Add(new ExportColumnModel
-                    { Key = "创建时间", Value = dict.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++ });
-                exportColumnModels.Add(new ExportColumnModel
-                    { Key = "值创建时间", Value = item.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++ });
-                exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
-            });
+                Name = x.Name,
+                Description = x.Description,
+                Lable = d.Label,
+                Value = d.Value,
+                CreateTime = x.CreateTime
+            }));
         });
-        return exportRowModels;
+
+        return dictExports;
     }
 
     #endregion

@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission.User;
 using ApeVolo.IBusiness.Dto.Permission.Job;
+using ApeVolo.IBusiness.ExportModel.Permission;
 using ApeVolo.IBusiness.Interface.Permission.Job;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.Permission.Job;
@@ -116,30 +118,19 @@ public class JobService : BaseServices<Entity.Permission.Job>, IJobService
         return Mapper.Map<List<JobDto>>(await BaseDal.QueryPageListAsync(whereExpression, pagination));
     }
 
-    public async Task<List<ExportRowModel>> DownloadAsync(JobQueryCriteria jobQueryCriteria)
+    public async Task<List<ExportBase>> DownloadAsync(JobQueryCriteria jobQueryCriteria)
     {
-        var jobs = await QueryAsync(jobQueryCriteria, new Pagination { PageSize = 9999 });
-
-        List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
-        List<ExportColumnModel> exportColumnModels;
-        int point;
-        jobs.ForEach(job =>
+        var jbos = await QueryAsync(jobQueryCriteria, new Pagination { PageSize = 9999 });
+        List<ExportBase> roleExports = new List<ExportBase>();
+        roleExports.AddRange(jbos.Select(x => new JobExport()
         {
-            point = 0;
-            exportColumnModels = new List<ExportColumnModel>
-            {
-                new() { Key = "ID", Value = job.Id.ToString(), Point = point++ },
-                new() { Key = "岗位名称", Value = job.Name, Point = point++ },
-                new() { Key = "排序", Value = job.Sort.ToString(), Point = point++ },
-                new() { Key = "状态", Value = job.Enabled ? "正常" : "停用", Point = point++ },
-                new()
-                {
-                    Key = "创建时间", Value = job.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
-                }
-            };
-            exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
-        });
-        return exportRowModels;
+            Id = x.Id,
+            Name = x.Name,
+            Sort = x.Sort,
+            EnabledState = x.Enabled ? EnabledState.Enabled : EnabledState.Disabled,
+            CreateTime = x.CreateTime
+        }));
+        return roleExports;
     }
 
     #endregion

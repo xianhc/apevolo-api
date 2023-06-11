@@ -1,21 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
 using System.Threading.Tasks;
-using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.Permission.User;
 using ApeVolo.IBusiness.Interface.Permission.User;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IBusiness.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace ApeVolo.Api.Controllers.Permission.User;
 
@@ -49,7 +45,7 @@ public class UserController : BaseApiController
     /// <param name="createUpdateUserDto"></param>
     /// <returns></returns>
     [HttpPost]
-    [Description("{0}Add")]
+    [Description("Add")]
     [Route("create")]
     public async Task<ActionResult<object>> Create([FromBody] CreateUpdateUserDto createUpdateUserDto)
     {
@@ -70,7 +66,7 @@ public class UserController : BaseApiController
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     [HttpPut]
-    [Description("{0}Edit")]
+    [Description("Edit")]
     [Route("edit")]
     public async Task<ActionResult<object>> Update([FromBody] CreateUpdateUserDto createUpdateUserDto)
     {
@@ -84,7 +80,7 @@ public class UserController : BaseApiController
     /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Description("{0}Delete")]
+    [Description("Delete")]
     [Route("delete")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
@@ -169,7 +165,7 @@ public class UserController : BaseApiController
     /// <param name="pagination"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("{0}List")]
+    [Description("List")]
     [Route("query")]
     public async Task<ActionResult<object>> Query(UserQueryCriteria userQueryCriteria,
         Pagination pagination)
@@ -188,19 +184,21 @@ public class UserController : BaseApiController
     /// <param name="userQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("{0}Export")]
+    [Description("Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(UserQueryCriteria userQueryCriteria)
     {
-        var exportRowModels = await _userService.DownloadAsync(userQueryCriteria);
+        var userExports = await _userService.DownloadAsync(userQueryCriteria);
 
-        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("User"));
-
-        FileInfo fileInfo = new FileInfo(filepath);
-        var ext = fileInfo.Extension;
-        new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
-        return File(await global::System.IO.File.ReadAllBytesAsync(filepath), contently ?? "application/octet-stream",
-            fileInfo.Name);
+        // var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("User"));
+        //
+        // FileInfo fileInfo = new FileInfo(filepath);
+        // var ext = fileInfo.Extension;
+        // new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
+        // return File(await global::System.IO.File.ReadAllBytesAsync(filepath), contently ?? "application/octet-stream",
+        //     fileInfo.Name);
+        var data = new ExcelHelper().GenerateExcel(userExports, out var mimeType);
+        return File(data, mimeType);
     }
 
     #endregion

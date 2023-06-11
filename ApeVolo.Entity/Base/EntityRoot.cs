@@ -25,7 +25,7 @@ public class EntityRoot<T> where T : IEquatable<T>
     /// 创建时间
     /// </summary>
     [SugarColumn(ColumnName = "create_time", IsNullable = true, ColumnDescription = "创建时间")]
-    public DateTime? CreateTime { get; set; }
+    public DateTime CreateTime { get; set; }
 
     /// <summary>
     /// 更新者名称

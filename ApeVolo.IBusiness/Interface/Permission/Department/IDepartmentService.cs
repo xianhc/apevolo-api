@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Base;
 using ApeVolo.IBusiness.Dto.Permission.Department;
+using ApeVolo.IBusiness.ExportModel;
 using ApeVolo.IBusiness.QueryModel;
 
 namespace ApeVolo.IBusiness.Interface.Permission.Department;
@@ -19,7 +19,7 @@ public interface IDepartmentService : IBaseServices<Entity.Permission.Department
     Task<bool> UpdateAsync(CreateUpdateDepartmentDto createUpdateDepartmentDto);
     Task<bool> DeleteAsync(HashSet<long> ids);
     Task<List<DepartmentDto>> QueryAsync(DeptQueryCriteria deptQueryCriteria, Pagination pagination);
-    Task<List<ExportRowModel>> DownloadAsync(DeptQueryCriteria deptQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(DeptQueryCriteria deptQueryCriteria);
 
     #endregion
 

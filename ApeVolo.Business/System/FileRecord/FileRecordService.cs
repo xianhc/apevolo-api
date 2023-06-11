@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
@@ -8,12 +9,12 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Dto.System.FileRecord;
+using ApeVolo.IBusiness.ExportModel.System;
 using ApeVolo.IBusiness.Interface.System.FileRecord;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IRepository.System.FileRecord;
@@ -135,39 +136,23 @@ public class FileRecordService : BaseServices<Entity.System.FileRecord>, IFileRe
         return Mapper.Map<List<FileRecordDto>>(await BaseDal.QueryPageListAsync(whereLambda, pagination));
     }
 
-    public async Task<List<ExportRowModel>> DownloadAsync(FileRecordQueryCriteria fileRecordQueryCriteria)
+    public async Task<List<ExportBase>> DownloadAsync(FileRecordQueryCriteria fileRecordQueryCriteria)
     {
-        var appSecretList = await QueryAsync(fileRecordQueryCriteria, new Pagination { PageSize = 9999 });
-
-        List<ExportRowModel> exportRowModels = new List<ExportRowModel>();
-        List<ExportColumnModel> exportColumnModels;
-        int point;
-        appSecretList.ForEach(appsecret =>
+        var fileRecords = await QueryAsync(fileRecordQueryCriteria, new Pagination { PageSize = 9999 });
+        List<ExportBase> fileRecordExports = new List<ExportBase>();
+        fileRecordExports.AddRange(fileRecords.Select(x => new FileRecordExport()
         {
-            point = 0;
-            exportColumnModels = new List<ExportColumnModel>
-            {
-                new() { Key = "ID", Value = appsecret.Id.ToString(), Point = point++ },
-                new() { Key = "文件描述", Value = appsecret.Description, Point = point++ },
-                new() { Key = "文件类型", Value = appsecret.ContentType, Point = point++ },
-                new() { Key = "文件类别", Value = appsecret.ContentTypeName, Point = point++ },
-                new() { Key = "原始名称", Value = appsecret.OriginalName, Point = point++ },
-                new() { Key = "新名称", Value = appsecret.NewName, Point = point++ },
-                new() { Key = "文件大小", Value = appsecret.Size, Point = point++ },
-                new()
-                {
-                    Key = "创建时间", Value = appsecret.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
-                },
-                new()
-                {
-                    Key = "更新时间", Value = appsecret.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"), Point = point++
-                },
-                new() { Key = "创建人", Value = appsecret.CreateBy, Point = point++ },
-                new() { Key = "更新人", Value = appsecret.UpdateBy, Point = point++ }
-            };
-            exportRowModels.Add(new ExportRowModel { exportColumnModels = exportColumnModels });
-        });
-        return exportRowModels;
+            Description = x.Description,
+            ContentType = x.ContentType,
+            ContentTypeName = x.ContentTypeName,
+            ContentTypeNameEn = x.ContentTypeNameEn,
+            OriginalName = x.OriginalName,
+            NewName = x.NewName,
+            FilePath = x.FilePath,
+            Size = x.Size,
+            CreateTime = x.CreateTime
+        }));
+        return fileRecordExports;
     }
 
     #endregion

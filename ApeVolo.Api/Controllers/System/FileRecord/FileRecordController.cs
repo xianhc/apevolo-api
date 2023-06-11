@@ -1,21 +1,17 @@
 ﻿using System.ComponentModel;
-using System.IO;
 using System.Threading.Tasks;
-using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Api.ActionExtension.Parameter;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
-using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.System.FileRecord;
 using ApeVolo.IBusiness.Interface.System.FileRecord;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IBusiness.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace ApeVolo.Api.Controllers.System.FileRecord;
 
@@ -51,7 +47,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpOptions, HttpPost]
     [Route("upload")]
-    [Description("{0}Add")]
+    [Description("Add")]
     [CheckParamNotEmpty("description")]
     public async Task<ActionResult<object>> Upload(string description,
         [FromForm] IFormFile file)
@@ -78,7 +74,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("{0}Edit")]
+    [Description("Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateFileRecordDto createUpdateAppSecretDto)
     {
@@ -93,7 +89,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("{0}Delete")]
+    [Description("Delete")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -115,7 +111,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("{0}List")]
+    [Description("List")]
     public async Task<ActionResult<object>> Query(FileRecordQueryCriteria fileRecordQueryCriteria,
         Pagination pagination)
     {
@@ -135,19 +131,13 @@ public class FileRecordController : BaseApiController
     /// <param name="fileRecordQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("{0}Export")]
+    [Description("Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(FileRecordQueryCriteria fileRecordQueryCriteria)
     {
-        var exportRowModels = await _fileRecordService.DownloadAsync(fileRecordQueryCriteria);
-
-        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("FileRecord"));
-
-        FileInfo fileInfo = new FileInfo(filepath);
-        var ext = fileInfo.Extension;
-        new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
-        return File(await global::System.IO.File.ReadAllBytesAsync(filepath), contently ?? "application/octet-stream",
-            fileInfo.Name);
+        var fileRecordExports = await _fileRecordService.DownloadAsync(fileRecordQueryCriteria);
+        var data = new ExcelHelper().GenerateExcel(fileRecordExports, out var mimeType);
+        return File(data, mimeType);
     }
 
     #endregion

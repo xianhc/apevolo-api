@@ -251,32 +251,32 @@
     <data name="OperationProhibited" xml:space="preserve">
     <value>禁止操作他人数据</value>
   </data>
-    <data name="{0}Add" xml:space="preserve">
-    <value>{0}新增</value>
+    <data name="Add" xml:space="preserve">
+    <value>新增</value>
   </data>
-    <data name="{0}Edit" xml:space="preserve">
-    <value>{0}编辑</value>
+    <data name="Edit" xml:space="preserve">
+    <value>编辑</value>
   </data>
-    <data name="{0}Delete" xml:space="preserve">
-    <value>{0}删除</value>
+    <data name="Delete" xml:space="preserve">
+    <value>删除</value>
   </data>
-    <data name="{0}List" xml:space="preserve">
-    <value>{0}列表</value>
+    <data name="List" xml:space="preserve">
+    <value>列表</value>
   </data>
-    <data name="{0}Export" xml:space="preserve">
-    <value>{0}导出</value>
+    <data name="Export" xml:space="preserve">
+    <value>导出</value>
   </data>
-    <data name="{0}Execute" xml:space="preserve">
-    <value>{0}执行</value>
+    <data name="Execute" xml:space="preserve">
+    <value>执行</value>
   </data>
-    <data name="{0}Stop" xml:space="preserve">
-    <value>{0}暂停</value>
+    <data name="Stop" xml:space="preserve">
+    <value>暂停</value>
   </data>
-    <data name="{0}Info" xml:space="preserve">
-    <value>{0}信息</value>
+    <data name="Info" xml:space="preserve">
+    <value>信息</value>
   </data>
-    <data name="{0}ExecutionLog" xml:space="preserve">
-    <value>{0}执行日志</value>
+    <data name="ExecutionLog" xml:space="preserve">
+    <value>执行日志</value>
   </data>
     <data name="SiblingParentDepartment" xml:space="preserve">
     <value>获取同级、父级部门</value>
@@ -382,7 +382,7 @@
     </data>
 
 
-    <!-- 必须属性 -->
+    <!-- 公共属性 -->
     <data name="Sys.ID" xml:space="preserve">
       <value>ID</value>
     </data>
@@ -404,6 +404,19 @@
     <data name="Sys.DeletedTime" xml:space="preserve">
       <value>删除时间</value>
     </data>
+    <data name="Sys.Enabled" xml:space="preserve">
+      <value>启用</value>
+    </data>
+    <data name="Sys.Disabled" xml:space="preserve">
+      <value>禁用</value>
+    </data>
+    <data name="Sys.True" xml:space="preserve">
+      <value>是</value>
+    </data>
+    <data name="Sys.False" xml:space="preserve">
+      <value>否</value>
+    </data>
+
 
     <!-- 用户 -->
     <data name="User.Name" xml:space="preserve">
@@ -490,6 +503,9 @@
     <data name="Role.DataScope" xml:space="preserve">
       <value>数据范围</value>
     </data>
+    <data name="Role.DataDept" xml:space="preserve">
+      <value>数据部门</value>
+    </data>
     <data name="Role.Permission" xml:space="preserve">
       <value>角色代码</value>
     </data>
@@ -505,10 +521,10 @@
       <value>组件路径</value>
     </data>
     <data name="Menu.Permission" xml:space="preserve">
-      <value>角色名称</value>
+      <value>权限标识符</value>
     </data>
     <data name="Menu.IFrame" xml:space="preserve">
-      <value>权限标识符</value>
+      <value>是否IFrame</value>
     </data>
     <data name="Menu.Component" xml:space="preserve">
       <value>组件</value>
@@ -561,11 +577,11 @@
     </data>
 
     <!-- 字典详情 -->
-    <data name="Dict.Detail.Name" xml:space="preserve">
-      <value>字典详情名称</value>
+    <data name="Dict.Detail.Lable" xml:space="preserve">
+      <value>字典标签</value>
     </data>
-    <data name="Dict.Detail.Description" xml:space="preserve">
-      <value>字典详情描述</value>
+    <data name="Dict.Detail.Value" xml:space="preserve">
+      <value>字典值</value>
     </data>
 
     <!-- 文件 -->
@@ -667,6 +683,22 @@
       <value>触发器模式</value>
     </data>
 
+
+    <!-- 任务日志 -->
+    <data name="TaskLog.TaskId" xml:space="preserve">
+      <value>任务ID</value>
+    </data>
+    <data name="TaskLog.ExceptionDetail" xml:space="preserve">
+      <value>异常详情</value>
+    </data>
+    <data name="TaskLog.ExecutionDuration" xml:space="preserve">
+      <value>执行耗时</value>
+    </data>
+    <data name="TaskLog.IsSuccess" xml:space="preserve">
+      <value>是否成功</value>
+    </data>
+
+
     <!-- 电子邮件账户 -->
     <data name="EmailAccount.Email" xml:space="preserve">
       <value>电子邮件</value>
@@ -755,5 +787,32 @@
     </data>
     <data name="QueuedEmail.EmailAccountId" xml:space="preserve">
       <value>发件邮箱ID</value>
+    </data>
+
+
+    <!-- 在线用户 -->
+    <data name="Online.LoginIp" xml:space="preserve">
+      <value>登录IP</value>
+    </data>
+    <data name="Online.IpAddress" xml:space="preserve">
+      <value>IP地址</value>
+    </data>
+    <data name="Online.OperatingSystem" xml:space="preserve">
+      <value>操作系统</value>
+    </data>
+    <data name="Online.DeviceType" xml:space="preserve">
+      <value>设备类型</value>
+    </data>
+    <data name="Online.BrowserName" xml:space="preserve">
+      <value>浏览器名称</value>
+    </data>
+    <data name="Online.Version" xml:space="preserve">
+      <value>版本号</value>
+    </data>
+    <data name="Online.LoginTime" xml:space="preserve">
+      <value>登录时间</value>
+    </data>
+    <data name="Online.Onlinekey" xml:space="preserve">
+      <value>在线Key值</value>
     </data>
 </root>

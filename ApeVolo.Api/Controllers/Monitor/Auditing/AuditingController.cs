@@ -46,7 +46,7 @@ public class AuditingController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("{0}List")]
+    [Description("List")]
     public async Task<ActionResult<object>> Query(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
     {

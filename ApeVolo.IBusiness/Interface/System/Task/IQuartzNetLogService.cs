@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Entity.System.Task;
 using ApeVolo.IBusiness.Base;
@@ -18,7 +17,7 @@ public interface IQuartzNetLogService : IBaseServices<QuartzNetLog>
 
     Task<bool> CreateAsync(QuartzNetLog quartzNetLog);
     Task<List<QuartzNetLogDto>> QueryAsync(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria, Pagination pagination);
-    Task<List<ExportRowModel>> DownloadAsync(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria);
 
     #endregion
 }

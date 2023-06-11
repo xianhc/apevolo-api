@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper.Excel;
+using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.Permission.Department;
 using ApeVolo.IBusiness.Interface.Permission.Department;
 using ApeVolo.IBusiness.Interface.Permission.Role;
@@ -15,7 +13,6 @@ using ApeVolo.IBusiness.Interface.Permission.User;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IBusiness.RequestModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace ApeVolo.Api.Controllers.Permission.Department;
 
@@ -55,7 +52,7 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("{0}Add")]
+    [Description("Add")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateDepartmentDto createUpdateDepartmentDto)
     {
@@ -77,7 +74,7 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("{0}Edit")]
+    [Description("Edit")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateDepartmentDto createUpdateDepartmentDto)
     {
@@ -99,7 +96,7 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("{0}Delete")]
+    [Description("Delete")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -138,7 +135,7 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("{0}List")]
+    [Description("List")]
     public async Task<ActionResult<object>> Query(DeptQueryCriteria deptQueryCriteria,
         Pagination pagination)
     {
@@ -158,19 +155,13 @@ public class DeptController : BaseApiController
     /// <param name="deptQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("{0}Export")]
+    [Description("Export")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(DeptQueryCriteria deptQueryCriteria)
     {
-        var exportRowModels = await _departmentService.DownloadAsync(deptQueryCriteria);
-
-        var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("Department"));
-
-        var fileInfo = new FileInfo(filepath);
-        var ext = fileInfo.Extension;
-        new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
-        return File(await global::System.IO.File.ReadAllBytesAsync(filepath), contently ?? "application/octet-stream",
-            fileInfo.Name);
+        var deptExports = await _departmentService.DownloadAsync(deptQueryCriteria);
+        var data = new ExcelHelper().GenerateExcel(deptExports, out var mimeType);
+        return File(data, mimeType);
     }
 
 

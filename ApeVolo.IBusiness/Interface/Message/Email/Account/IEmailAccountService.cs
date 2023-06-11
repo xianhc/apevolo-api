@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.Helper.Excel;
 using ApeVolo.Common.Model;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Base;
@@ -25,7 +24,7 @@ public interface IEmailAccountService : IBaseServices<EmailAccount>
     Task<List<EmailAccountDto>> QueryAsync(EmailAccountQueryCriteria emailAccountQueryCriteria,
         Pagination pagination);
 
-    Task<List<ExportRowModel>> DownloadAsync(EmailAccountQueryCriteria emailAccountQueryCriteria);
+    Task<List<ExportBase>> DownloadAsync(EmailAccountQueryCriteria emailAccountQueryCriteria);
 
     #endregion
 }
