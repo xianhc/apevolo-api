@@ -1,10 +1,13 @@
 ﻿using System;
+using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper.Serilog;
-using ApeVolo.IBusiness.Interface.System.Task;
+using ApeVolo.Entity.System;
+using ApeVolo.IBusiness.Interface.System;
 using ApeVolo.QuartzNetService.service;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace ApeVolo.Api.Middleware;
@@ -24,9 +27,11 @@ public static class QuartzNetJobMiddleware
 
         try
         {
-            if (AppSettings.GetValue<bool>("Middleware", "QuartzNetJob", "Enabled"))
+            var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
+            if (configs.Middleware.QuartzNetJob.Enabled)
             {
-                var allTaskQuartzList = taskQuartzService.QueryAllAsync().Result;
+                //var allTaskQuartzList = taskQuartzService.QueryAllAsync().Result;
+                var allTaskQuartzList = taskQuartzService.SugarClient.Queryable<QuartzNet>().ToList();
                 foreach (var item in allTaskQuartzList)
                 {
                     if (!item.IsEnable) continue;

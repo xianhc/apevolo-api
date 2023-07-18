@@ -2,7 +2,9 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Global;
+using Microsoft.Extensions.Options;
 
 namespace ApeVolo.Common.Helper;
 
@@ -17,7 +19,6 @@ public class RsaHelper
     private readonly RSA _privateKeyRsaProvider;
     private readonly RSA _publicKeyRsaProvider;
     private readonly HashAlgorithmName _hashAlgorithmName;
-    private readonly Encoding _encoding;
 
     #region 实例化RSAHelper
 
@@ -25,12 +26,16 @@ public class RsaHelper
     /// 实例化RSAHelper
     /// </summary>
     /// <param name="rsaType">加密算法类型 RSA SHA1;RSA2 SHA256 密钥长度至少为2048</param>
-    /// <param name="encoding">编码类型</param>
-    /// <param name="privateKey">私钥</param>
-    /// <param name="publicKey">公钥</param>
-    public RsaHelper(RsaType rsaType, Encoding encoding, string privateKey, string publicKey = null)
+    /// <param name="rsa">rsa config</param>
+    public RsaHelper(Rsa rsa = null, RsaType rsaType = RsaType.Rsa)
     {
-        _encoding = encoding;
+        if (rsa == null)
+        {
+            throw new System.Exception("rsa配置对象读取失败,请检查");
+        }
+
+        string privateKey = rsa.PrivateKey;
+        string publicKey = rsa.PublicKey;
         if (!string.IsNullOrEmpty(privateKey))
         {
             _privateKeyRsaProvider = CreateRsaProviderFromPrivateKey(privateKey);
@@ -55,7 +60,7 @@ public class RsaHelper
     /// <returns></returns>
     public string Sign(string data)
     {
-        byte[] dataBytes = _encoding.GetBytes(data);
+        byte[] dataBytes = Encoding.UTF8.GetBytes(data);
 
         var signatureBytes =
             _privateKeyRsaProvider.SignData(dataBytes, _hashAlgorithmName, RSASignaturePadding.Pkcs1);
@@ -75,7 +80,7 @@ public class RsaHelper
     /// <returns></returns>
     public bool Verify(string data, string sign)
     {
-        byte[] dataBytes = _encoding.GetBytes(data);
+        byte[] dataBytes = Encoding.UTF8.GetBytes(data);
         byte[] signBytes = Convert.FromBase64String(sign);
 
         var verify =

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Extention;
-using ApeVolo.IBusiness.Interface.System.AppSecret;
+using ApeVolo.IBusiness.Interface.System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -76,7 +76,7 @@ public class VerifySignatureAttribute : BaseActionFilter
         }
 
         var appSecretModel = await filterContext.HttpContext.RequestServices.GetRequiredService<IAppSecretService>()
-            .QueryFirstAsync(x => x.AppId == appId);
+            .TableWhere(x => x.AppId == appId).FirstAsync();
         if (appSecretModel.IsNull())
         {
             filterContext.Result = Error("header:appId无效");

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using ApeVolo.IBusiness.Interface.Message.Email;
-using ApeVolo.IBusiness.Interface.System.Task;
+using ApeVolo.IBusiness.Interface.System;
 using ApeVolo.QuartzNetService.service;
 using Microsoft.Extensions.Logging;
 using Quartz;

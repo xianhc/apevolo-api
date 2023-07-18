@@ -11,27 +11,27 @@ public class RedisOptions
     /// <summary>
     /// 数据库地址
     /// </summary>
-    public string RedisHost { get; set; }
+    public string Host { get; set; }
 
     /// <summary>
     /// 端口
     /// </summary>
-    public string Port { get; set; }
+    public int Port { get; set; }
 
     /// <summary>
     /// 数据库用户名
     /// </summary>
-    public string RedisName { get; set; }
+    public string Name { get; set; }
 
     /// <summary>
     /// 数据库密码
     /// </summary>
-    public string RedisPass { get; set; }
+    public string Password { get; set; }
 
     /// <summary>
     /// 库
     /// </summary>
-    public int RedisIndex { get; set; }
+    public int Index { get; set; }
 
     /// <summary>
     /// 异步连接等待时间

@@ -7,8 +7,7 @@ using ApeVolo.Common.DI;
 using ApeVolo.Common.Extention;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Interface.Message.Email;
-using ApeVolo.IBusiness.Interface.Message.Email.Account;
-using ApeVolo.IBusiness.Interface.System.Setting;
+using ApeVolo.IBusiness.Interface.System;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 
@@ -17,7 +16,7 @@ namespace ApeVolo.Business.Message.Email;
 /// <summary>
 /// SMTP构造
 /// </summary>
-public class SmtpBuilder : ISmtpBuilder, IDependencyService
+public class SmtpBuilder : ISmtpBuilder
 {
     #region Fields
 
@@ -54,7 +53,7 @@ public class SmtpBuilder : ISmtpBuilder, IDependencyService
             var settingDto = await _settingService.FindSettingByName("DefaultEmailAccountId");
             var defaultEmailAccountId = settingDto?.Value.ToLong();
             emailAccount =
-                await _emailAccountService.QueryFirstAsync(x => x.Id == defaultEmailAccountId)
+                await _emailAccountService.TableWhere(x => x.Id == defaultEmailAccountId).FirstAsync()
                 ?? throw new Exception("Email account could not be loaded");
         }
 

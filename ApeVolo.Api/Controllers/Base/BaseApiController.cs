@@ -15,7 +15,7 @@ namespace ApeVolo.Api.Controllers.Base;
  */
 //[TokenFilter]
 //[ApeVoloAuthorize(new string[] { "admin", "common" })]
-[Authorize(Policy = GlobalVar.AuthPolicysName)]
+[Authorize(Policy = AuthConstants.AuthPolicyName)]
 public class BaseApiController : BaseController
 {
 }

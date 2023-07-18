@@ -31,7 +31,7 @@ public class CustomProfile : Profile
     private void InitAutoMapper()
     {
         List<(Type sourceType, Type targetType)> maps = new List<(Type sourceType, Type targetType)>();
-        var atributes = GlobalData.FxAllTypes
+        var atributes = GlobalData.GetIBusinessAssembly().GetTypes()
             .Where(x => x.GetCustomAttribute<AutoMappingAttribute>() != null)
             .Select(x => x.GetCustomAttribute<AutoMappingAttribute>());
 

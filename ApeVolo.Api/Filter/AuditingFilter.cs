@@ -4,13 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
-using ApeVolo.Entity.Monitor.Logs;
-using ApeVolo.IBusiness.Interface.Monitor.Auditing;
-using ApeVolo.IBusiness.Interface.System.Setting;
+using ApeVolo.Entity.Monitor;
+using ApeVolo.IBusiness.Interface.Monitor;
+using ApeVolo.IBusiness.Interface.System;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -26,16 +27,16 @@ namespace ApeVolo.Api.Filter;
 public class AuditingFilter : IAsyncActionFilter
 {
     private readonly IAuditLogService _auditInfoService;
-    private readonly ICurrentUser _currentUser;
+    private readonly IHttpUser _httpUser;
     private readonly ISettingService _settingService;
     private readonly IBrowserDetector _browserDetector;
     private readonly ILogger<AuditingFilter> _logger;
 
-    public AuditingFilter(IAuditLogService auditInfoService, ICurrentUser currentUser,
+    public AuditingFilter(IAuditLogService auditInfoService, IHttpUser httpUser,
         ISettingService settingService, IBrowserDetector browserDetector, ILogger<AuditingFilter> logger)
     {
         _auditInfoService = auditInfoService;
-        _currentUser = currentUser;
+        _httpUser = httpUser;
         _settingService = settingService;
         _browserDetector = browserDetector;
         _logger = logger;
@@ -61,7 +62,8 @@ public class AuditingFilter : IAsyncActionFilter
             var resultContext = await next();
             sw.Stop();
             //执行结果
-
+            var action = context.ActionDescriptor as ControllerActionDescriptor;
+            //var isTrue = action.MethodInfo.IsDefined(typeof(DescriptionAttribute), false);
             if ((await _settingService.FindSettingByName("IsAuditLogSaveDB")).Value.ToBool())
             {
                 var result = resultContext.Result;
@@ -99,7 +101,7 @@ public class AuditingFilter : IAsyncActionFilter
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ExceptionLogFormat.WriteLog(context.HttpContext, ex, _currentUser?.Name,
+            _logger.LogCritical(ExceptionLogFormat.WriteLog(context.HttpContext, ex, _httpUser?.Account,
                 _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                 _browserDetector.Browser?.Version));
             ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
@@ -126,7 +128,7 @@ public class AuditingFilter : IAsyncActionFilter
         var auditLog = new AuditLog
         {
             Id = IdHelper.GetLongId(),
-            CreateBy = _currentUser.Name ?? "",
+            CreateBy = _httpUser.Account,
             CreateTime = DateTime.Now,
             Area = routeValues["area"],
             Controller = routeValues["controller"],

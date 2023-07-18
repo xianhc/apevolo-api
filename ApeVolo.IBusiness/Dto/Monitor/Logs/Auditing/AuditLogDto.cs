@@ -1,11 +1,11 @@
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Entity.Monitor.Logs;
+using ApeVolo.Entity.Monitor;
 using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Dto.Monitor.Logs.Auditing;
 
 [AutoMapping(typeof(AuditLog), typeof(AuditLogDto))]
-public class AuditLogDto : EntityDtoRoot<long>
+public class AuditLogDto : BaseEntityDto<long>
 {
     public string Area { get; set; }
 

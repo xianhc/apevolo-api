@@ -1,5 +1,4 @@
 ﻿using System.Net.Sockets;
-using ApeVolo.Common.Helper;
 using ApeVolo.Common.Helper.Serilog;
 using Polly;
 using RabbitMQ.Client;

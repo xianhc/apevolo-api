@@ -1,17 +1,11 @@
 ﻿using System.Threading.Tasks;
 using ApeVolo.Api.ActionExtension.Sign;
 using ApeVolo.Api.Controllers.Base;
-using ApeVolo.Common.Caches.Redis.Service;
-using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
+using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
-using ApeVolo.Entity.Permission.Test;
-using ApeVolo.IBusiness.Interface.Message.Email;
-using ApeVolo.IBusiness.Interface.Permission.Role;
-using ApeVolo.IBusiness.Interface.Permission.User;
 using ApeVolo.IBusiness.Interface.Test;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shyjus.BrowserDetection;
 
 namespace ApeVolo.Api.Controllers.Test;
 
@@ -20,67 +14,54 @@ namespace ApeVolo.Api.Controllers.Test;
 /// </summary>
 [Route("api/[controller]/[action]")]
 //[ApiController]
-//[Authorize(Policy = GlobalSwitch.AUTH_POLICYS_NAME)]
 public class TestController : BaseApiController
 {
-    private readonly IEmailScheduleTask _emailScheduleTask;
+    // private readonly IEmailScheduleTask _emailScheduleTask;
+    //
+    // //private readonly IEventBus _eventBus;
+    // private readonly IRedisCacheService _redisCacheService;
+    readonly ITestApeVoloService _testApeVoloService;
+    // private readonly IUserService _userService;
+    // private readonly IRoleService _roleService;
+    // private readonly IBrowserDetector _browserDetector;
 
-    //private readonly IEventBus _eventBus;
-    private readonly IRedisCacheService _redisCacheService;
-    private readonly ITestApeVoloService _testApeVoloService;
-    private readonly IUserService _userService;
-    private readonly IRoleService _roleService;
-    private readonly IBrowserDetector _browserDetector;
-
-    public TestController(IEmailScheduleTask emailScheduleTask, ITestApeVoloService testApeVoloService,
-        IRedisCacheService redisCacheService, IUserService userService, IRoleService roleService,
-        IBrowserDetector browserDetector)
+    public TestController(ITestApeVoloService testApeVoloService)
     {
-        _emailScheduleTask = emailScheduleTask;
         _testApeVoloService = testApeVoloService;
-        _redisCacheService = redisCacheService;
         //_eventBus = eventBus;
-        _userService = userService;
-        _roleService = roleService;
-        _browserDetector = browserDetector;
     }
 
-    /// <summary>
-    /// 邮件测试
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [AllowAnonymous]
-    public async Task<ActionResult<object>> TestSecret()
-    {
-        await _emailScheduleTask.ExecuteAsync();
-        return Success();
-    }
 
-    /// <summary>
-    /// Apache JMeter 性能测试
-    /// </summary>
-    /// <returns></returns>
-    [HttpPost]
-    [AllowAnonymous]
-    public async Task<ActionResult<object>> AddApeVolo()
-    {
-        try
-        {
-            await _testApeVoloService.CreateAsync(new TestApeVolo
-            {
-                Label = "test",
-                Content = "test",
-                Sort = 1
-            });
-        }
-        catch
-        {
-            // ignored
-        }
+    // [HttpGet]
+    // [AllowAnonymous]
+    // public async Task<ActionResult<object>> TestSecret()
+    // {
+    //     //await _emailScheduleTask.ExecuteAsync();
+    //     await Task.CompletedTask;
+    //     return Success();
+    // }
 
-        return Success();
-    }
+
+    // [HttpPost]
+    // [AllowAnonymous]
+    // public async Task<ActionResult<object>> AddApeVolo()
+    // {
+    //     try
+    //     {
+    //         await _testApeVoloService.CreateAsync(new TestApeVolo
+    //         {
+    //             Label = "test",
+    //             Content = "test",
+    //             Sort = 1
+    //         });
+    //     }
+    //     catch
+    //     {
+    //         // ignored
+    //     }
+    //
+    //     return Success();
+    // }
 
     /// <summary>
     /// 签名测试
@@ -103,25 +84,21 @@ public class TestController : BaseApiController
         return Success();
     }
 
-    /// <summary>
-    /// redismq测试
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [AllowAnonymous]
-    public async Task<ActionResult<object>> TestRedisMq()
-    {
-        try
-        {
-            await _redisCacheService.ListLeftPushAsync(MqTopicNameKey.MailboxQueue, "123456789");
-        }
-        catch
-        {
-            // ignored
-        }
-
-        return Success();
-    }
+    // [HttpGet]
+    // [AllowAnonymous]
+    // public async Task<ActionResult<object>> TestRedisMq()
+    // {
+    //     try
+    //     {
+    //         await _redisCacheService.ListLeftPushAsync(MqTopicNameKey.MailboxQueue, "123456789");
+    //     }
+    //     catch
+    //     {
+    //         // ignored
+    //     }
+    //
+    //     return Success();
+    // }
 
 
     /*[HttpGet]
@@ -144,26 +121,4 @@ public class TestController : BaseApiController
 
         return Success();
     }*/
-
-    /// <summary>
-    /// redismq测试
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [AllowAnonymous]
-    public async Task<ActionResult<object>> Test123456()
-    {
-        string text = "";
-        try
-        {
-            text = Localized.Get("Job");
-        }
-        catch
-        {
-            // ignored
-        }
-
-        await Task.CompletedTask;
-        return Success();
-    }
 }

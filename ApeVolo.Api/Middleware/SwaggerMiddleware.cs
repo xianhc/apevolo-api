@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper.Serilog;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace ApeVolo.Api.Middleware;
@@ -20,13 +22,13 @@ public static class SwaggerMiddleware
     {
         if (app.IsNull())
             throw new ArgumentNullException(nameof(app));
-        if (AppSettings.GetValue<bool>("Swagger", "Enabled"))
+        var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
+        if (configs.Swagger.Enabled)
         {
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint($"/swagger/{AppSettings.GetValue("Swagger", "Name")}/swagger.json",
-                    AppSettings.GetValue("Swagger", "Version"));
+                c.SwaggerEndpoint($"/swagger/{configs.Swagger.Name}/swagger.json", configs.Swagger.Version);
 
                 var stream = streamHtml?.Invoke();
                 if (stream == null)

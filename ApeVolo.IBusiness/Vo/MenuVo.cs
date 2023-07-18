@@ -20,7 +20,7 @@ public class MenuVo
 
     public string PId { get; set; }
 
-    public int MenuSort { get; set; }
+    public int Sort { get; set; }
 
     public string Icon { get; set; }
 

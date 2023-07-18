@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 using ApeVolo.Common.DI;
 using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Interface.Message.Email;
-using ApeVolo.IBusiness.Interface.Message.Email.Account;
-using ApeVolo.IBusiness.Interface.Queued.Email;
+using ApeVolo.IBusiness.Interface.Queued;
 using ApeVolo.IBusiness.QueryModel;
 using Microsoft.Extensions.Logging;
 
@@ -14,7 +13,7 @@ namespace ApeVolo.Business.Message.Email;
 /// <summary>
 /// 电子邮件任务
 /// </summary>
-public class EmailScheduleTask : IEmailScheduleTask, IDependencyService
+public class EmailScheduleTask : IEmailScheduleTask
 {
     #region Fields
 
@@ -73,7 +72,7 @@ public class EmailScheduleTask : IEmailScheduleTask, IDependencyService
             try
             {
                 await _emailSender.SendEmailAsync(
-                    await _emailAccountService.QueryFirstAsync(x => x.Id == queuedEmail.EmailAccountId),
+                    await _emailAccountService.TableWhere(x => x.Id == queuedEmail.EmailAccountId).FirstAsync(),
                     queuedEmail.Subject,
                     queuedEmail.Body,
                     queuedEmail.From,

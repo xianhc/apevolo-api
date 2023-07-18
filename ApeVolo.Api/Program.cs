@@ -10,16 +10,19 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var host = CreateHostBuilder(args)
+        //这里注意下，固定读取appsettings.json了
+        IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+        var host = CreateHostBuilder(args, configuration)
             .ConfigureAppConfiguration(r => r.AddJsonFile("IpRateLimit.json"))
             .Build();
         host.Run();
     }
 
 
-    private static IHostBuilder CreateHostBuilder(string[] args) =>
+    private static IHostBuilder CreateHostBuilder(string[] args, IConfiguration configuration) =>
         Host.CreateDefaultBuilder(args)
-            .UseSerilogMiddleware()
+            .UseSerilogMiddleware(configuration)
             .UseServiceProviderFactory(new AutofacServiceProviderFactory())
             .ConfigureWebHostDefaults(webBuilder =>
             {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
@@ -14,7 +16,7 @@ public static class SerilogMiddleware
     private const string SerilogOutputTemplate =
         "{NewLine}时间:{Timestamp:yyyy-MM-dd HH:mm:ss.fff}{NewLine}所在类:{SourceContext}{NewLine}等级:{Level}{NewLine}信息:{Message}{NewLine}{Exception}";
 
-    public static IHostBuilder UseSerilogMiddleware(this IHostBuilder builder)
+    public static IHostBuilder UseSerilogMiddleware(this IHostBuilder builder, IConfiguration configuration)
     {
         return builder.UseSerilog((context, logger) => //注册Serilog
         {
@@ -39,15 +41,18 @@ public static class SerilogMiddleware
                             Encoding.UTF8)));
             }
 
-            if (AppSettings.IsDevelopment)
+            var isQuickDebug = configuration["IsQuickDebug"].ToBool();
+            if (isQuickDebug)
             {
                 //开发环境下输出日志到控制台
                 logger.WriteTo.Console();
             }
 
+            var elasticsearchEnabled = configuration["Middleware:Elasticsearch:Enabled"].ToBool();
+
             //需要配置elasticsearch环境使用
             //docker run --name elasticsearch -d -e ES_JAVA_OPTS="-Xms512m -Xmx512m" -e "discovery.type=single-node" -p 9200:9200 -p 9300:9300 elasticsearch:7.5.0
-            if (AppSettings.GetValue<bool>("Middleware", "Elasticsearch", "Enabled"))
+            if (elasticsearchEnabled)
             {
                 logger.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://127.0.0.1:9200/"))
                 {

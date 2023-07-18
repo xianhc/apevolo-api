@@ -1,13 +1,14 @@
 ﻿using System;
 using ApeVolo.Api.MQ.Rabbit.EventHandling;
 using ApeVolo.Api.MQ.Rabbit.Events;
-using ApeVolo.Common.Global;
+using ApeVolo.Common.ConfigOptions;
 using ApeVolo.EventBus;
 using ApeVolo.EventBus.Abstractions;
 using ApeVolo.EventBus.EventBusRabbitMQ;
 using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ApeVolo.Api.Extensions;
 
@@ -16,27 +17,27 @@ namespace ApeVolo.Api.Extensions;
 /// </summary>
 public static class EventBusSetup
 {
-    public static void AddEventBusSetup(this IServiceCollection services)
+    public static void AddEventBusSetup(this IServiceCollection services, Configs configs)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
 
-        if (AppSettings.GetValue<bool>("EventBus", "Enabled"))
+        if (configs.EventBus.Enabled)
         {
-            var subscriptionClientName = AppSettings.GetValue("EventBus", "SubscriptionClientName");
+            var subscriptionClientName = configs.EventBus.SubscriptionClientName;
 
             services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
             services.AddTransient<UserQueryIntegrationEventHandler>();
 
-            if (AppSettings.GetValue<bool>("RabbitMQ", "Enabled"))
+            if (configs.Middleware.RabbitMq.Enabled)
             {
                 services.AddSingleton<IEventBus, EventBusRabbitMQ>(sp =>
                 {
-                    var rabbitMQPersistentConnection = sp.GetRequiredService<IRabbitMQPersistentConnection>();
+                    var rabbitMqPersistentConnection = sp.GetRequiredService<IRabbitMQPersistentConnection>();
                     var iLifetimeScope = sp.GetRequiredService<ILifetimeScope>();
                     var eventBusSubcriptionsManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
-                    var retryCount = AppSettings.GetValue<int>("RabbitMQ", "RetryCount");
+                    var retryCount = configs.Rabbit.RetryCount;
 
-                    return new EventBusRabbitMQ(sp, rabbitMQPersistentConnection, iLifetimeScope,
+                    return new EventBusRabbitMQ(sp, rabbitMqPersistentConnection, iLifetimeScope,
                         subscriptionClientName, eventBusSubcriptionsManager, retryCount);
                 });
             }
@@ -46,7 +47,8 @@ public static class EventBusSetup
 
     public static void ConfigureEventBus(this IApplicationBuilder app)
     {
-        if (AppSettings.GetValue<bool>("EventBus", "Enabled"))
+        var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
+        if (configs.EventBus.Enabled)
         {
             var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
 

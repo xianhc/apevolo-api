@@ -99,4 +99,11 @@ public static partial class ExtObject
         DateTime startTime = new DateTime(1970, 1, 1, 0, 0, 0).ToLocalTime();
         return (long)(time - startTime).TotalMilliseconds;
     }
+
+    //时间戳(秒)String转换为DateTime类型转换
+    public static DateTime TicksToDateTime(this long timestamp)
+    {
+        DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(timestamp);
+        return dateTimeOffset.LocalDateTime;
+    }
 }

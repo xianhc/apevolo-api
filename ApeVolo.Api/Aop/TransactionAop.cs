@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Threading.Tasks;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.IRepository.UnitOfWork;
+using ApeVolo.Repository.UnitOfWork;
 using Castle.DynamicProxy;
 
 namespace ApeVolo.Api.Aop;

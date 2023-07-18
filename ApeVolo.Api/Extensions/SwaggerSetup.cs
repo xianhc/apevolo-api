@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper.Serilog;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -18,7 +18,7 @@ public static class SwaggerSetup
 {
     private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(SwaggerSetup));
 
-    public static void AddSwaggerSetup(this IServiceCollection services)
+    public static void AddSwaggerSetup(this IServiceCollection services, Configs configs)
     {
         if (services.IsNull()) throw new ArgumentNullException(nameof(services));
 
@@ -26,10 +26,10 @@ public static class SwaggerSetup
 
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc(AppSettings.GetValue("Swagger", "Name"), new OpenApiInfo
+            c.SwaggerDoc(configs.Swagger.Name, new OpenApiInfo
             {
-                Version = AppSettings.GetValue("Swagger", "Version"),
-                Title = AppSettings.GetValue("Swagger", "Title") + "    " + RuntimeInformation.FrameworkDescription
+                Version = configs.Swagger.Version,
+                Title = configs.Swagger.Title + "    " + RuntimeInformation.FrameworkDescription
             });
 
             try
@@ -53,7 +53,7 @@ public static class SwaggerSetup
             // 必须是 oauth2
             c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
-                Description = "JWT授权(数据将在请求头中进行传输) 直接在下框中输入Bearer {token}（注意两者之间是一个空格）\"",
+                Description = "JWT授权(数据将在请求头中进行传输) 直接在下框中输入Bearer {token} \"",
                 Name = "Authorization", //jwt默认的参数名称
                 In = ParameterLocation.Header, //jwt默认存放Authorization信息的位置(请求头中)
                 Type = SecuritySchemeType.ApiKey

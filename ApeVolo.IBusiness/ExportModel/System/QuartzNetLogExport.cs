@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
 
@@ -8,7 +7,7 @@ namespace ApeVolo.IBusiness.ExportModel.System;
 public class QuartzNetLogExport : ExportBase
 {
     [Display(Name = "TaskLog.TaskId")]
-    public string TaskId { get; set; }
+    public long TaskId { get; set; }
 
     [Display(Name = "Task.TaskName")]
     public string TaskName { get; set; }

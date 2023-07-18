@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -10,33 +11,51 @@ namespace ApeVolo.Common.Global;
 /// </summary>
 public static class GlobalData
 {
-    static readonly List<string> FxAssemblies = new List<string>
-        { "ApeVolo.Repository", "ApeVolo.Business", "ApeVolo.IBusiness" };
-
-    static readonly List<string> EntityAssemblys = new List<string> { "ApeVolo.Entity" };
-
-    static GlobalData()
+    public static Assembly GetEntityAssembly()
     {
-        var assemblys = FxAssemblies.Select(x => Assembly.Load(x)).ToList();
-        List<Type> allTypes = new List<Type>();
-        assemblys.ForEach(aAssembly => { allTypes.AddRange(aAssembly.GetTypes()); });
-        FxAllTypes = allTypes;
+        var basePath = AppContext.BaseDirectory;
+        var dllFile = Path.Combine(basePath, "ApeVolo.Entity.dll");
+        if (!File.Exists(dllFile))
+        {
+            throw new System.Exception("ApeVolo.Entity.dll文件未生成,编译项目成功后重试！");
+        }
 
-
-        //实体
-        var entityAssemblys = EntityAssemblys.Select(x => Assembly.Load(x)).ToList();
-        List<Type> entityTypes = new List<Type>();
-        entityAssemblys.ForEach(entityAssembly => { entityTypes.AddRange(entityAssembly.GetTypes()); });
-        EntityTypes = entityTypes;
+        return Assembly.LoadFrom(dllFile);
     }
 
-    /// <summary>
-    /// 框架所有自定义类
-    /// </summary>
-    public static readonly List<Type> FxAllTypes;
+    public static Assembly GetIBusinessAssembly()
+    {
+        var basePath = AppContext.BaseDirectory;
+        var dllFile = Path.Combine(basePath, "ApeVolo.IBusiness.dll");
+        if (!File.Exists(dllFile))
+        {
+            throw new System.Exception("ApeVolo.IBusiness.dll文件未生成,编译项目成功后重试！");
+        }
 
-    /// <summary>
-    /// 所有实体类
-    /// </summary>
-    public static readonly List<Type> EntityTypes;
+        return Assembly.LoadFrom(dllFile);
+    }
+
+    public static Assembly GetBusinessAssembly()
+    {
+        var basePath = AppContext.BaseDirectory;
+        var dllFile = Path.Combine(basePath, "ApeVolo.Business.dll");
+        if (!File.Exists(dllFile))
+        {
+            throw new System.Exception("ApeVolo.Business.dll文件未生成,编译项目成功后重试！");
+        }
+
+        return Assembly.LoadFrom(dllFile);
+    }
+
+    public static Assembly GetRepositoryAssembly()
+    {
+        var basePath = AppContext.BaseDirectory;
+        var dllFile = Path.Combine(basePath, "ApeVolo.Repository.dll");
+        if (!File.Exists(dllFile))
+        {
+            throw new System.Exception("ApeVolo.Repository.dll文件未生成,编译项目成功后重试！");
+        }
+
+        return Assembly.LoadFrom(dllFile);
+    }
 }

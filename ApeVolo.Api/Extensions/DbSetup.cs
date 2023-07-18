@@ -15,6 +15,6 @@ public static class DbSetup
         if (services.IsNull()) throw new ArgumentNullException(nameof(services));
 
         services.AddScoped<DataSeeder>();
-        services.AddScoped<MyContext>();
+        services.AddScoped<DataContext>();
     }
 }

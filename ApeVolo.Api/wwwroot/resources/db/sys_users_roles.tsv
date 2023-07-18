@@ -1,26 +1,10 @@
 [
     {
-        "id":"1306054134645919977",
-        "userId":"1306054134645919750",
-        "roleId":"1306054134645919752",
-        "createBy":"apevolo",
-        "createTime":"/Date(1609430400000+0800)/",
-        "updateBy":null,
-        "updateTime":null,
-        "isDeleted":false,
-        "DeletedBy":null,
-        "DeletedTime":null
+        "UserId":"1306054134645919750",
+        "RoleId":"1306054134645919752"
     },
     {
-        "id":"1306054134645919978",
-        "userId":"1306054134645919751",
-        "roleId":"1521439155194695680",
-        "createBy":"apevolo",
-        "createTime":"/Date(1609430400000+0800)/",
-        "updateBy":null,
-        "updateTime":null,
-        "isDeleted":false,
-        "DeletedBy":null,
-        "DeletedTime":null
+        "UserId":"1306054134645919751",
+        "RoleId":"1521439155194695680"
     }
 ]

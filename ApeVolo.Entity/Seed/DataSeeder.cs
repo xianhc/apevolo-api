@@ -9,13 +9,11 @@ using ApeVolo.Common.DI;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
+using ApeVolo.Entity.Base;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.Entity.Permission;
-using ApeVolo.Entity.Permission.Role;
-using ApeVolo.Entity.Permission.User;
 using ApeVolo.Entity.System;
-using ApeVolo.Entity.System.Dictionary;
-using ApeVolo.Entity.System.Task;
+using ApeVolo.Entity.Test;
 using Newtonsoft.Json;
 using SqlSugar;
 
@@ -26,50 +24,49 @@ public class DataSeeder
     /// <summary>
     /// 异步添加种子数据
     /// </summary>
-    /// <param name="myContext"></param>
-    /// <param name="webRootPath"></param>
+    /// <param name="dataContext"></param>
+    /// <param name="isInitData"></param>
     /// <returns></returns>
-    public static async Task InitSystemDataAsync(MyContext myContext, string webRootPath)
+    public static async Task InitSystemDataAsync(DataContext dataContext, bool isInitData, bool isQuickDebug)
     {
         try
         {
-            if (string.IsNullOrEmpty(webRootPath))
-            {
-                throw new Exception("获取wwwroot路径时，异常！");
-            }
-
             ConsoleHelper.WriteLine($"程序正在启动....", ConsoleColor.Green);
-            ConsoleHelper.WriteLine($"是否开发环境: {AppSettings.IsDevelopment}");
+            ConsoleHelper.WriteLine($"是否开发环境: {isQuickDebug}");
             ConsoleHelper.WriteLine($"ContentRootPath: {AppSettings.ContentRootPath}");
             ConsoleHelper.WriteLine($"WebRootPath: {AppSettings.WebRootPath}");
-            ConsoleHelper.WriteLine($"DB Type: {MyContext.DbType}");
-            ConsoleHelper.WriteLine($"DB ConnectString: {MyContext.ConnectionString}");
+            ConsoleHelper.WriteLine($"DB Type: {dataContext.DbType}");
+            ConsoleHelper.WriteLine($"DB ConnectString: {dataContext.ConnectionString}");
             ConsoleHelper.WriteLine("初始化数据库....");
-            myContext.Db.DbMaintenance.CreateDatabase();
+            dataContext.Db.DbMaintenance.CreateDatabase();
             ConsoleHelper.WriteLine("初始化数据库成功。", ConsoleColor.Green);
             ConsoleHelper.WriteLine();
 
             ConsoleHelper.WriteLine("初始化数据表....");
 
-            var localizedTable = typeof(ILocalizedTable);
-            var localizedTableArray = GlobalData.EntityTypes
-                .Where(x => localizedTable.IsAssignableFrom(x) && x != localizedTable).ToArray();
+            //继承自BaseEntity或者RootKey<>的类型
+            //一些没有继承的需手动维护添加
+            //例如，用户与岗位(UserJobs)
+            var entityList = GlobalData.GetEntityAssembly().GetTypes()
+                .Where(x => (x.BaseType == typeof(BaseEntity) || x.BaseType == typeof(RootKey<long>)) &&
+                            x != typeof(BaseEntity)).ToList();
+            entityList.Add(typeof(UserRoles));
+            entityList.Add(typeof(UserJobs));
+            entityList.Add(typeof(RoleMenu));
+            entityList.Add(typeof(RolesDepartments));
 
-            localizedTableArray.ForEach(entity =>
+
+            entityList.ForEach(entity =>
             {
                 var attr = entity.GetCustomAttribute<SugarTable>();
-                if (attr == null)
+
+                if (!dataContext.Db.DbMaintenance.IsAnyTable(attr == null ? entity.Name : attr.TableName))
                 {
-                    ConsoleHelper.WriteLine($"Entity:{entity.Name}-->缺少SugarTable特性");
-                }
-                else
-                {
-                    if (!myContext.Db.DbMaintenance.IsAnyTable(attr.TableName))
-                    {
-                        ConsoleHelper.WriteLine(
-                            $"Entity:{entity.Name}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->创建完成！");
-                        myContext.Db.CodeFirst.InitTables(entity);
-                    }
+                    ConsoleHelper.WriteLine(
+                        attr == null
+                            ? $"Entity:{entity.Name}-->缺少SugarTable特性"
+                            : $"Entity:{entity.Name}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->创建完成！");
+                    dataContext.Db.CodeFirst.InitTables(entity);
                 }
             });
 
@@ -79,7 +76,7 @@ public class DataSeeder
 
             #region 添加初始数据
 
-            if (AppSettings.GetValue<bool>("InitSeedData"))
+            if (isInitData)
             {
                 ConsoleHelper.WriteLine("初始化种子数据....");
                 JsonSerializerSettings setting = new JsonSerializerSettings();
@@ -91,16 +88,16 @@ public class DataSeeder
                     return setting;
                 };
                 string seedDataFolder = "resources/db/{0}.tsv";
-                seedDataFolder = Path.Combine(webRootPath, seedDataFolder);
+                seedDataFolder = Path.Combine(AppSettings.WebRootPath, seedDataFolder);
 
                 #region 用户
 
-                if (!await myContext.Db.Queryable<User>().AnyAsync())
+                if (!await dataContext.Db.Queryable<User>().AnyAsync())
                 {
                     var attr = typeof(User).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<User>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<User>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<User>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -114,12 +111,12 @@ public class DataSeeder
 
                 #region 角色
 
-                if (!await myContext.Db.Queryable<Role>().AnyAsync())
+                if (!await dataContext.Db.Queryable<Role>().AnyAsync())
                 {
                     var attr = typeof(Role).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<Role>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<Role>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<Role>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -133,12 +130,12 @@ public class DataSeeder
 
                 #region 菜单
 
-                if (!await myContext.Db.Queryable<Menu>().AnyAsync())
+                if (!await dataContext.Db.Queryable<Menu>().AnyAsync())
                 {
                     var attr = typeof(Menu).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<Menu>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<Menu>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<Menu>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -152,12 +149,12 @@ public class DataSeeder
 
                 #region 部门
 
-                if (!await myContext.Db.Queryable<Department>().AnyAsync())
+                if (!await dataContext.Db.Queryable<Department>().AnyAsync())
                 {
                     var attr = typeof(Department).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<Department>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<Department>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<Department>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -171,12 +168,12 @@ public class DataSeeder
 
                 #region 岗位
 
-                if (!await myContext.Db.Queryable<Job>().AnyAsync())
+                if (!await dataContext.Db.Queryable<Job>().AnyAsync())
                 {
                     var attr = typeof(Job).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<Job>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<Job>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<Job>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -190,12 +187,12 @@ public class DataSeeder
 
                 #region 系统全局设置
 
-                if (!await myContext.Db.Queryable<Setting>().AnyAsync())
+                if (!await dataContext.Db.Queryable<Setting>().AnyAsync())
                 {
                     var attr = typeof(Setting).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<Setting>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<Setting>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<Setting>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -209,12 +206,12 @@ public class DataSeeder
 
                 #region 字典
 
-                if (!await myContext.Db.Queryable<Dict>().AnyAsync())
+                if (!await dataContext.Db.Queryable<Dict>().AnyAsync())
                 {
                     var attr = typeof(Dict).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<Dict>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<Dict>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<Dict>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -228,12 +225,12 @@ public class DataSeeder
 
                 #region 字典详情
 
-                if (!await myContext.Db.Queryable<DictDetail>().AnyAsync())
+                if (!await dataContext.Db.Queryable<DictDetail>().AnyAsync())
                 {
                     var attr = typeof(DictDetail).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<DictDetail>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<DictDetail>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<DictDetail>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -247,12 +244,12 @@ public class DataSeeder
 
                 #region 作业调度
 
-                if (!await myContext.Db.Queryable<QuartzNet>().AnyAsync())
+                if (!await dataContext.Db.Queryable<QuartzNet>().AnyAsync())
                 {
                     var attr = typeof(QuartzNet).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<QuartzNet>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<QuartzNet>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<QuartzNet>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -266,12 +263,12 @@ public class DataSeeder
 
                 #region 邮箱账户
 
-                if (!await myContext.Db.Queryable<EmailAccount>().AnyAsync())
+                if (!await dataContext.Db.Queryable<EmailAccount>().AnyAsync())
                 {
                     var attr = typeof(EmailAccount).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<EmailAccount>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<EmailAccount>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<EmailAccount>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -285,12 +282,12 @@ public class DataSeeder
 
                 #region 邮件模板
 
-                if (!await myContext.Db.Queryable<EmailMessageTemplate>().AnyAsync())
+                if (!await dataContext.Db.Queryable<EmailMessageTemplate>().AnyAsync())
                 {
                     var attr = typeof(EmailMessageTemplate).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<EmailMessageTemplate>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<EmailMessageTemplate>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<EmailMessageTemplate>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -304,12 +301,12 @@ public class DataSeeder
 
                 #region 用户与角色
 
-                if (!await myContext.Db.Queryable<UserRoles>().AnyAsync())
+                if (!await dataContext.Db.Queryable<UserRoles>().AnyAsync())
                 {
                     var attr = typeof(UserRoles).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<UserRoles>().InsertRangeAsync(
+                        await dataContext.GetEntityDb<UserRoles>().InsertRangeAsync(
                             JsonConvert.DeserializeObject<List<UserRoles>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -323,12 +320,12 @@ public class DataSeeder
 
                 #region 用户与岗位
 
-                if (!await myContext.Db.Queryable<UserJobs>().AnyAsync())
+                if (!await dataContext.Db.Queryable<UserJobs>().AnyAsync())
                 {
                     var attr = typeof(UserJobs).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<UserJobs>()
+                        await dataContext.GetEntityDb<UserJobs>()
                             .InsertRangeAsync(JsonConvert.DeserializeObject<List<UserJobs>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
@@ -342,12 +339,12 @@ public class DataSeeder
 
                 #region 角色与菜单
 
-                if (!await myContext.Db.Queryable<RoleMenu>().AnyAsync())
+                if (!await dataContext.Db.Queryable<RoleMenu>().AnyAsync())
                 {
                     var attr = typeof(RoleMenu).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await myContext.GetEntityDb<RoleMenu>()
+                        await dataContext.GetEntityDb<RoleMenu>()
                             .InsertRangeAsync(JsonConvert.DeserializeObject<List<RoleMenu>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));

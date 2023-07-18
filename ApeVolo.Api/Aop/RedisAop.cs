@@ -55,6 +55,7 @@ public class RedisAop : IInterceptor
                 return;
             }
 
+
             invocation.Proceed();
 
             if (!string.IsNullOrWhiteSpace(cacheKey))
@@ -73,7 +74,11 @@ public class RedisAop : IInterceptor
                     response = invocation.ReturnValue;
                 }
 
-                response ??= string.Empty;
+                //response ??= string.Empty;
+                if (response.IsNullOrEmpty())
+                {
+                    return;
+                }
 
                 AsyncHelper.RunSync(() => _redisCacheService.SetCacheAsync(cacheKey, response,
                     TimeSpan.FromMinutes(redisCachingAttribute.Expiration)));

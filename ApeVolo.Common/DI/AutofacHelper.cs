@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using Microsoft.AspNetCore.Http;
 
 namespace ApeVolo.Common.DI;
@@ -9,6 +10,9 @@ namespace ApeVolo.Common.DI;
 public static class AutofacHelper
 {
     public static ILifetimeScope Container { get; set; }
+    // private static readonly Lazy<ILifetimeScope> LazyContainer = new(() => new ContainerBuilder().Build());
+    //
+    // public static ILifetimeScope Container => LazyContainer.Value;
 
     /// <summary>
     /// 获取全局服务

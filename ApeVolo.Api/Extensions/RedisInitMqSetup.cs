@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using ApeVolo.Api.MQ.Redis;
 using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
-using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
+using ApeVolo.Common.ConfigOptions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ApeVolo.Api.Extensions;
@@ -13,21 +12,21 @@ namespace ApeVolo.Api.Extensions;
 /// </summary>
 public static class RedisInitMqSetup
 {
-    public static void AddRedisInitMqSetup(this IServiceCollection services)
+    public static void AddRedisInitMqSetup(this IServiceCollection services, Configs configs)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
 
         //启动redis消息队列 必须先启动redis缓存
-        if (AppSettings.GetValue<bool>("Middleware", "RedisMq", "Enabled"))
+        if (configs.Middleware.RedisMq.Enabled)
         {
             services.AddRedisMq(m =>
             {
                 //没消息时挂起时长(毫秒)
-                m.SuspendTime = AppSettings.GetValue("RedisConfig", "SuspendTime").ToInt();
+                m.SuspendTime = configs.Redis.SuspendTime;
                 //每次消费消息间隔时间(毫秒)
-                m.IntervalTime = AppSettings.GetValue("RedisConfig", "IntervalTime").ToInt();
+                m.IntervalTime = configs.Redis.IntervalTime;
                 //显示日志
-                m.ShowLog = AppSettings.GetValue("RedisConfig", "ShowLog").ToBool();
+                m.ShowLog = configs.Redis.ShowLog;
                 //订阅者类
                 m.ListSubscribe = new List<Type>
                 {

@@ -1,4 +1,5 @@
 using ApeVolo.Common.DI;
+using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
 
@@ -8,17 +9,19 @@ namespace ApeVolo.Entity.System;
 /// 系统设置
 /// </summary>
 [SugarTable("sys_setting", "系统设置")]
-public class Setting : EntityRoot<long>, ILocalizedTable
+public class Setting : BaseEntity, ISoftDeletedEntity
 {
-    [SugarColumn(ColumnName = "name", ColumnDescription = "名称", IsNullable = false)]
+    [SugarColumn(ColumnDescription = "名称", IsNullable = false)]
     public string Name { get; set; }
 
-    [SugarColumn(ColumnName = "value", ColumnDescription = "值", IsNullable = false)]
+    [SugarColumn(ColumnDescription = "值", IsNullable = false)]
     public string Value { get; set; }
 
-    [SugarColumn(ColumnName = "enabled", IsNullable = false)]
+    [SugarColumn(IsNullable = false)]
     public bool Enabled { get; set; }
 
-    [SugarColumn(ColumnName = "description", ColumnDescription = "描述", IsNullable = true)]
+    [SugarColumn(ColumnDescription = "描述", IsNullable = true)]
     public string Description { get; set; }
+
+    public bool IsDeleted { get; set; }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Linq;
+using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ApeVolo.Api.Extensions;
@@ -10,16 +11,16 @@ namespace ApeVolo.Api.Extensions;
 /// </summary>
 public static class CorsSetup
 {
-    public static void AddCorsSetup(this IServiceCollection services)
+    public static void AddCorsSetup(this IServiceCollection services, Configs configs)
     {
         if (services.IsNull()) throw new ArgumentNullException(nameof(services));
 
         services.AddCors(c =>
         {
-            if (AppSettings.GetValue<bool>("Cors", "EnableAllIPs"))
+            if (configs.Cors.EnableAll)
             {
                 //允许任意跨域请求
-                c.AddPolicy(AppSettings.GetValue("Cors", "PolicyName"),
+                c.AddPolicy(configs.Cors.Name,
                     policy =>
                     {
                         policy
@@ -31,11 +32,11 @@ public static class CorsSetup
             }
             else
             {
-                c.AddPolicy(AppSettings.GetValue("Cors", "PolicyName"),
+                c.AddPolicy(configs.Cors.Name,
                     policy =>
                     {
                         policy
-                            .WithOrigins(AppSettings.GetValue("Cors", "IPs").Split(','))
+                            .WithOrigins(configs.Cors.Policy.Select(x => x.Domain).ToArray())
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });

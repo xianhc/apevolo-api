@@ -3,12 +3,13 @@ using ApeVolo.Api.Extensions;
 using ApeVolo.Api.Filter;
 using ApeVolo.Api.Middleware;
 using ApeVolo.Common.ClassLibrary;
+using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.DI;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Seed;
-using ApeVolo.IBusiness.Interface.System.Task;
+using ApeVolo.IBusiness.Interface.System;
 using ApeVolo.QuartzNetService.service;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -21,7 +22,6 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Serilog;
@@ -44,27 +44,27 @@ public class Startup
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddSingleton(new AppSettings(WebHostEnvironment));
-        services.AddScoped<ICurrentUser, CurrentUser>();
-        services.AddSingleton(Configuration);
-        services.AddLogging();
+        var configs = Configuration.Get<Configs>();
+        services.Configure<Configs>(Configuration);
+        services.AddSerilogSetup();
         services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
         services.Configure<IISServerOptions>(options => { options.AllowSynchronousIO = true; });
-        services.AddMemoryCacheSetup();
-        services.AddRedisCacheSetup();
-        services.AddSqlsugarSetup();
+        services.AddMemoryCache();
+        services.AddDistributedMemoryCache();
+        services.AddRedisCacheSetup(configs);
+        services.AddSqlSugarSetup(configs);
         services.AddDbSetup();
         services.AddAutoMapperSetup();
-        services.AddCorsSetup();
+        services.AddCorsSetup(configs);
         services.AddMiniProfilerSetup();
-        services.AddSwaggerSetup();
+        services.AddSwaggerSetup(configs);
         services.AddQuartzNetJobSetup();
-        services.AddAuthorizationSetup();
-        services.AddSignalR().AddNewtonsoftJsonProtocol();
+        services.AddAuthorizationSetup(configs);
         services.AddBrowserDetection();
-        services.AddRedisInitMqSetup();
+        services.AddRedisInitMqSetup(configs);
         services.AddIpStrategyRateLimitSetup(Configuration);
-        services.AddRabbitMQSetup();
-        services.AddEventBusSetup();
+        services.AddRabbitMqSetup(configs);
+        services.AddEventBusSetup(configs);
         services.AddLocalization(options => options.ResourcesPath = "Resources");
         services.AddMultiLanguages(op => op.LocalizationType = typeof(Common.Language));
 
@@ -87,16 +87,16 @@ public class Startup
                     options.SerializerSettings.ContractResolver = new CustomContractResolver();
                 }
             );
+        services.AddScoped<ApeContext>();
     }
 
     public void ConfigureContainer(ContainerBuilder builder)
     {
-        builder.RegisterModule(new AutofacRegister());
+        builder.RegisterModule(new AutofacRegister(Configuration));
     }
 
-    public void Configure(IApplicationBuilder app, MyContext myContext,
-        IQuartzNetService quartzNetService,
-        ISchedulerCenterService schedulerCenter, ILoggerFactory loggerFactory)
+    public void Configure(IApplicationBuilder app, DataContext dataContext, IQuartzNetService quartzNetService,
+        ISchedulerCenterService schedulerCenter, IOptionsMonitor<Configs> configs, ApeContext apeContext)
     {
         var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
         if (locOptions != null) app.UseRequestLocalization(locOptions.Value);
@@ -123,7 +123,7 @@ public class Startup
         app.UseSwaggerMiddleware(() =>
             GetType().GetTypeInfo().Assembly.GetManifestResourceStream("ApeVolo.Api.index.html"));
         // CORS跨域
-        app.UseCors(AppSettings.GetValue("Cors", "PolicyName"));
+        app.UseCors(configs.CurrentValue.Cors.Name);
         //静态文件
         app.UseStaticFiles();
         //cookie
@@ -131,8 +131,6 @@ public class Startup
         //错误页
         app.UseStatusCodePages();
         app.UseRouting();
-
-        app.UseCors("IpPolicy");
         // 认证
         app.UseAuthentication();
         // 授权
@@ -147,7 +145,7 @@ public class Startup
         });
         app.UseHttpMethodOverride();
 
-        app.UseDataSeederMiddleware(myContext);
+        app.UseDataSeederMiddleware(dataContext);
         //作业调度
         app.UseQuartzNetJobMiddleware(quartzNetService, schedulerCenter);
 
@@ -155,6 +153,7 @@ public class Startup
         new IdHelperBootstrapper().SetWorkderId(1).Boot();
         //事件总线配置订阅
         app.ConfigureEventBus();
+
         //List<object> items = new List<object>();
         //foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         //{

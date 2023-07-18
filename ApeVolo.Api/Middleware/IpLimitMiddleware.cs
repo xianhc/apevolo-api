@@ -1,9 +1,11 @@
 ﻿using System;
+using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper.Serilog;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace ApeVolo.Api.Middleware;
@@ -19,10 +21,10 @@ public static class IpLimitMiddleware
     {
         if (app.IsNull())
             throw new ArgumentNullException(nameof(app));
-
         try
         {
-            if (AppSettings.GetValue<bool>("Middleware", "IpLimit", "Enabled"))
+            var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
+            if (configs.Middleware.IpLimit.Enabled)
             {
                 app.UseIpRateLimiting();
             }

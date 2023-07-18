@@ -14,7 +14,7 @@ namespace ApeVolo.Business.Message.Email;
 /// <summary>
 /// 邮件发送
 /// </summary>
-public class EmailSender : IEmailSender, IDependencyService
+public class EmailSender : IEmailSender
 {
     #region Fields
 

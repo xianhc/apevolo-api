@@ -1,4 +1,6 @@
-﻿using ApeVolo.Common.DI;
+﻿using System;
+using ApeVolo.Common.DI;
+using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
 
@@ -8,23 +10,25 @@ namespace ApeVolo.Entity.Permission;
 /// 岗位
 /// </summary>
 [SugarTable("sys_job", "岗位")]
-public class Job : EntityRoot<long>, ILocalizedTable
+public class Job : BaseEntity, ISoftDeletedEntity
 {
     /// <summary>
     /// 名称
     /// </summary>
-    [SugarColumn(ColumnName = "name", IsNullable = false)]
+    [SugarColumn(IsNullable = false)]
     public string Name { get; set; }
 
     /// <summary>
     /// 排序
     /// </summary>
-    [SugarColumn(ColumnName = "sort", IsNullable = true, ColumnDescription = "排序")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "排序")]
     public int Sort { get; set; }
 
     /// <summary>
     /// 是否激活
     /// </summary>
-    [SugarColumn(ColumnName = "enabled", IsNullable = false, ColumnDescription = "是否激活")]
+    [SugarColumn(IsNullable = false, ColumnDescription = "是否激活")]
     public bool Enabled { get; set; }
+
+    public bool IsDeleted { get; set; }
 }

@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="3.0.0" />
-    <PackageReference Include="Autofac" Version="6.4.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />

@@ -10,9 +10,9 @@ using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
-using ApeVolo.Entity.Monitor.Logs;
-using ApeVolo.IBusiness.Interface.Monitor.Exception;
-using ApeVolo.IBusiness.Interface.System.Setting;
+using ApeVolo.Entity.Monitor;
+using ApeVolo.IBusiness.Interface.Monitor;
+using ApeVolo.IBusiness.Interface.System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -29,15 +29,15 @@ namespace ApeVolo.Api.Filter;
 public class GlobalExceptionFilter : IAsyncExceptionFilter
 {
     private readonly IExceptionLogService _exceptionLogService;
-    private readonly ICurrentUser _currentUser;
     private readonly ISettingService _settingService;
     private readonly IBrowserDetector _browserDetector;
     private readonly ILogger<GlobalExceptionFilter> _logger;
+    private readonly ApeContext _apeContext;
 
-    public GlobalExceptionFilter(ICurrentUser currentUser, IExceptionLogService exceptionLogService,
+    public GlobalExceptionFilter(ApeContext apeContext, IExceptionLogService exceptionLogService,
         ISettingService settingService, IBrowserDetector browserDetector, ILogger<GlobalExceptionFilter> logger)
     {
-        _currentUser = currentUser;
+        _apeContext = apeContext;
         _exceptionLogService = exceptionLogService;
         _settingService = settingService;
         _browserDetector = browserDetector;
@@ -74,17 +74,17 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             ContentType = "application/json; charset=utf-8",
             StatusCode = statusCode
         };
-        if (AppSettings.GetValue<bool>("IsMiniProfiler"))
+        if (_apeContext.Configs.IsMiniProfiler)
         {
             MiniProfiler.Current.CustomTiming("Errors：", throwMsg);
         }
 
         //记录日志
-        _logger.LogError(WriteLog(context.HttpContext, context.Exception, _currentUser?.Name,
+        _logger.LogError(WriteLog(context.HttpContext, context.Exception, _apeContext.HttpUser.Account,
             _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
             _browserDetector.Browser?.Version), context.Exception);
-        if ((await _settingService.FindSettingByName("IsExceptionLogSaveDB")).Value.ToBool() &&
-            exceptionType != typeof(DemoRequestException))
+        var settingDto = await _settingService.FindSettingByName("IsExceptionLogSaveDB");
+        if (settingDto != null && settingDto.Value.ToBool() && exceptionType != typeof(DemoRequestException))
         {
             //记录日志到数据库
             try
@@ -97,7 +97,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(WriteLog(context.HttpContext, ex, _currentUser?.Name,
+                _logger.LogCritical(WriteLog(context.HttpContext, ex, _apeContext.HttpUser.Account,
                     _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                     _browserDetector.Browser?.Version));
                 ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
@@ -127,7 +127,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             log = new ExceptionLog
             {
                 Id = IdHelper.GetLongId(),
-                CreateBy = _currentUser.Name ?? "",
+                CreateBy = _apeContext.HttpUser.Account,
                 CreateTime = DateTime.Now,
                 Area = routeValues["area"],
                 Controller = routeValues["controller"],

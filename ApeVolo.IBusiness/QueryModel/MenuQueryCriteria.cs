@@ -9,5 +9,5 @@ public class MenuQueryCriteria
 
     public List<DateTime> CreateTime { get; set; }
 
-    public long? PId { get; set; }
+    public long? ParentId { get; set; }
 }

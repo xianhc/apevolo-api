@@ -32,7 +32,7 @@ public class MenuExport : ExportBase
     public long PId { get; set; }
 
     [Display(Name = "Menu.MenuSort")]
-    public int MenuSort { get; set; }
+    public int Sort { get; set; }
 
     [Display(Name = "Menu.Icon")]
     public string Icon { get; set; }

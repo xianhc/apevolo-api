@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ApeVolo.IBusiness.Dto.Permission.User;
+using ApeVolo.IBusiness.Dto.Permission;
 
 namespace ApeVolo.IBusiness.Vo;
 

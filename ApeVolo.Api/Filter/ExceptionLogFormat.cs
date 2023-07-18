@@ -29,8 +29,8 @@ public static class ExceptionLogFormat
         var remoteIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
         return string.Format("【异常信息】 : {0} \r\n" +
                              "【异常类型】 : {1} \r\n" +
-                             "【请求类型】 : {2} \r\n" +
-                             "【请求路径】 : {3} \r\n" +
+                             "【请求路径】 : {2} \r\n" +
+                             "【请求类型】 : {3} \r\n" +
                              "【请求内容】 : {4} \r\n" +
                              "【当前用户】 : {5} \r\n" +
                              "【当前IP】  : {6} \r\n" +

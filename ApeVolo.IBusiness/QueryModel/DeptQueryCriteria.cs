@@ -9,7 +9,7 @@ public class DeptQueryCriteria
 
     public bool? Enabled { get; set; }
 
-    public long? PId { get; set; }
+    public long? ParentId { get; set; }
 
     public List<DateTime> CreateTime { get; set; }
 }

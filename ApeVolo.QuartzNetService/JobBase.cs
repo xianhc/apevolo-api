@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.SnowflakeIdHelper;
-using ApeVolo.Entity.System.Task;
-using ApeVolo.IBusiness.Interface.System.Task;
+using ApeVolo.Entity.System;
+using ApeVolo.IBusiness.Interface.System;
 using ApeVolo.QuartzNetService.service;
 using Microsoft.Extensions.Logging;
 using Quartz;
@@ -42,7 +42,8 @@ public class JobBase
         Stopwatch stopwatch = new Stopwatch();
         //JOBID
         string jobId = context.JobDetail.Key.Name;
-        var quartzNet = await QuartzNetService.QuerySingleAsync(jobId);
+        var jobIdTmp = Convert.ToInt64(jobId);
+        var quartzNet = await QuartzNetService.TableWhere(x => x.Id == jobIdTmp).SingleAsync();
         //JOB组名
         string groupName = context.JobDetail.Key.Group;
         //日志

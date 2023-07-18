@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ApeVolo.Common.DI;
+using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
 
@@ -9,91 +11,91 @@ namespace ApeVolo.Entity.Permission;
 /// 系统菜单
 /// </summary>
 [SugarTable("sys_menu", "系统菜单")]
-public class Menu : EntityRoot<long>, ILocalizedTable
+public class Menu : BaseEntity, ISoftDeletedEntity
 {
     /// <summary>
     /// 菜单标题
     /// </summary>
-    [SugarColumn(ColumnName = "title", IsNullable = false, ColumnDescription = "菜单标题")]
+    [SugarColumn(IsNullable = false, ColumnDescription = "菜单标题")]
     public string Title { get; set; }
 
     /// <summary>
     /// api地址
     /// </summary>
-    [SugarColumn(ColumnName = "link_url", IsNullable = true, ColumnDescription = "api地址")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "api地址")]
     public string LinkUrl { get; set; }
 
     /// <summary>
     /// 组件路径
     /// </summary>
-    [SugarColumn(ColumnName = "path", IsNullable = true, ColumnDescription = "组件路径")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "组件路径")]
     public string Path { get; set; }
 
     /// <summary>
     /// 权限标识符
     /// </summary>
-    [SugarColumn(ColumnName = "permission", IsNullable = true, ColumnDescription = "权限标识符")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "权限标识符")]
     public string Permission { get; set; }
 
     /// <summary>
     /// 是否iframe
     /// </summary>
-    [SugarColumn(ColumnName = "i_frame", IsNullable = false, ColumnDescription = "是否iframe")]
+    [SugarColumn(IsNullable = false, ColumnDescription = "是否iframe")]
     public bool IFrame { get; set; }
 
     /// <summary>
     /// 组件
     /// </summary>
-    [SugarColumn(ColumnName = "component", IsNullable = true, ColumnDescription = "组件")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "组件")]
     public string Component { get; set; }
 
     /// <summary>
     /// 组件名称
     /// </summary>
-    [SugarColumn(ColumnName = "component_name", IsNullable = true, ColumnDescription = "组件名称")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "组件名称")]
     public string ComponentName { get; set; }
 
     /// <summary>
     /// 父级菜单ID
     /// </summary>
-    [SugarColumn(ColumnName = "parent_id", ColumnDataType = "bigint", IsNullable = true, ColumnDescription = "父级ID")]
-    public long? PId { get; set; }
+    [SugarColumn(ColumnDataType = "bigint", IsNullable = true, ColumnDescription = "父级ID")]
+    public long? ParentId { get; set; }
 
     /// <summary>
     /// 排序
     /// </summary>
-    [SugarColumn(ColumnName = "menu_sort", IsNullable = true, ColumnDescription = "排序标识符 越小越靠前")]
-    public int MenuSort { get; set; }
+    [SugarColumn(IsNullable = true, ColumnDescription = "排序标识符 越小越靠前")]
+    public int Sort { get; set; }
 
     /// <summary>
     /// icon图标
     /// </summary>
-    [SugarColumn(ColumnName = "icon", IsNullable = true, ColumnDescription = "icon图标")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "icon图标")]
     public string Icon { get; set; }
 
     /// <summary>
     /// 类型
     /// 1.目录 2.菜单 3.按钮
     /// </summary>
-    [SugarColumn(ColumnName = "type", IsNullable = false, ColumnDescription = "类型：1.目录 2.菜单 3.按钮")]
+    [SugarColumn(IsNullable = false, ColumnDescription = "类型：1.目录 2.菜单 3.按钮")]
     public int Type { get; set; }
 
     /// <summary>
     /// 是否缓存
     /// </summary>
-    [SugarColumn(ColumnName = "cache", IsNullable = true, ColumnDescription = "是否缓存")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "是否缓存")]
     public bool Cache { get; set; }
 
     /// <summary>
     /// 是否隐藏
     /// </summary>
-    [SugarColumn(ColumnName = "hidden", IsNullable = true, ColumnDescription = "是否隐藏")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "是否隐藏")]
     public bool Hidden { get; set; }
 
     /// <summary>
     /// 子节点个数
     /// </summary>
-    [SugarColumn(ColumnName = "sub_count", IsNullable = true, ColumnDescription = "子节点个数")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "子节点个数")]
     public int SubCount { get; set; }
 
     /// <summary>
@@ -101,4 +103,6 @@ public class Menu : EntityRoot<long>, ILocalizedTable
     /// </summary>
     [SugarColumn(IsIgnore = true)]
     public List<Menu> Children { get; set; }
+
+    public bool IsDeleted { get; set; }
 }

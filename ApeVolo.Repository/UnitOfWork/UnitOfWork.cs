@@ -1,18 +1,18 @@
 ﻿using System;
-using ApeVolo.Common.DI;
-using ApeVolo.Common.Helper;
-using ApeVolo.IRepository.UnitOfWork;
+using Microsoft.Extensions.Logging;
 using SqlSugar;
 
 namespace ApeVolo.Repository.UnitOfWork;
 
-public class UnitOfWork : IUnitOfWork, IDependencyRepository
+public class UnitOfWork : IUnitOfWork
 {
     private readonly ISqlSugarClient _sqlSugarClient;
+    private readonly ILogger<UnitOfWork> _logger;
 
-    public UnitOfWork(ISqlSugarClient sqlSugarClient)
+    public UnitOfWork(ISqlSugarClient sqlSugarClient, ILogger<UnitOfWork> logger)
     {
         _sqlSugarClient = sqlSugarClient;
+        _logger = logger;
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ public class UnitOfWork : IUnitOfWork, IDependencyRepository
         catch (Exception ex)
         {
             GetDbClient().RollbackTran();
-            ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
+            _logger.LogCritical(ex.Message);
             throw;
         }
     }

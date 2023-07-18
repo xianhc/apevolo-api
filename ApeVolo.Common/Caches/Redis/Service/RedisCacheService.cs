@@ -31,7 +31,7 @@ public class RedisCacheService : IRedisCacheService
             ThreadPool.SetMinThreads(200, 200);
             _config = redisOptions;
             var connection = ConnectionMultiplexer.Connect(GetRedisOptions());
-            _database = connection.GetDatabase(_config.RedisIndex);
+            _database = connection.GetDatabase(_config.Index);
             _sub = connection.GetSubscriber();
         }
         catch (System.Exception ex)
@@ -57,12 +57,12 @@ public class RedisCacheService : IRedisCacheService
             ConnectTimeout = _config.ConnectTimeout,
             KeepAlive = _config.KeepAlive,
             SyncTimeout = _config.SyncTimeout,
-            EndPoints = { _config.RedisHost + ":" + _config.Port },
-            ServiceName = _config.RedisName,
+            EndPoints = { _config.Host + ":" + _config.Port },
+            ServiceName = _config.Name,
         };
-        if (!string.IsNullOrWhiteSpace(_config.RedisPass))
+        if (!string.IsNullOrWhiteSpace(_config.Password))
         {
-            options.Password = _config.RedisPass;
+            options.Password = _config.Password;
         }
 
         return options;

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using ApeVolo.Common.Model;
+using ApeVolo.Common.WebApp;
+using SqlSugar;
 
 namespace ApeVolo.IBusiness.Base;
 
@@ -11,6 +14,13 @@ namespace ApeVolo.IBusiness.Base;
 /// <typeparam name="TEntity"></typeparam>
 public interface IBaseServices<TEntity> where TEntity : class
 {
+    ISqlSugarClient SugarClient { get; }
+
+    ApeContext ApeContext { get; }
+
+
+    #region 新增
+
     /// <summary>
     /// 添加实体
     /// </summary>
@@ -25,6 +35,10 @@ public interface IBaseServices<TEntity> where TEntity : class
     /// <param name="entitys">实体集合</param>
     /// <returns></returns>
     Task<bool> AddEntityListAsync(List<TEntity> entitys);
+
+    #endregion
+
+    #region 修改
 
     /// <summary>
     /// 更新实体
@@ -42,55 +56,36 @@ public interface IBaseServices<TEntity> where TEntity : class
     /// <returns></returns>
     Task<bool> UpdateEntityListAsync(List<TEntity> entitys);
 
-    /// <summary>
-    /// 批量删除实体 系统使用的是软删除  实际只是执行 update t set isdeleted=false where ...
-    /// </summary>
-    /// <param name="entity">实体对象</param>
-    /// <returns></returns>
-    Task<bool> DeleteEntityAsync(TEntity entity);
+    #endregion
+
+    #region 删除
 
     /// <summary>
-    /// 批量删除实体 系统使用的是软删除  实际只是执行 update t set isdeleted=false where ...
+    /// 逻辑删除 操作的类需继承ISoftDeletedEntity
     /// </summary>
-    /// <param name="entitys"></param>
+    /// <param name="exp"></param>
+    /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    Task<bool> DeleteEntityListAsync(List<TEntity> entitys);
+    Task<int> LogicDelete<T>(Expression<Func<T, bool>> exp) where T : class, ISoftDeletedEntity, new();
+
+    #endregion
+
+    #region Queryable
 
     /// <summary>
-    /// 查询实体
+    /// 泛型Queryable
     /// </summary>
-    /// <param name="id">列值</param>
-    /// <param name="columnName">列名 默认ID</param>
-    /// <returns></returns>
-    Task<TEntity> QuerySingleAsync(object id, string columnName = "id");
+    ISugarQueryable<TEntity> Table { get; }
 
     /// <summary>
-    /// 批量查询实体
+    /// 泛型Queryable
     /// </summary>
-    /// <param name="ids">列值</param>
-    /// <param name="columnName">列名 默认ID</param>
+    /// <param name="whereExpression">条件表达式</param>
+    /// <param name="orderExpression">排序表达式</param>
+    /// <param name="orderByType">排序方式</param>
     /// <returns></returns>
-    Task<List<TEntity>> QueryByIdsAsync(List<long> ids, string columnName = "id");
+    ISugarQueryable<TEntity> TableWhere(Expression<Func<TEntity, bool>> whereExpression = null,
+        Expression<Func<TEntity, object>> orderExpression = null, OrderByType orderByType = OrderByType.Desc);
 
-    /// <summary>
-    /// 批量查询实体
-    /// </summary>
-    /// <param name="ids">列值</param>
-    /// <param name="columnName">列名 默认ID</param>
-    /// <returns></returns>
-    Task<List<TEntity>> QueryByIdsAsync(HashSet<long> ids, string columnName = "id");
-
-    /// <summary>
-    /// 对象是否存在
-    /// </summary>
-    /// <param name="whereLambda"></param>
-    /// <returns></returns>
-    Task<bool> IsExistAsync(Expression<Func<TEntity, bool>> whereLambda);
-
-    /// <summary>
-    /// 获取第一个
-    /// </summary>
-    /// <param name="whereLambda"></param>
-    /// <returns></returns>
-    Task<TEntity> QueryFirstAsync(Expression<Func<TEntity, bool>> whereLambda = null);
+    #endregion
 }

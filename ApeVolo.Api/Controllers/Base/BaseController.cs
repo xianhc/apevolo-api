@@ -12,7 +12,7 @@ namespace ApeVolo.Api.Controllers.Base;
 /// 基控制器
 /// </summary>
 [JsonParamter]
-public class BaseController : ControllerBase
+public class BaseController : Controller
 {
     /// <summary>
     /// 

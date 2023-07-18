@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using ApeVolo.Api.Authentication;
+using ApeVolo.Api.Authentication.Jwt;
+using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
+using ApeVolo.Common.WebApp;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -19,57 +19,24 @@ namespace ApeVolo.Api.Extensions;
 /// </summary>
 public static class AuthorizationSetup
 {
-    public static void AddAuthorizationSetup(this IServiceCollection services)
+    public static void AddAuthorizationSetup(this IServiceCollection services, Configs configs)
     {
         if (services.IsNull()) throw new ArgumentNullException(nameof(services));
 
-        //读取配置文件
-        var symmetricKeyAsBase64 = AppSettings.GetValue("Audience", "Secret");
-        var keyByteArray = Encoding.ASCII.GetBytes(symmetricKeyAsBase64);
-        var signingKey = new SymmetricSecurityKey(keyByteArray);
-        var issuer = AppSettings.GetValue("Audience", "Issuer");
-        var audience = AppSettings.GetValue("Audience", "Audience");
 
+        services.AddScoped<IHttpUser, HttpUser>();
+        services.AddScoped<ITokenService, TokenService>();
 
-        var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+        var jwtOptions = configs.JwtAuthOptions;
 
-        var permission = new List<PermissionList>();
-
-        // 角色与接口的权限要求参数
-        var permissionRequirement = new PermissionRequirement(
-            "/api/denied", // 拒绝授权地址
-            permission,
-            ClaimTypes.Role, //基于角色的授权
-            issuer, //发行人
-            audience, //听众
-            signingCredentials, //签名凭据
-            expiration: TimeSpan.FromHours(12) //接口的过期时间
-        );
-
-
+        var permissionRequirement = new PermissionRequirement();
         // 自定义策略授权
         services.AddAuthorization(options =>
         {
-            options.AddPolicy(GlobalVar.AuthPolicysName,
+            options.AddPolicy(AuthConstants.AuthPolicyName,
                 policy => policy.Requirements.Add(permissionRequirement));
         });
 
-
-        // 令牌验证参数
-        var tokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = signingKey,
-            ValidateIssuer = true,
-            ValidIssuer = issuer, //发行人
-            ValidateAudience = true,
-            ValidAudience = audience, //订阅人
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromSeconds(30),
-            RequireExpirationTime = true,
-        };
-
-        //2.1【认证】、core自带官方JWT认证
         // 开启Bearer认证
         services.AddAuthentication(o =>
             {
@@ -78,10 +45,34 @@ public static class AuthorizationSetup
                 o.DefaultForbidScheme = nameof(ApiResponseHandler);
             })
             // 添加JwtBearer服务
-            .AddJwtBearer(o =>
+            .AddJwtBearer(options =>
             {
-                o.TokenValidationParameters = tokenValidationParameters;
-                o.Events = new JwtBearerEvents
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = AuthConstants.JwtClaimTypes.Name,
+                    RoleClaimType = AuthConstants.JwtClaimTypes.Role,
+
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtOptions.Issuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = jwtOptions.Audience,
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecurityKey)),
+                    LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken,
+                        TokenValidationParameters validationParameters) =>
+                    {
+                        if (expires == null)
+                        {
+                            return true;
+                        }
+
+                        return expires.Value > DateTime.UtcNow;
+                    },
+                    ValidateLifetime = true
+                };
+                options.Events = new JwtBearerEvents
                 {
                     OnAuthenticationFailed = context =>
                     {
@@ -98,7 +89,6 @@ public static class AuthorizationSetup
             .AddScheme<AuthenticationSchemeOptions, ApiResponseHandler>(nameof(ApiResponseHandler), _ => { });
 
 
-        // 注入权限处理器
         services.AddScoped<IAuthorizationHandler, PermissionHandler>();
         services.AddSingleton(permissionRequirement);
     }

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApeVolo.Common.Model;
-using ApeVolo.Entity.Permission.Test;
+using ApeVolo.Entity.Permission;
+using ApeVolo.Entity.Test;
 using ApeVolo.IBusiness.Base;
 
 namespace ApeVolo.IBusiness.Interface.Test;

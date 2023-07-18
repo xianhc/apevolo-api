@@ -1,4 +1,5 @@
 using ApeVolo.Common.DI;
+using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
 
@@ -8,29 +9,31 @@ namespace ApeVolo.Entity.System;
 /// 三方应用密钥
 /// </summary>
 [SugarTable("sys_app_secret", "三方应用密钥")]
-public class AppSecret : EntityRoot<long>, ILocalizedTable
+public class AppSecret : BaseEntity, ISoftDeletedEntity
 {
     /// <summary>
     /// 应用ID
     /// </summary>
-    [SugarColumn(ColumnName = "app_id", ColumnDescription = "应用ID", IsNullable = false)]
+    [SugarColumn(ColumnDescription = "应用ID", IsNullable = false)]
     public string AppId { get; set; }
 
     /// <summary>
     /// 应用秘钥
     /// </summary>
-    [SugarColumn(ColumnName = "app_secret_key", ColumnDescription = "应用秘钥", IsNullable = false)]
+    [SugarColumn(ColumnDescription = "应用秘钥", IsNullable = false)]
     public string AppSecretKey { get; set; }
 
     /// <summary>
     /// 应用名称
     /// </summary>
-    [SugarColumn(ColumnName = "app_name", ColumnDescription = "应用名称", IsNullable = false)]
+    [SugarColumn(ColumnDescription = "应用名称", IsNullable = false)]
     public string AppName { get; set; }
 
     /// <summary>
     /// 备注
     /// </summary>
-    [SugarColumn(ColumnName = "remark", ColumnDescription = "备注", IsNullable = true)]
+    [SugarColumn(ColumnDescription = "备注", IsNullable = true)]
     public string Remark { get; set; }
+
+    public bool IsDeleted { get; set; }
 }
