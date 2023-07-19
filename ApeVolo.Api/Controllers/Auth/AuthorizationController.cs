@@ -148,6 +148,7 @@ public class AuthorizationController : BaseApiController
         var (imgBytes, code) = SixLaborsImageHelper.BuildVerifyCode();
         var imgUrl = ImgHelper.ToBase64StringUrl(imgBytes);
         var captchaId = GlobalConstants.CacheKey.CaptchaId + GuidHelper.GenerateKey();
+        await _apeContext.RedisCache.SetAsync(captchaId, code, TimeSpan.FromMinutes(2), null);
         var dic = new Dictionary<string, string> { { "img", imgUrl }, { "captchaId", captchaId } };
         return dic.ToJson();
     }
