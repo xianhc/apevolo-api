@@ -35,20 +35,16 @@ public class RedisAop : IInterceptor
             RedisCachingAttribute redisCachingAttribute)
         {
             var cacheKey = CreateCacheKey(invocation, redisCachingAttribute);
-            var cacheValue = AsyncHelper.RunSync(() => _redisCacheService.GetCacheStrAsync<string>(cacheKey));
-            if (cacheValue.IsNotNull())
-            {
-                Type returnType;
-                if (typeof(Task).IsAssignableFrom(method.ReturnType))
-                {
-                    returnType = method.ReturnType.GenericTypeArguments.FirstOrDefault();
-                }
-                else
-                {
-                    returnType = method.ReturnType;
-                }
+            //var cacheValue = AsyncHelper.RunSync(() => _redisCacheService.GetAsync<string>(cacheKey));
 
-                dynamic result = cacheValue.ToObject(returnType);
+            var cacheValue = _redisCacheService.Get<dynamic>(cacheKey);
+            if (cacheValue != null)
+            {
+                // Type  returnType = typeof(Task).IsAssignableFrom(method.ReturnType)
+                //     ? method.ReturnType.GenericTypeArguments.FirstOrDefault()
+                //     : method.ReturnType;
+                // dynamic result = cacheValue.ToObject(returnType);
+                dynamic result = cacheValue;
                 invocation.ReturnValue = typeof(Task).IsAssignableFrom(method.ReturnType)
                     ? Task.FromResult(result)
                     : result;
@@ -80,8 +76,10 @@ public class RedisAop : IInterceptor
                     return;
                 }
 
-                AsyncHelper.RunSync(() => _redisCacheService.SetCacheAsync(cacheKey, response,
-                    TimeSpan.FromMinutes(redisCachingAttribute.Expiration)));
+                // AsyncHelper.RunSync(() => _redisCacheService.SetAsync(cacheKey, response,
+                //     TimeSpan.FromMinutes(redisCachingAttribute.Expiration), null));
+                _redisCacheService.Set(cacheKey, response, TimeSpan.FromMinutes(redisCachingAttribute.Expiration),
+                    null);
             }
         }
         else
