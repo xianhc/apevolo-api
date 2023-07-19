@@ -12,12 +12,12 @@ public class BaseActionFilter : Attribute, IAsyncActionFilter
 {
     protected HttpContext HttpContext;
 
-    public async virtual Task OnActionExecuting(ActionExecutingContext context)
+    public virtual async Task OnActionExecuting(ActionExecutingContext context)
     {
         await Task.CompletedTask;
     }
 
-    public async virtual Task OnActionExecuted(ActionExecutedContext context)
+    public virtual async Task OnActionExecuted(ActionExecutedContext context)
     {
         await Task.CompletedTask;
     }

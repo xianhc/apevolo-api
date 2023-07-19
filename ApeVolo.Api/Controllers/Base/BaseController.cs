@@ -76,14 +76,11 @@ public class BaseController : Controller
     /// <returns></returns>
     protected ContentResult NoContent(string msg = "")
     {
-        msg = msg.IsNullOrEmpty() ? Localized.Get("HttpNoContent") : msg;
-        var vm = new ActionResultVm
+        return new ContentResult
         {
-            Status = StatusCodes.Status204NoContent,
-            Message = msg
+            ContentType = "application/json; charset=utf-8",
+            StatusCode = StatusCodes.Status204NoContent
         };
-
-        return JsonContent(vm);
     }
 
     /// <summary>
