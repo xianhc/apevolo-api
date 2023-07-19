@@ -435,7 +435,7 @@ public class UserService : BaseServices<User>, IUserService
             throw new BadRequestException(Localized.Get("PasswrodWrong"));
         }
 
-        var code = await ApeContext.RedisCache.GetCacheAsync(
+        var code = await ApeContext.RedisCache.GetAsync<string>(
             GlobalConstants.CacheKey.EmailCaptchaKey + updateUserEmailDto.Email.ToMd5String16());
         if (code.IsNullOrEmpty() || !code.Equals(updateUserEmailDto.Code))
         {

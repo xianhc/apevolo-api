@@ -55,9 +55,9 @@ public class VerifySignatureAttribute : BaseActionFilter
 
         var guidKey = $"ApiGuid_{guid}";
         var redisCacheService = filterContext.HttpContext.RequestServices.GetRequiredService<IRedisCacheService>();
-        if (!redisCacheService.GetCacheStrAsync(guidKey).IsNullOrEmpty())
+        if (!redisCacheService.GetAsync<string>(guidKey).IsNullOrEmpty())
         {
-            await redisCacheService.SetCacheAsync(guidKey, "1");
+            await redisCacheService.SetAsync(guidKey, "1", null, null);
         }
         else
         {

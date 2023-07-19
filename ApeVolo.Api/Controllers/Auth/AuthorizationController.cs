@@ -75,7 +75,7 @@ public class AuthorizationController : BaseApiController
             return Error(actionError);
         }
 
-        var code = await _apeContext.RedisCache.GetCacheAsync<string>(authUser.CaptchaId);
+        var code = await _apeContext.RedisCache.GetAsync<string>(authUser.CaptchaId);
         await _apeContext.RedisCache.RemoveAsync(authUser.CaptchaId);
         if (!_apeContext.Configs.IsQuickDebug)
         {
@@ -107,7 +107,7 @@ public class AuthorizationController : BaseApiController
         var token = await _tokenService.IssueTokenAsync(loginUserInfo);
         loginUserInfo.AccessToken = token.AccessToken;
         var onlineKey = loginUserInfo.AccessToken.ToMd5String16();
-        await _apeContext.RedisCache.SetCacheAsync(
+        await _apeContext.RedisCache.SetAsync(
             GlobalConstants.CacheKey.OnlineKey + onlineKey,
             loginUserInfo, TimeSpan.FromHours(3), RedisExpireType.Relative);
         var dic = new Dictionary<string, object>
@@ -148,9 +148,6 @@ public class AuthorizationController : BaseApiController
         var (imgBytes, code) = SixLaborsImageHelper.BuildVerifyCode();
         var imgUrl = ImgHelper.ToBase64StringUrl(imgBytes);
         var captchaId = GlobalConstants.CacheKey.CaptchaId + GuidHelper.GenerateKey();
-
-        await _apeContext.RedisCache.SetCacheAsync(captchaId, code, TimeSpan.FromMinutes(2));
-
         var dic = new Dictionary<string, string> { { "img", imgUrl }, { "captchaId", captchaId } };
         return dic.ToJson();
     }

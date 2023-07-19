@@ -62,10 +62,12 @@ public class ApeContext
         {
             if (!HttpUser.JwtToken.IsNullOrEmpty())
             {
-                var onlineUser = AsyncHelper.RunSync(() =>
-                    RedisCache.GetCacheAsync<LoginUserInfo>(
-                        GlobalConstants.CacheKey.OnlineKey + HttpUser.JwtToken.ToMd5String16()));
-                return onlineUser;
+                // var loginUserInfo = AsyncHelper.RunSync(() =>
+                //     RedisCache.GetAsync<LoginUserInfo>(
+                //         GlobalConstants.CacheKey.OnlineKey + HttpUser.JwtToken.ToMd5String16()));
+                var loginUserInfo = RedisCache.Get<LoginUserInfo>(
+                    GlobalConstants.CacheKey.OnlineKey + HttpUser.JwtToken.ToMd5String16());
+                return loginUserInfo;
             }
 
             return null;

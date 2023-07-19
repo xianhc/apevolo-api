@@ -13,43 +13,20 @@ public interface IRedisCacheService
     #region 获取缓存
 
     /// <summary>
-    /// 获取缓存
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="key"></param>
-    /// <returns></returns>
-    Task<T> GetCacheStrAsync<T>(string key);
-
-    /// <summary>
     /// 获取缓存数据
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="key"></param>
     /// <returns></returns>
-    Task<T> GetCacheAsync<T>(string key);
+    T Get<T>(string key);
 
     /// <summary>
     /// 获取缓存数据
     /// </summary>
-    /// <param name="key">键</param>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="key"></param>
     /// <returns></returns>
-    Task<object> GetCacheStrAsync(string key);
-
-
-    /// <summary>
-    /// 获取缓存数据
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <returns></returns>
-    Task<object> GetCacheAsync(string key);
-
-    /// <summary>
-    /// 设置过期时间
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <param name="expire">过期时间</param>
-    /// <returns></returns>
-    Task<bool> ExpireAsync(string key, TimeSpan expire);
+    Task<T> GetAsync<T>(string key);
 
     #endregion
 
@@ -60,17 +37,10 @@ public interface IRedisCacheService
     /// </summary>
     /// <param name="key">键</param>
     /// <param name="value">值</param>
-    /// <returns>添加结果</returns>
-    Task<bool> SetCacheAsync(string key, object value);
-
-    /// <summary>
-    /// 添加缓存
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <param name="value">值</param>
     /// <param name="timeout">过期时间</param>
+    /// <param name="redisExpireType">过期类型</param>
     /// <returns>添加结果</returns>
-    Task<bool> SetCacheAsync(string key, object value, TimeSpan timeout);
+    bool Set(string key, object value, TimeSpan? timeout, RedisExpireType? redisExpireType);
 
     /// <summary>
     /// 添加缓存
@@ -80,23 +50,18 @@ public interface IRedisCacheService
     /// <param name="timeout">过期时间</param>
     /// <param name="redisExpireType">过期类型</param>
     /// <returns>添加结果</returns>
-    Task<bool> SetCacheAsync(string key, object value, TimeSpan timeout,
-        RedisExpireType redisExpireType);
-
-    /// <summary>
-    /// 添加缓存
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <param name="value">值</param>
-    /// <param name="timeout">过期时间</param>
-    /// <param name="redisExpireType">过期类型</param>
-    /// <returns>添加结果</returns>
-    Task<bool> InsertCacheAsync(string key, object value, TimeSpan? timeout,
-        RedisExpireType? redisExpireType);
+    Task<bool> SetAsync(string key, object value, TimeSpan? timeout, RedisExpireType? redisExpireType);
 
     #endregion
 
     #region 移除缓存
+
+    /// <summary>
+    /// 移除缓存
+    /// </summary>
+    /// <param name="key">键</param>
+    /// <returns>移除结果</returns>
+    bool Remove(string key);
 
     /// <summary>
     /// 移除缓存

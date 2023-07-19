@@ -78,78 +78,49 @@ public class RedisCacheService : IRedisCacheService
     #region 获取缓存
 
     /// <summary>
-    /// 获取缓存
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="key"></param>
-    /// <returns></returns>
-    public async Task<T> GetCacheStrAsync<T>(string key)
-    {
-        return (T)await GetCacheStrAsync(key);
-    }
-
-    /// <summary>
     /// 获取缓存数据
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="key"></param>
     /// <returns></returns>
-    public async Task<T> GetCacheAsync<T>(string key)
+    public T Get<T>(string key)
     {
-        return (T)await GetCacheAsync(key);
+        object value = null;
+        var redisValue = _database.StringGet(key);
+        if (!redisValue.HasValue)
+            return default;
+        var valueEntry = redisValue.ToString().ToObject<ValueInfoEntry>();
+        value = valueEntry.TypeName == typeof(string).AssemblyQualifiedName
+            ? valueEntry.Value
+            : valueEntry.Value.ToObject(Type.GetType(valueEntry.TypeName));
+
+        if (valueEntry.ExpireTime != null && valueEntry.ExpireType == RedisExpireType.Relative)
+            _database.KeyExpire(key, valueEntry.ExpireTime.Value);
+        return (T)value;
     }
+
 
     /// <summary>
     /// 获取缓存数据
     /// </summary>
-    /// <param name="key">键</param>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="key"></param>
     /// <returns></returns>
-    public async Task<object> GetCacheStrAsync(string key)
+    public async Task<T> GetAsync<T>(string key)
     {
         object value = null;
         var redisValue = await _database.StringGetAsync(key);
         if (!redisValue.HasValue)
-            return null;
-        ValueInfoEntry valueEntry = redisValue.ToString().ToObject<ValueInfoEntry>();
-        value = valueEntry.Value;
-        if (valueEntry.ExpireTime != null && valueEntry.ExpireType == RedisExpireType.Relative)
-            await ExpireAsync(key, valueEntry.ExpireTime.Value);
-
-        return value;
-    }
-
-    /// <summary>
-    /// 获取缓存数据
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <returns></returns>
-    public async Task<object> GetCacheAsync(string key)
-    {
-        object value = null;
-        var redisValue = await _database.StringGetAsync(key);
-        if (!redisValue.HasValue)
-            return null;
-        ValueInfoEntry valueEntry = redisValue.ToString().ToObject<ValueInfoEntry>();
-        if (valueEntry.TypeName == typeof(string).AssemblyQualifiedName)
-            value = valueEntry.Value;
-        else
-            value = valueEntry.Value.ToObject(Type.GetType(valueEntry.TypeName));
+            return default;
+        var valueEntry = redisValue.ToString().ToObject<ValueInfoEntry>();
+        value = valueEntry.TypeName == typeof(string).AssemblyQualifiedName
+            ? valueEntry.Value
+            : valueEntry.Value.ToObject(Type.GetType(valueEntry.TypeName));
 
         if (valueEntry.ExpireTime != null && valueEntry.ExpireType == RedisExpireType.Relative)
-            await ExpireAsync(key, valueEntry.ExpireTime.Value);
+            await _database.KeyExpireAsync(key, valueEntry.ExpireTime.Value);
 
-        return value;
-    }
-
-    /// <summary>
-    /// 设置过期时间
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <param name="expire">过期时间</param>
-    /// <returns></returns>
-    public async Task<bool> ExpireAsync(string key, TimeSpan expire)
-    {
-        return await _database.KeyExpireAsync(key, expire);
+        return (T)value;
     }
 
     #endregion
@@ -161,73 +132,71 @@ public class RedisCacheService : IRedisCacheService
     /// </summary>
     /// <param name="key">键</param>
     /// <param name="value">值</param>
-    /// <returns>添加结果</returns>
-    public async Task<bool> SetCacheAsync(string key, object value)
-    {
-        return await InsertCacheAsync(key, value, TimeSpan.FromSeconds(_defaultTimeout),
-            RedisExpireType.Absolute);
-    }
-
-    /// <summary>
-    /// 添加缓存
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <param name="value">值</param>
-    /// <param name="timeout">过期时间</param>
-    /// <returns>添加结果</returns>
-    public async Task<bool> SetCacheAsync(string key, object value, TimeSpan timeout)
-    {
-        return await InsertCacheAsync(key, value, timeout, RedisExpireType.Absolute);
-    }
-
-    /// <summary>
-    /// 添加缓存
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <param name="value">值</param>
-    /// <param name="timeout">过期时间</param>
+    /// <param name="timeSpan">过期时间</param>
     /// <param name="redisExpireType">过期类型</param>
     /// <returns>添加结果</returns>
-    public async Task<bool> SetCacheAsync(string key, object value, TimeSpan timeout,
-        RedisExpireType redisExpireType)
-    {
-        return await InsertCacheAsync(key, value, timeout, redisExpireType);
-    }
-
-    /// <summary>
-    /// 添加缓存
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <param name="value">值</param>
-    /// <param name="timeout">过期时间</param>
-    /// <param name="redisExpireType">过期类型</param>
-    /// <returns>添加结果</returns>
-    public async Task<bool> InsertCacheAsync(string key, object value, TimeSpan? timeout,
+    public bool Set(string key, object value, TimeSpan? timeSpan,
         RedisExpireType? redisExpireType)
     {
         string jsonStr;
         if (value is string)
             jsonStr = value as string;
         else
-            jsonStr = value.ToRedisJson();
-
-        ValueInfoEntry entry = new ValueInfoEntry
+            jsonStr = value.ToJson();
+        var expireTime = timeSpan ?? new TimeSpan(0, 0, 0, _defaultTimeout);
+        var entry = new ValueInfoEntry
         {
             Value = jsonStr,
             TypeName = value.GetType().AssemblyQualifiedName,
-            ExpireTime = timeout,
-            ExpireType = redisExpireType
+            ExpireTime = expireTime,
+            ExpireType = redisExpireType ?? RedisExpireType.Absolute
         };
+        var theValue = entry.ToJson();
+        return _database.StringSet(key, theValue, expireTime);
+    }
 
-        string theValue = entry.ToRedisJson();
-        if (timeout == null)
-            return await _database.StringSetAsync(key, theValue);
-        return await _database.StringSetAsync(key, theValue, timeout);
+
+    /// <summary>
+    /// 添加缓存
+    /// </summary>
+    /// <param name="key">键</param>
+    /// <param name="value">值</param>
+    /// <param name="timeSpan">过期时间</param>
+    /// <param name="redisExpireType">过期类型</param>
+    /// <returns>添加结果</returns>
+    public async Task<bool> SetAsync(string key, object value, TimeSpan? timeSpan,
+        RedisExpireType? redisExpireType)
+    {
+        string jsonStr;
+        if (value is string)
+            jsonStr = value as string;
+        else
+            jsonStr = value.ToJson();
+        var expireTime = timeSpan ?? new TimeSpan(0, 0, 0, _defaultTimeout);
+        var entry = new ValueInfoEntry
+        {
+            Value = jsonStr,
+            TypeName = value.GetType().AssemblyQualifiedName,
+            ExpireTime = expireTime,
+            ExpireType = redisExpireType ?? RedisExpireType.Absolute
+        };
+        var theValue = entry.ToJson();
+        return await _database.StringSetAsync(key, theValue, expireTime);
     }
 
     #endregion
 
     #region 移除缓存
+
+    /// <summary>
+    /// 移除缓存
+    /// </summary>
+    /// <param name="key">键</param>
+    /// <returns>移除结果</returns>
+    public bool Remove(string key)
+    {
+        return _database.KeyDelete(key);
+    }
 
     /// <summary>
     /// 移除缓存

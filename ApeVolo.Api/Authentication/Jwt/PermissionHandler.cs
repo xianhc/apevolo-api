@@ -108,7 +108,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 
                     #region 用户缓存信息是否已过期
 
-                    loginUserInfo = await _apeContext.RedisCache.GetCacheAsync<LoginUserInfo>(
+                    loginUserInfo = await _apeContext.RedisCache.GetAsync<LoginUserInfo>(
                         GlobalConstants.CacheKey.OnlineKey +
                         _apeContext.HttpUser.JwtToken.ToMd5String16());
                     if (loginUserInfo == null)

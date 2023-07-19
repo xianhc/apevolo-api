@@ -148,9 +148,9 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
         {
             await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.EmailCaptchaKey +
                                                     queuedEmail.To.ToMd5String());
-            await ApeContext.RedisCache.SetCacheAsync(
+            await ApeContext.RedisCache.SetAsync(
                 GlobalConstants.CacheKey.EmailCaptchaKey + queuedEmail.To.ToMd5String(), captcha,
-                TimeSpan.FromMinutes(5));
+                TimeSpan.FromMinutes(5), null);
             //进redis队列执行发送
             await ApeContext.RedisCache.ListLeftPushAsync(MqTopicNameKey.MailboxQueue, queuedEmail.Id.ToString());
         }

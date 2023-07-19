@@ -275,7 +275,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
     public async Task<List<MenuDto>> QueryAllAsync()
     {
-        var menuDtos = await ApeContext.RedisCache.GetCacheAsync<List<MenuDto>>("menus:LoadAllMenu");
+        var menuDtos = await ApeContext.RedisCache.GetAsync<List<MenuDto>>("menus:LoadAllMenu");
         if (menuDtos.IsNotNull())
         {
             return menuDtos;
@@ -284,7 +284,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
         menuDtos = ApeContext.Mapper.Map<List<MenuDto>>(await SugarRepository.QueryListAsync());
         if (menuDtos.IsNotNull())
         {
-            await ApeContext.RedisCache.SetCacheAsync("menus:LoadAllMenu", menuDtos, TimeSpan.FromSeconds(120));
+            await ApeContext.RedisCache.SetAsync("menus:LoadAllMenu", menuDtos, TimeSpan.FromSeconds(120), null);
         }
 
         return menuDtos;

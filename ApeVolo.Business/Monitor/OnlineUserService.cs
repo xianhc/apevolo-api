@@ -29,7 +29,7 @@ public class OnlineUserService : IOnlineUserService
             foreach (var item in arrayList)
             {
                 var loginUserInfo =
-                    await _redisCacheService.GetCacheAsync<LoginUserInfo>(item);
+                    await _redisCacheService.GetAsync<LoginUserInfo>(item);
                 if (loginUserInfo.IsNull()) continue;
                 loginUserInfo.CurrentPermission = null;
                 loginUserInfo.AccessToken = loginUserInfo.AccessToken.ToMd5String16();
@@ -65,7 +65,7 @@ public class OnlineUserService : IOnlineUserService
             foreach (var item in arrayList)
             {
                 LoginUserInfo loginUserInfo =
-                    await _redisCacheService.GetCacheAsync<LoginUserInfo>(item);
+                    await _redisCacheService.GetAsync<LoginUserInfo>(item);
                 if (loginUserInfo != null)
                 {
                     loginUserInfo.CurrentPermission = null;
