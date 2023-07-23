@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ApeVolo.Common.DI;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
@@ -38,11 +39,12 @@ public class CheckParamNotEmptyAttribute : Attribute, IActionFilter
         }).ToList();
         if (needParamters.Count != 0)
         {
+            var service = AutofacHelper.GetService<IHttpContextAccessor>();
             ActionResultVm res = new ActionResultVm
             {
                 Status = StatusCodes.Status400BadRequest,
                 Message = $"参数:{string.Join(",", needParamters)}不能为空！",
-                Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+                Path = service?.HttpContext?.Request.Path.Value?.ToLower()
             };
             filterContext.Result = new ContentResult
             {

@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 using ApeVolo.Common.Caches.Redis.Abstractions;
 using ApeVolo.Common.Caches.Redis.Attributes;
 using ApeVolo.Common.Caches.Redis.Models;
+using ApeVolo.Common.Extention;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ApeVolo.Common.Caches.Redis.Service.MessageQueue;
+namespace ApeVolo.Common.Caches.Redis.MessageQueue;
 
 public class InitCore
 {
     private async Task Send(IEnumerable<ConsumerExecutorDescriptor> executorDescriptorList,
-        IServiceProvider serviceProvider, RedisOptions options)
+        IServiceProvider serviceProvider, RedisQueueOptions queueOptions)
     {
         List<Task> tasks = new List<Task>();
         foreach (var consumerExecutorDescriptor in executorDescriptorList)
@@ -29,24 +30,24 @@ public class InitCore
                         consumerExecutorDescriptor.ImplTypeInfo);
                     ParameterInfo[] parameterInfos = consumerExecutorDescriptor.MethodInfo.GetParameters();
                     //redis对象
-                    var redis = scope.ServiceProvider.GetService<IRedisCacheService>();
+                    var redis = scope.ServiceProvider.GetService<ICache>();
                     while (true)
                     {
                         try
                         {
-                            if (options.ShowLog)
+                            if (queueOptions.ShowLog)
                             {
                                 Console.WriteLine($"执行方法:{obj},key:{publish},执行时间{DateTime.Now}");
                             }
 
-                            var count = await redis.ListLengthAsync(publish);
+                            var count = await redis.GetDatabase().ListLengthAsync(publish);
                             if (count > 0)
                             {
                                 //从MQ里获取一条消息
-                                var res = await redis.ListRightPopAsync(publish);
+                                var res = await redis.GetDatabase().ListRightPopAsync(publish);
                                 if (string.IsNullOrEmpty(res)) continue;
                                 //堵塞
-                                await Task.Delay(options.IntervalTime);
+                                await Task.Delay(queueOptions.IntervalTime);
                                 try
                                 {
                                     await Task.Run(async () =>
@@ -70,7 +71,7 @@ public class InitCore
                             else
                             {
                                 //线程挂起1s
-                                await Task.Delay(options.SuspendTime);
+                                await Task.Delay(queueOptions.SuspendTime);
                             }
                         }
                         catch (System.Exception ex)
@@ -87,7 +88,7 @@ public class InitCore
 
 
     private async Task SendDelay(IEnumerable<ConsumerExecutorDescriptor> executorDescriptorList,
-        IServiceProvider serviceProvider, RedisOptions options)
+        IServiceProvider serviceProvider, RedisQueueOptions queueOptions)
     {
         List<Task> tasks = new List<Task>();
         foreach (var consumerExecutorDescriptor in executorDescriptorList)
@@ -103,7 +104,7 @@ public class InitCore
                         consumerExecutorDescriptor.ImplTypeInfo);
                     ParameterInfo[] parameterInfos = consumerExecutorDescriptor.MethodInfo.GetParameters();
                     //redis对象
-                    var redis = scope.ServiceProvider.GetService<IRedisCacheService>();
+                    var redis = scope.ServiceProvider.GetService<ICache>();
 
                     //从zset添加到队列(锁)
                     tasks.Add(Task.Run(async () =>
@@ -118,19 +119,21 @@ public class InitCore
                             {
                                 try
                                 {
-                                    var dt = DateTime.Now;
-                                    var arry = await redis.SortedSetRangeByScoreAsync(
-                                        consumerExecutorDescriptor.Attribute.Name, null, dt);
+                                    var stopTimeStamp = DateTime.Now.ToUnixTimeStampSecond();
+                                    var arry = await redis.GetDatabase().SortedSetRangeByScoreAsync(
+                                        consumerExecutorDescriptor.Attribute.Name, double.NegativeInfinity,
+                                        stopTimeStamp);
                                     if (arry != null && arry.Length > 0)
                                     {
                                         foreach (var item in arry)
                                         {
-                                            await redis.ListLeftPushAsync(publish, item);
+                                            await redis.GetDatabase().ListLeftPushAsync(publish, item);
                                         }
 
                                         //移除zset数据
-                                        await redis.SortedSetRemoveRangeByScoreAsync(
-                                            consumerExecutorDescriptor.Attribute.Name, null, dt);
+                                        await redis.GetDatabase().SortedSetRemoveRangeByScoreAsync(
+                                            consumerExecutorDescriptor.Attribute.Name, double.NegativeInfinity,
+                                            stopTimeStamp);
                                     }
                                     else
                                     {
@@ -145,7 +148,7 @@ public class InitCore
                                 finally
                                 {
                                     //释放锁
-                                    redis.GetDatabase().LockRelease(keyInfo, token);
+                                    await redis.GetDatabase().LockReleaseAsync(keyInfo, token);
                                 }
                             }
                         }
@@ -157,19 +160,19 @@ public class InitCore
                         {
                             try
                             {
-                                if (options.ShowLog)
+                                if (queueOptions.ShowLog)
                                 {
                                     Console.WriteLine($"执行方法:{obj},key:{publish},执行时间{DateTime.Now}");
                                 }
 
-                                var count = await redis.ListLengthAsync(publish);
+                                var count = await redis.GetDatabase().ListLengthAsync(publish);
                                 if (count > 0)
                                 {
                                     //从MQ里获取一条消息
-                                    var res = await redis.ListRightPopAsync(publish);
+                                    var res = await redis.GetDatabase().ListRightPopAsync(publish);
                                     if (string.IsNullOrEmpty(res)) continue;
                                     //堵塞
-                                    await Task.Delay(options.IntervalTime);
+                                    await Task.Delay(queueOptions.IntervalTime);
                                     try
                                     {
                                         await Task.Run(async () =>
@@ -193,7 +196,7 @@ public class InitCore
                                 else
                                 {
                                     //线程挂起1s
-                                    await Task.Delay(options.SuspendTime);
+                                    await Task.Delay(queueOptions.SuspendTime);
                                 }
                             }
                             catch (System.Exception ex)
@@ -209,14 +212,14 @@ public class InitCore
         await Task.WhenAll(tasks);
     }
 
-    public async Task FindInterfaceTypes(IServiceProvider provider, RedisOptions options)
+    public async Task FindInterfaceTypes(IServiceProvider provider, RedisQueueOptions queueOptions)
     {
         var executorDescriptorList = new List<ConsumerExecutorDescriptor>();
         using (var scoped = provider.CreateScope())
         {
             var scopedProvider = scoped.ServiceProvider;
             var listService = scopedProvider.GetService<Func<Type, IRedisSubscribe>>();
-            foreach (var item in options.ListSubscribe)
+            foreach (var item in queueOptions.ListSubscribe)
             {
                 if (listService != null)
                 {
@@ -234,12 +237,12 @@ public class InitCore
             List<Task> tasks = new List<Task>();
             //普通队列任务
             tasks.Add(Send(executorDescriptorList.Where(m => m.Attribute.GetType().Name == "SubscribeAttribute"),
-                provider, options));
+                provider, queueOptions));
 
             //延迟队列任务
             tasks.Add(SendDelay(
                 executorDescriptorList.Where(m => m.Attribute.GetType().Name == "SubscribeDelayAttribute"),
-                provider, options));
+                provider, queueOptions));
             await Task.WhenAll(tasks);
         }
     }

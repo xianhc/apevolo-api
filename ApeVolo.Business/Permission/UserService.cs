@@ -170,18 +170,18 @@ public class UserService : BaseServices<User>, IUserService
         await SugarClient.Insertable(userJobs).ExecuteCommandAsync();
 
         //清理缓存
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
-                                                user.Id.ToString().ToMd5String16());
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserInfoByName +
-                                                user.Username.ToMd5String16());
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserRolesById +
-                                                user.Id.ToString().ToMd5String16());
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserJobsById +
-                                                user.Id.ToString().ToMd5String16());
-        await ApeContext.RedisCache.RemoveAsync(
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
+                                           user.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoByName +
+                                           user.Username.ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserRolesById +
+                                           user.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserJobsById +
+                                           user.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(
             GlobalConstants.CacheKey.UserPermissionById + user.Id.ToString().ToMd5String16());
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserBuildMenuById +
-                                                user.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserBuildMenuById +
+                                           user.Id.ToString().ToMd5String16());
         return true;
     }
 
@@ -227,7 +227,7 @@ public class UserService : BaseServices<User>, IUserService
 
             //角色
             var roleIds = user.UserRoleList.Select(r => r.RoleId).ToList();
-            user.Roles = await _roleService.TableWhere(x => jobIds.Contains(x.Id)).ToListAsync();
+            user.Roles = await _roleService.TableWhere(x => roleIds.Contains(x.Id)).ToListAsync();
         }
 
         return ApeContext.Mapper.Map<List<UserDto>>(users);
@@ -279,7 +279,7 @@ public class UserService : BaseServices<User>, IUserService
 
     #region 扩展方法
 
-    [RedisCaching(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.UserInfoById)]
+    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.UserInfoById)]
     public async Task<UserDto> QueryByIdAsync(long userId)
     {
         UserDto userDto = null;
@@ -300,7 +300,7 @@ public class UserService : BaseServices<User>, IUserService
     /// </summary>
     /// <param name="userName">邮箱 or 用户名</param>
     /// <returns></returns>
-    [RedisCaching(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.UserInfoByName)]
+    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.UserInfoByName)]
     public async Task<UserDto> QueryByNameAsync(string userName)
     {
         User user;
@@ -404,14 +404,14 @@ public class UserService : BaseServices<User>, IUserService
         if (isTrue)
         {
             //清理缓存
-            await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
-                                                    curUser.Id.ToString().ToMd5String16());
-            await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserInfoByName +
-                                                    curUser.Username.ToMd5String16());
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
+                                               curUser.Id.ToString().ToMd5String16());
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoByName +
+                                               curUser.Username.ToMd5String16());
 
             //退出当前用户
-            await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey +
-                                                    ApeContext.HttpUser.JwtToken.ToMd5String16());
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey +
+                                               ApeContext.HttpUser.JwtToken.ToMd5String16());
         }
 
         return true;
@@ -435,7 +435,7 @@ public class UserService : BaseServices<User>, IUserService
             throw new BadRequestException(Localized.Get("PasswrodWrong"));
         }
 
-        var code = await ApeContext.RedisCache.GetAsync<string>(
+        var code = await ApeContext.Cache.GetAsync<string>(
             GlobalConstants.CacheKey.EmailCaptchaKey + updateUserEmailDto.Email.ToMd5String16());
         if (code.IsNullOrEmpty() || !code.Equals(updateUserEmailDto.Code))
         {
@@ -469,8 +469,8 @@ public class UserService : BaseServices<User>, IUserService
 
         curUser.AvatarPath = "/file/avatar/";
         curUser.AvatarName = avatarName;
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
-                                                curUser.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
+                                           curUser.Id.ToString().ToMd5String16());
         return await UpdateEntityAsync(curUser);
     }
 
@@ -507,18 +507,18 @@ public class UserService : BaseServices<User>, IUserService
     private async Task ClearUserCache(User user)
     {
         //清理缓存
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
-                                                user.Id.ToString().ToMd5String16());
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserInfoByName +
-                                                user.Username.ToMd5String16());
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserRolesById +
-                                                user.Id.ToString().ToMd5String16());
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserJobsById +
-                                                user.Id.ToString().ToMd5String16());
-        await ApeContext.RedisCache.RemoveAsync(
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
+                                           user.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoByName +
+                                           user.Username.ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserRolesById +
+                                           user.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserJobsById +
+                                           user.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(
             GlobalConstants.CacheKey.UserPermissionById + user.Id.ToString().ToMd5String16());
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserBuildMenuById +
-                                                user.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserBuildMenuById +
+                                           user.Id.ToString().ToMd5String16());
     }
 
     #endregion

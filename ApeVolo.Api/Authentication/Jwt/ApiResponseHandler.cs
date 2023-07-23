@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using ApeVolo.Common.Caches.Redis.Service;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
@@ -39,13 +38,13 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
             Status = StatusCodes.Status401Unauthorized,
             ActionError = new ActionError(),
             Message = Localized.Get("HttpUnauthorized"),
-            Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+            Path = _apeContext.HttpContext.Request.Path.Value?.ToLower()
         }.ToJson());
     }
 
     protected override async Task HandleForbiddenAsync(AuthenticationProperties properties)
     {
-        var loginUserInfo = await _apeContext.RedisCache.GetAsync<LoginUserInfo>(
+        var loginUserInfo = await _apeContext.Cache.GetAsync<LoginUserInfo>(
             GlobalConstants.CacheKey.OnlineKey +
             _apeContext.HttpUser.JwtToken.ToMd5String16());
         if (loginUserInfo.IsNull())
@@ -57,7 +56,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
                 Status = StatusCodes.Status401Unauthorized,
                 ActionError = new ActionError(),
                 Message = Localized.Get("HttpUnauthorized"),
-                Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+                Path = _apeContext.HttpContext.Request.Path.Value?.ToLower()
             }.ToJson());
         }
         else
@@ -69,7 +68,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
                 Status = StatusCodes.Status403Forbidden,
                 ActionError = new ActionError(),
                 Message = Localized.Get("HttpForbidden"),
-                Path = HttpContextCore.CurrentHttpContext.Request.Path.Value?.ToLower()
+                Path = _apeContext.HttpContext.Request.Path.Value?.ToLower()
             }.ToJson());
         }
     }

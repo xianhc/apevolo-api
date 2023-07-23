@@ -368,6 +368,38 @@ public class Configs
 
     #endregion
 
+    #region 缓存类型
+
+    private CacheOption _cacheOption;
+
+    /// <summary>
+    /// 缓存类型
+    /// </summary>
+    public CacheOption CacheOption
+    {
+        get
+        {
+            if (_cacheOption == null)
+            {
+                _cacheOption = new CacheOption();
+                _cacheOption.DistributedCacheSwitch ??= new DistributedCacheSwitch
+                {
+                    Enabled = true
+                };
+                _cacheOption.RedisCacheSwitch ??= new RedisCacheSwitch
+                {
+                    Enabled = false
+                };
+            }
+
+            return _cacheOption;
+        }
+        set => _cacheOption = value;
+    }
+
+    #endregion
+
+
     #region AOP
 
     private Aop _aop;

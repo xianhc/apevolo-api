@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using ApeVolo.Common.Caches.Redis.Attributes;
+using ApeVolo.Common.Caches.Redis.MessageQueue;
 using ApeVolo.Common.Caches.Redis.Models;
-using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
 using ApeVolo.Common.Helper.Serilog;
 using ApeVolo.IBusiness.Interface.Message.Email;
 using Serilog;

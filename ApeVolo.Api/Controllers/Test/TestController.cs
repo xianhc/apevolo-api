@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using ApeVolo.Api.ActionExtension.Sign;
 using ApeVolo.Api.Controllers.Base;
+using ApeVolo.Common.Caches;
 using ApeVolo.Common.Model;
 using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Interface.Test;
@@ -21,6 +23,7 @@ public class TestController : BaseApiController
     // //private readonly IEventBus _eventBus;
     // private readonly IRedisCacheService _redisCacheService;
     readonly ITestApeVoloService _testApeVoloService;
+
     // private readonly IUserService _userService;
     // private readonly IRoleService _roleService;
     // private readonly IBrowserDetector _browserDetector;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ApeVolo.Api.MQ.Redis;
-using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
+using ApeVolo.Common.Caches.Redis.MessageQueue;
 using ApeVolo.Common.ConfigOptions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +17,7 @@ public static class RedisInitMqSetup
         if (services == null) throw new ArgumentNullException(nameof(services));
 
         //启动redis消息队列 必须先启动redis缓存
-        if (configs.Middleware.RedisMq.Enabled)
+        if (configs.CacheOption.RedisCacheSwitch.Enabled && configs.Middleware.RedisMq.Enabled)
         {
             services.AddRedisMq(m =>
             {

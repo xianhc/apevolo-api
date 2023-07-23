@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ApeVolo.Api.Authentication.Jwt;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
+using ApeVolo.Common.Caches;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
@@ -43,8 +45,8 @@ public class AuthorizationController : BaseApiController
     #region 构造函数
 
     public AuthorizationController(IUserService userService, IPermissionService permissionService,
-        IOnlineUserService onlineUserService,
-        IQueuedEmailService queuedEmailService, ApeContext apeContext, ITokenService tokenService)
+        IOnlineUserService onlineUserService, IQueuedEmailService queuedEmailService, ApeContext apeContext,
+        ITokenService tokenService)
     {
         _userService = userService;
         _permissionService = permissionService;
@@ -75,8 +77,8 @@ public class AuthorizationController : BaseApiController
             return Error(actionError);
         }
 
-        var code = await _apeContext.RedisCache.GetAsync<string>(authUser.CaptchaId);
-        await _apeContext.RedisCache.RemoveAsync(authUser.CaptchaId);
+        var code = await _apeContext.Cache.GetAsync<string>(authUser.CaptchaId);
+        await _apeContext.Cache.RemoveAsync(authUser.CaptchaId);
         if (!_apeContext.Configs.IsQuickDebug)
         {
             if (code.IsNullOrEmpty()) return Error(Localized.Get("CodeNotExist"));
@@ -107,9 +109,9 @@ public class AuthorizationController : BaseApiController
         var token = await _tokenService.IssueTokenAsync(loginUserInfo);
         loginUserInfo.AccessToken = token.AccessToken;
         var onlineKey = loginUserInfo.AccessToken.ToMd5String16();
-        await _apeContext.RedisCache.SetAsync(
+        await _apeContext.Cache.SetAsync(
             GlobalConstants.CacheKey.OnlineKey + onlineKey,
-            loginUserInfo, TimeSpan.FromHours(3), RedisExpireType.Relative);
+            loginUserInfo, TimeSpan.FromHours(3), CacheExpireType.Relative);
         var dic = new Dictionary<string, object>
             { { "user", jwtUserVo }, { "token", token.TokenType + " " + token.AccessToken } };
 
@@ -148,7 +150,7 @@ public class AuthorizationController : BaseApiController
         var (imgBytes, code) = SixLaborsImageHelper.BuildVerifyCode();
         var imgUrl = ImgHelper.ToBase64StringUrl(imgBytes);
         var captchaId = GlobalConstants.CacheKey.CaptchaId + GuidHelper.GenerateKey();
-        await _apeContext.RedisCache.SetAsync(captchaId, code, TimeSpan.FromMinutes(2), null);
+        await _apeContext.Cache.SetAsync(captchaId, code, TimeSpan.FromMinutes(2), null);
         var dic = new Dictionary<string, string> { { "img", imgUrl }, { "captchaId", captchaId } };
         return dic.ToJson();
     }
@@ -183,11 +185,11 @@ public class AuthorizationController : BaseApiController
     {
         //清理缓存
         if (!_apeContext.HttpUser.IsNotNull()) return Success();
-        await _apeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey +
-                                                 _apeContext.HttpUser.JwtToken.ToMd5String16());
-        await _apeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
-                                                 _apeContext.HttpUser.Id.ToString().ToMd5String16());
-        await _apeContext.RedisCache.RemoveAsync(
+        await _apeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey +
+                                            _apeContext.HttpUser.JwtToken.ToMd5String16());
+        await _apeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
+                                            _apeContext.HttpUser.Id.ToString().ToMd5String16());
+        await _apeContext.Cache.RemoveAsync(
             GlobalConstants.CacheKey.UserInfoByName + _apeContext.HttpUser.Account.ToMd5String16());
 
         return Success();

@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ApeVolo.Common.Caches.Redis.Service.MessageQueue;
+namespace ApeVolo.Common.Caches.Redis.MessageQueue;
 
 public class InitBuilder
 {

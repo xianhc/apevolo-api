@@ -25,7 +25,7 @@ public class UserRolesService : BaseServices<UserRoles>, IUserRolesService
 
     #region 基础方法
 
-    [RedisCaching(KeyPrefix = GlobalConstants.CacheKey.UserRolesById)]
+    [UseCache(KeyPrefix = GlobalConstants.CacheKey.UserRolesById)]
     public async Task<List<UserRoles>> QueryAsync(long userId)
     {
         return await SugarRepository.QueryListAsync(ur => ur.UserId == userId);

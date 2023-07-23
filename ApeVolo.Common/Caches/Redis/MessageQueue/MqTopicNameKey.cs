@@ -1,4 +1,4 @@
-namespace ApeVolo.Common.Caches.Redis.Service.MessageQueue;
+namespace ApeVolo.Common.Caches.Redis.MessageQueue;
 
 public static class MqTopicNameKey
 {

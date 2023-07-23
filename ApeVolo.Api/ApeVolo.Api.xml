@@ -105,20 +105,20 @@
             <param name="body">请求体</param>
             <returns></returns>
         </member>
-        <member name="T:ApeVolo.Api.Aop.RedisAop">
+        <member name="T:ApeVolo.Api.Aop.CacheAop">
             <summary>
             Redis缓存拦截器
             </summary>
         </member>
-        <member name="M:ApeVolo.Api.Aop.RedisAop.CreateCacheKey(Castle.DynamicProxy.IInvocation,ApeVolo.Common.AttributeExt.RedisCachingAttribute)">
+        <member name="M:ApeVolo.Api.Aop.CacheAop.CreateCacheKey(Castle.DynamicProxy.IInvocation,ApeVolo.Common.AttributeExt.UseCacheAttribute)">
             <summary>
             构建Redis Key
             </summary>
             <param name="invocation"></param>
-            <param name="redisCachingAttribute"></param>
+            <param name="useCacheAttribute"></param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Aop.RedisAop.GetArgumentValue(System.Object)">
+        <member name="M:ApeVolo.Api.Aop.CacheAop.GetArgumentValue(System.Object)">
             <summary>
             获取参数值类型值
             </summary>
@@ -1011,6 +1011,11 @@
             实体映射启动器
             </summary>
         </member>
+        <member name="T:ApeVolo.Api.Extensions.CacheSetup">
+            <summary>
+            缓存启动器
+            </summary>
+        </member>
         <member name="T:ApeVolo.Api.Extensions.CorsSetup">
             <summary>
             跨域启动器
@@ -1057,11 +1062,6 @@
         <member name="T:ApeVolo.Api.Extensions.RabbitMqSetup">
             <summary>
             rabbitmq启动器
-            </summary>
-        </member>
-        <member name="T:ApeVolo.Api.Extensions.RedisCacheSetup">
-            <summary>
-            redis启动器
             </summary>
         </member>
         <member name="T:ApeVolo.Api.Extensions.RedisInitMqSetup">

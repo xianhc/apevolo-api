@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using ApeVolo.Common.Caches.Redis.Service;
+using ApeVolo.Common.Caches;
 using ApeVolo.Common.Extention;
 using ApeVolo.IBusiness.Interface.System;
 using Microsoft.AspNetCore.Http;
@@ -54,10 +54,10 @@ public class VerifySignatureAttribute : BaseActionFilter
         }
 
         var guidKey = $"ApiGuid_{guid}";
-        var redisCacheService = filterContext.HttpContext.RequestServices.GetRequiredService<IRedisCacheService>();
-        if (!redisCacheService.GetAsync<string>(guidKey).IsNullOrEmpty())
+        var cache = filterContext.HttpContext.RequestServices.GetRequiredService<ICache>();
+        if (!cache.GetAsync<string>(guidKey).IsNullOrEmpty())
         {
-            await redisCacheService.SetAsync(guidKey, "1", null, null);
+            await cache.SetAsync(guidKey, "1", null, null);
         }
         else
         {

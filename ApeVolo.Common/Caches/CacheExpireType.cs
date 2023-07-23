@@ -1,9 +1,9 @@
-﻿namespace ApeVolo.Common.Global;
+﻿namespace ApeVolo.Common.Caches;
 
 /// <summary>
-/// 过期类型
+/// 缓存过期类型
 /// </summary>
-public enum RedisExpireType
+public enum CacheExpireType
 {
     /// <summary>
     /// 绝对过期

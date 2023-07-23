@@ -20,7 +20,7 @@ public class TokenService : ITokenService
 
     public TokenService(IOptionsMonitor<Configs> configs)
     {
-        _jwtOptions = configs.CurrentValue.JwtAuthOptions;
+        _jwtOptions = (configs?.CurrentValue ?? new Configs()).JwtAuthOptions;
     }
 
     public async Task<Token> IssueTokenAsync(LoginUserInfo loginUserInfo)

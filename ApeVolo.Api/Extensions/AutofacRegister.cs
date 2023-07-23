@@ -45,8 +45,8 @@ public class AutofacRegister : Module
 
         if (configs.Aop.Cache.Enabled)
         {
-            builder.RegisterType<RedisAop>();
-            registerType.Add(typeof(RedisAop));
+            builder.RegisterType<CacheAop>();
+            registerType.Add(typeof(CacheAop));
         }
 
         builder.RegisterGeneric(typeof(SugarRepository<>)).As(typeof(ISugarRepository<>))

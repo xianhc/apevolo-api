@@ -4,7 +4,7 @@ using ApeVolo.Common.Caches.Redis.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace ApeVolo.Common.Caches.Redis.Service.MessageQueue;
+namespace ApeVolo.Common.Caches.Redis.MessageQueue;
 
 /// <summary>
 /// redis消息队列中间件
@@ -16,16 +16,16 @@ public static class ServiceCollectionExtensions
     /// Adds and configures the consistence services for the consistency.
     /// </summary>
     /// <param name="services">The services available in the application.</param>
-    /// <param name="setupAction">An action to configure the <see cref="RedisOptions" />.</param>
+    /// <param name="setupAction">An action to configure the <see cref="RedisQueueOptions" />.</param>
     /// <returns>An <see cref="InitBuilder" /> for application services.</returns>
-    public static InitBuilder AddRedisMq(this IServiceCollection services, Action<RedisOptions> setupAction)
+    public static InitBuilder AddRedisMq(this IServiceCollection services, Action<RedisQueueOptions> setupAction)
     {
         if (setupAction == null)
         {
             throw new ArgumentNullException(nameof(setupAction));
         }
 
-        var options = new RedisOptions();
+        var options = new RedisQueueOptions();
         setupAction(options);
 
 

@@ -95,8 +95,8 @@ public class MenuService : BaseServices<Menu>, IMenuService
         if (createUpdateMenuDto.ParentId.IsNotNull())
         {
             //清理缓存
-            await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusByPId +
-                                                    menu.ParentId.ToString().ToMd5String16());
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusByPId +
+                                               menu.ParentId.ToString().ToMd5String16());
             var tmpMenu = await SugarRepository.QueryFirstAsync(x => x.Id == menu.ParentId);
             if (tmpMenu.IsNotNull())
             {
@@ -163,12 +163,12 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
         var menu2 = ApeContext.Mapper.Map<Menu>(createUpdateMenuDto);
         //清理缓存
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusById +
-                                                menu2.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusById +
+                                           menu2.Id.ToString().ToMd5String16());
         if (menu2.ParentId.IsNotNull())
         {
-            await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusByPId +
-                                                    menu2.ParentId.ToString().ToMd5String16());
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusByPId +
+                                               menu2.ParentId.ToString().ToMd5String16());
         }
 
         await UpdateEntityAsync(menu2);
@@ -223,10 +223,10 @@ public class MenuService : BaseServices<Menu>, IMenuService
             //清除缓存
             foreach (var id in idList)
             {
-                await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusById +
-                                                        id.ToString().ToMd5String16());
-                await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusByPId +
-                                                        id.ToString().ToMd5String16());
+                await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusById +
+                                                   id.ToString().ToMd5String16());
+                await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusByPId +
+                                                   id.ToString().ToMd5String16());
             }
         }
 
@@ -275,7 +275,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
     public async Task<List<MenuDto>> QueryAllAsync()
     {
-        var menuDtos = await ApeContext.RedisCache.GetAsync<List<MenuDto>>("menus:LoadAllMenu");
+        var menuDtos = await ApeContext.Cache.GetAsync<List<MenuDto>>("menus:LoadAllMenu");
         if (menuDtos.IsNotNull())
         {
             return menuDtos;
@@ -284,7 +284,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
         menuDtos = ApeContext.Mapper.Map<List<MenuDto>>(await SugarRepository.QueryListAsync());
         if (menuDtos.IsNotNull())
         {
-            await ApeContext.RedisCache.SetAsync("menus:LoadAllMenu", menuDtos, TimeSpan.FromSeconds(120), null);
+            await ApeContext.Cache.SetAsync("menus:LoadAllMenu", menuDtos, TimeSpan.FromSeconds(120), null);
         }
 
         return menuDtos;
@@ -295,7 +295,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
     /// </summary>
     /// <param name="userId">用户ID</param>
     /// <returns></returns>
-    [RedisCaching(KeyPrefix = GlobalConstants.CacheKey.UserBuildMenuById)]
+    [UseCache(KeyPrefix = GlobalConstants.CacheKey.UserBuildMenuById)]
     public async Task<List<MenuTreeVo>> BuildTreeAsync(long userId)
     {
         var userRoles = await _userRolesService.QueryAsync(userId);
@@ -336,7 +336,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
     }
 
 
-    [RedisCaching(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.LoadMenusById)]
+    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.LoadMenusById)]
     public async Task<List<MenuDto>> FindSuperiorAsync(long id)
     {
         Expression<Func<Menu, bool>> whereLambda = m => true;
@@ -448,7 +448,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
         return menuVos;
     }
 
-    [RedisCaching(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.LoadMenusByPId)]
+    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.LoadMenusByPId)]
     public async Task<List<MenuDto>> FindByPIdAsync(long pid = 0)
     {
         List<MenuDto> menuDtos = null;

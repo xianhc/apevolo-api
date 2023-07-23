@@ -52,7 +52,7 @@ public class CreateUpdateUserDto : BaseEntityDto<long>
     /// 部门
     /// </summary>
     [Required(ErrorMessage = "{0}required")]
-    public UserDeptDto DeptDto { get; set; }
+    public UserDeptDto Dept { get; set; }
 
     /// <summary>
     /// 角色

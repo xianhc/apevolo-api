@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
-using ApeVolo.Common.Caches.Redis.Service.MessageQueue;
+using ApeVolo.Common.Caches.Redis.MessageQueue;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
@@ -130,7 +130,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
             .SingleAsync();
 
         //生成6位随机码
-        var captcha = ImgVerifyCodeHelper.BuilEmailCaptcha(6);
+        var captcha = SixLaborsImageHelper.BuilEmailCaptcha(6);
 
         QueuedEmail queuedEmail = new QueuedEmail();
         queuedEmail.From = emailAccount.Email;
@@ -146,13 +146,14 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
         bool isTrue = await SugarRepository.AddReturnBoolAsync(queuedEmail);
         if (isTrue)
         {
-            await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.EmailCaptchaKey +
-                                                    queuedEmail.To.ToMd5String());
-            await ApeContext.RedisCache.SetAsync(
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.EmailCaptchaKey +
+                                               queuedEmail.To.ToMd5String());
+            await ApeContext.Cache.SetAsync(
                 GlobalConstants.CacheKey.EmailCaptchaKey + queuedEmail.To.ToMd5String(), captcha,
                 TimeSpan.FromMinutes(5), null);
             //进redis队列执行发送
-            await ApeContext.RedisCache.ListLeftPushAsync(MqTopicNameKey.MailboxQueue, queuedEmail.Id.ToString());
+            await ApeContext.Cache.GetDatabase()
+                .ListLeftPushAsync(MqTopicNameKey.MailboxQueue, queuedEmail.Id.ToString());
         }
 
         return isTrue;

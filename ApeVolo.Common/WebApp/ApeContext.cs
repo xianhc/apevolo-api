@@ -1,5 +1,5 @@
 ﻿using System;
-using ApeVolo.Common.Caches.Redis.Service;
+using ApeVolo.Common.Caches;
 using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
@@ -34,16 +34,9 @@ public class ApeContext
         get => _configs;
     }
 
-    private IRedisCacheService _redisCache;
+    private ICache _cache;
 
-    public IRedisCacheService RedisCache
-    {
-        get { return _redisCache; }
-    }
-
-    private IDistributedCache _cache;
-
-    public IDistributedCache Cache
+    public ICache Cache
     {
         get { return _cache; }
     }
@@ -65,7 +58,7 @@ public class ApeContext
                 // var loginUserInfo = AsyncHelper.RunSync(() =>
                 //     RedisCache.GetAsync<LoginUserInfo>(
                 //         GlobalConstants.CacheKey.OnlineKey + HttpUser.JwtToken.ToMd5String16()));
-                var loginUserInfo = RedisCache.Get<LoginUserInfo>(
+                var loginUserInfo = Cache.Get<LoginUserInfo>(
                     GlobalConstants.CacheKey.OnlineKey + HttpUser.JwtToken.ToMd5String16());
                 return loginUserInfo;
             }
@@ -82,15 +75,13 @@ public class ApeContext
     }
 
 
-    public ApeContext(IOptionsMonitor<Configs> configs, IMapper mapper, IHttpUser httpUser,
-        IHttpContextAccessor httpContextAccessor = null,
-        IRedisCacheService redisCache = null, IDistributedCache cache = null)
+    public ApeContext(IOptionsMonitor<Configs> configs, IHttpContextAccessor httpContextAccessor,
+        IMapper mapper, IHttpUser httpUser, ICache cache)
     {
         _configs = configs?.CurrentValue ?? new Configs();
         _httpContext = httpContextAccessor?.HttpContext;
         _cache = cache;
         _mapper = mapper;
         _httpUser = httpUser;
-        _redisCache = redisCache;
     }
 }

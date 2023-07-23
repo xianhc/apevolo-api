@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ApeVolo.Common.Caches.Redis.Service;
+using ApeVolo.Common.Caches;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
@@ -13,23 +13,23 @@ namespace ApeVolo.Business.Monitor;
 
 public class OnlineUserService : IOnlineUserService
 {
-    private readonly IRedisCacheService _redisCacheService;
+    private readonly ICache _cache;
 
-    public OnlineUserService(IRedisCacheService redisCacheService)
+    public OnlineUserService(ICache cache)
     {
-        _redisCacheService = redisCacheService;
+        _cache = cache;
     }
 
     public async Task<List<LoginUserInfo>> QueryAsync(Pagination pagination)
     {
         List<LoginUserInfo> loginUserInfos = new List<LoginUserInfo>();
-        var arrayList = await _redisCacheService.ScriptEvaluateKeys(GlobalConstants.CacheKey.OnlineKey);
+        var arrayList = await _cache.ScriptEvaluateKeys(GlobalConstants.CacheKey.OnlineKey);
         if (arrayList.Length > 0)
         {
             foreach (var item in arrayList)
             {
                 var loginUserInfo =
-                    await _redisCacheService.GetAsync<LoginUserInfo>(item);
+                    await _cache.GetAsync<LoginUserInfo>(item);
                 if (loginUserInfo.IsNull()) continue;
                 loginUserInfo.CurrentPermission = null;
                 loginUserInfo.AccessToken = loginUserInfo.AccessToken.ToMd5String16();
@@ -52,20 +52,20 @@ public class OnlineUserService : IOnlineUserService
     {
         foreach (var item in ids)
         {
-            await _redisCacheService.RemoveAsync(GlobalConstants.CacheKey.OnlineKey + item);
+            await _cache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey + item);
         }
     }
 
     public async Task<List<ExportBase>> DownloadAsync()
     {
         List<ExportBase> onlineUserExports = new List<ExportBase>();
-        var arrayList = await _redisCacheService.ScriptEvaluateKeys(GlobalConstants.CacheKey.OnlineKey);
+        var arrayList = await _cache.ScriptEvaluateKeys(GlobalConstants.CacheKey.OnlineKey);
         if (arrayList.Length > 0)
         {
             foreach (var item in arrayList)
             {
                 LoginUserInfo loginUserInfo =
-                    await _redisCacheService.GetAsync<LoginUserInfo>(item);
+                    await _cache.GetAsync<LoginUserInfo>(item);
                 if (loginUserInfo != null)
                 {
                     loginUserInfo.CurrentPermission = null;

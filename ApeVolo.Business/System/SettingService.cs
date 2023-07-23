@@ -59,8 +59,8 @@ public class SettingService : BaseServices<Setting>, ISettingService
                 createUpdateSettingDto.Name));
         }
 
-        await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.LoadSettingByName +
-                                                oldSetting.Name.ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadSettingByName +
+                                           oldSetting.Name.ToMd5String16());
         var setting = ApeContext.Mapper.Map<Setting>(createUpdateSettingDto);
         return await UpdateEntityAsync(setting);
     }
@@ -70,8 +70,8 @@ public class SettingService : BaseServices<Setting>, ISettingService
         var settings = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
         foreach (var setting in settings)
         {
-            await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.LoadSettingByName +
-                                                    setting.Name.ToMd5String16());
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadSettingByName +
+                                               setting.Name.ToMd5String16());
         }
 
         return await LogicDelete<Setting>(x => ids.Contains(x.Id)) > 0;
@@ -100,7 +100,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
         return settingExports;
     }
 
-    [RedisCaching(Expiration = 20, KeyPrefix = GlobalConstants.CacheKey.LoadSettingByName)]
+    [UseCache(Expiration = 20, KeyPrefix = GlobalConstants.CacheKey.LoadSettingByName)]
     public async Task<SettingDto> FindSettingByName(string settingName)
     {
         if (settingName.IsNullOrEmpty())

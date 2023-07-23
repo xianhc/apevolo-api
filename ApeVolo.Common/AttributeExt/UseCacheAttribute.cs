@@ -1,4 +1,5 @@
 ﻿using System;
+using ApeVolo.Common.Caches;
 using ApeVolo.Common.Global;
 
 namespace ApeVolo.Common.AttributeExt;
@@ -7,7 +8,7 @@ namespace ApeVolo.Common.AttributeExt;
 /// Redis特性  AOP拦截使用
 /// </summary>
 [AttributeUsage(AttributeTargets.Method)]
-public class RedisCachingAttribute : Attribute
+public class UseCacheAttribute : Attribute
 {
     /// <summary>
     /// 过期时间（分钟）
@@ -22,5 +23,5 @@ public class RedisCachingAttribute : Attribute
     /// <summary>
     /// 缓存类型（默认绝对过期）
     /// </summary>
-    public RedisExpireType RedisExpireType { get; set; } = RedisExpireType.Absolute;
+    public CacheExpireType CacheExpireType { get; set; } = CacheExpireType.Absolute;
 }

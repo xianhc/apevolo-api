@@ -303,8 +303,8 @@ public class RoleService : BaseServices<Role>, IRoleService
         var userRoles = await _userRolesService.QueryByRoleIdsAsync(new HashSet<long> { role.Id });
         foreach (var ur in userRoles)
         {
-            await ApeContext.RedisCache.RemoveAsync(GlobalConstants.CacheKey.UserPermissionById +
-                                                    ur.UserId.ToString().ToMd5String16());
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserPermissionById +
+                                               ur.UserId.ToString().ToMd5String16());
         }
 
         return true;

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using ApeVolo.Common.AttributeExt;
-using ApeVolo.Common.Caches.Redis.Service;
+using ApeVolo.Common.Caches;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using Castle.DynamicProxy;
@@ -12,13 +12,13 @@ namespace ApeVolo.Api.Aop;
 /// <summary>
 /// Redis缓存拦截器
 /// </summary>
-public class RedisAop : IInterceptor
+public class CacheAop : IInterceptor
 {
-    private readonly IRedisCacheService _redisCacheService;
+    private readonly ICache _cache;
 
-    public RedisAop(IRedisCacheService redisCacheService)
+    public CacheAop(ICache cache)
     {
-        _redisCacheService = redisCacheService;
+        _cache = cache;
     }
 
     public void Intercept(IInvocation invocation)
@@ -31,13 +31,13 @@ public class RedisAop : IInterceptor
         }
 
 
-        if (method.GetCustomAttributes(true).FirstOrDefault(x => x.GetType() == typeof(RedisCachingAttribute)) is
-            RedisCachingAttribute redisCachingAttribute)
+        if (method.GetCustomAttributes(true).FirstOrDefault(x => x.GetType() == typeof(UseCacheAttribute)) is
+            UseCacheAttribute useCacheAttribute)
         {
-            var cacheKey = CreateCacheKey(invocation, redisCachingAttribute);
+            var cacheKey = CreateCacheKey(invocation, useCacheAttribute);
             //var cacheValue = AsyncHelper.RunSync(() => _redisCacheService.GetAsync<string>(cacheKey));
 
-            var cacheValue = _redisCacheService.Get<dynamic>(cacheKey);
+            var cacheValue = _cache.Get<dynamic>(cacheKey);
             if (cacheValue != null)
             {
                 // Type  returnType = typeof(Task).IsAssignableFrom(method.ReturnType)
@@ -78,7 +78,7 @@ public class RedisAop : IInterceptor
 
                 // AsyncHelper.RunSync(() => _redisCacheService.SetAsync(cacheKey, response,
                 //     TimeSpan.FromMinutes(redisCachingAttribute.Expiration), null));
-                _redisCacheService.Set(cacheKey, response, TimeSpan.FromMinutes(redisCachingAttribute.Expiration),
+                _cache.Set(cacheKey, response, TimeSpan.FromMinutes(useCacheAttribute.Expiration),
                     null);
             }
         }
@@ -92,9 +92,9 @@ public class RedisAop : IInterceptor
     /// 构建Redis Key
     /// </summary>
     /// <param name="invocation"></param>
-    /// <param name="redisCachingAttribute"></param>
+    /// <param name="useCacheAttribute"></param>
     /// <returns></returns>
-    private static string CreateCacheKey(IInvocation invocation, RedisCachingAttribute redisCachingAttribute)
+    private static string CreateCacheKey(IInvocation invocation, UseCacheAttribute useCacheAttribute)
     {
         var typeName = invocation.TargetType.Name;
         var methodName = invocation.Method.Name;
@@ -102,9 +102,9 @@ public class RedisAop : IInterceptor
         //支持多参数包括实体类，建议不要超过三个， 避免产生的redis key过长
         var methodArguments = invocation.Arguments.Select(GetArgumentValue).ToList();
 
-        var key = redisCachingAttribute.KeyPrefix.IsNullOrEmpty()
+        var key = useCacheAttribute.KeyPrefix.IsNullOrEmpty()
             ? $"{typeName}:{methodName}:"
-            : redisCachingAttribute.KeyPrefix;
+            : useCacheAttribute.KeyPrefix;
 
         methodArguments.ForEach(arg => { key = $"{key}{arg}:"; });
 

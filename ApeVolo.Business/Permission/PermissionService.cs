@@ -19,7 +19,7 @@ public class PermissionService : BaseServices<Role>, IPermissionService
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    [RedisCaching(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.UserPermissionById)]
+    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.UserPermissionById)]
     public async Task<List<PermissionVo>> QueryUserPermissionAsync(long userId)
     {
         var permissionLists =
