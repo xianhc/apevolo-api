@@ -85,7 +85,7 @@ Please Pull Request~
 |  :---:  | 
 | <img width="150" src="https://www.apevolo.com/file/wechat/20230723172451.jpg"> 
 
-添加微信，备注"加入apevolo交流群"
+添加微信，备注"加群"
 
 ## 捐赠
 
