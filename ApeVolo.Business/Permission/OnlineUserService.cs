@@ -6,6 +6,7 @@ using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Dto.Permission;
 using ApeVolo.IBusiness.Interface.Permission;
 using ApeVolo.IBusiness.Vo;
+using IP2Region.Net.XDB;
 using Shyjus.BrowserDetection;
 
 namespace ApeVolo.Business.Permission;
@@ -18,14 +19,16 @@ public class OnlineUserService : IOnlineUserService
     #region 字段
 
     private readonly IBrowserDetector _browserDetector;
+    private readonly ISearcher _ipSearcher;
 
     #endregion
 
     #region 构造函数
 
-    public OnlineUserService(IBrowserDetector browserDetector)
+    public OnlineUserService(IBrowserDetector browserDetector, ISearcher searcher)
     {
         _browserDetector = browserDetector;
+        _ipSearcher = searcher;
     }
 
     #endregion
@@ -46,7 +49,7 @@ public class OnlineUserService : IOnlineUserService
             NickName = jwtUserVo.User.NickName,
             Dept = jwtUserVo.User.Dept.Name,
             Ip = remoteIp,
-            Address = IpHelper.GetIpAddress(remoteIp),
+            Address = _ipSearcher.Search(remoteIp),
             OperatingSystem = _browserDetector.Browser?.OS,
             DeviceType = _browserDetector.Browser?.DeviceType,
             BrowserName = _browserDetector.Browser?.Name,

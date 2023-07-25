@@ -16,7 +16,7 @@
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
-    <PackageReference Include="IP2Region" Version="1.2.0" />
+    <PackageReference Include="IP2Region.Net" Version="1.0.10" />
     <PackageReference Include="MailKit" Version="3.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />

@@ -15,6 +15,7 @@ using ApeVolo.IBusiness.Interface.System;
 using ApeVolo.QuartzNetService.service;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using IP2Region.Net.XDB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -67,7 +68,7 @@ public class Startup
         services.AddEventBusSetup(configs);
         services.AddLocalization(options => options.ResourcesPath = "Resources");
         services.AddMultiLanguages(op => op.LocalizationType = typeof(Common.Language));
-
+        services.AddSingleton<ISearcher, Searcher>();
         services.AddControllers(options =>
             {
                 // 异常过滤器

@@ -95,35 +95,31 @@ public static class IpHelper
         return HttpContextCore.CurrentHttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
     }*/
 
-    /// <summary>
-    /// 获取IP详细地址
-    /// </summary>
-    /// <param name="ip"></param>
-    /// <returns></returns>
-    public static string GetIpAddress(string ip)
-    {
-        try
-        {
-            string pattern = @"^(([1-9]\d?)|(1\d{2})|(2[01]\d)|(22[0-3]))(\.((1?\d\d?)|(2[04]/d)|(25[0-5]))){3}$";
-            if (!Regex.IsMatch(ip, pattern))
-            {
-                return "局域网IP";
-            }
 
-            string filePath = Path.Combine(AppSettings.WebRootPath, "resources", "ip", "ip2region.db");
-
-            using var search = new DbSearcher(filePath);
-            var address = search.MemorySearch(ip).Region.Replace("0|", "");
-
-            return address.Substring(address.Length - 4, 4) == "内网IP" ? "局域网IP" : address;
-        }
-        catch
-        {
-            // ignored
-        }
-
-        return "";
-    }
+    // public static string GetIpAddress(string ip)
+    // {
+    //     try
+    //     {
+    //         string pattern = @"^(([1-9]\d?)|(1\d{2})|(2[01]\d)|(22[0-3]))(\.((1?\d\d?)|(2[04]/d)|(25[0-5]))){3}$";
+    //         if (!Regex.IsMatch(ip, pattern))
+    //         {
+    //             return "局域网IP";
+    //         }
+    //
+    //         string filePath = Path.Combine(AppSettings.WebRootPath, "resources", "ip", "ip2region.db");
+    //
+    //         using var search = new DbSearcher(filePath);
+    //         var address = search.MemorySearch(ip).Region.Replace("0|", "");
+    //
+    //         return address.Substring(address.Length - 4, 4) == "内网IP" ? "局域网IP" : address;
+    //     }
+    //     catch
+    //     {
+    //         // ignored
+    //     }
+    //
+    //     return "";
+    // }
 
     #endregion
 

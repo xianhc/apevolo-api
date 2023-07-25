@@ -50,6 +50,7 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\resources\lib\Crack\AsposeCells\Aspose.Cells.dll" />
       <_ContentIncludedByDefault Remove="wwwroot\resources\lib\Crack\AsposeCells\readme.txt" />
+      <_ContentIncludedByDefault Remove="wwwroot\resources\ip\ip2region.db" />
     </ItemGroup>
 
     <ProjectExtensions>

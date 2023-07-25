@@ -13,6 +13,7 @@ using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Monitor;
 using ApeVolo.IBusiness.Interface.Monitor;
 using ApeVolo.IBusiness.Interface.System;
+using IP2Region.Net.XDB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -33,8 +34,9 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
     private readonly IBrowserDetector _browserDetector;
     private readonly ILogger<GlobalExceptionFilter> _logger;
     private readonly ApeContext _apeContext;
+    private readonly ISearcher _ipSearcher;
 
-    public GlobalExceptionFilter(ApeContext apeContext, IExceptionLogService exceptionLogService,
+    public GlobalExceptionFilter(ApeContext apeContext, IExceptionLogService exceptionLogService, ISearcher searcher,
         ISettingService settingService, IBrowserDetector browserDetector, ILogger<GlobalExceptionFilter> logger)
     {
         _apeContext = apeContext;
@@ -42,6 +44,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         _settingService = settingService;
         _browserDetector = browserDetector;
         _logger = logger;
+        _ipSearcher = searcher;
     }
 
     public async Task OnExceptionAsync(ExceptionContext context)
@@ -59,6 +62,8 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             statusCode = StatusCodes.Status400BadRequest;
         }
 
+        var remoteIp = context.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
+        var ipAddress = _ipSearcher.Search(remoteIp);
         string throwMsg = context.Exception.Message; //错误信息
         var actionError = new ActionError() { Errors = new Dictionary<string, string>() };
         context.Result = new ContentResult
@@ -80,7 +85,8 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         }
 
         //记录日志
-        _logger.LogError(WriteLog(context.HttpContext, context.Exception, _apeContext.HttpUser.Account,
+        _logger.LogError(WriteLog(context.HttpContext, remoteIp, ipAddress, context.Exception,
+            _apeContext.HttpUser.Account,
             _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
             _browserDetector.Browser?.Version), context.Exception);
         var settingDto = await _settingService.FindSettingByName("IsExceptionLogSaveDB");
@@ -97,7 +103,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(WriteLog(context.HttpContext, ex, _apeContext.HttpUser.Account,
+                _logger.LogCritical(WriteLog(context.HttpContext, remoteIp, ipAddress, ex, _apeContext.HttpUser.Account,
                     _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                     _browserDetector.Browser?.Version));
                 ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
@@ -140,7 +146,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 ExceptionMessageFull = ExceptionHelper.GetExceptionAllMsg(context.Exception),
                 ExceptionStack = context.Exception.StackTrace,
                 RequestIp = remoteIp,
-                IpAddress = IpHelper.GetIpAddress(remoteIp),
+                IpAddress = _ipSearcher.Search(remoteIp),
                 LogLevel = (int)LogLevel.Debug,
                 OperatingSystem = _browserDetector.Browser?.OS,
                 DeviceType = _browserDetector.Browser?.DeviceType,

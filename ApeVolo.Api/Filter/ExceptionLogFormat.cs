@@ -16,6 +16,8 @@ public static class ExceptionLogFormat
     /// 自定义返回格式
     /// </summary>
     /// <param name="httpContext">http上下文</param>
+    ///  <param name="remoteIp">http上下文</param>
+    ///  <param name="ipAddress">http上下文</param>
     /// <param name="exception">异常类</param>
     /// <param name="currentUserName">当前用户名</param>
     /// <param name="operatingSystem">操作系统</param>
@@ -23,11 +25,11 @@ public static class ExceptionLogFormat
     /// <param name="browserName">浏览器名称</param>
     /// <param name="version">版本号</param>
     /// <returns></returns>
-    public static string WriteLog(HttpContext httpContext, Exception exception, string currentUserName,
+    public static string WriteLog(HttpContext httpContext, string remoteIp, string ipAddress, Exception exception,
+        string currentUserName,
         string operatingSystem, string deviceType, string browserName, string version)
     {
-        var remoteIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-        return string.Format("【异常信息】 : {0} \r\n" +
+        return string.Format("\r\n【异常信息】 : {0} \r\n" +
                              "【异常类型】 : {1} \r\n" +
                              "【请求路径】 : {2} \r\n" +
                              "【请求类型】 : {3} \r\n" +
@@ -43,7 +45,7 @@ public static class ExceptionLogFormat
                              "【完整异常】 ：{13}", exception.Message, exception.GetType().Name,
             httpContext.Request.GetDisplayUrl(), httpContext.Request.Method,
             httpContext.Request.Body.ReadToString() ?? "", currentUserName,
-            remoteIp, IpHelper.GetIpAddress(remoteIp),
+            remoteIp, ipAddress,
             operatingSystem, deviceType, browserName, version, exception.StackTrace,
             ExceptionHelper.GetExceptionAllMsg(exception));
     }

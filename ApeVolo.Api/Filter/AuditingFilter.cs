@@ -12,6 +12,7 @@ using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Monitor;
 using ApeVolo.IBusiness.Interface.Monitor;
 using ApeVolo.IBusiness.Interface.System;
+using IP2Region.Net.XDB;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -31,8 +32,9 @@ public class AuditingFilter : IAsyncActionFilter
     private readonly ISettingService _settingService;
     private readonly IBrowserDetector _browserDetector;
     private readonly ILogger<AuditingFilter> _logger;
+    private readonly ISearcher _ipSearcher;
 
-    public AuditingFilter(IAuditLogService auditInfoService, IHttpUser httpUser,
+    public AuditingFilter(IAuditLogService auditInfoService, IHttpUser httpUser, ISearcher searcher,
         ISettingService settingService, IBrowserDetector browserDetector, ILogger<AuditingFilter> logger)
     {
         _auditInfoService = auditInfoService;
@@ -40,6 +42,7 @@ public class AuditingFilter : IAsyncActionFilter
         _settingService = settingService;
         _browserDetector = browserDetector;
         _logger = logger;
+        _ipSearcher = searcher;
     }
 
     public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -101,7 +104,10 @@ public class AuditingFilter : IAsyncActionFilter
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ExceptionLogFormat.WriteLog(context.HttpContext, ex, _httpUser?.Account,
+            var remoteIp = context.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
+            var ipAddress = _ipSearcher.Search(remoteIp);
+            _logger.LogCritical(ExceptionLogFormat.WriteLog(context.HttpContext, remoteIp, ipAddress, ex,
+                _httpUser?.Account,
                 _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                 _browserDetector.Browser?.Version));
             ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
@@ -138,7 +144,7 @@ public class AuditingFilter : IAsyncActionFilter
             RequestUrl = httpContext.Request.GetDisplayUrl(),
             RequestParameters = arguments.ToJson(),
             RequestIp = remoteIp,
-            IpAddress = IpHelper.GetIpAddress(remoteIp),
+            IpAddress = _ipSearcher.Search(remoteIp),
             OperatingSystem = _browserDetector.Browser?.OS,
             DeviceType = _browserDetector.Browser?.DeviceType,
             BrowserName = _browserDetector.Browser?.Name,

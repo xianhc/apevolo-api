@@ -17,6 +17,7 @@ using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Interface.Permission;
 using ApeVolo.IBusiness.Interface.Queued;
 using ApeVolo.IBusiness.RequestModel;
+using IP2Region.Net.XDB;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,6 +40,7 @@ public class AuthorizationController : BaseApiController
     private readonly IQueuedEmailService _queuedEmailService;
     private readonly ApeContext _apeContext;
     private readonly ITokenService _tokenService;
+    private readonly ISearcher _searcher;
 
     #endregion
 
@@ -46,7 +48,7 @@ public class AuthorizationController : BaseApiController
 
     public AuthorizationController(IUserService userService, IPermissionService permissionService,
         IOnlineUserService onlineUserService, IQueuedEmailService queuedEmailService, ApeContext apeContext,
-        ITokenService tokenService)
+        ITokenService tokenService, ISearcher searcher)
     {
         _userService = userService;
         _permissionService = permissionService;
@@ -54,6 +56,7 @@ public class AuthorizationController : BaseApiController
         _queuedEmailService = queuedEmailService;
         _apeContext = apeContext;
         _tokenService = tokenService;
+        _searcher = searcher;
     }
 
     #endregion
@@ -147,6 +150,9 @@ public class AuthorizationController : BaseApiController
         //在linux平台下会报异常 The type initializer for ‘Gdip‘ threw an exception
         //可安装libgdiplus包重启服务器解决或使用下面的SixLabors.ImageSharp库支持跨平台
         //var (imgBytes, code) = ImgVerifyCodeHelper.BuildVerifyCode();
+
+        var text = _searcher.Search("0.0.0.0");
+
         var (imgBytes, code) = SixLaborsImageHelper.BuildVerifyCode();
         var imgUrl = ImgHelper.ToBase64StringUrl(imgBytes);
         var captchaId = GlobalConstants.CacheKey.CaptchaId + GuidHelper.GenerateKey();
