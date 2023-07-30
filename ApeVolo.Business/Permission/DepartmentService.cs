@@ -10,7 +10,6 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission;
 using ApeVolo.IBusiness.Dto.Permission;
@@ -39,8 +38,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     {
         if (await TableWhere(d => d.Name == createUpdateDepartmentDto.Name).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Department"),
-                createUpdateDepartmentDto.Name));
+            throw new BadRequestException($"部门名称=>{createUpdateDepartmentDto.Name}=>已存在!");
         }
 
         Department dept =
@@ -70,14 +68,13 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
             await TableWhere(x => x.Id == createUpdateDepartmentDto.Id).FirstAsync();
         if (oldUseDepartment.IsNull())
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         if (oldUseDepartment.Name != createUpdateDepartmentDto.Name &&
             await TableWhere(x => x.Name == createUpdateDepartmentDto.Name).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Department"),
-                createUpdateDepartmentDto.Name));
+            throw new BadRequestException($"部门名称=>{createUpdateDepartmentDto.Name}=>已存在!");
         }
 
         Department dept =

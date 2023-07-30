@@ -5,36 +5,36 @@ namespace ApeVolo.IBusiness.ExportModel.Monitor;
 
 public class OnlineUserExport : ExportBase
 {
-    [Display(Name = "User.Name")]
-    public string UserName { get; set; }
+    [Display(Name = "用户名称")]
+    public string Account { get; set; }
 
-    [Display(Name = "User.NickName")]
+    [Display(Name = "用户昵称")]
     public string NickName { get; set; }
 
-    [Display(Name = "Dept.Name")]
+    [Display(Name = "部门名称")]
     public string Dept { get; set; }
 
-    [Display(Name = "Online.LoginIp")]
+    [Display(Name = "登录IP")]
     public string Ip { get; set; }
 
-    [Display(Name = "Online.IpAddress")]
+    [Display(Name = "IP地址")]
     public string Address { get; set; }
 
-    [Display(Name = "Online.OperatingSystem")]
+    [Display(Name = "操作系统")]
     public string OperatingSystem { get; set; }
 
-    [Display(Name = "Online.DeviceType")]
+    [Display(Name = "设备类型")]
     public string DeviceType { get; set; }
 
-    [Display(Name = "Online.BrowserName")]
+    [Display(Name = "浏览器名称")]
     public string BrowserName { get; set; }
 
-    [Display(Name = "Online.Version")]
+    [Display(Name = "版本号")]
     public string Version { get; set; }
 
-    [Display(Name = "Online.LoginTime")]
+    [Display(Name = "登录时间")]
     public string LoginTime { get; set; }
 
-    [Display(Name = "Online.Onlinekey")]
-    public string OnlineKey { get; set; }
+    [Display(Name = "令牌")]
+    public string AccessToken { get; set; }
 }

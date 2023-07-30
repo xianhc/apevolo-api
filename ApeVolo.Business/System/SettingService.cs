@@ -9,7 +9,6 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.System;
 using ApeVolo.IBusiness.Dto.System;
@@ -35,8 +34,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
     {
         if (await TableWhere(r => r.Name == createUpdateSettingDto.Name).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Setting"),
-                createUpdateSettingDto.Name));
+            throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在!");
         }
 
         var setting = ApeContext.Mapper.Map<Setting>(createUpdateSettingDto);
@@ -49,14 +47,13 @@ public class SettingService : BaseServices<Setting>, ISettingService
         var oldSetting = await TableWhere(x => x.Id == createUpdateSettingDto.Id).FirstAsync();
         if (oldSetting.IsNull())
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         if (oldSetting.Name != createUpdateSettingDto.Name &&
             await TableWhere(x => x.Name == createUpdateSettingDto.Name).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Setting"),
-                createUpdateSettingDto.Name));
+            throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在!");
         }
 
         await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadSettingByName +
@@ -105,7 +102,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
     {
         if (settingName.IsNullOrEmpty())
         {
-            throw new BadRequestException(Localized.Get("{0}required", "settingName"));
+            throw new BadRequestException("设置键不能为空");
         }
 
         SettingDto settingDto = null;

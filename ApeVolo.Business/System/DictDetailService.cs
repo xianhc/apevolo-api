@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.System;
 using ApeVolo.IBusiness.Dto.System;
@@ -36,8 +35,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
                 dd.Label == createUpdateDictDetailDto.Label &&
                 dd.Value == createUpdateDictDetailDto.Value).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("DictDetail"),
-                createUpdateDictDetailDto.Label));
+            throw new BadRequestException($"字典详情标签=>{createUpdateDictDetailDto.Label}=>已存在!");
         }
 
         var dictDetail = ApeContext.Mapper.Map<DictDetail>(createUpdateDictDetailDto);
@@ -49,7 +47,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
     {
         if (!await TableWhere(dd => dd.Id == createUpdateDictDetailDto.Id).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         var dictDetail = ApeContext.Mapper.Map<DictDetail>(createUpdateDictDetailDto);
@@ -63,7 +61,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
         var dictDetail = await TableWhere(x => x.Id == newId).FirstAsync();
         if (dictDetail == null)
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         var logidId = Convert.ToInt64(id);

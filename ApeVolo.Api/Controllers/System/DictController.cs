@@ -15,7 +15,7 @@ namespace ApeVolo.Api.Controllers.System;
 /// <summary>
 /// 字典管理
 /// </summary>
-[Area("System")]
+[Area("系统管理")]
 [Route("/api/dict")]
 public class DictController : BaseApiController
 {
@@ -43,7 +43,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("Add")]
+    [Description("创建")]
     public async Task<ActionResult<object>> Create([FromBody] CreateUpdateDictDto createUpdateDictDto)
     {
         await _dictService.CreateAsync(createUpdateDictDto);
@@ -58,7 +58,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("Edit")]
+    [Description("编辑")]
     public async Task<ActionResult<object>> Update([FromBody] CreateUpdateDictDto createUpdateDictDto)
     {
         await _dictService.UpdateAsync(createUpdateDictDto);
@@ -72,7 +72,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("Delete")]
+    [Description("删除")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -93,7 +93,7 @@ public class DictController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("查询")]
     public async Task<ActionResult<object>> Query(DictQueryCriteria dictQueryCriteria,
         Pagination pagination)
     {
@@ -112,7 +112,7 @@ public class DictController : BaseApiController
     /// <param name="dictQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(DictQueryCriteria dictQueryCriteria)
     {

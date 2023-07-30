@@ -7,7 +7,6 @@ using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.System;
@@ -37,8 +36,7 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
     {
         if (await TableWhere(r => r.AppName == createUpdateAppSecretDto.AppName).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("AppSecret"),
-                createUpdateAppSecretDto.AppName));
+            throw new BadRequestException($"应用名称=>{createUpdateAppSecretDto.AppName}=>已存在!");
         }
 
         var id = IdHelper.GetId();
@@ -55,14 +53,13 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
         var oldAppSecret = await TableWhere(x => x.Id == createUpdateAppSecretDto.Id).FirstAsync();
         if (oldAppSecret.IsNull())
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         if (oldAppSecret.AppName != createUpdateAppSecretDto.AppName &&
             await TableWhere(x => x.AppName == createUpdateAppSecretDto.AppName).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("AppSecret"),
-                createUpdateAppSecretDto.AppName));
+            throw new BadRequestException($"应用名称=>{createUpdateAppSecretDto.AppName}=>已存在!");
         }
 
         var appSecret = ApeContext.Mapper.Map<AppSecret>(createUpdateAppSecretDto);
@@ -73,7 +70,7 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
     {
         var appSecrets = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
         if (appSecrets.Count <= 0)
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         return await LogicDelete<AppSecret>(x => ids.Contains(x.Id)) > 0;
     }
 

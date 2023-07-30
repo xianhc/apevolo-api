@@ -11,8 +11,7 @@ public class CreateUpdateAppSecretDto : BaseEntityDto<long>
 
     public string AppSecretKey { get; set; }
 
-    [Display(Name = "AppSecret.Name")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string AppName { get; set; }
 
     public string Remark { get; set; }

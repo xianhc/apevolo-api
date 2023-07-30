@@ -2,7 +2,6 @@
 using System.Text;
 using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
 using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
 

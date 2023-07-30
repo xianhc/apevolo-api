@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Base;
@@ -11,23 +11,20 @@ public class CreateUpdateEmailAccountDto : BaseEntityDto<long>
     /// <summary>
     ///电子邮件地址
     /// </summary>
-    [Display(Name = "Email")]
-    [Required(ErrorMessage = "{0}required")]
-    [EmailAddress(ErrorMessage = "{0}ValueIsInvalidAccessor")]
+    [Required]
+    [EmailAddress]
     public string Email { get; set; }
 
     /// <summary>
     /// 电子邮件显示名称
     /// </summary>
-    [Display(Name = "Email.DisplayName")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string DisplayName { get; set; }
 
     /// <summary>
     /// 电子邮件主机
     /// </summary>
-    [Display(Name = "Email.Host")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Host { get; set; }
 
     /// <summary>
@@ -38,15 +35,14 @@ public class CreateUpdateEmailAccountDto : BaseEntityDto<long>
     /// <summary>
     /// 电子邮件用户名
     /// </summary>
-    [Display(Name = "Email.Username")]
-    [Required(ErrorMessage = "{0}required")]
+    [Display]
+    [Required]
     public string Username { get; set; }
 
     /// <summary>
     /// 电子邮件密码
     /// </summary>
-    [Display(Name = "Email.Password")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Password { get; set; }
 
     /// <summary>

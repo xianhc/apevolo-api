@@ -1,5 +1,4 @@
-﻿using ApeVolo.Common.DI;
-using ApeVolo.Common.Model;
+﻿using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
 
@@ -26,19 +25,19 @@ public class EmailMessageTemplate : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 主题
     /// </summary>
-    [SugarColumn(Length = 1000, IsNullable = true, ColumnDescription = "主题")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "主题")]
     public string Subject { get; set; }
 
     /// <summary>
     /// 内容
     /// </summary>
-    [SugarColumn(Length = 5000, IsNullable = false, ColumnDescription = "内容")]
+    [SugarColumn(Length = 4000, IsNullable = false, ColumnDescription = "内容")]
     public string Body { get; set; }
 
     /// <summary>
     /// 是否激活
     /// </summary>
-    [SugarColumn(ColumnDataType = "bit", IsNullable = false, ColumnDescription = "是否激活")]
+    [SugarColumn(IsNullable = false, ColumnDescription = "是否激活")]
     public bool IsActive { get; set; }
 
     /// <summary>

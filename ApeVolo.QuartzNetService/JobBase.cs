@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Entity.System;
 using ApeVolo.IBusiness.Interface.System;
 using ApeVolo.QuartzNetService.service;
@@ -83,7 +82,7 @@ public class JobBase
         finally
         {
             var taskSeconds = Math.Round(stopwatch.Elapsed.TotalSeconds, 3);
-            jobHistory += $"，【{DateTime.Now:yyyy-MM-dd HH:mm:ss}】【执行结束】(耗时:{taskSeconds}秒)";
+            //jobHistory += $"，【{DateTime.Now:yyyy-MM-dd HH:mm:ss}】【执行结束】(耗时:{taskSeconds}秒)";
             if (QuartzNetService != null)
             {
                 if (quartzNet != null)
@@ -93,9 +92,8 @@ public class JobBase
                     quartzNet.UpdateBy = "QuartzNet Task";
 
                     //记录任务日志
-                    QuartzNetLog quartzNetLog = new QuartzNetLog
+                    var quartzNetLog = new QuartzNetLog
                     {
-                        Id = IdHelper.GetLongId(),
                         TaskId = quartzNet.Id,
                         TaskName = quartzNet.TaskName,
                         TaskGroup = quartzNet.TaskGroup,

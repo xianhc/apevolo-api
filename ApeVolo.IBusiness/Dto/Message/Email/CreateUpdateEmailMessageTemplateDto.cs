@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Base;
@@ -11,8 +11,7 @@ public class CreateUpdateEmailMessageTemplateDto : BaseEntityDto<long>
     /// <summary>
     /// 模板名称
     /// </summary>
-    [Display(Name = "EmailMessageTemplate.Name")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Name { get; set; }
 
     /// <summary>
@@ -23,15 +22,13 @@ public class CreateUpdateEmailMessageTemplateDto : BaseEntityDto<long>
     /// <summary>
     /// 主题
     /// </summary>
-    [Display(Name = "EmailMessageTemplate.Subject")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Subject { get; set; }
 
     /// <summary>
     /// 内容
     /// </summary>
-    [Display(Name = "EmailMessageTemplate.Body")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Body { get; set; }
 
     /// <summary>

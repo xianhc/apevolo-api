@@ -1,5 +1,4 @@
-﻿using ApeVolo.Common.DI;
-using ApeVolo.Common.Model;
+﻿using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
 
@@ -14,7 +13,7 @@ public class DictDetail : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 字典ID
     /// </summary>
-    [SugarColumn(ColumnDataType = "bigint", IsNullable = false, ColumnDescription = "字典ID")]
+    [SugarColumn(IsNullable = false, ColumnDescription = "字典ID")]
     public long DictId { get; set; }
 
     /// <summary>

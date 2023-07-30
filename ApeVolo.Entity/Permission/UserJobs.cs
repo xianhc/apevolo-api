@@ -1,5 +1,4 @@
-﻿using ApeVolo.Common.DI;
-using SqlSugar;
+﻿using SqlSugar;
 
 namespace ApeVolo.Entity.Permission;
 
@@ -12,12 +11,12 @@ public class UserJobs
     /// <summary>
     /// 用户ID
     /// </summary>
-    [SugarColumn(ColumnDataType = "bigint", IsPrimaryKey = true, ColumnDescription = "用户ID")]
+    [SugarColumn(IsPrimaryKey = true, ColumnDescription = "用户ID")]
     public long UserId { get; set; }
 
     /// <summary>
     /// 岗位ID
     /// </summary>
-    [SugarColumn(ColumnDataType = "bigint", IsPrimaryKey = true, ColumnDescription = "岗位ID")]
+    [SugarColumn(IsPrimaryKey = true, ColumnDescription = "岗位ID")]
     public long JobId { get; set; }
 }

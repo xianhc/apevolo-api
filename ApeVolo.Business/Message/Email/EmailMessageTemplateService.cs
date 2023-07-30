@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -6,7 +6,6 @@ using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Dto.Message.Email;
@@ -39,8 +38,7 @@ public class EmailMessageTemplateService : BaseServices<EmailMessageTemplate>, I
     {
         var messageTemplate = await TableWhere(x => x.Name == createUpdateEmailMessageTemplateDto.Name).FirstAsync();
         if (messageTemplate.IsNotNull())
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("EmailMessageTemplate"),
-                createUpdateEmailMessageTemplateDto.Name));
+            throw new BadRequestException($"模板名称=>{createUpdateEmailMessageTemplateDto.Name}=>已存在!");
 
         return await AddEntityAsync(ApeContext.Mapper.Map<EmailMessageTemplate>(createUpdateEmailMessageTemplateDto));
     }
@@ -55,14 +53,13 @@ public class EmailMessageTemplateService : BaseServices<EmailMessageTemplate>, I
         var emailMessageTemplate = await TableWhere(x => x.Id == createUpdateEmailMessageTemplateDto.Id).FirstAsync();
         if (emailMessageTemplate.IsNull())
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         if (emailMessageTemplate.Name != createUpdateEmailMessageTemplateDto.Name &&
-            await TableWhere(j => j.Id == emailMessageTemplate.Id).AnyAsync())
+            await TableWhere(j => j.Name == emailMessageTemplate.Name).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("EmailMessageTemplate"),
-                emailMessageTemplate.Name));
+            throw new BadRequestException($"模板名称=>{createUpdateEmailMessageTemplateDto.Name}=>已存在!");
         }
 
         return await UpdateEntityAsync(
@@ -78,7 +75,7 @@ public class EmailMessageTemplateService : BaseServices<EmailMessageTemplate>, I
     {
         var messageTemplateList = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
         if (messageTemplateList.Count <= 0)
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         return await LogicDelete<EmailMessageTemplate>(x => ids.Contains(x.Id)) > 0;
     }
 

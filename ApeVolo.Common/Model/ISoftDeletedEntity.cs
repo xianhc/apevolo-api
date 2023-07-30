@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ApeVolo.Common.Model;
+﻿namespace ApeVolo.Common.Model;
 
 public interface ISoftDeletedEntity
 {

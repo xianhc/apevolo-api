@@ -1,13 +1,10 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
-using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Monitor;
 using ApeVolo.IBusiness.Interface.Monitor;
@@ -65,7 +62,7 @@ public class AuditingFilter : IAsyncActionFilter
             var resultContext = await next();
             sw.Stop();
             //执行结果
-            var action = context.ActionDescriptor as ControllerActionDescriptor;
+            //var action = context.ActionDescriptor as ControllerActionDescriptor;
             //var isTrue = action.MethodInfo.IsDefined(typeof(DescriptionAttribute), false);
             if ((await _settingService.FindSettingByName("IsAuditLogSaveDB")).Value.ToBool())
             {
@@ -122,25 +119,24 @@ public class AuditingFilter : IAsyncActionFilter
     private AuditLog CreateAuditLog(ActionExecutingContext context)
     {
         var routeValues = context.ActionDescriptor.RouteValues;
-        var desc =
-            ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.GetCustomAttribute(
-                typeof(DescriptionAttribute), true);
 
         var httpContext = context.HttpContext;
         var remoteIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
         var arguments = HttpHelper.GetAllRequestParams(httpContext); //context.ActionArguments;
-        var description = desc == null ? "" : ((DescriptionAttribute)desc).Description;
-
+        var descriptionAttribute = ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo
+            .GetCustomAttributes(typeof(DescriptionAttribute), true)
+            .OfType<DescriptionAttribute>()
+            .FirstOrDefault();
         var auditLog = new AuditLog
         {
-            Id = IdHelper.GetLongId(),
-            CreateBy = _httpUser.Account,
-            CreateTime = DateTime.Now,
+            // Id = IdHelper.GetLongId(),
+            // CreateBy = _httpUser.Account,
+            // CreateTime = DateTime.Now,
             Area = routeValues["area"],
             Controller = routeValues["controller"],
             Action = routeValues["action"],
             Method = httpContext.Request.Method,
-            Description = ExceptionLogFormat.GetResourcesDescription(description, routeValues["area"]),
+            Description = descriptionAttribute?.Description,
             RequestUrl = httpContext.Request.GetDisplayUrl(),
             RequestParameters = arguments.ToJson(),
             RequestIp = remoteIp,

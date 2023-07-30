@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,7 +8,6 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Dto.Message.Email;
@@ -39,8 +38,7 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
     {
         if (await TableWhere(x => x.Email == createUpdateEmailAccountDto.Email).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("EmailAccount"),
-                createUpdateEmailAccountDto.Email));
+            throw new BadRequestException($"邮箱账户=>{createUpdateEmailAccountDto.Email}=>已存在!");
         }
 
         var emailAccount = ApeContext.Mapper.Map<EmailAccount>(createUpdateEmailAccountDto);
@@ -57,14 +55,13 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
         var oldEmailAccount = await TableWhere(x => x.Id == createUpdateEmailAccountDto.Id).FirstAsync();
         if (oldEmailAccount.IsNull())
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         if (oldEmailAccount.Email != createUpdateEmailAccountDto.Email &&
-            await TableWhere(j => j.Id == createUpdateEmailAccountDto.Id).AnyAsync())
+            await TableWhere(j => j.Email == createUpdateEmailAccountDto.Email).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("EmailAccount"),
-                createUpdateEmailAccountDto.Email));
+            throw new BadRequestException($"邮箱账户=>{createUpdateEmailAccountDto.Email}=>已存在!");
         }
 
         var emailAccount = ApeContext.Mapper.Map<EmailAccount>(createUpdateEmailAccountDto);

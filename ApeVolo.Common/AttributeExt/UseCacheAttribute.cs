@@ -1,6 +1,5 @@
 ﻿using System;
 using ApeVolo.Common.Caches;
-using ApeVolo.Common.Global;
 
 namespace ApeVolo.Common.AttributeExt;
 

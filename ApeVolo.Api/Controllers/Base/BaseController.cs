@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using ApeVolo.Api.ActionExtension.Json;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,7 +43,7 @@ public class BaseController : Controller
     /// <returns></returns>
     protected ContentResult Success(string msg = "")
     {
-        msg = msg.IsNullOrEmpty() ? Localized.Get("HttpOK") : msg;
+        msg = msg.IsNullOrEmpty() ? "请求成功" : msg;
         var vm = new ActionResultVm
         {
             Status = StatusCodes.Status200OK,
@@ -60,7 +59,7 @@ public class BaseController : Controller
     /// <returns></returns>
     protected ContentResult Create(string msg = "")
     {
-        msg = msg.IsNullOrEmpty() ? Localized.Get("HttpCreated") : msg;
+        msg = msg.IsNullOrEmpty() ? "创建成功" : msg;
         var vm = new ActionResultVm
         {
             Status = StatusCodes.Status201Created,
@@ -90,7 +89,7 @@ public class BaseController : Controller
     /// <returns></returns>
     protected ContentResult Error(string msg = "")
     {
-        msg = msg.IsNullOrEmpty() ? Localized.Get("HttpBadRequest") : msg;
+        msg = msg.IsNullOrEmpty() ? "请求失败" : msg;
         var vm = new ActionResultVm
         {
             Status = StatusCodes.Status400BadRequest,

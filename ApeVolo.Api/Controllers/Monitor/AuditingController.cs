@@ -15,7 +15,7 @@ namespace ApeVolo.Api.Controllers.Monitor;
 /// <summary>
 /// 审计管理
 /// </summary>
-[Area("Monitor")]
+[Area("监控管理")]
 [Route("/api/auditing")]
 public class AuditingController : BaseApiController
 {
@@ -46,7 +46,7 @@ public class AuditingController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("查询")]
     public async Task<ActionResult<object>> Query(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
     {
@@ -67,7 +67,7 @@ public class AuditingController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("current")]
-    [Description("UserBehavior")]
+    [Description("用户行为")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> FindListByCurrent(Pagination pagination)
     {

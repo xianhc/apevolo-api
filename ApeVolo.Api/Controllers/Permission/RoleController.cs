@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -7,7 +7,6 @@ using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Dto.Permission;
 using ApeVolo.IBusiness.Interface.Permission;
 using ApeVolo.IBusiness.QueryModel;
@@ -19,7 +18,7 @@ namespace ApeVolo.Api.Controllers.Permission;
 /// <summary>
 /// 角色管理
 /// </summary>
-[Area("Permission")]
+[Area("权限管理")]
 [Route("/api/role")]
 public class RoleController : BaseApiController
 {
@@ -49,7 +48,7 @@ public class RoleController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("Add")]
+    [Description("创建")]
     public async Task<ActionResult<object>> Create([FromBody] CreateUpdateRoleDto createUpdateRoleDto)
     {
         if (!ModelState.IsValid)
@@ -68,7 +67,7 @@ public class RoleController : BaseApiController
     /// <param name="createUpdateRoleDto"></param>
     /// <returns></returns>
     [HttpPut]
-    [Description("Edit")]
+    [Description("编辑")]
     [Route("edit")]
     public async Task<ActionResult<object>> Update([FromBody] CreateUpdateRoleDto createUpdateRoleDto)
     {
@@ -88,7 +87,7 @@ public class RoleController : BaseApiController
     /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Description("Delete")]
+    [Description("删除")]
     [Route("delete")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
@@ -102,7 +101,7 @@ public class RoleController : BaseApiController
         var userRoles = await _userRolesService.QueryByRoleIdsAsync(idCollection.IdArray);
         if (!userRoles.IsNullOrEmpty() && userRoles.Count > 0)
         {
-            return Error(Localized.Get("DataCannotDelete"));
+            return Error("数据被使用，无法删除");
         }
 
         await _roleService.DeleteAsync(idCollection.IdArray);
@@ -116,7 +115,7 @@ public class RoleController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("{id}")]
-    [Description("ViewRole")]
+    [Description("查看指定角色")]
     [ApeVoloAuthorize(new[] { "roles_list" })]
     public async Task<ActionResult<object>> QuerySingle(string id)
     {
@@ -133,7 +132,7 @@ public class RoleController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("查询")]
     public async Task<ActionResult<object>> Query(RoleQueryCriteria roleQueryCriteria,
         Pagination pagination)
     {
@@ -152,7 +151,7 @@ public class RoleController : BaseApiController
     /// <param name="roleQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(RoleQueryCriteria roleQueryCriteria)
     {
@@ -167,7 +166,7 @@ public class RoleController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("all")]
-    [Description("List")]
+    [Description("查询全部")]
     [ApeVoloAuthorize(new[] { "admin", "roles_list" })]
     public async Task<ActionResult<object>> GetAllRoles()
     {
@@ -183,7 +182,7 @@ public class RoleController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("level")]
-    [Description("UserRoleLevel")]
+    [Description("当前用户等级")]
     [ApeVoloAuthorize(new[] { "admin", "roles_list" })]
     public async Task<ActionResult<object>> GetRoleLevel(int? level)
     {

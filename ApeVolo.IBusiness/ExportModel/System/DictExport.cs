@@ -5,15 +5,15 @@ namespace ApeVolo.IBusiness.ExportModel.System;
 
 public class DictExport : ExportBase
 {
-    [Display(Name = "Dict.Name")]
+    [Display(Name = "字典名称")]
     public string Name { get; set; }
 
-    [Display(Name = "Dict.Description")]
+    [Display(Name = "字典描述")]
     public string Description { get; set; }
 
-    [Display(Name = "Dict.Detail.Lable")]
+    [Display(Name = "字典标签")]
     public string Lable { get; set; }
 
-    [Display(Name = "Dict.Detail.Value")]
+    [Display(Name = "字典值")]
     public string Value { get; set; }
 }

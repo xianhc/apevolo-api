@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,7 +8,6 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission;
 using ApeVolo.IBusiness.Dto.Permission;
@@ -35,8 +34,7 @@ public class JobService : BaseServices<Job>, IJobService
     {
         if (await TableWhere(j => j.Name == createUpdateJobDto.Name).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Job"),
-                createUpdateJobDto.Name));
+            throw new BadRequestException($"岗位名称=>{createUpdateJobDto.Name}=>已存在!");
         }
 
         var job = ApeContext.Mapper.Map<Job>(createUpdateJobDto);
@@ -49,14 +47,13 @@ public class JobService : BaseServices<Job>, IJobService
             await TableWhere(x => x.Id == createUpdateJobDto.Id).FirstAsync();
         if (oldJob.IsNull())
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         if (oldJob.Name != createUpdateJobDto.Name &&
             await TableWhere(j => j.Name == createUpdateJobDto.Name).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Job"),
-                createUpdateJobDto.Name));
+            throw new BadRequestException($"岗位名称=>{createUpdateJobDto.Name}=>已存在!");
         }
 
         var job = ApeContext.Mapper.Map<Job>(createUpdateJobDto);
@@ -68,7 +65,7 @@ public class JobService : BaseServices<Job>, IJobService
         var jobs = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
         if (jobs.Count < 1)
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         var userJobs = await SugarRepository.QueryMuchAsync<UserJobs, User, UserJobs>(
@@ -81,7 +78,7 @@ public class JobService : BaseServices<Job>, IJobService
         );
         if (userJobs.Count > 0)
         {
-            throw new BadRequestException(Localized.Get("DataCannotDelete"));
+            throw new BadRequestException("数据被使用，无法删除");
         }
 
         return await LogicDelete<Job>(x => ids.Contains(x.Id)) > 0;

@@ -5,27 +5,27 @@ namespace ApeVolo.IBusiness.ExportModel.System;
 
 public class FileRecordExport : ExportBase
 {
-    [Display(Name = "File.Description")]
+    [Display(Name = "文件描述")]
     public string Description { get; set; }
 
-    [Display(Name = "File.ContentType")]
+    [Display(Name = "文件类型")]
     public string ContentType { get; set; }
 
-    [Display(Name = "File.ContentTypeName")]
+    [Display(Name = "文件类型名称")]
     public string ContentTypeName { get; set; }
 
-    [Display(Name = "File.ContentTypeNameEn")]
+    [Display(Name = "文件类型名称(EN)")]
     public string ContentTypeNameEn { get; set; }
 
-    [Display(Name = "File.OriginalName")]
+    [Display(Name = "源名称")]
     public string OriginalName { get; set; }
 
-    [Display(Name = "File.NewName")]
+    [Display(Name = "新名称")]
     public string NewName { get; set; }
 
-    [Display(Name = "File.FilePath")]
+    [Display(Name = "存储路径")]
     public string FilePath { get; set; }
 
-    [Display(Name = "File.Size")]
+    [Display(Name = "文件大小")]
     public string Size { get; set; }
 }

@@ -1,5 +1,4 @@
-﻿using ApeVolo.Common.DI;
-using ApeVolo.Common.Model;
+﻿using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
 
@@ -32,7 +31,7 @@ public class EmailAccount : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 电子邮件端口
     /// </summary>
-    [SugarColumn(ColumnDataType = "int", IsNullable = false, ColumnDescription = "电子邮件端口")]
+    [SugarColumn(IsNullable = false, ColumnDescription = "电子邮件端口")]
     public int Port { get; set; }
 
     /// <summary>
@@ -50,13 +49,13 @@ public class EmailAccount : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 是否SSL
     /// </summary>
-    [SugarColumn(ColumnDataType = "bit", IsNullable = false, ColumnDescription = "电子邮件用户名")]
+    [SugarColumn(IsNullable = false, ColumnDescription = "电子邮件用户名")]
     public bool EnableSsl { get; set; }
 
     /// <summary>
     /// 是否与请求一起发送应用程序的默认系统凭据
     /// </summary>
-    [SugarColumn(ColumnDataType = "bit", IsNullable = false, ColumnDescription = "是否与请求一起发送应用程序的默认系统凭据")]
+    [SugarColumn(IsNullable = false, ColumnDescription = "是否与请求一起发送应用程序的默认系统凭据")]
     public bool UseDefaultCredentials { get; set; }
 
     public bool IsDeleted { get; set; }

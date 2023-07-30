@@ -1,10 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using ApeVolo.Common.Caches.Redis.Models;
 using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Helper;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 

@@ -16,7 +16,7 @@ namespace ApeVolo.Api.Controllers.Monitor;
 /// <summary>
 /// 系统异常日志管理
 /// </summary>
-[Area("Monitor")]
+[Area("监控管理")]
 [Route("/api/exception")]
 public class ExceptionLogController : BaseApiController
 {
@@ -45,7 +45,7 @@ public class ExceptionLogController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("查询")]
     public async Task<ActionResult<object>> Query(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
     {
@@ -65,7 +65,7 @@ public class ExceptionLogController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("detail/{id}")]
-    [Description("LogStack")]
+    [Description("日志详细")]
     [ApeVoloAuthorize(new[] { "admin", "log_list" })]
     public async Task<ActionResult<object>> QueryDetail(string id)
     {

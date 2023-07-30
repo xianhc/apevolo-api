@@ -1,11 +1,10 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Entity.System;
 using ApeVolo.IBusiness.Dto.System;
 using ApeVolo.IBusiness.Interface.System;
@@ -20,7 +19,7 @@ namespace ApeVolo.Api.Controllers.System;
 /// <summary>
 /// 作业调度管理
 /// </summary>
-[Area("System")]
+[Area("系统管理")]
 [Route("/api/tasks")]
 public class QuartzNetController : BaseApiController
 {
@@ -55,7 +54,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("Add")]
+    [Description("创建")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
@@ -87,7 +86,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("Edit")]
+    [Description("编辑")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
@@ -123,7 +122,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("Delete")]
+    [Description("删除")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -154,7 +153,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("查询")]
     public async Task<ActionResult<object>> Query(QuartzNetQueryCriteria quartzNetQueryCriteria,
         Pagination pagination)
     {
@@ -178,7 +177,7 @@ public class QuartzNetController : BaseApiController
     /// <param name="quartzNetQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(QuartzNetQueryCriteria quartzNetQueryCriteria)
     {
@@ -194,7 +193,7 @@ public class QuartzNetController : BaseApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpPut]
-    [Description("Execute")]
+    [Description("执行")]
     [Route("execute/{id}")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Execute(long id)
@@ -202,7 +201,7 @@ public class QuartzNetController : BaseApiController
         var quartzNet = await _quartzNetService.TableWhere(x => x.Id == id).FirstAsync();
         if (quartzNet.IsNull())
         {
-            return Error(Localized.Get("{0}NotExist", Localized.Get("QuartzNet")));
+            return Error("作业调度不存在");
         }
 
         //开启作业任务
@@ -218,10 +217,10 @@ public class QuartzNetController : BaseApiController
                     return NoContent();
                 }
 
-                return Error(Localized.Get("{0}RetryFailure"));
+                return Error("执行失败,请重试！");
             }
 
-            return Error(Localized.Get("{0}DoNotTurnOn"));
+            return Error("已在运行,请勿重复开启！");
         }
 
         return Error();
@@ -233,7 +232,7 @@ public class QuartzNetController : BaseApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpPut]
-    [Description("Stop")]
+    [Description("暂停")]
     [Route("pause/{id}")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Pause(long id)
@@ -241,7 +240,7 @@ public class QuartzNetController : BaseApiController
         var quartzNet = await _quartzNetService.TableWhere(x => x.Id == id).FirstAsync();
         if (quartzNet.IsNull())
         {
-            return Error(Localized.Get("{0}NotExist", Localized.Get("QuartzNet")));
+            return Error("作业调度不存在");
         }
 
         var triggerStatus = await _schedulerCenterService.GetTriggerStatus(_mapper.Map<QuartzNetDto>(quartzNet));
@@ -255,7 +254,7 @@ public class QuartzNetController : BaseApiController
             }
         }
 
-        return Error(Localized.Get("StopFailure"));
+        return Error("暂停失败,请重试！");
     }
 
     /// <summary>
@@ -272,7 +271,7 @@ public class QuartzNetController : BaseApiController
         var quartzNet = await _quartzNetService.TableWhere(x => x.Id == id).FirstAsync();
         if (quartzNet.IsNull())
         {
-            return Error(Localized.Get("{0}NotExist", Localized.Get("QuartzNet")));
+            return Error("作业调度不存在");
         }
 
         var triggerStatus = await _schedulerCenterService.GetTriggerStatus(_mapper.Map<QuartzNetDto>(quartzNet));
@@ -286,7 +285,7 @@ public class QuartzNetController : BaseApiController
             }
         }
 
-        return Error(Localized.Get("RecoveryFailed"));
+        return Error("恢复失败,请重试！");
     }
 
 
@@ -298,7 +297,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("logs/query/{id}")]
-    [Description("ExecutionLog")]
+    [Description("执行日志")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> QueryLog(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria,
         Pagination pagination)
@@ -318,7 +317,7 @@ public class QuartzNetController : BaseApiController
     /// <param name="quartzNetLogQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("logs/download/{id}")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Download(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria)

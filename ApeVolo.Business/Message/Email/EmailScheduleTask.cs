@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApeVolo.Common.DI;
 using ApeVolo.Common.Model;
 using ApeVolo.IBusiness.Interface.Message.Email;
 using ApeVolo.IBusiness.Interface.Queued;

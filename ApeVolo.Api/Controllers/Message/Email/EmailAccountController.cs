@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.Extention;
@@ -15,7 +15,7 @@ namespace ApeVolo.Api.Controllers.Message.Email;
 /// <summary>
 /// 邮箱账户
 /// </summary>
-[Area("EmailAccount")]
+[Area("邮件管理")]
 [Route("/api/email/account")]
 public class EmailAccountController : BaseApiController
 {
@@ -34,7 +34,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("Add")]
+    [Description("增加")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateEmailAccountDto createUpdateEmailAccountDto)
     {
@@ -55,7 +55,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("Edit")]
+    [Description("编辑")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateEmailAccountDto createUpdateEmailAccountDto)
     {
@@ -76,7 +76,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("Delete")]
+    [Description("删除")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -97,7 +97,7 @@ public class EmailAccountController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("列表")]
     public async Task<ActionResult<object>> FindList(EmailAccountQueryCriteria emailAccountQueryCriteria,
         Pagination pagination)
     {
@@ -117,7 +117,7 @@ public class EmailAccountController : BaseApiController
     /// <param name="emailAccountQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(EmailAccountQueryCriteria emailAccountQueryCriteria)
     {

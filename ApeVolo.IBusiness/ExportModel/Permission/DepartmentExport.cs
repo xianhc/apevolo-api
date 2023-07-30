@@ -6,18 +6,18 @@ namespace ApeVolo.IBusiness.ExportModel.Permission;
 
 public class DepartmentExport : ExportBase
 {
-    [Display(Name = "Dept.Name")]
+    [Display(Name = "部门名称")]
     public string Name { get; set; }
 
-    [Display(Name = "Dept.PId")]
+    [Display(Name = "部门父ID")]
     public long ParentId { get; set; }
 
-    [Display(Name = "Dept.Sort")]
+    [Display(Name = "排序")]
     public int Sort { get; set; }
 
-    [Display(Name = "Dept.Enabled")]
+    [Display(Name = "是否启用")]
     public EnabledState EnabledState { get; set; }
 
-    [Display(Name = "Dept.SubCount")]
+    [Display(Name = "子部门个数")]
     public int SubCount { get; set; }
 }

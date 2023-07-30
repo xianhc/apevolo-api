@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ApeVolo.Common.DI;
+﻿using System.Collections.Generic;
 using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
@@ -58,7 +56,7 @@ public class Menu : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 父级菜单ID
     /// </summary>
-    [SugarColumn(ColumnDataType = "bigint", IsNullable = true, ColumnDescription = "父级ID")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "父级ID")]
     public long? ParentId { get; set; }
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
@@ -18,7 +18,7 @@ namespace ApeVolo.Api.Controllers.Permission;
 /// <summary>
 /// 用户管理
 /// </summary>
-[Area("Permission")]
+[Area("权限管理")]
 [Route("/api/user")]
 public class UserController : BaseApiController
 {
@@ -45,7 +45,7 @@ public class UserController : BaseApiController
     /// <param name="createUpdateUserDto"></param>
     /// <returns></returns>
     [HttpPost]
-    [Description("Add")]
+    [Description("创建")]
     [Route("create")]
     public async Task<ActionResult<object>> Create([FromBody] CreateUpdateUserDto createUpdateUserDto)
     {
@@ -66,7 +66,7 @@ public class UserController : BaseApiController
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     [HttpPut]
-    [Description("Edit")]
+    [Description("编辑")]
     [Route("edit")]
     public async Task<ActionResult<object>> Update([FromBody] CreateUpdateUserDto createUpdateUserDto)
     {
@@ -80,7 +80,7 @@ public class UserController : BaseApiController
     /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Description("Delete")]
+    [Description("删除")]
     [Route("delete")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
@@ -96,7 +96,7 @@ public class UserController : BaseApiController
 
     [HttpPut]
     [Route("center")]
-    [Description("UpdatePersonalInfo")]
+    [Description("更新个人信息")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> UpdateCenterAsync([FromBody] UpdateUserCenterDto updateUserCenterDto)
     {
@@ -112,7 +112,7 @@ public class UserController : BaseApiController
 
     [HttpPost]
     [Route("update/password")]
-    [Description("UpdatePassword")]
+    [Description("更新密码")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> UpdatePasswordAsync([FromBody] UpdateUserPassDto updateUserPassDto)
     {
@@ -128,7 +128,7 @@ public class UserController : BaseApiController
 
     [HttpPost]
     [Route("update/email")]
-    [Description("UpdateEmail")]
+    [Description("更新邮箱")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> UpdateEmail([FromBody] UpdateUserEmailDto updateUserEmailDto)
     {
@@ -144,7 +144,7 @@ public class UserController : BaseApiController
 
     [HttpOptions, HttpPost]
     [Route("update/avatar")]
-    [Description("UpdateAvatar")]
+    [Description("更新头像")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> UpdateAvatar([FromForm] IFormFile avatar) //多文件使用  IFormFileCollection
     {
@@ -165,7 +165,7 @@ public class UserController : BaseApiController
     /// <param name="pagination"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("List")]
+    [Description("查询")]
     [Route("query")]
     public async Task<ActionResult<object>> Query(UserQueryCriteria userQueryCriteria,
         Pagination pagination)
@@ -184,7 +184,7 @@ public class UserController : BaseApiController
     /// <param name="userQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(UserQueryCriteria userQueryCriteria)
     {

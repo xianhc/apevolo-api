@@ -7,6 +7,6 @@ namespace ApeVolo.IBusiness.Dto.Permission;
 [AutoMapping(typeof(Department), typeof(RoleDeptDto))]
 public class RoleDeptDto
 {
-    [RegularExpression(@"^\+?[1-9]\d*$", ErrorMessage = "{0}required")]
+    [RegularExpression(@"^\+?[1-9]\d*$")]
     public long Id { get; set; }
 }

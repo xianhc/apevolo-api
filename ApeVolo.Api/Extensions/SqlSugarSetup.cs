@@ -162,43 +162,55 @@ public static class SqlSugarSetup
             rootEntity.Id = IdHelper.GetLongId();
         }
 
-        if (entityInfo.EntityValue is BaseEntity baseEntity)
+        if (entityInfo.EntityValue is not BaseEntity baseEntity) return;
+        switch (entityInfo.OperationType)
         {
-            switch (entityInfo.OperationType)
+            case DataFilterType.InsertByObject:
             {
-                case DataFilterType.InsertByObject:
+                if (baseEntity.CreateTime == DateTime.MinValue)
                 {
-                    if (baseEntity.CreateTime == DateTime.MinValue)
-                    {
-                        baseEntity.CreateTime = DateTime.Now;
-                    }
-
-                    break;
+                    baseEntity.CreateTime = DateTime.Now;
                 }
-                case DataFilterType.UpdateByObject:
+
+                break;
+            }
+            case DataFilterType.UpdateByObject:
+                if (baseEntity.UpdateTime == DateTime.MinValue)
+                {
                     baseEntity.UpdateTime = DateTime.Now;
-                    break;
-            }
-
-            var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
-            if (httpUser.IsNotNull())
-            {
-                switch (entityInfo.OperationType)
-                {
-                    case DataFilterType.InsertByObject:
-                    {
-                        if (baseEntity.CreateBy.IsNullOrEmpty())
-                        {
-                            baseEntity.CreateBy = httpUser.Account;
-                        }
-
-                        break;
-                    }
-                    case DataFilterType.UpdateByObject:
-                        baseEntity.UpdateBy = httpUser.Account;
-                        break;
                 }
+
+                break;
+            case DataFilterType.DeleteByObject:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
+        if (!httpUser.IsNotNull()) return;
+        switch (entityInfo.OperationType)
+        {
+            case DataFilterType.InsertByObject:
+            {
+                if (baseEntity.CreateBy.IsNullOrEmpty())
+                {
+                    baseEntity.CreateBy = httpUser.Account;
+                }
+
+                break;
             }
+            case DataFilterType.UpdateByObject:
+                if (baseEntity.UpdateBy.IsNullOrEmpty())
+                {
+                    baseEntity.UpdateBy = httpUser.Account;
+                }
+
+                break;
+            case DataFilterType.DeleteByObject:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
@@ -256,12 +268,12 @@ public static class SqlSugarSetup
         if (configs.IsSqlLog)
         {
             LogHelper.WriteSqlLog($"SqlLog{DateTime.Now:yyyy-MM-dd}",
-                new[] { $"【SQL耗时】：：{ado.SqlExecutionTime.TotalMilliseconds}毫秒" });
+                new[] { $"【SQL耗时】：{ado.SqlExecutionTime.TotalMilliseconds}毫秒" });
         }
 
         if (configs.IsOutSqlToConsole)
         {
-            ConsoleHelper.WriteLine($"【SQL耗时】：：{ado.SqlExecutionTime.TotalMilliseconds}毫秒");
+            ConsoleHelper.WriteLine($"【SQL耗时】：{ado.SqlExecutionTime.TotalMilliseconds}毫秒");
         }
 
         if (ado.SqlExecutionTime.TotalSeconds > 1)

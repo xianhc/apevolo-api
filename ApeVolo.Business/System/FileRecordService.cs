@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +10,6 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.System;
@@ -38,8 +37,7 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
     {
         if (await TableWhere(x => x.Description == description).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("FileRecord"),
-                description));
+            throw new BadRequestException($"文件描述=>{description}=>已存在!");
         }
 
         var fileExtensionName = FileHelper.GetExtensionName(file.FileName);
@@ -81,14 +79,13 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
         var oldFileRecord = await TableWhere(x => x.Id == createUpdateFileRecordDto.Id).FirstAsync();
         if (oldFileRecord.IsNull())
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         if (oldFileRecord.Description != createUpdateFileRecordDto.Description &&
             await TableWhere(x => x.Description == createUpdateFileRecordDto.Description).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("FileRecord"),
-                createUpdateFileRecordDto.Description));
+            throw new BadRequestException($"文件描述=>{createUpdateFileRecordDto.Description}=>已存在!");
         }
 
         var fileRecord = ApeContext.Mapper.Map<FileRecord>(createUpdateFileRecordDto);

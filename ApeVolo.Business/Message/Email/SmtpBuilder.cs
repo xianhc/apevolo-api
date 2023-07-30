@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using ApeVolo.Common.DI;
 using ApeVolo.Common.Extention;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.IBusiness.Interface.Message.Email;

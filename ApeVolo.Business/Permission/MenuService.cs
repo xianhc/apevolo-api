@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -10,7 +10,6 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission;
 using ApeVolo.IBusiness.Dto.Permission;
@@ -51,26 +50,32 @@ public class MenuService : BaseServices<Menu>, IMenuService
     {
         if (await TableWhere(m => m.Title == createUpdateMenuDto.Title).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Menu"),
-                createUpdateMenuDto.Title));
+            throw new BadRequestException($"菜单标题=>{createUpdateMenuDto.Title}=>已存在!");
         }
 
-        if (await TableWhere(m => m.ComponentName == createUpdateMenuDto.ComponentName).AnyAsync())
+        if (createUpdateMenuDto.Type != (int)MenuType.Catalog &&
+            await TableWhere(x => x.Permission == createUpdateMenuDto.Permission)
+                .AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Menu"),
-                createUpdateMenuDto.ComponentName));
+            throw new BadRequestException($"权限标识=>{createUpdateMenuDto.Permission}=>已存在!");
+        }
+
+        if (!createUpdateMenuDto.ComponentName.IsNullOrEmpty() && await TableWhere(m =>
+                m.ComponentName == createUpdateMenuDto.ComponentName).AnyAsync())
+        {
+            throw new BadRequestException($"组件名称=>{createUpdateMenuDto.ComponentName}=>已存在!");
         }
 
         if (createUpdateMenuDto.Type != (int)MenuType.Catalog)
         {
             if (createUpdateMenuDto.LinkUrl.IsNullOrEmpty())
             {
-                throw new BadRequestException(Localized.Get("{0}required", "LinkUrl"));
+                throw new BadRequestException("菜单URL为必填");
             }
 
             if (createUpdateMenuDto.Permission.IsNullOrEmpty())
             {
-                throw new BadRequestException(Localized.Get("{0}required", "Permission"));
+                throw new BadRequestException("权限标识为必填");
             }
         }
 
@@ -117,21 +122,19 @@ public class MenuService : BaseServices<Menu>, IMenuService
         var oldMenu = await TableWhere(x => x.Id == createUpdateMenuDto.Id).FirstAsync();
         if (oldMenu.IsNull())
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         if (oldMenu.Title != createUpdateMenuDto.Title &&
             await TableWhere(x => x.Title == createUpdateMenuDto.Title).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Menu"),
-                createUpdateMenuDto.Title));
+            throw new BadRequestException($"菜单标题名称=>{createUpdateMenuDto.Title}=>已存在!");
         }
 
-        if (oldMenu.Permission != createUpdateMenuDto.Permission &&
+        if (createUpdateMenuDto.Type != (int)MenuType.Catalog && oldMenu.Permission != createUpdateMenuDto.Permission &&
             await TableWhere(x => x.Permission == createUpdateMenuDto.Permission).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Menu"),
-                createUpdateMenuDto.Permission));
+            throw new BadRequestException($"权限标识=>{createUpdateMenuDto.Permission}=>已存在!");
         }
 
 
@@ -151,8 +154,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
                 m.ComponentName.Equals(createUpdateMenuDto.ComponentName));
             if (menu1 != null && menu1.Id != createUpdateMenuDto.Id)
             {
-                throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Menu"),
-                    createUpdateMenuDto.ComponentName));
+                throw new BadRequestException($"组件名称=>{createUpdateMenuDto.ComponentName}=>已存在!");
             }
         }
 
@@ -326,9 +328,21 @@ public class MenuService : BaseServices<Menu>, IMenuService
             (m, rm) => roleIds.Contains(rm.RoleId) && m.Type != (int)MenuType.Button
             , (m, rm) => new
             {
-                m.Title, m.LinkUrl, m.Path, m.Permission, m.IFrame, m.Component, m.ComponentName,
+                m.Title,
+                m.LinkUrl,
+                m.Path,
+                m.Permission,
+                m.IFrame,
+                m.Component,
+                m.ComponentName,
                 PId = m.ParentId,
-                MenuSort = m.Sort, m.Icon, m.Type, m.IsDeleted, m.Id, m.CreateBy, m.CreateTime
+                MenuSort = m.Sort,
+                m.Icon,
+                m.Type,
+                m.IsDeleted,
+                m.Id,
+                m.CreateBy,
+                m.CreateTime
             },
             "sort asc");
         var menuListChild = TreeHelper<MenuDto>.ListToTrees(menuList, "Id", "ParentId", null);

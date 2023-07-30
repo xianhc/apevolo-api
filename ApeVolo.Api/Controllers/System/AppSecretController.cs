@@ -15,7 +15,7 @@ namespace ApeVolo.Api.Controllers.System;
 /// <summary>
 /// 全局设置管理
 /// </summary>
-[Area("System")]
+[Area("系统管理")]
 [Route("/api/appSecret")]
 public class AppSecretController : BaseApiController
 {
@@ -43,7 +43,7 @@ public class AppSecretController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("Add")]
+    [Description("创建")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateAppSecretDto createUpdateAppSecretDto)
     {
@@ -64,7 +64,7 @@ public class AppSecretController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("Edit")]
+    [Description("编辑")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateAppSecretDto createUpdateAppSecretDto)
     {
@@ -85,7 +85,7 @@ public class AppSecretController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("Delete")]
+    [Description("删除")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -106,7 +106,7 @@ public class AppSecretController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("查询")]
     public async Task<ActionResult<object>> Query(AppsecretQueryCriteria appsecretQueryCriteria,
         Pagination pagination)
     {
@@ -126,7 +126,7 @@ public class AppSecretController : BaseApiController
     /// <param name="appsecretQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(AppsecretQueryCriteria appsecretQueryCriteria)
     {

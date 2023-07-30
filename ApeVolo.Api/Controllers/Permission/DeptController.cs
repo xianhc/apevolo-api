@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
@@ -17,7 +17,7 @@ namespace ApeVolo.Api.Controllers.Permission;
 /// <summary>
 /// 部门管理
 /// </summary>
-[Area("Permission")]
+[Area("权限管理")]
 [Route("/api/dept")]
 public class DeptController : BaseApiController
 {
@@ -50,7 +50,7 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("Add")]
+    [Description("创建")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateDepartmentDto createUpdateDepartmentDto)
     {
@@ -72,7 +72,7 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("Edit")]
+    [Description("编辑")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateDepartmentDto createUpdateDepartmentDto)
     {
@@ -94,7 +94,7 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("Delete")]
+    [Description("删除")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -133,7 +133,7 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("查询")]
     public async Task<ActionResult<object>> Query(DeptQueryCriteria deptQueryCriteria,
         Pagination pagination)
     {
@@ -153,7 +153,7 @@ public class DeptController : BaseApiController
     /// <param name="deptQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(DeptQueryCriteria deptQueryCriteria)
     {
@@ -170,7 +170,7 @@ public class DeptController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("superior")]
-    [Description("SiblingParentDepartment")]
+    [Description("获取同级、父级部门")]
     [ApeVoloAuthorize(new[] { "admin", "dept_list" })]
     public async Task<ActionResult<object>> GetSuperior([FromBody] IdCollection idCollection)
     {

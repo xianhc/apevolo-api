@@ -1,6 +1,5 @@
 ﻿using System;
 using ApeVolo.Common.Extention;
-using ApeVolo.Entity.Seed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;

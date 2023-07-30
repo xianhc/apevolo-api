@@ -1,6 +1,5 @@
 using System;
 using ApeVolo.Common.ConfigOptions;
-using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper.Serilog;
 using ApeVolo.Entity.Seed;
 using Microsoft.AspNetCore.Builder;

@@ -7,12 +7,10 @@ namespace ApeVolo.IBusiness.Dto.System;
 [AutoMapping(typeof(Entity.System.Setting), typeof(CreateUpdateSettingDto))]
 public class CreateUpdateSettingDto : BaseEntityDto<long>
 {
-    [Display(Name = "Setting.Name")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Name { get; set; }
-
-    [Display(Name = "Setting.Value")]
-    [Required(ErrorMessage = "{0}required")]
+    
+    [Required]
     public string Value { get; set; }
 
     public bool Enabled { get; set; }

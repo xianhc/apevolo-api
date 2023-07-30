@@ -46,8 +46,9 @@ public class HttpUser : IHttpUser
         {
             if (IsAuthenticated)
             {
-                var claim = _httpContext?.User.Claims.FirstOrDefault(s => s.Type == AuthConstants.JwtClaimTypes.Name);
-                return claim?.Value;
+                // var claim = _httpContext?.User.Claims.FirstOrDefault(s => s.Type == AuthConstants.JwtClaimTypes.Name);
+                // return claim?.Value;
+                return _httpContext?.User.Identity?.Name;
             }
 
             return string.Empty;

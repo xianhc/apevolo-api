@@ -61,7 +61,7 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
     [UseTran]
     public async Task<bool> UpdateJobInfoAsync(QuartzNet quartzNet, QuartzNetLog quartzNetLog)
     {
-        await SugarRepository.UpdateAsync(quartzNet);
+        await UpdateEntityAsync(quartzNet);
         await _quartzNetLogService.CreateAsync(quartzNetLog);
         return true;
     }

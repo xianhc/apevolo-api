@@ -1,5 +1,4 @@
-﻿using ApeVolo.Common.DI;
-using ApeVolo.Common.Model;
+﻿using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
 
@@ -14,7 +13,7 @@ public class QuartzNetLog : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 任务Id
     /// </summary>
-    [SugarColumn(ColumnDataType = "bigint", ColumnDescription = "任务名称")]
+    [SugarColumn(ColumnDescription = "任务名称")]
     public long TaskId { get; set; }
 
     /// <summary>
@@ -50,7 +49,7 @@ public class QuartzNetLog : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 异常详情
     /// </summary>
-    [SugarColumn(Length = 5000, IsNullable = true, ColumnDescription = "异常详情")]
+    [SugarColumn(IsNullable = true, ColumnDescription = "异常详情")]
     public string ExceptionDetail { get; set; }
 
     /// <summary>

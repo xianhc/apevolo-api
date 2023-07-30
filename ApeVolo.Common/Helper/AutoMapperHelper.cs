@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;

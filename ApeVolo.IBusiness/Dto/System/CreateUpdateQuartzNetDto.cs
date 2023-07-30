@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Common.Extention;
@@ -13,36 +13,31 @@ public class CreateUpdateQuartzNetDto : BaseEntityDto<long>
     /// <summary>
     /// 任务名称
     /// </summary>
-    [Display(Name = "Quartz.TaskName")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string TaskName { get; set; }
 
     /// <summary>
     /// 任务分组
     /// </summary>
-    [Display(Name = "Quartz.TaskGroup")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string TaskGroup { get; set; }
 
     /// <summary>
     /// cron 表达式
     /// </summary>
-    [Display(Name = "Quartz.Cron")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Cron { get; set; }
 
     /// <summary>
     /// 程序集名称
     /// </summary>
-    [Display(Name = "Quartz.AssemblyName")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string AssemblyName { get; set; }
 
     /// <summary>
     /// 任务所在类
     /// </summary>
-    [Display(Name = "Quartz.ClassName")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string ClassName { get; set; }
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ApeVolo.Api.AutoMapper;
 using ApeVolo.Common.Extention;
 using Microsoft.Extensions.DependencyInjection;

@@ -5,15 +5,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using ApeVolo.Common.DI;
-using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Entity.Base;
 using ApeVolo.Entity.Message.Email;
 using ApeVolo.Entity.Permission;
 using ApeVolo.Entity.System;
-using ApeVolo.Entity.Test;
 using Newtonsoft.Json;
 using SqlSugar;
 
@@ -38,7 +35,15 @@ public class DataSeeder
             ConsoleHelper.WriteLine($"DB Type: {dataContext.DbType}");
             ConsoleHelper.WriteLine($"DB ConnectString: {dataContext.ConnectionString}");
             ConsoleHelper.WriteLine("初始化数据库....");
-            dataContext.Db.DbMaintenance.CreateDatabase();
+            if (dataContext.DbType != DbType.Oracle)
+            {
+                dataContext.Db.DbMaintenance.CreateDatabase();
+            }
+            else
+            {
+                ConsoleHelper.WriteLine("sqlsugar官方表示Oracle不支持代码建库，请先建库再允许项目", ConsoleColor.Red);
+            }
+
             ConsoleHelper.WriteLine("初始化数据库成功。", ConsoleColor.Green);
             ConsoleHelper.WriteLine();
 

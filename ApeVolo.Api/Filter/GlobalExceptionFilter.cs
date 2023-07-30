@@ -1,14 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
+using System.Linq;
 using System.Threading.Tasks;
+using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
-using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Monitor;
 using ApeVolo.IBusiness.Interface.Monitor;
@@ -20,10 +19,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Shyjus.BrowserDetection;
 using StackExchange.Profiling;
 using static ApeVolo.Api.Filter.ExceptionLogFormat;
 using LogLevel = ApeVolo.Common.Global.LogLevel;
+using MiniProfiler = StackExchange.Profiling.MiniProfiler;
 
 namespace ApeVolo.Api.Filter;
 
@@ -33,18 +34,22 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
     private readonly ISettingService _settingService;
     private readonly IBrowserDetector _browserDetector;
     private readonly ILogger<GlobalExceptionFilter> _logger;
-    private readonly ApeContext _apeContext;
+    private readonly IHttpUser _httpUser;
     private readonly ISearcher _ipSearcher;
+    private readonly bool _isMiniProfiler;
 
-    public GlobalExceptionFilter(ApeContext apeContext, IExceptionLogService exceptionLogService, ISearcher searcher,
-        ISettingService settingService, IBrowserDetector browserDetector, ILogger<GlobalExceptionFilter> logger)
+    public GlobalExceptionFilter(IExceptionLogService exceptionLogService, ISearcher searcher,
+        IOptionsMonitor<Configs> configs,
+        ISettingService settingService, IHttpUser httpUser, IBrowserDetector browserDetector,
+        ILogger<GlobalExceptionFilter> logger)
     {
-        _apeContext = apeContext;
         _exceptionLogService = exceptionLogService;
         _settingService = settingService;
         _browserDetector = browserDetector;
         _logger = logger;
         _ipSearcher = searcher;
+        _httpUser = httpUser;
+        _isMiniProfiler = (configs?.CurrentValue ?? new Configs()).IsMiniProfiler;
     }
 
     public async Task OnExceptionAsync(ExceptionContext context)
@@ -79,14 +84,14 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             ContentType = "application/json; charset=utf-8",
             StatusCode = statusCode
         };
-        if (_apeContext.Configs.IsMiniProfiler)
+        if (_isMiniProfiler)
         {
             MiniProfiler.Current.CustomTiming("Errors：", throwMsg);
         }
 
         //记录日志
         _logger.LogError(WriteLog(context.HttpContext, remoteIp, ipAddress, context.Exception,
-            _apeContext.HttpUser.Account,
+            _httpUser.Account,
             _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
             _browserDetector.Browser?.Version), context.Exception);
         var settingDto = await _settingService.FindSettingByName("IsExceptionLogSaveDB");
@@ -103,7 +108,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(WriteLog(context.HttpContext, remoteIp, ipAddress, ex, _apeContext.HttpUser.Account,
+                _logger.LogCritical(WriteLog(context.HttpContext, remoteIp, ipAddress, ex, _httpUser.Account,
                     _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                     _browserDetector.Browser?.Version));
                 ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
@@ -118,28 +123,27 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
     /// <returns></returns>
     private ExceptionLog CreateLog(ExceptionContext context)
     {
-        var routeValues = context.ActionDescriptor.RouteValues;
-        var desc =
-            ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.GetCustomAttribute(
-                typeof(DescriptionAttribute), true);
-
         ExceptionLog log = null;
         try
         {
+            var routeValues = context.ActionDescriptor.RouteValues;
             var httpContext = context.HttpContext;
             var remoteIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
             var arguments = HttpHelper.GetAllRequestParams(httpContext);
-            var description = desc == null ? "" : ((DescriptionAttribute)desc).Description;
+            var descriptionAttribute = ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo
+                .GetCustomAttributes(typeof(DescriptionAttribute), true)
+                .OfType<DescriptionAttribute>()
+                .FirstOrDefault();
             log = new ExceptionLog
             {
-                Id = IdHelper.GetLongId(),
-                CreateBy = _apeContext.HttpUser.Account,
-                CreateTime = DateTime.Now,
+                // Id = IdHelper.GetLongId(),
+                // CreateBy = _httpUser.Account,
+                // CreateTime = DateTime.Now,
                 Area = routeValues["area"],
                 Controller = routeValues["controller"],
                 Action = routeValues["action"],
                 Method = httpContext.Request.Method,
-                Description = GetResourcesDescription(description, routeValues["area"]),
+                Description = descriptionAttribute?.Description,
                 RequestUrl = httpContext.Request.GetDisplayUrl(),
                 RequestParameters = arguments.ToJson(),
                 ExceptionMessage = context.Exception.Message,
@@ -160,22 +164,5 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         }
 
         return log;
-    }
-
-    /// <summary>
-    /// 根据状态码获取错误名称
-    /// </summary>
-    /// <param name="statusCode"></param>
-    /// <returns></returns>
-    private static string GetExceptionError(int statusCode)
-    {
-        var errorText = statusCode switch
-        {
-            StatusCodes.Status500InternalServerError => "Status500InternalServerError",
-            StatusCodes.Status400BadRequest => "Status400BadRequest",
-            _ => "Status500InternalServerError"
-        };
-
-        return errorText;
     }
 }

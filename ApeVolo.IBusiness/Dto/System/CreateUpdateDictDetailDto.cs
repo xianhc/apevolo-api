@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.Entity.System;
 using ApeVolo.IBusiness.Base;
@@ -9,8 +10,10 @@ public class CreateUpdateDictDetailDto : BaseEntityDto<long>
 {
     public string DictId { get; set; }
 
+    [Required]
     public string Label { get; set; }
 
+    [Required]
     public string Value { get; set; }
 
     public string DictSort { get; set; }

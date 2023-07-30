@@ -1,9 +1,4 @@
-﻿using System;
-using ApeVolo.Common.Extention;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ApeVolo.Api.Extensions;
+﻿namespace ApeVolo.Api.Extensions;
 
 /// <summary>
 /// 缓存启动器

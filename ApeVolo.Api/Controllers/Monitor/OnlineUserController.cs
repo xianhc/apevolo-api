@@ -14,7 +14,7 @@ namespace ApeVolo.Api.Controllers.Monitor;
 /// <summary>
 /// 在线用户
 /// </summary>
-[Area("Monitor")]
+[Area("监控管理")]
 [Route("/api/online")]
 public class OnlineUserController : BaseApiController
 {
@@ -34,7 +34,7 @@ public class OnlineUserController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("查询")]
     public async Task<ActionResult<object>> Query(Pagination pagination)
     {
         var onlineUserList = await _onlineUserService.QueryAsync(pagination);
@@ -53,7 +53,7 @@ public class OnlineUserController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("out")]
-    [Description("OutOnlineUser")]
+    [Description("强退用户")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> DropOut([FromBody] IdCollectionString idCollection)
     {
@@ -73,7 +73,7 @@ public class OnlineUserController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Download()

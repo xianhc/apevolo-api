@@ -1,5 +1,4 @@
 ﻿using System;
-using ApeVolo.Common.Global;
 
 namespace ApeVolo.Common.Caches;
 

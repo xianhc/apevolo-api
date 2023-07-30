@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.IBusiness.Base;
@@ -11,23 +11,20 @@ public class CreateUpdateUserDto : BaseEntityDto<long>
     /// <summary>
     /// 用户名
     /// </summary>
-    [Display(Name = "User.Name")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Username { get; set; }
 
     /// <summary>
     /// 昵称
     /// </summary>
-    [Display(Name = "User.NickName")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string NickName { get; set; }
 
     /// <summary>
     /// 邮箱
     /// </summary>
-    [Display(Name = "User.Email")]
-    [Required(ErrorMessage = "{0}required")]
-    [EmailAddress(ErrorMessage = "{0}ValueIsInvalidAccessor")]
+    [Required]
+    [EmailAddress]
     public string Email { get; set; }
 
     /// <summary>
@@ -38,10 +35,8 @@ public class CreateUpdateUserDto : BaseEntityDto<long>
     /// <summary>
     /// 电话
     /// </summary>
-    [Display(Name = "User.Phone")]
-    [Required(ErrorMessage = "{0}required")]
-    [RegularExpression(@"^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$",
-        ErrorMessage = "{0}ValueIsInvalidAccessor")]
+    [Required]
+    [RegularExpression(@"^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$")]
     public string Phone { get; set; }
 
     [Display(Name = "User.Gender")]

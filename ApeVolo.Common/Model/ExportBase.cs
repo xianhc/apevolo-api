@@ -5,9 +5,9 @@ namespace ApeVolo.Common.Model;
 
 public class ExportBase
 {
-    [Display(Name = "Sys.CreateTime")]
+    [Display(Name = "创建时间")]
     public DateTime CreateTime { get; set; }
 
-    [Display(Name = "Sys.Id")]
+    [Display(Name = "ID")]
     public long Id { get; set; }
 }

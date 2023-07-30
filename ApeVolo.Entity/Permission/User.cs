@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ApeVolo.Common.DI;
 using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
@@ -58,7 +57,7 @@ public class User : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 部门
     /// </summary>
-    [SugarColumn(ColumnDataType = "bigint", IsNullable = false, ColumnDescription = "部门ID")]
+    [SugarColumn(IsNullable = false, ColumnDescription = "部门ID")]
     public long DeptId { get; set; }
 
     /// <summary>

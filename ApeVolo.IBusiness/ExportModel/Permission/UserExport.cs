@@ -6,30 +6,30 @@ namespace ApeVolo.IBusiness.ExportModel.Permission;
 
 public class UserExport : ExportBase
 {
-    [Display(Name = "User.Name")]
+    [Display(Name = "用户名称")]
     public string Username { get; set; }
 
-    [Display(Name = "Role.Name")]
+    [Display(Name = "角色名称")]
     public string Role { get; set; }
 
-    [Display(Name = "User.NickName")]
+    [Display(Name = "用户昵称")]
     public string NickName { get; set; }
 
-    [Display(Name = "User.Phone")]
+    [Display(Name = "用户电话")]
     public string Phone { get; set; }
 
-    [Display(Name = "User.Email")]
+    [Display(Name = "用户邮箱")]
     public string Email { get; set; }
 
-    [Display(Name = "User.Enabled")]
+    [Display(Name = "是否激活")]
     public EnabledState Enabled { get; set; }
 
-    [Display(Name = "Dept.Name")]
+    [Display(Name = "部门名称")]
     public string Dept { get; set; }
 
-    [Display(Name = "Job.Name")]
+    [Display(Name = "岗位名称")]
     public string Job { get; set; }
 
-    [Display(Name = "User.Gender")]
+    [Display(Name = "性别")]
     public string Gender { get; set; }
 }

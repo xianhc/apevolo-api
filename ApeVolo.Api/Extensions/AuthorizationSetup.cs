@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using ApeVolo.Api.Authentication.Jwt;
@@ -49,8 +49,8 @@ public static class AuthorizationSetup
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    NameClaimType = AuthConstants.JwtClaimTypes.Name,
-                    RoleClaimType = AuthConstants.JwtClaimTypes.Role,
+                    // NameClaimType = AuthConstants.JwtClaimTypes.Name,
+                    // RoleClaimType = AuthConstants.JwtClaimTypes.Role,
 
                     ValidateIssuer = true,
                     ValidIssuer = jwtOptions.Issuer,

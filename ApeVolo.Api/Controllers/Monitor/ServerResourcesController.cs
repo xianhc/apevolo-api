@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
@@ -11,7 +11,7 @@ namespace ApeVolo.Api.Controllers.Monitor;
 /// <summary>
 /// 服务器监控
 /// </summary>
-[Area("Monitor")]
+[Area("监控管理")]
 [Route("/api/")]
 public class ServerResourcesController : BaseApiController
 {
@@ -26,7 +26,7 @@ public class ServerResourcesController : BaseApiController
 
     [HttpGet]
     [Route("service/resources/info")]
-    [Description("Info")]
+    [Description("服务器信息")]
     [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Query()
     {

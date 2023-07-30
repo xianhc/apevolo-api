@@ -1,10 +1,6 @@
-﻿using System;
 using System.Threading.Tasks;
 using ApeVolo.Api.ActionExtension.Sign;
 using ApeVolo.Api.Controllers.Base;
-using ApeVolo.Common.Caches;
-using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.IBusiness.Interface.Test;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +10,7 @@ namespace ApeVolo.Api.Controllers.Test;
 /// <summary>
 /// 测试
 /// </summary>
+[Area("Test Manager")]
 [Route("api/[controller]/[action]")]
 //[ApiController]
 public class TestController : BaseApiController

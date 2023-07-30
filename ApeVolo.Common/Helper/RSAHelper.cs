@@ -4,7 +4,6 @@ using System.Security.Cryptography;
 using System.Text;
 using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Global;
-using Microsoft.Extensions.Options;
 
 namespace ApeVolo.Common.Helper;
 

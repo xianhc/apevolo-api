@@ -8,10 +8,10 @@ namespace ApeVolo.IBusiness.Dto.System;
 [AutoMapping(typeof(Entity.System.Dict), typeof(CreateUpdateDictDto))]
 public class CreateUpdateDictDto : BaseEntityDto<long>
 {
-    [Display(Name = "Dict.Name")]
+    [Required]
     public string Name { get; set; }
 
-    [Display(Name = "Dict.Description")]
+    [Required]
     public string Description { get; set; }
 
     public List<CreateUpdateDictDetailDto> DictDetails { get; set; }

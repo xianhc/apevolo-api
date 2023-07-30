@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ApeVolo.Business.Base;
 using ApeVolo.Common.Model;
-using ApeVolo.Entity.Permission;
 using ApeVolo.Entity.Test;
 using ApeVolo.IBusiness.Interface.Test;
 

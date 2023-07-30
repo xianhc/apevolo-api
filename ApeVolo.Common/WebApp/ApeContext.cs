@@ -3,10 +3,8 @@ using ApeVolo.Common.Caches;
 using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
-using ApeVolo.Common.Helper;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 
 namespace ApeVolo.Common.WebApp;

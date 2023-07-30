@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
-
-namespace ApeVolo.Common.WebApp;
+﻿namespace ApeVolo.Common.WebApp;
 
 /// <summary>
 /// 当前用户

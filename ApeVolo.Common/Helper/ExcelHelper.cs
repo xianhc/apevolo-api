@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
@@ -204,7 +203,7 @@ public class ExcelHelper
                                     .GetCustomAttributes(typeof(DisplayAttribute), true)
                                     .OfType<DisplayAttribute>()
                                     .FirstOrDefault();
-                                text = display == null ? field.Name : Localized.Get(display.Name);
+                                text = display == null ? field.Name : display.Name;
                                 //}
                             }
                         }
@@ -261,7 +260,7 @@ public class ExcelHelper
                 .GetCustomAttributes(typeof(DisplayAttribute), true)
                 .OfType<DisplayAttribute>()
                 .FirstOrDefault();
-            cell.SetCellValue(display == null ? p.Name : Localized.Get(display.Name));
+            cell.SetCellValue(display == null ? p.Name : display.Name);
 
             var cellRangeAddress = new CellRangeAddress(rowIndex, rowIndex, colIndex, colIndex);
             sheet.AddMergedRegion(cellRangeAddress);

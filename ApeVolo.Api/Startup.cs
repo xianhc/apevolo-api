@@ -2,8 +2,6 @@ using System.Reflection;
 using ApeVolo.Api.Extensions;
 using ApeVolo.Api.Filter;
 using ApeVolo.Api.Middleware;
-using ApeVolo.Common.Caches;
-using ApeVolo.Common.Caches.Distributed;
 using ApeVolo.Common.ClassLibrary;
 using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.DI;
@@ -20,7 +18,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,18 +63,18 @@ public class Startup
         services.AddIpStrategyRateLimitSetup(Configuration);
         services.AddRabbitMqSetup(configs);
         services.AddEventBusSetup(configs);
-        services.AddLocalization(options => options.ResourcesPath = "Resources");
-        services.AddMultiLanguages(op => op.LocalizationType = typeof(Common.Language));
+        //services.AddLocalization(options => options.ResourcesPath = "Resources");
+        //services.AddMultiLanguages(op => op.LocalizationType = typeof(Common.Language));
         services.AddSingleton<ISearcher, Searcher>();
         services.AddControllers(options =>
             {
                 // 异常过滤器
-                options.Filters.Add(typeof(GlobalExceptionFilter));
+                options.Filters.Add<GlobalExceptionFilter>();
                 // 审计过滤器
                 options.Filters.Add<AuditingFilter>();
             })
-            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-            .AddDataAnnotationsLocalization(typeof(Common.Language))
+            //.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+            //.AddDataAnnotationsLocalization(typeof(Common.Language))
             .AddControllersAsServices()
             .AddNewtonsoftJson(options =>
                 {
@@ -97,7 +94,7 @@ public class Startup
     }
 
     public void Configure(IApplicationBuilder app, DataContext dataContext, IQuartzNetService quartzNetService,
-        ISchedulerCenterService schedulerCenter, IOptionsMonitor<Configs> configs, ApeContext apeContext)
+        ISchedulerCenterService schedulerCenter, IOptionsMonitor<Configs> configs)
     {
         var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
         if (locOptions != null) app.UseRequestLocalization(locOptions.Value);

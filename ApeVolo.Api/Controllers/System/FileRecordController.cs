@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using ApeVolo.Api.ActionExtension.Parameter;
 using ApeVolo.Api.Controllers.Base;
@@ -17,7 +17,7 @@ namespace ApeVolo.Api.Controllers.System;
 /// <summary>
 /// 文件存储管理
 /// </summary>
-[Area("System")]
+[Area("系统管理")]
 [Route("/api/storage")]
 public class FileRecordController : BaseApiController
 {
@@ -46,7 +46,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpOptions, HttpPost]
     [Route("upload")]
-    [Description("Add")]
+    [Description("创建")]
     [CheckParamNotEmpty("description")]
     public async Task<ActionResult<object>> Upload(string description,
         [FromForm] IFormFile file)
@@ -73,7 +73,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("Edit")]
+    [Description("编辑")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateFileRecordDto createUpdateAppSecretDto)
     {
@@ -88,7 +88,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("Delete")]
+    [Description("删除")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -110,7 +110,7 @@ public class FileRecordController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("查询")]
     public async Task<ActionResult<object>> Query(FileRecordQueryCriteria fileRecordQueryCriteria,
         Pagination pagination)
     {
@@ -130,7 +130,7 @@ public class FileRecordController : BaseApiController
     /// <param name="fileRecordQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(FileRecordQueryCriteria fileRecordQueryCriteria)
     {

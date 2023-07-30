@@ -15,7 +15,7 @@ namespace ApeVolo.Api.Controllers.System;
 /// <summary>
 /// 全局设置管理
 /// </summary>
-[Area("System")]
+[Area("系统管理")]
 [Route("/api/setting")]
 public class SettingController : BaseApiController
 {
@@ -43,7 +43,7 @@ public class SettingController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("Add")]
+    [Description("创建")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateSettingDto createUpdateSettingDto)
     {
@@ -64,7 +64,7 @@ public class SettingController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("Edit")]
+    [Description("编辑")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateSettingDto createUpdateSettingDto)
     {
@@ -85,7 +85,7 @@ public class SettingController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("Delete")]
+    [Description("删除")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -106,7 +106,7 @@ public class SettingController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("查询")]
     public async Task<ActionResult<object>> Query(SettingQueryCriteria settingQueryCriteria, Pagination pagination)
     {
         var settingList = await _settingService.QueryAsync(settingQueryCriteria, pagination);
@@ -125,7 +125,7 @@ public class SettingController : BaseApiController
     /// <param name="settingQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(SettingQueryCriteria settingQueryCriteria)
     {

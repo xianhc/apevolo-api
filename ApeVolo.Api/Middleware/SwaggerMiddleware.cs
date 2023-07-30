@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.IO;
 using ApeVolo.Common.ConfigOptions;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper.Serilog;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -18,7 +17,7 @@ public static class SwaggerMiddleware
 {
     private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(SwaggerMiddleware));
 
-    public static void UseSwaggerMiddleware(this IApplicationBuilder app, [CanBeNull] Func<Stream> streamHtml)
+    public static void UseSwaggerMiddleware(this IApplicationBuilder app, Func<Stream> streamHtml)
     {
         if (app.IsNull())
             throw new ArgumentNullException(nameof(app));

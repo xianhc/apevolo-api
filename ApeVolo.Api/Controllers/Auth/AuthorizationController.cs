@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using ApeVolo.Api.Authentication.Jwt;
 using ApeVolo.Api.Controllers.Base;
@@ -12,7 +11,6 @@ using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.IBusiness.Interface.Permission;
 using ApeVolo.IBusiness.Interface.Queued;
@@ -28,7 +26,7 @@ namespace ApeVolo.Api.Controllers.Auth;
 /// <summary>
 /// 授权管理
 /// </summary>
-[Area("Permission")]
+[Area("授权管理")]
 [Route("[controller]/[action]")]
 public class AuthorizationController : BaseApiController
 {
@@ -84,19 +82,19 @@ public class AuthorizationController : BaseApiController
         await _apeContext.Cache.RemoveAsync(authUser.CaptchaId);
         if (!_apeContext.Configs.IsQuickDebug)
         {
-            if (code.IsNullOrEmpty()) return Error(Localized.Get("CodeNotExist"));
+            if (code.IsNullOrEmpty()) return Error("验证码不存在或已过期");
 
-            if (!code.Equals(authUser.Captcha)) return Error(Localized.Get("CodeWrong"));
+            if (!code.Equals(authUser.Captcha)) return Error("验证码错误");
         }
 
         var userDto = await _userService.QueryByNameAsync(authUser.Username);
-        if (userDto == null) return Error(Localized.Get("{0}NotExist", Localized.Get("User")));
+        if (userDto == null) return Error("用户不存在");
         var password = new RsaHelper(_apeContext.Configs.Rsa).Decrypt(authUser.Password);
         if (!userDto.Password.Equals(
                 (password + userDto.SaltKey).ToHmacsha256String(_apeContext.Configs.HmacSecret)))
-            return Error(Localized.Get("PasswrodWrong"));
+            return Error("密码错误");
 
-        if (!userDto.Enabled) return Error(Localized.Get("{0}NotActivated", Localized.Get("User")));
+        if (!userDto.Enabled) return Error("用户未激活");
 
         var netUser = await _userService.QueryByIdAsync(userDto.Id);
 
@@ -124,7 +122,7 @@ public class AuthorizationController : BaseApiController
 
     [HttpGet]
     [Route("/auth/info")]
-    [Description("UserInfo")]
+    [Description("个人信息")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> GetInfo()
     {
@@ -142,7 +140,7 @@ public class AuthorizationController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Description("GetCode")]
+    [Description("获取验证码")]
     [Route("/auth/captcha")]
     [AllowAnonymous]
     public async Task<ActionResult<object>> Captcha()
@@ -166,7 +164,7 @@ public class AuthorizationController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    [Description("GetCode")]
+    [Description("获取邮箱验证码")]
     [Route("/auth/code/reset/email")]
     [ApeVoloOnline]
     public async Task<ActionResult<object>> ResetEmail(string email)
@@ -184,7 +182,7 @@ public class AuthorizationController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("/auth/logout")]
-    [Description("LoginOut")]
+    [Description("用户登出")]
     //[ApeVoloOnline]
     [AllowAnonymous]
     public async Task<ActionResult<object>> Logout()

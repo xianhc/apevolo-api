@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
@@ -18,7 +18,7 @@ namespace ApeVolo.Api.Controllers.Permission;
 /// <summary>
 /// 菜单管理
 /// </summary>
-[Area("Permission")]
+[Area("权限管理")]
 [Route("/api/menu")]
 public class MenusController : BaseApiController
 {
@@ -48,7 +48,7 @@ public class MenusController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("Add")]
+    [Description("创建")]
     public async Task<ActionResult<object>> CreateMenu(
         [FromBody] CreateUpdateMenuDto createUpdateMenuDto)
     {
@@ -69,7 +69,7 @@ public class MenusController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("Edit")]
+    [Description("编辑")]
     public async Task<ActionResult<object>> UpdateDept(
         [FromBody] CreateUpdateMenuDto createUpdateMenuDto)
     {
@@ -90,7 +90,7 @@ public class MenusController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("Delete")]
+    [Description("删除")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -108,7 +108,7 @@ public class MenusController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Description("BuildMenu")]
+    [Description("构建菜单")]
     [Route("build")]
     //[ApeVoloAuthorize(new[] { "admin", "menu_list", "guest" })]
     [ApeVoloOnline]
@@ -124,7 +124,7 @@ public class MenusController : BaseApiController
     /// <param name="pid">父级ID</param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Submenu")]
+    [Description("子菜单")]
     [Route("lazy")]
     [ApeVoloAuthorize(new[] { "admin", "menu_list", "guest" })]
     public async Task<ActionResult<object>> GetMenuLazy(long pid)
@@ -145,7 +145,7 @@ public class MenusController : BaseApiController
     /// <param name="pagination"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("List")]
+    [Description("查询")]
     [Route("query")]
     public async Task<ActionResult<object>> Query(MenuQueryCriteria menuQueryCriteria,
         Pagination pagination)
@@ -165,7 +165,7 @@ public class MenusController : BaseApiController
     /// <param name="menuQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(MenuQueryCriteria menuQueryCriteria)
     {
@@ -180,7 +180,7 @@ public class MenusController : BaseApiController
     /// <param name="idCollection"></param>
     /// <returns></returns>
     [HttpPost]
-    [Description("SiblingParentMenu")]
+    [Description("获取同级、父级菜单")]
     [Route("superior")]
     [ApeVoloAuthorize(new[] { "admin", "menu_list" })]
     public async Task<ActionResult<object>> GetSuperior([FromBody] IdCollection idCollection)
@@ -196,7 +196,7 @@ public class MenusController : BaseApiController
     }
 
     [HttpGet]
-    [Description("AllChildID")]
+    [Description("获取所有子级菜单ID")]
     [Route("child")]
     [ApeVoloAuthorize(new[] { "admin", "menu_list" })]
     public async Task<ActionResult<object>> GetChild(long id)

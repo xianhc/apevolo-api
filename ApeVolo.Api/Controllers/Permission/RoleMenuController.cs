@@ -11,7 +11,7 @@ namespace ApeVolo.Api.Controllers.Permission;
 /// <summary>
 /// 角色与菜单管理
 /// </summary>
-[Area("Permission")]
+[Area("权限管理")]
 [Route("/api/")]
 public class RoleMenuController : BaseApiController
 {
@@ -39,7 +39,7 @@ public class RoleMenuController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("role/menu/edit")]
-    [Description("Edit")]
+    [Description("编辑")]
     [ApeVoloAuthorize(new[] { "admin", "roles_edit" })]
     public async Task<ActionResult<object>> UpdateRolesMenus(CreateUpdateRoleDto createUpdateRoleDto)
     {

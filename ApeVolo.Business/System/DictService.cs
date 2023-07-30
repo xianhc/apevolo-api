@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,7 +7,6 @@ using ApeVolo.Business.Base;
 using ApeVolo.Common.Exception;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Model;
-using ApeVolo.Common.Resources;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.System;
 using ApeVolo.IBusiness.Dto.System;
@@ -36,8 +35,7 @@ public class DictService : BaseServices<Dict>, IDictService
     {
         if (await TableWhere(d => d.Name == createUpdateDictDto.Name).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Dict"),
-                createUpdateDictDto.Name));
+            throw new BadRequestException($"名称=>{createUpdateDictDto.Name}=>已存在!");
         }
 
         return await AddEntityAsync(ApeContext.Mapper.Map<Dict>(createUpdateDictDto));
@@ -49,14 +47,13 @@ public class DictService : BaseServices<Dict>, IDictService
             await TableWhere(x => x.Id == createUpdateDictDto.Id).FirstAsync();
         if (oldDict.IsNull())
         {
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         }
 
         if (oldDict.Name != createUpdateDictDto.Name &&
             await TableWhere(j => j.Id == createUpdateDictDto.Id).AnyAsync())
         {
-            throw new BadRequestException(Localized.Get("{0}{1}IsExist", Localized.Get("Dict"),
-                createUpdateDictDto.Name));
+            throw new BadRequestException($"名称=>{createUpdateDictDto.Name}=>已存在!");
         }
 
         return await UpdateEntityAsync(ApeContext.Mapper.Map<Dict>(createUpdateDictDto));
@@ -66,7 +63,7 @@ public class DictService : BaseServices<Dict>, IDictService
     {
         var dicts = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
         if (dicts.Count <= 0)
-            throw new BadRequestException(Localized.Get("DataNotExist"));
+            throw new BadRequestException("数据不存在！");
         return await LogicDelete<Dict>(x => ids.Contains(x.Id)) > 0;
     }
 

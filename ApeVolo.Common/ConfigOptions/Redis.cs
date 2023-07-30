@@ -1,6 +1,4 @@
-﻿using System.Security.Principal;
-
-namespace ApeVolo.Common.ConfigOptions;
+﻿namespace ApeVolo.Common.ConfigOptions;
 
 public class Redis
 {

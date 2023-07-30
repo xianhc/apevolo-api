@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using ApeVolo.Common.Extention;
 using ApeVolo.Common.Helper;
-using ApeVolo.Common.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 
@@ -48,23 +47,5 @@ public static class ExceptionLogFormat
             remoteIp, ipAddress,
             operatingSystem, deviceType, browserName, version, exception.StackTrace,
             ExceptionHelper.GetExceptionAllMsg(exception));
-    }
-
-    /// <summary>
-    /// 获取描述本地化语言
-    /// </summary>
-    /// <param name="description"></param>
-    /// <param name="area"></param>
-    /// <returns></returns>
-    public static string GetResourcesDescription(string description, string area)
-    {
-        if (description.IsNullOrEmpty())
-        {
-            return "";
-        }
-
-        return description.Contains("{0}")
-            ? Localized.Get(description, Localized.Get(area))
-            : Localized.Get(description);
     }
 }

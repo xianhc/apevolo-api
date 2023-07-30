@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using ApeVolo.Common.AttributeExt;
 using ApeVolo.IBusiness.Base;
 
@@ -7,8 +7,7 @@ namespace ApeVolo.IBusiness.Dto.System;
 [AutoMapping(typeof(Entity.System.FileRecord), typeof(CreateUpdateFileRecordDto))]
 public class CreateUpdateFileRecordDto : BaseEntityDto<long>
 {
-    [Display(Name = "FileRecord.Name")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Description { get; set; }
 
     public string ContentType { get; set; }

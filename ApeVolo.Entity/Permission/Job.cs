@@ -1,6 +1,4 @@
-﻿using System;
-using ApeVolo.Common.DI;
-using ApeVolo.Common.Model;
+﻿using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
 

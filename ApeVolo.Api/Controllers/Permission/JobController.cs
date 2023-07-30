@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
@@ -16,7 +16,7 @@ namespace ApeVolo.Api.Controllers.Permission;
 /// <summary>
 /// 岗位管理
 /// </summary>
-[Area("Permission")]
+[Area("权限管理")]
 [Route("/api/job")]
 public class JobController : BaseApiController
 {
@@ -44,7 +44,7 @@ public class JobController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Route("create")]
-    [Description("Add")]
+    [Description("创建")]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateJobDto createUpdateJobDto)
     {
@@ -65,7 +65,7 @@ public class JobController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Route("edit")]
-    [Description("Edit")]
+    [Description("编辑")]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateJobDto createUpdateJobDto)
     {
@@ -80,7 +80,7 @@ public class JobController : BaseApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("delete")]
-    [Description("Delete")]
+    [Description("删除")]
     public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -101,7 +101,7 @@ public class JobController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
-    [Description("List")]
+    [Description("查询")]
     public async Task<ActionResult<object>> Query(JobQueryCriteria jobQueryCriteria, Pagination pagination)
     {
         var jobList = await _jobService.QueryAsync(jobQueryCriteria, pagination);
@@ -119,7 +119,7 @@ public class JobController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Route("queryAll")]
-    [Description("List")]
+    [Description("查询全部")]
     [ApeVoloAuthorize(new[] { "admin", "job_list" })]
     public async Task<ActionResult<object>> QueryAll()
     {
@@ -138,7 +138,7 @@ public class JobController : BaseApiController
     /// <param name="jobQueryCriteria"></param>
     /// <returns></returns>
     [HttpGet]
-    [Description("Export")]
+    [Description("导出")]
     [Route("download")]
     public async Task<ActionResult<object>> Download(JobQueryCriteria jobQueryCriteria)
     {

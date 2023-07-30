@@ -1138,26 +1138,11 @@
             <param name="version">版本号</param>
             <returns></returns>
         </member>
-        <member name="M:ApeVolo.Api.Filter.ExceptionLogFormat.GetResourcesDescription(System.String,System.String)">
-            <summary>
-            获取描述本地化语言
-            </summary>
-            <param name="description"></param>
-            <param name="area"></param>
-            <returns></returns>
-        </member>
         <member name="M:ApeVolo.Api.Filter.GlobalExceptionFilter.CreateLog(Microsoft.AspNetCore.Mvc.Filters.ExceptionContext)">
             <summary>
             创建审计对象
             </summary>
             <param name="context"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ApeVolo.Api.Filter.GlobalExceptionFilter.GetExceptionError(System.Int32)">
-            <summary>
-            根据状态码获取错误名称
-            </summary>
-            <param name="statusCode"></param>
             <returns></returns>
         </member>
         <member name="T:ApeVolo.Api.Middleware.CorsMiddleware">
