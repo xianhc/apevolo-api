@@ -162,55 +162,43 @@ public static class SqlSugarSetup
             rootEntity.Id = IdHelper.GetLongId();
         }
 
-        if (entityInfo.EntityValue is not BaseEntity baseEntity) return;
-        switch (entityInfo.OperationType)
+        if (entityInfo.EntityValue is BaseEntity baseEntity)
         {
-            case DataFilterType.InsertByObject:
+            switch (entityInfo.OperationType)
             {
-                if (baseEntity.CreateTime == DateTime.MinValue)
+                case DataFilterType.InsertByObject:
                 {
-                    baseEntity.CreateTime = DateTime.Now;
-                }
+                    if (baseEntity.CreateTime == DateTime.MinValue)
+                    {
+                        baseEntity.CreateTime = DateTime.Now;
+                    }
 
-                break;
-            }
-            case DataFilterType.UpdateByObject:
-                if (baseEntity.UpdateTime == DateTime.MinValue)
-                {
+                    break;
+                }
+                case DataFilterType.UpdateByObject:
                     baseEntity.UpdateTime = DateTime.Now;
-                }
-
-                break;
-            case DataFilterType.DeleteByObject:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
-        if (!httpUser.IsNotNull()) return;
-        switch (entityInfo.OperationType)
-        {
-            case DataFilterType.InsertByObject:
-            {
-                if (baseEntity.CreateBy.IsNullOrEmpty())
-                {
-                    baseEntity.CreateBy = httpUser.Account;
-                }
-
-                break;
+                    break;
             }
-            case DataFilterType.UpdateByObject:
-                if (baseEntity.UpdateBy.IsNullOrEmpty())
-                {
-                    baseEntity.UpdateBy = httpUser.Account;
-                }
 
-                break;
-            case DataFilterType.DeleteByObject:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
+            if (httpUser.IsNotNull())
+            {
+                switch (entityInfo.OperationType)
+                {
+                    case DataFilterType.InsertByObject:
+                    {
+                        if (baseEntity.CreateBy.IsNullOrEmpty())
+                        {
+                            baseEntity.CreateBy = httpUser.Account;
+                        }
+
+                        break;
+                    }
+                    case DataFilterType.UpdateByObject:
+                        baseEntity.UpdateBy = httpUser.Account;
+                        break;
+                }
+            }
         }
     }
 
@@ -225,7 +213,7 @@ public static class SqlSugarSetup
             return;
         }
 
-        if (configs.IsMiniProfiler)
+        if (configs.IsQuickDebug && configs.IsMiniProfiler)
         {
             MiniProfiler.Current.CustomTiming("SQL",
                 "【SQL参数】：\n" + GetParams(pars) + "【SQL语句】：\n" + sql);
@@ -237,7 +225,7 @@ public static class SqlSugarSetup
                 new[] { "【SQL参数】：\n" + GetParams(pars), "【SQL语句】：\n" + sql });
         }
 
-        if (configs.IsOutSqlToConsole)
+        if (configs.IsQuickDebug && configs.IsOutSqlToConsole)
         {
             ConsoleHelper.WriteLine($"{DateTime.Now}\n【SQL参数】：\n{GetParams(pars)}【SQL语句】：\n{sql}");
         }
@@ -260,7 +248,7 @@ public static class SqlSugarSetup
             return;
         }
 
-        if (configs.IsMiniProfiler)
+        if (configs.IsQuickDebug && configs.IsMiniProfiler)
         {
             MiniProfiler.Current.CustomTiming("SQL", $"【SQL耗时】：:{ado.SqlExecutionTime.TotalMilliseconds}毫秒");
         }
@@ -271,7 +259,7 @@ public static class SqlSugarSetup
                 new[] { $"【SQL耗时】：{ado.SqlExecutionTime.TotalMilliseconds}毫秒" });
         }
 
-        if (configs.IsOutSqlToConsole)
+        if (configs.IsQuickDebug && configs.IsOutSqlToConsole)
         {
             ConsoleHelper.WriteLine($"【SQL耗时】：{ado.SqlExecutionTime.TotalMilliseconds}毫秒");
         }
