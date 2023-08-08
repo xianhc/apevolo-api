@@ -1,4 +1,4 @@
-﻿using ApeVolo.Common.Model;
+using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
 using SqlSugar;
 
@@ -7,38 +7,41 @@ namespace ApeVolo.Entity.Permission;
 /// <summary>
 /// 部门
 /// </summary>
-[SugarTable("sys_department", "部门")]
+[SugarTable("sys_department")]
 public class Department : BaseEntity, ISoftDeletedEntity
 {
     /// <summary>
     /// 部门名称
     /// </summary>
-    [SugarColumn(IsNullable = false, ColumnDescription = "部门名称")]
+    [SugarColumn(IsNullable = false)]
     public string Name { get; set; }
 
     /// <summary>
     /// 父级部门ID
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "父级部门")]
+    [SugarColumn(IsNullable = true)]
     public long? ParentId { get; set; }
 
     /// <summary>
     /// 排序
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "排序")]
+    [SugarColumn(IsNullable = true)]
     public int Sort { get; set; }
 
     /// <summary>
-    /// 是否激活
+    /// 是否启用
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "是否启用")]
+    [SugarColumn(IsNullable = true)]
     public bool Enabled { get; set; }
 
     /// <summary>
     /// 子节点个数
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "子节点个数")]
+    [SugarColumn(IsNullable = true)]
     public int SubCount { get; set; }
 
+    /// <summary>
+    /// 是否已删除
+    /// </summary>
     public bool IsDeleted { get; set; }
 }

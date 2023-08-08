@@ -5,15 +5,13 @@ using SqlSugar;
 namespace ApeVolo.Entity.Test;
 
 /// <summary>
-/// 测试用的
+/// 测试
 /// </summary>
-[SugarTable("test_apevolo", "测试")]
+[SugarTable("test_apevolo")]
 public class TestApeVolo : BaseEntity, ISoftDeletedEntity
 {
-    [SugarColumn(ColumnDescription = "label")]
     public string Label { get; set; }
-
-    [SugarColumn(ColumnDescription = "content")]
+    
     public string Content { get; set; }
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ApeVolo.Common.Model;
 using ApeVolo.Entity.Base;
@@ -9,55 +9,55 @@ namespace ApeVolo.Entity.Permission;
 /// <summary>
 /// 系统用户
 /// </summary>
-[SugarTable("sys_user", "系统用户")]
+[SugarTable("sys_user")]
 public class User : BaseEntity, ISoftDeletedEntity
 {
     /// <summary>
     /// 用户名
     /// </summary>
-    [SugarColumn(IsNullable = false, ColumnDescription = "用户名")]
+    [SugarColumn(IsNullable = false)]
     public string Username { get; set; }
 
     /// <summary>
     /// 昵称
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "昵称")]
+    [SugarColumn(IsNullable = true)]
     public string NickName { get; set; }
 
     /// <summary>
     /// 邮箱
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "邮箱")]
+    [SugarColumn(IsNullable = true)]
     public string Email { get; set; }
 
     /// <summary>
     /// 是否内置管理员
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "内置管理员,无视系统权限")]
+    [SugarColumn(IsNullable = true)]
     public bool IsAdmin { get; set; }
 
     /// <summary>
     /// 是否激活
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "状态")]
+    [SugarColumn(IsNullable = true)]
     public bool Enabled { get; set; }
 
     /// <summary>
     /// 密码
     /// </summary>
-    [SugarColumn(IsNullable = false, ColumnDescription = "密码")]
+    [SugarColumn(IsNullable = false)]
     public string Password { get; set; }
 
     /// <summary>
     /// 签名随机盐
     /// </summary>
-    [SugarColumn(IsNullable = false, ColumnDescription = "随机盐值")]
+    [SugarColumn(IsNullable = false)]
     public string SaltKey { get; set; }
 
     /// <summary>
     /// 部门
     /// </summary>
-    [SugarColumn(IsNullable = false, ColumnDescription = "部门ID")]
+    [SugarColumn(IsNullable = false)]
     public long DeptId { get; set; }
 
     /// <summary>
@@ -69,30 +69,35 @@ public class User : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 头像名称
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "头像名称")]
+    [SugarColumn(IsNullable = true)]
     public string AvatarName { get; set; }
 
     /// <summary>
     /// 头像路径
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "头像路径")]
+    [SugarColumn(IsNullable = true)]
     public string AvatarPath { get; set; }
 
     /// <summary>
     /// 最后修改密码时间
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "最后修改密码时间")]
+    [SugarColumn(IsNullable = true)]
     public DateTime? PasswordReSetTime { get; set; }
 
     /// <summary>
     /// 性别
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "性别")]
+    [SugarColumn(IsNullable = true)]
     public bool Sex { get; set; }
 
-    [SugarColumn(ColumnDescription = "性别")]
+    /// <summary>
+    /// 性别
+    /// </summary>
     public string Gender { get; set; }
 
+    /// <summary>
+    /// 是否已删除
+    /// </summary>
     public bool IsDeleted { get; set; }
 
 

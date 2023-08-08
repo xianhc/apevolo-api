@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SqlSugar;
 
 namespace ApeVolo.Entity.Base;
@@ -11,24 +11,24 @@ public class BaseEntity : RootKey<long>
     /// <summary>
     /// 创建者名称
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "创建者账号")]
+    [SugarColumn(IsNullable = true)]
     public string CreateBy { get; set; }
 
     /// <summary>
     /// 创建时间
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "创建时间")]
+    [SugarColumn(IsNullable = true)]
     public DateTime CreateTime { get; set; }
 
     /// <summary>
     /// 更新者名称
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "更新者账户")]
+    [SugarColumn(IsNullable = true)]
     public string UpdateBy { get; set; }
 
     /// <summary>
     /// 最后更新时间
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDescription = "更新时间")]
+    [SugarColumn(IsNullable = true)]
     public DateTime? UpdateTime { get; set; }
 }
