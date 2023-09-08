@@ -72,7 +72,7 @@ public class UserService : BaseServices<User>, IUserService
         var user = ApeContext.Mapper.Map<User>(createUpdateUserDto);
 
         //设置用户密码
-        user.Password = HashHelper.HashPassword("123456");
+        user.Password = BCryptHelper.Hash("123456");
         user.DeptId = user.Dept.Id;
         //用户
         await AddEntityAsync(user);
@@ -379,13 +379,13 @@ public class UserService : BaseServices<User>, IUserService
         var curUser = await TableWhere(x => x.Id == ApeContext.LoginUserInfo.UserId).FirstAsync();
         if (curUser.IsNull())
             throw new BadRequestException("数据不存在！");
-        if (!HashHelper.VerifyPassword(oldPassword, curUser.Password))
+        if (!BCryptHelper.Verify(oldPassword, curUser.Password))
         {
             throw new BadRequestException("旧密码错误");
         }
 
         //设置用户密码
-        curUser.Password = HashHelper.HashPassword(newPassword);
+        curUser.Password = BCryptHelper.Hash(newPassword);
         curUser.PasswordReSetTime = DateTime.Now;
         var isTrue = await UpdateEntityAsync(curUser);
         if (isTrue)
@@ -416,7 +416,7 @@ public class UserService : BaseServices<User>, IUserService
             throw new BadRequestException("数据不存在！");
         var rsaHelper = new RsaHelper(ApeContext.Configs.Rsa);
         string password = rsaHelper.Decrypt(updateUserEmailDto.Password);
-        if (!HashHelper.VerifyPassword(password, curUser.Password))
+        if (!BCryptHelper.Verify(password, curUser.Password))
         {
             throw new BadRequestException("密码错误");
         }

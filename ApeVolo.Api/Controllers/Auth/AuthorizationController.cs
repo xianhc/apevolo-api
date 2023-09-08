@@ -87,7 +87,7 @@ public class AuthorizationController : BaseApiController
         var userDto = await _userService.QueryByNameAsync(authUser.Username);
         if (userDto == null) return Error("用户不存在");
         var password = new RsaHelper(_apeContext.Configs.Rsa).Decrypt(authUser.Password);
-        if (!HashHelper.VerifyPassword(password, userDto.Password))
+        if (!BCryptHelper.Verify(password, userDto.Password))
             return Error("密码错误");
 
         if (!userDto.Enabled) return Error("用户未激活");
