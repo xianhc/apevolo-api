@@ -35,6 +35,8 @@ public class Startup
 
     public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {
+        //雪花ID器
+        new IdHelperBootstrapper().SetWorkderId(1).Boot();
         Configuration = configuration;
         WebHostEnvironment = webHostEnvironment;
     }
@@ -147,8 +149,6 @@ public class Startup
         //作业调度
         app.UseQuartzNetJobMiddleware(quartzNetService, schedulerCenter);
 
-        //雪花ID器
-        new IdHelperBootstrapper().SetWorkderId(1).Boot();
         //事件总线配置订阅
         app.ConfigureEventBus();
 

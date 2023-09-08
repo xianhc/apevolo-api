@@ -48,11 +48,6 @@ public class UserDto : BaseEntityDto<long>
     public string Password { get; set; }
 
     /// <summary>
-    /// 签名随机盐
-    /// </summary>
-    public string SaltKey { get; set; }
-
-    /// <summary>
     /// 部门
     /// </summary>
     public long DeptId { get; set; }

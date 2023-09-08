@@ -49,12 +49,6 @@ public class User : BaseEntity, ISoftDeletedEntity
     public string Password { get; set; }
 
     /// <summary>
-    /// 签名随机盐
-    /// </summary>
-    [SugarColumn(IsNullable = false)]
-    public string SaltKey { get; set; }
-
-    /// <summary>
     /// 部门
     /// </summary>
     [SugarColumn(IsNullable = false)]
