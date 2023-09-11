@@ -7,7 +7,7 @@ namespace ApeVolo.Entity.Permission;
 /// 用户角色关联
 /// </summary>
 [SugarTable("sys_users_roles")]
-public class UserRoles : RootKey<long>
+public class UserRoles
 {
     /// <summary>
     /// 用户ID
