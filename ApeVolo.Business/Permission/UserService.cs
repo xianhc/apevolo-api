@@ -11,6 +11,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.Model;
+using ApeVolo.Common.SnowflakeIdHelper;
 using ApeVolo.Common.WebApp;
 using ApeVolo.Entity.Permission;
 using ApeVolo.IBusiness.Dto.Permission;
@@ -438,8 +439,10 @@ public class UserService : BaseServices<User>, IUserService
         if (curUser.IsNull())
             throw new BadRequestException("数据不存在！");
 
-        string avatarName = GuidHelper.GenerateKey().ToLower() + "_" + file.FileName;
-        string avatarPath = Path.Combine(AppSettings.WebRootPath, "file", "avatar");
+        var prefix = AppSettings.WebRootPath;
+        string avatarName = DateTime.Now.ToString("yyyyMMddHHmmss") + "_" + IdHelper.GetId() +
+                            file.FileName.Substring(Math.Max(file.FileName.LastIndexOf('.'), 0));
+        string avatarPath = Path.Combine(prefix, "uploads", "file", "avatar");
 
         if (!Directory.Exists(avatarPath))
         {
@@ -453,8 +456,9 @@ public class UserService : BaseServices<User>, IUserService
             fs.Flush();
         }
 
-        curUser.AvatarPath = "/file/avatar/";
-        curUser.AvatarName = avatarName;
+        string relativePath = Path.GetRelativePath(prefix, avatarPath);
+        relativePath = "/" + relativePath.Replace("\\", "/");
+        curUser.AvatarPath = relativePath;
         await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
                                            curUser.Id.ToString().ToMd5String16());
         return await UpdateEntityAsync(curUser);

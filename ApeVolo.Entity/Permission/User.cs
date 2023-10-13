@@ -61,12 +61,6 @@ public class User : BaseEntity, ISoftDeletedEntity
     public string Phone { get; set; }
 
     /// <summary>
-    /// 头像名称
-    /// </summary>
-    [SugarColumn(IsNullable = true)]
-    public string AvatarName { get; set; }
-
-    /// <summary>
     /// 头像路径
     /// </summary>
     [SugarColumn(IsNullable = true)]

@@ -45,6 +45,8 @@
       <_ContentIncludedByDefault Remove="wwwroot\resources\lib\Crack\AsposeCells\Aspose.Cells.dll" />
       <_ContentIncludedByDefault Remove="wwwroot\resources\lib\Crack\AsposeCells\readme.txt" />
       <_ContentIncludedByDefault Remove="wwwroot\resources\ip\ip2region.db" />
+      <_ContentIncludedByDefault Remove="wwwroot\uploads\file\images\20231009100657_1711201552485584896.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\uploads\file\images\20231009101734_1711204223531618304.png" />
     </ItemGroup>
 
     <ProjectExtensions>

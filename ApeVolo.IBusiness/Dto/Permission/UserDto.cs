@@ -57,10 +57,6 @@ public class UserDto : BaseEntityDto<long>
     /// </summary>
     public string Phone { get; set; }
 
-    /// <summary>
-    /// 头像文件名称
-    /// </summary>
-    public string AvatarName { get; set; }
 
     /// <summary>
     /// 头像文件路径

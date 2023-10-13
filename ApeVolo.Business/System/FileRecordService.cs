@@ -44,9 +44,11 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
         var fileTypeName = FileHelper.GetFileTypeName(fileExtensionName);
         var fileTypeNameEn = FileHelper.GetFileTypeNameEn(fileTypeName);
 
-        string fileName = DateTime.Now.ToString("yyyyMMdd") + IdHelper.GetId() +
+        string fileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "_" + IdHelper.GetId() +
                           file.FileName.Substring(Math.Max(file.FileName.LastIndexOf('.'), 0));
-        string filePath = Path.Combine(AppSettings.WebRootPath, "file", fileTypeNameEn);
+
+        var prefix = AppSettings.WebRootPath;
+        string filePath = Path.Combine(prefix, "uploads", "file", fileTypeNameEn);
         if (!Directory.Exists(filePath))
         {
             Directory.CreateDirectory(filePath);
@@ -59,12 +61,14 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
             fs.Flush();
         }
 
+        string relativePath = Path.GetRelativePath(prefix, filePath);
+        relativePath = "/" + relativePath.Replace("\\", "/");
         var fileRecord = new FileRecord
         {
             Description = description,
             OriginalName = file.FileName,
             NewName = fileName,
-            FilePath = filePath,
+            FilePath = relativePath,
             Size = FileHelper.GetFileSize(file.Length),
             ContentType = file.ContentType,
             ContentTypeName = fileTypeName,
