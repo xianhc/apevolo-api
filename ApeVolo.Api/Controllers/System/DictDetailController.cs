@@ -41,6 +41,7 @@ public class DictDetailController : BaseApiController
     /// <param name="createUpdateDictDto"></param>
     /// <returns></returns>
     [HttpPost]
+    [Route("create")]
     [Description("创建")]
     [ApeVoloAuthorize(new[] { "admin", "dict_add" })]
     public async Task<ActionResult<object>> Create(
@@ -57,6 +58,7 @@ public class DictDetailController : BaseApiController
     /// <param name="createUpdateDictDetailDto"></param>
     /// <returns></returns>
     [HttpPut]
+    [Route("edit")]
     [Description("编辑")]
     [ApeVoloAuthorize(new[] { "admin", "dict_edit" })]
     public async Task<ActionResult<object>> Update(
@@ -72,6 +74,7 @@ public class DictDetailController : BaseApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete]
+    [Route("delete")]
     [Description("删除")]
     [ApeVoloAuthorize(new[] { "admin", "dict_del" })]
     public async Task<ActionResult<object>> Delete(string id)
@@ -92,6 +95,7 @@ public class DictDetailController : BaseApiController
     /// <param name="pagination"></param>
     /// <returns></returns>
     [HttpGet]
+    [Route("query")]
     [Description("查询")]
     [ApeVoloAuthorize(new[] { "admin", "dict_list" })]
     public async Task<ActionResult<object>> Query(DictDetailQueryCriteria dictDetailQueryCriteria,
