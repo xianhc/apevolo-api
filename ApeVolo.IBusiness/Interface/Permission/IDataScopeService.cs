@@ -9,5 +9,11 @@ namespace ApeVolo.IBusiness.Interface.Permission;
 /// </summary>
 public interface IDataScopeService
 {
-    Task<List<long>> GetDeptIds(UserDto userDto);
+    /// <summary>
+    /// 获取用户所有角色关联的部门ID
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="deptId"></param>
+    /// <returns></returns>
+    Task<List<long>> GetDataScopeDeptList(long userId, long deptId);
 }

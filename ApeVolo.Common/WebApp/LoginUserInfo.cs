@@ -23,9 +23,14 @@ public class LoginUserInfo
     public string NickName { get; set; }
 
     /// <summary>
+    /// 部门ID
+    /// </summary>
+    public long DeptId { get; set; }
+
+    /// <summary>
     /// 用户部门
     /// </summary>
-    public string Dept { get; set; }
+    public string DeptName { get; set; }
 
 
     /// <summary>

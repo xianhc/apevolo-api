@@ -553,8 +553,9 @@ public class UserService : BaseServices<User>, IUserService
         if (!ApeContext.LoginUserInfo.IsNotNull())
         {
             List<long> deptIds =
-                await _dataScopeService.GetDeptIds(await QueryByIdAsync(ApeContext.LoginUserInfo.UserId));
-            if (deptIds.Count > 0)
+                await _dataScopeService.GetDataScopeDeptList(ApeContext.LoginUserInfo.UserId,
+                    ApeContext.LoginUserInfo.DeptId);
+            if (deptIds.Any())
             {
                 whereExpression = whereExpression.AndAlso(u => deptIds.Contains(u.DeptId));
             }

@@ -30,57 +30,49 @@ public class DataScopeService : IDataScopeService
 
     #region 基础方法
 
-    public async Task<List<long>> GetDeptIds(UserDto userDto)
+    /// <summary>
+    /// 获取用户所有角色关联的部门ID
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="deptId"></param>
+    /// <returns></returns>
+    public async Task<List<long>> GetDataScopeDeptList(long userId, long deptId)
     {
         List<long> deptIds = new List<long>();
-        // 查询用户角色
-        List<RoleSmallDto> roleList = await _roleService.QueryByUserIdAsync(userDto.Id);
+        List<RoleSmallDto> roleList = await _roleService.QueryByUserIdAsync(userId);
 
         //存在一个"全部"数据权限 直接返回空
-        bool isAll = false;
-        foreach (var item in roleList)
-        {
-            if (item.DataScope == "全部")
-            {
-                isAll = true;
-                break;
-            }
-        }
+        var isAll = roleList.Where(x => x.DataScope == "全部").Any();
 
-        if (isAll)
+        if (!isAll)
         {
-            return deptIds;
-        }
-
-        foreach (var role in roleList)
-        {
-            switch (role.DataScope)
+            foreach (var role in roleList)
             {
-                case "本级":
+                switch (role.DataScope)
                 {
-                    if (!deptIds.Contains(userDto.DeptId))
-                    {
-                        deptIds.Add(userDto.DeptId);
-                    }
+                    case "本级":
+                        deptIds.AddRange(await _departmentService.GetChildIds(new List<long> { deptId }, null));
+                        break;
+                    case "自定义":
+                        var roleDepts = await _roleDeptService.QueryByRoleIdAsync(role.Id);
+                        if (roleDepts.Any())
+                        {
+                            List<long> ids = new List<long>();
+                            ids.AddRange(roleDepts.Select(x => x.DeptId));
+                            deptIds.AddRange(await _departmentService.GetChildIds(ids, null));
+                        }
 
-                    break;
+                        break;
                 }
-                case "自定义":
-                    await GetCustomizeDeptIds(deptIds, role);
-                    break;
             }
         }
 
-        return deptIds;
-    }
-
-    private async Task GetCustomizeDeptIds(List<long> deptIds, RoleSmallDto role)
-    {
-        var roleDepts = await _roleDeptService.QueryByRoleIdAsync(role.Id);
-        if (roleDepts.Any())
+        if (!deptIds.Any())
         {
-            deptIds.AddRange(await _departmentService.GetChildIds(deptIds, null));
+            deptIds.Add(0); //预防空数据
         }
+
+        return deptIds.Distinct().ToList();
     }
 
     #endregion

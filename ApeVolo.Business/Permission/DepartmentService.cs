@@ -281,13 +281,9 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     {
         allIds ??= new List<long>();
 
-        foreach (var id in ids)
+        foreach (var id in ids.Where(id => !allIds.Contains(id)))
         {
-            if (!allIds.Contains(id))
-            {
-                allIds.Add(id);
-            }
-
+            allIds.Add(id);
             var list = await TableWhere(x => x.ParentId == id && x.Enabled).ToListAsync();
             if (list.Any())
             {
