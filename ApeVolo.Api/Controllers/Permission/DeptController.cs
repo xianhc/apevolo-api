@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using ApeVolo.Api.Controllers.Base;
 using ApeVolo.Common.AttributeExt;
@@ -11,6 +13,7 @@ using ApeVolo.IBusiness.Interface.Permission;
 using ApeVolo.IBusiness.QueryModel;
 using ApeVolo.IBusiness.RequestModel;
 using Microsoft.AspNetCore.Mvc;
+using SqlSugar;
 
 namespace ApeVolo.Api.Controllers.Permission;
 
@@ -103,27 +106,29 @@ public class DeptController : BaseApiController
             return Error(actionError);
         }
 
-        var deptIds = new List<long>();
-        foreach (var id in idCollection.IdArray)
+        List<long> ids = new List<long>(idCollection.IdArray);
+        var allIds = await _departmentService.GetChildIds(ids, null);
+
+
+        var users = await _userService.QueryByDeptIdsAsync(allIds);
+        if (users.Any())
         {
-            deptIds.Add(id);
-            var deptDtolist = await _departmentService.QueryByPIdAsync(id);
-            deptDtolist.ForEach(deptDto =>
-            {
-                if (!deptIds.Contains(deptDto.Id)) deptIds.Add(deptDto.Id);
-            });
+            var dept = await _departmentService.QueryByIdAsync(users.FirstOrDefault()!.DeptId);
+            return Error($"所选部门({dept.Name})存在用户关联，请解除后再试！");
         }
 
-        var depts = await _roleDeptService.QueryByDeptIdsAsync(deptIds);
-        if (depts.Count > 0) return Error("所选部门存在角色关联，请解除后再试！");
 
-        var users = await _userService.QueryByDeptIdsAsync(deptIds);
-        if (users.Count > 0) return Error("所选部门存在用户关联，请解除后再试！");
+        var rolesDepartments = await _roleDeptService.QueryByDeptIdsAsync(allIds);
+        if (rolesDepartments.Any())
+        {
+            var dept = await _departmentService.QueryByIdAsync(rolesDepartments.FirstOrDefault()!.DeptId);
+            return Error($"所选部门({dept.Name})存在角色关联，请解除后再试！");
+        }
 
-        await _departmentService.DeleteAsync(idCollection.IdArray);
+
+        await _departmentService.DeleteAsync(allIds);
         return Success();
     }
-
 
     /// <summary>
     /// 查看部门列表

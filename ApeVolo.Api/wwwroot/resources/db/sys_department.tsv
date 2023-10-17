@@ -2,7 +2,7 @@
     {
         "Id":"1306054134645919758",
         "Name":"集团总部",
-        "ParentId":null,
+        "ParentId":0,
         "Sort":1,
         "Enabled":true,
         "SubCount":4,

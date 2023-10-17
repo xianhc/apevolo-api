@@ -17,6 +17,7 @@ using ApeVolo.IBusiness.ExportModel.Permission;
 using ApeVolo.IBusiness.Interface.Permission;
 using ApeVolo.IBusiness.QueryModel;
 using Castle.Core.Internal;
+using NPOI.SS.Formula.Functions;
 using SqlSugar;
 
 namespace ApeVolo.Business.Permission;
@@ -46,14 +47,15 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         await AddEntityAsync(dept);
 
         //重新计算子节点个数
-        if (!dept.ParentId.IsNullOrEmpty())
+        if (dept.ParentId != 0)
         {
             var department = await SugarRepository.QueryFirstAsync(x => x.Id == dept.ParentId);
             if (department.IsNotNull())
             {
-                var departmentList =
-                    await SugarRepository.QueryListAsync(x => x.ParentId == department.Id);
-                department.SubCount = departmentList.Count;
+                var count = await SugarClient.Queryable<Department>().Where(x => x.ParentId == department.Id)
+                    .CountAsync();
+                department.SubCount = count;
+
                 await UpdateEntityAsync(department);
             }
         }
@@ -86,27 +88,27 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         //判断修改前父部门是否与修改后相同  如果相同说明并没有修改上下级部门信息
         if (oldUseDepartment.ParentId != dept.ParentId)
         {
-            if (!dept.ParentId.IsNullOrEmpty())
+            if (dept.ParentId != 0)
             {
                 var department = await SugarRepository.QueryFirstAsync(x => x.Id == dept.ParentId);
                 if (department.IsNotNull())
                 {
-                    var departmentList =
-                        await SugarRepository.QueryListAsync(x => x.ParentId == department.Id);
-                    department.SubCount = departmentList.Count;
+                    var count = await SugarClient.Queryable<Department>().Where(x => x.ParentId == department.Id)
+                        .CountAsync();
+                    department.SubCount = count;
                     await UpdateEntityAsync(department);
                 }
             }
 
-            if (!oldUseDepartment.ParentId.IsNullOrEmpty())
+            if (oldUseDepartment.ParentId != 0)
             {
                 var department =
                     await SugarRepository.QueryFirstAsync(x => x.Id == oldUseDepartment.ParentId);
                 if (department.IsNotNull())
                 {
-                    var departmentList =
-                        await SugarRepository.QueryListAsync(x => x.ParentId == department.Id);
-                    department.SubCount = departmentList.Count;
+                    var count = await SugarClient.Queryable<Department>().Where(x => x.ParentId == department.Id)
+                        .CountAsync();
+                    department.SubCount = count;
                     await UpdateEntityAsync(department);
                 }
             }
@@ -116,42 +118,29 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     }
 
     [UseTran]
-    public async Task<bool> DeleteAsync(HashSet<long> ids)
+    public async Task<bool> DeleteAsync(List<long> ids)
     {
-        List<long> idList = new List<long>();
-        foreach (var id in ids)
-        {
-            if (!idList.Contains(id))
-            {
-                idList.Add(id);
-            }
-
-            var departments = await TableWhere(m => m.ParentId == id).ToListAsync();
-            await FindChildIds(departments, idList);
-        }
-
         var departmentList = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
-        await LogicDelete<Department>(x => ids.Contains(x.Id));
-
-        HashSet<long> uPIds = new HashSet<long>();
-
-        departmentList.ForEach(d =>
+        if (departmentList.Any())
         {
-            if (d.ParentId.IsNotNull())
+            await LogicDelete<Department>(x => ids.Contains(x.Id));
+
+            var pIds = departmentList.Select(x => x.ParentId);
+
+            var updateDepartmentList = await TableWhere(x => pIds.Contains(x.Id)).ToListAsync();
+
+            if (updateDepartmentList.Any())
             {
-                uPIds.Add(Convert.ToInt64(d.ParentId));
+                foreach (var department in updateDepartmentList)
+                {
+                    var count = await SugarClient.Queryable<Department>().Where(x => x.ParentId == department.Id)
+                        .CountAsync();
+                    department.SubCount = count;
+                    // await UpdateEntityAsync(department);
+                }
+
+                await SugarRepository.UpdateColumnsAsync(updateDepartmentList, x => x.SubCount);
             }
-        });
-
-        foreach (var pid in uPIds)
-        {
-            var department = await SugarRepository.QueryFirstAsync(x => x.Id == pid);
-            if (!department.IsNotNull()) continue;
-
-            var depts =
-                await SugarRepository.QueryListAsync(x => x.ParentId == department.Id);
-            department.SubCount = depts.Count;
-            await UpdateEntityAsync(department);
         }
 
         return true;
@@ -162,7 +151,16 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         Pagination pagination)
     {
         var whereExpression = GetWhereExpression(deptQueryCriteria);
-        var deptList = await SugarRepository.QueryPageListAsync(whereExpression, pagination);
+        List<Department> deptList;
+        if (deptQueryCriteria.ParentId.IsNull())
+        {
+            deptList = await SugarRepository.QueryPageListAsync(whereExpression, pagination);
+        }
+        else
+        {
+            deptList = await SugarRepository.QueryListAsync(whereExpression);
+        }
+
         var deptDatalist = ApeContext.Mapper.Map<List<DepartmentDto>>(deptList);
 
         pagination.TotalElements = deptDatalist.Count;
@@ -178,7 +176,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         {
             Id = x.Id,
             Name = x.Name,
-            ParentId = x.ParentId ?? 0,
+            ParentId = x.ParentId,
             Sort = x.Sort,
             EnabledState = x.Enabled ? EnabledState.Enabled : EnabledState.Disabled,
             SubCount = x.SubCount,
@@ -202,7 +200,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
             departmentList.AddRange(departmentDtoList);
         }
 
-        departmentList = TreeHelper<DepartmentDto>.ListToTrees(departmentList, "Id", "ParentId", null);
+        departmentList = TreeHelper<DepartmentDto>.ListToTrees(departmentList, "Id", "ParentId", 0);
 
         return departmentList;
     }
@@ -235,26 +233,6 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         return ApeContext.Mapper.Map<List<DepartmentDto>>(departments);
     }
 
-    public async Task<List<long>> FindChildIds(List<long> deptIds, List<DepartmentDto> departmentDtos)
-    {
-        foreach (var dept in departmentDtos)
-        {
-            if (!dept.Enabled) continue;
-            if (!deptIds.Contains(dept.Id))
-            {
-                deptIds.Add(dept.Id);
-            }
-
-            List<DepartmentDto> deptLists = await QueryByPIdAsync(dept.Id);
-            if (deptLists != null && deptLists.Count > 0)
-            {
-                await FindChildIds(deptIds, deptLists);
-            }
-        }
-
-        return await Task.FromResult(deptIds);
-    }
-
     #endregion
 
     #region 私有方法
@@ -266,7 +244,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     private async Task<List<DepartmentDto>> FindByPIdIsNullAsync()
     {
         return ApeContext.Mapper.Map<List<DepartmentDto>>(
-            await SugarRepository.QueryListAsync(x => x.ParentId == null && x.Enabled));
+            await SugarRepository.QueryListAsync(x => x.ParentId == 0 && x.Enabled));
     }
 
     /// <summary>
@@ -280,7 +258,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     {
         while (true)
         {
-            if (departmentDto.ParentId.IsNull())
+            if (departmentDto.ParentId == 0)
             {
                 departmentDtoList.AddRange(await FindByPIdIsNullAsync());
                 return departmentDtoList;
@@ -294,32 +272,30 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     }
 
     /// <summary>
-    /// 查找所有下级部门
+    /// 获取所选部门及全部下级部门ID
     /// </summary>
-    /// <param name="departmentList"></param>
     /// <param name="ids"></param>
+    /// <param name="allIds"></param>
     /// <returns></returns>
-    private async Task FindChildIds(List<Department> departmentList, List<long> ids)
+    public async Task<List<long>> GetChildIds(List<long> ids, List<long> allIds)
     {
-        if (departmentList is { Count: > 0 })
-        {
-            foreach (var department in departmentList)
-            {
-                if (!ids.Contains(department.Id))
-                {
-                    ids.Add(department.Id);
-                }
+        allIds ??= new List<long>();
 
-                List<Department> departments =
-                    await SugarRepository.QueryListAsync(m => m.ParentId == department.Id);
-                if (departments is { Count: > 0 })
-                {
-                    await FindChildIds(departments, ids);
-                }
+        foreach (var id in ids)
+        {
+            if (!allIds.Contains(id))
+            {
+                allIds.Add(id);
+            }
+
+            var list = await TableWhere(x => x.ParentId == id && x.Enabled).ToListAsync();
+            if (list.Any())
+            {
+                await GetChildIds(list.Select(x => x.Id).ToList(), allIds);
             }
         }
 
-        await Task.FromResult(ids);
+        return allIds;
     }
 
     #endregion
@@ -331,7 +307,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         Expression<Func<Department, bool>> whereExpression = x => true;
         whereExpression = deptQueryCriteria.ParentId.IsNotNull()
             ? whereExpression.AndAlso(x => x.ParentId == deptQueryCriteria.ParentId)
-            : whereExpression.AndAlso(x => x.ParentId == null);
+            : whereExpression.AndAlso(x => x.ParentId == 0);
         if (!deptQueryCriteria.DeptName.IsNullOrEmpty())
         {
             whereExpression = whereExpression.AndAlso(x => x.Name.Contains(deptQueryCriteria.DeptName));

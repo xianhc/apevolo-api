@@ -10,7 +10,7 @@ public class DepartmentDto : BaseEntityDto<long>
 {
     public string Name { get; set; }
 
-    public long? ParentId { get; set; }
+    public long ParentId { get; set; }
 
     public int Sort { get; set; }
 

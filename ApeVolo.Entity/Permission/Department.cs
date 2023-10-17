@@ -19,8 +19,8 @@ public class Department : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 父级部门ID
     /// </summary>
-    [SugarColumn(IsNullable = true)]
-    public long? ParentId { get; set; }
+    [SugarColumn(IsNullable = false)]
+    public long ParentId { get; set; }
 
     /// <summary>
     /// 排序

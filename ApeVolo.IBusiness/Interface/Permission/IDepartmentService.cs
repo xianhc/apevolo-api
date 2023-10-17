@@ -16,7 +16,7 @@ public interface IDepartmentService : IBaseServices<Entity.Permission.Department
 
     Task<bool> CreateAsync(CreateUpdateDepartmentDto createUpdateDepartmentDto);
     Task<bool> UpdateAsync(CreateUpdateDepartmentDto createUpdateDepartmentDto);
-    Task<bool> DeleteAsync(HashSet<long> ids);
+    Task<bool> DeleteAsync(List<long> ids);
     Task<List<DepartmentDto>> QueryAsync(DeptQueryCriteria deptQueryCriteria, Pagination pagination);
     Task<List<ExportBase>> DownloadAsync(DeptQueryCriteria deptQueryCriteria);
 
@@ -53,12 +53,12 @@ public interface IDepartmentService : IBaseServices<Entity.Permission.Department
     Task<List<DepartmentDto>> QuerySuperiorDeptAsync(HashSet<long> ids);
 
     /// <summary>
-    /// 查找所有子级ID
+    /// 获取所选部门及全部下级部门ID
     /// </summary>
-    /// <param name="deptIds"></param>
-    /// <param name="departmentDtos"></param>
+    /// <param name="ids"></param>
+    /// <param name="allIds"></param>
     /// <returns></returns>
-    Task<List<long>> FindChildIds(List<long> deptIds, List<DepartmentDto> departmentDtos);
+    Task<List<long>> GetChildIds(List<long> ids, List<long> allIds);
 
     #endregion
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ApeVolo.IBusiness.Dto.Permission;
 using ApeVolo.IBusiness.Interface.Permission;
@@ -76,26 +77,9 @@ public class DataScopeService : IDataScopeService
     private async Task GetCustomizeDeptIds(List<long> deptIds, RoleSmallDto role)
     {
         var roleDepts = await _roleDeptService.QueryByRoleIdAsync(role.Id);
-        foreach (var rd in roleDepts)
+        if (roleDepts.Any())
         {
-            if (!deptIds.Contains(rd.DeptId))
-            {
-                deptIds.Add(rd.DeptId);
-            }
-
-            //如果部门存在子级部门 一并带出来
-            List<DepartmentDto> departmentDtos = await _departmentService.QueryByPIdAsync(rd.DeptId);
-            if (departmentDtos != null && departmentDtos.Count > 0)
-            {
-                List<long> ids = await _departmentService.FindChildIds(deptIds, departmentDtos);
-                ids.ForEach(id =>
-                {
-                    if (!deptIds.Contains(id))
-                    {
-                        deptIds.Add(id);
-                    }
-                });
-            }
+            deptIds.AddRange(await _departmentService.GetChildIds(deptIds, null));
         }
     }
 
