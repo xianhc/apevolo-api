@@ -78,12 +78,12 @@ Please Pull Request~
 ### QQ群：839263566
 | QQ 群 |
 |  :---:  |
-| <img width="150" src="https://www.apevolo.com/file/wechat/20230723172503.jpg"> 
+| <img width="150" src="https://www.apevolo.com/uploads/file/wechat/20230723172503.jpg"> 
 
 ### 微信群
 | 微信 |
 |  :---:  | 
-| <img width="150" src="https://www.apevolo.com/file/wechat/20230723172451.jpg"> 
+| <img width="150" src="https://www.apevolo.com/uploads/file/wechat/20230723172451.jpg"> 
 
 添加微信，备注"加群"
 
