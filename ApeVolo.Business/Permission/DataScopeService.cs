@@ -44,26 +44,28 @@ public class DataScopeService : IDataScopeService
         //存在一个"全部"数据权限 直接返回空
         var isAll = roleList.Where(x => x.DataScope == "全部").Any();
 
-        if (!isAll)
+        if (isAll)
         {
-            foreach (var role in roleList)
-            {
-                switch (role.DataScope)
-                {
-                    case "本级":
-                        deptIds.AddRange(await _departmentService.GetChildIds(new List<long> { deptId }, null));
-                        break;
-                    case "自定义":
-                        var roleDepts = await _roleDeptService.QueryByRoleIdAsync(role.Id);
-                        if (roleDepts.Any())
-                        {
-                            List<long> ids = new List<long>();
-                            ids.AddRange(roleDepts.Select(x => x.DeptId));
-                            deptIds.AddRange(await _departmentService.GetChildIds(ids, null));
-                        }
+            return deptIds;
+        }
 
-                        break;
-                }
+        foreach (var role in roleList)
+        {
+            switch (role.DataScope)
+            {
+                case "本级":
+                    deptIds.AddRange(await _departmentService.GetChildIds(new List<long> { deptId }, null));
+                    break;
+                case "自定义":
+                    var roleDepts = await _roleDeptService.QueryByRoleIdAsync(role.Id);
+                    if (roleDepts.Any())
+                    {
+                        List<long> ids = new List<long>();
+                        ids.AddRange(roleDepts.Select(x => x.DeptId));
+                        deptIds.AddRange(await _departmentService.GetChildIds(ids, null));
+                    }
+
+                    break;
             }
         }
 
