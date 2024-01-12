@@ -142,15 +142,13 @@ public class MenusController : BaseApiController
     /// 查看菜单列表
     /// </summary>
     /// <param name="menuQueryCriteria"></param>
-    /// <param name="pagination"></param>
     /// <returns></returns>
     [HttpGet]
     [Description("查询")]
     [Route("query")]
-    public async Task<ActionResult<object>> Query(MenuQueryCriteria menuQueryCriteria,
-        Pagination pagination)
+    public async Task<ActionResult<object>> Query(MenuQueryCriteria menuQueryCriteria)
     {
-        var menuList = await _menuService.QueryAsync(menuQueryCriteria, pagination);
+        var menuList = await _menuService.QueryAsync(menuQueryCriteria);
         return new ActionResultVm<MenuDto>
         {
             Content = menuList,

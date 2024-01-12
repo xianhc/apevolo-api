@@ -22,7 +22,7 @@ public class CreateUpdateMenuDto : BaseEntityDto<long>
 
     public string ComponentName { get; set; }
 
-    public long? ParentId { get; set; }
+    public long ParentId { get; set; }
     
     [Range(1, 999)]
     public int Sort { get; set; }

@@ -229,7 +229,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
                     }, (d, rd) => d,
                     (d, rd) => roleId == rd.RoleId
                 );
-        departments = TreeHelper<Department>.SetLeafProperty(departments, "Id", "PId", null);
+        departments = TreeHelper<Department>.SetLeafProperty(departments, "Id", "PId", 0);
         return ApeContext.Mapper.Map<List<DepartmentDto>>(departments);
     }
 

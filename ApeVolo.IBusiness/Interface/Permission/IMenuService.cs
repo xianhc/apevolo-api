@@ -15,7 +15,7 @@ public interface IMenuService : IBaseServices<Entity.Permission.Menu>
     Task<bool> CreateAsync(CreateUpdateMenuDto createUpdateMenuDto);
     Task<bool> UpdateAsync(CreateUpdateMenuDto createUpdateMenuDto);
     Task<bool> DeleteAsync(HashSet<long> ids);
-    Task<List<MenuDto>> QueryAsync(MenuQueryCriteria menuQueryCriteria, Pagination pagination);
+    Task<List<MenuDto>> QueryAsync(MenuQueryCriteria menuQueryCriteria);
     Task<List<ExportBase>> DownloadAsync(MenuQueryCriteria menuQueryCriteria);
 
     #endregion

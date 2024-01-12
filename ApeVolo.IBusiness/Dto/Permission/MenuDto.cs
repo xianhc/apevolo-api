@@ -21,7 +21,7 @@ public class MenuDto : BaseEntityDto<long>
 
     public string ComponentName { get; set; }
 
-    public long? ParentId { get; set; }
+    public long ParentId { get; set; }
 
     public int Sort { get; set; }
 

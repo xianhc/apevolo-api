@@ -20,7 +20,7 @@ public static class TreeHelper<T> where T : new()
     /// <param name="value">父级编码值</param>
     /// <param name="childNodeName">子节点属性名称</param>
     /// <returns></returns>
-    public static List<T> ListToTrees(List<T> lists, string code, string parentCode, long? value,
+    public static List<T> ListToTrees(List<T> lists, string code, string parentCode, long value,
         string childNodeName = "Children")
     {
         if (lists.Count > 0)
@@ -56,7 +56,7 @@ public static class TreeHelper<T> where T : new()
         return new List<T>();
     }
 
-    public static List<T> SetLeafProperty(List<T> lists, string code, string parentCode, long? value,
+    public static List<T> SetLeafProperty(List<T> lists, string code, string parentCode, long value,
         string childNodeName = "Children")
     {
         if (lists.Count > 0)

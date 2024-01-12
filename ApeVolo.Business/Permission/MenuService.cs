@@ -89,26 +89,21 @@ public class MenuService : BaseServices<Menu>, IMenuService
             }
         }
 
-        if (createUpdateMenuDto.ParentId.IsNotNull() && createUpdateMenuDto.ParentId == 0)
-        {
-            createUpdateMenuDto.ParentId = null;
-        }
 
         var menu = ApeContext.Mapper.Map<Menu>(createUpdateMenuDto);
 
         await AddEntityAsync(menu);
-        if (createUpdateMenuDto.ParentId.IsNotNull())
+        if (menu.ParentId > 0)
         {
             //清理缓存
             await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusByPId +
                                                menu.ParentId.ToString().ToMd5String16());
-            var tmpMenu = await SugarRepository.QueryFirstAsync(x => x.Id == menu.ParentId);
-            if (tmpMenu.IsNotNull())
+            var tempMenu = await TableWhere(x => x.Id == menu.ParentId).FirstAsync();
+            if (tempMenu.IsNotNull())
             {
-                var tmpMenuList =
-                    await SugarRepository.QueryListAsync(x => x.ParentId == tmpMenu.Id);
-                tmpMenu.SubCount = tmpMenuList.Count;
-                await UpdateEntityAsync(tmpMenu);
+                var count = await TableWhere(x => x.ParentId == tempMenu.Id).CountAsync();
+                tempMenu.SubCount = count;
+                await UpdateEntityAsync(tempMenu);
             }
         }
 
@@ -150,52 +145,45 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
         if (!createUpdateMenuDto.ComponentName.IsNullOrEmpty())
         {
-            var menu1 = await SugarRepository.QueryFirstAsync(m =>
-                m.ComponentName.Equals(createUpdateMenuDto.ComponentName));
-            if (menu1 != null && menu1.Id != createUpdateMenuDto.Id)
+            if (oldMenu.ComponentName != createUpdateMenuDto.ComponentName &&
+                await TableWhere(m => m.ComponentName.Equals(createUpdateMenuDto.ComponentName)).AnyAsync())
             {
                 throw new BadRequestException($"组件名称=>{createUpdateMenuDto.ComponentName}=>已存在!");
             }
         }
 
-        if (createUpdateMenuDto.ParentId.IsNotNull() && createUpdateMenuDto.ParentId == 0)
-        {
-            createUpdateMenuDto.ParentId = null;
-        }
 
-        var menu2 = ApeContext.Mapper.Map<Menu>(createUpdateMenuDto);
+        var createUpdateMenu = ApeContext.Mapper.Map<Menu>(createUpdateMenuDto);
+        await UpdateEntityAsync(createUpdateMenu);
         //清理缓存
         await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusById +
-                                           menu2.Id.ToString().ToMd5String16());
-        if (menu2.ParentId.IsNotNull())
+                                           createUpdateMenu.Id.ToString().ToMd5String16());
+        if (createUpdateMenu.ParentId > 0)
         {
             await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusByPId +
-                                               menu2.ParentId.ToString().ToMd5String16());
+                                               createUpdateMenu.ParentId.ToString().ToMd5String16());
         }
 
-        await UpdateEntityAsync(menu2);
         //重新计算子节点个数
-        if (oldMenu.ParentId != menu2.ParentId)
+        if (oldMenu.ParentId != createUpdateMenu.ParentId)
         {
-            if (menu2.ParentId.IsNotNull())
+            if (createUpdateMenu.ParentId > 0)
             {
-                var tmpMenu = await SugarRepository.QueryFirstAsync(x => x.Id == menu2.ParentId);
+                var tmpMenu = await TableWhere(x => x.Id == createUpdateMenu.ParentId).FirstAsync();
                 if (tmpMenu.IsNotNull())
                 {
-                    var tmpMenuList =
-                        await SugarRepository.QueryListAsync(x => x.ParentId == tmpMenu.Id);
-                    tmpMenu.SubCount = tmpMenuList.Count;
+                    var count = await TableWhere(x => x.ParentId == tmpMenu.Id).CountAsync();
+                    tmpMenu.SubCount = count;
                     await UpdateEntityAsync(tmpMenu);
                 }
 
-                if (oldMenu.ParentId.IsNotNull())
+                if (oldMenu.ParentId > 0)
                 {
-                    var tmpMenu2 = await SugarRepository.QueryFirstAsync(x => x.Id == oldMenu.ParentId);
+                    var tmpMenu2 = await TableWhere(x => x.Id == oldMenu.ParentId).FirstAsync();
                     if (tmpMenu2.IsNotNull())
                     {
-                        var tmpMenu2List =
-                            await SugarRepository.QueryListAsync(x => x.ParentId == tmpMenu2.Id);
-                        tmpMenu2.SubCount = tmpMenu2List.Count;
+                        var count = await TableWhere(x => x.ParentId == tmpMenu2.Id).CountAsync();
+                        tmpMenu2.SubCount = count;
                         await UpdateEntityAsync(tmpMenu2);
                     }
                 }
@@ -215,7 +203,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
                 idList.Add(id);
             }
 
-            var menus = await SugarRepository.QueryListAsync(m => m.ParentId == id);
+            var menus = await TableWhere(m => m.ParentId == id).ToListAsync();
             await FindChildIdsAsync(menus, idList);
         }
 
@@ -235,11 +223,11 @@ public class MenuService : BaseServices<Menu>, IMenuService
         return isTrue;
     }
 
-    public async Task<List<MenuDto>> QueryAsync(MenuQueryCriteria menuQueryCriteria, Pagination pagination)
+    public async Task<List<MenuDto>> QueryAsync(MenuQueryCriteria menuQueryCriteria)
     {
         var whereExpression = GetWhereExpression(menuQueryCriteria);
-        pagination.SortFields = new List<string> { "sort asc" };
-        var menus = await SugarRepository.QueryPageListAsync(whereExpression, pagination);
+        //pagination.SortFields = new List<string> { "sort asc" };
+        var menus = await TableWhere(whereExpression, x => x.Sort, OrderByType.Asc).ToListAsync();
         var menuDtos = ApeContext.Mapper.Map<List<MenuDto>>(menus);
         return menuDtos;
     }
@@ -259,7 +247,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
             IsFrame = x.IFrame ? BoolState.True : BoolState.False,
             Component = x.Component,
             ComponentName = x.ComponentName,
-            PId = x.ParentId ?? 0,
+            PId = 0,
             Sort = x.Sort,
             Icon = x.Icon,
             MenuType = GetMenuTypeName(x.Type),
@@ -283,7 +271,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
             return menuDtos;
         }
 
-        menuDtos = ApeContext.Mapper.Map<List<MenuDto>>(await SugarRepository.QueryListAsync());
+        menuDtos = ApeContext.Mapper.Map<List<MenuDto>>(await Table.ToListAsync());
         if (menuDtos.IsNotNull())
         {
             await ApeContext.Cache.SetAsync("menus:LoadAllMenu", menuDtos, TimeSpan.FromSeconds(120), null);
@@ -345,7 +333,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
                 m.CreateTime
             },
             "sort asc");
-        var menuListChild = TreeHelper<MenuDto>.ListToTrees(menuList, "Id", "ParentId", null);
+        var menuListChild = TreeHelper<MenuDto>.ListToTrees(menuList, "Id", "ParentId", 0);
         return await BuildAsync(menuListChild);
     }
 
@@ -356,10 +344,9 @@ public class MenuService : BaseServices<Menu>, IMenuService
         Expression<Func<Menu, bool>> whereLambda = m => true;
         var menu = await TableWhere(x => x.Id == id).SingleAsync();
         List<MenuDto> menuDtoList;
-        if (menu.ParentId.IsNull())
+        if (menu.ParentId == 0)
         {
-            var menus = await SugarRepository.QueryListAsync(x => x.ParentId == null, x => x.Sort,
-                OrderByType.Asc);
+            var menus = await TableWhere(x => x.ParentId == 0, x => x.Sort, OrderByType.Asc).ToListAsync();
             menuDtoList = ApeContext.Mapper.Map<List<MenuDto>>(menus);
             menuDtoList.ForEach(x => x.Children = null);
         }
@@ -367,17 +354,17 @@ public class MenuService : BaseServices<Menu>, IMenuService
         {
             //查出同级菜单ID
             List<long> parentIds = new List<long>();
-            parentIds.Add(Convert.ToInt64(menu.ParentId));
+            parentIds.Add(menu.ParentId);
             await GetParentIdsAsync(menu, parentIds);
             whereLambda =
-                whereLambda.AndAlso(m => parentIds.Contains(Convert.ToInt64(m.ParentId)) || m.ParentId == null);
+                whereLambda.AndAlso(m => parentIds.Contains(Convert.ToInt64(m.ParentId)) || m.ParentId == 0);
 
             //可以优化语句
-            var menus = await SugarRepository.QueryListAsync(whereLambda, x => x.Sort, OrderByType.Asc);
-            var allMenu = await SugarRepository.QueryListAsync();
+            var menus = await TableWhere(whereLambda, x => x.Sort, OrderByType.Asc).ToListAsync();
+            var allMenu = await Table.ToListAsync();
             foreach (var m in menus)
             {
-                if (parentIds.Contains(m.Id) && m.ParentId.IsNull())
+                if (parentIds.Contains(m.Id) && m.ParentId == 0)
                 {
                     m.Children = allMenu.Where(x => x.ParentId == m.Id).ToList();
                 }
@@ -385,7 +372,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
 
             var tempDtos = ApeContext.Mapper.Map<List<MenuDto>>(menus);
-            menuDtoList = TreeHelper<MenuDto>.ListToTrees(tempDtos, "Id", "ParentId", null);
+            menuDtoList = TreeHelper<MenuDto>.ListToTrees(tempDtos, "Id", "ParentId", 0);
             foreach (var item in menuDtoList)
             {
                 if (item.Children.Count == 0)
@@ -432,13 +419,13 @@ public class MenuService : BaseServices<Menu>, IMenuService
             menuVo = new MenuTreeVo
             {
                 Name = menu.ComponentName.IsNullOrEmpty() ? menu.Title : menu.ComponentName,
-                Path = menu.ParentId.IsNull() ? "/" + menu.Path : menu.Path,
+                Path = menu.ParentId == 0 ? "/" + menu.Path : menu.Path,
                 Hidden = menu.Hidden
             };
 
             if (!menu.IFrame)
             {
-                if (menu.ParentId.IsNull())
+                if (menu.ParentId == 0)
                 {
                     menuVo.Component = menu.Component.IsNullOrEmpty() ? "Layout" : menu.Component;
                 }
@@ -465,15 +452,8 @@ public class MenuService : BaseServices<Menu>, IMenuService
     [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.LoadMenusByPId)]
     public async Task<List<MenuDto>> FindByPIdAsync(long pid = 0)
     {
-        List<MenuDto> menuDtos = null;
-        Expression<Func<Menu, bool>> whereLambda = m => true;
-        whereLambda = pid == 0
-            ? whereLambda.AndAlso(m => m.ParentId == null)
-            : whereLambda.AndAlso(m => m.ParentId == pid);
-
-        menuDtos = ApeContext.Mapper.Map<List<MenuDto>>(await SugarRepository.QueryListAsync(whereLambda,
-            o => o.Sort,
-            OrderByType.Asc));
+        List<MenuDto> menuDtos = ApeContext.Mapper.Map<List<MenuDto>>(await TableWhere(x => x.ParentId == pid,
+            o => o.Sort, OrderByType.Asc).ToListAsync());
         foreach (var item in menuDtos)
         {
             item.Children = null;
@@ -518,14 +498,14 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
     private async Task<List<long>> GetParentIdsAsync(Menu m, List<long> parentIds)
     {
-        var menu = await SugarRepository.QueryFirstAsync(x => x.Id == m.ParentId);
-        if (menu.IsNull() || menu.ParentId.IsNull())
+        var menu = await TableWhere(x => x.Id == m.ParentId).FirstAsync();
+        if (menu.IsNull() || menu.ParentId == 0)
         {
             //parentIds.Add(menu.PId);
             return await Task.FromResult(parentIds);
         }
 
-        parentIds.Add(Convert.ToInt64(menu.ParentId));
+        parentIds.Add(menu.ParentId);
         return await GetParentIdsAsync(menu, parentIds);
     }
 
@@ -546,7 +526,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
                     ids.Add(menu.Id);
                 }
 
-                List<Menu> menus = await SugarRepository.QueryListAsync(m => m.ParentId == menu.Id);
+                List<Menu> menus = await TableWhere(m => m.ParentId == menu.Id).ToListAsync();
                 if (menus is { Count: > 0 })
                 {
                     await FindChildIdsAsync(menus, ids);
@@ -613,7 +593,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
         }
 
         whereExpression = menuQueryCriteria.ParentId.IsNull()
-            ? whereExpression.AndAlso(m => m.ParentId == null)
+            ? whereExpression.AndAlso(m => m.ParentId == 0)
             : whereExpression.AndAlso(m => m.ParentId == menuQueryCriteria.ParentId);
 
         return whereExpression;
