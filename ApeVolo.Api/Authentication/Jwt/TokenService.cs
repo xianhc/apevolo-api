@@ -6,9 +6,11 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using ApeVolo.Common.ConfigOptions;
+using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.WebApp;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ApeVolo.Api.Authentication.Jwt;
@@ -36,11 +38,11 @@ public class TokenService : ITokenService
         {
             new(AuthConstants.JwtClaimTypes.Jti, loginUserInfo.UserId.ToString()),
             new(AuthConstants.JwtClaimTypes.Name, loginUserInfo.Account),
-            new(AuthConstants.JwtClaimTypes.Iat, nowTime.ToString(CultureInfo.InvariantCulture)),
+            new(AuthConstants.JwtClaimTypes.Iat, nowTime.ToUnixTimeStampSecond().ToString()),
             new(AuthConstants.JwtClaimTypes.Ip, loginUserInfo.Ip)
         };
-        // var identity = new ClaimsIdentity(AuthConstants.JwtTokenType);
-        // identity.AddClaims(cls);
+        var identity = new ClaimsIdentity(AuthConstants.JwtTokenType);
+        identity.AddClaims(cls);
 
 
         var tokeOptions = new JwtSecurityToken(
@@ -48,7 +50,7 @@ public class TokenService : ITokenService
             audience: _jwtOptions.Audience,
             claims: cls,
             notBefore: nowTime,
-            expires: nowTime.AddSeconds(_jwtOptions.Expiration),
+            expires: nowTime.AddSeconds(_jwtOptions.Expires),
             signingCredentials: signinCredentials
         );
 
@@ -58,9 +60,33 @@ public class TokenService : ITokenService
         return await Task.FromResult(new Token()
         {
             AccessToken = token,
-            ExpiresIn = _jwtOptions.Expiration,
+            Expires = _jwtOptions.Expires,
             TokenType = AuthConstants.JwtTokenType,
-            RefreshToken = ""
+            RefreshToken = "",
+            RefreshTokenExpires = _jwtOptions.RefreshTokenExpires
         });
+    }
+
+
+    public async Task<JwtSecurityToken> ReadJwtToken(string token)
+    {
+        token = token.Replace(AuthConstants.JwtTokenType, "").Trim();
+        var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+        if (jwtSecurityTokenHandler.CanReadToken(token))
+        {
+            var signinCredentials =
+                new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecurityKey)),
+                    SecurityAlgorithms.HmacSha256);
+            JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+            var rawSignature = JwtTokenUtilities.CreateEncodedSignature(
+                jwtSecurityToken.RawHeader + "." + jwtSecurityToken.RawPayload,
+                signinCredentials);
+            if (jwtSecurityToken.RawSignature == rawSignature)
+            {
+                return await Task.FromResult(jwtSecurityToken);
+            }
+        }
+
+        return null;
     }
 }

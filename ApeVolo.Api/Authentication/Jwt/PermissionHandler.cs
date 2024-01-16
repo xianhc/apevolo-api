@@ -81,7 +81,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
             {
                 var result = await httpContext.AuthenticateAsync(defaultAuthenticate.Name);
                 //result.Principal不为空代表http状态存在
-                if (result.Principal != null)
+                if (result is { Principal: not null })
                 {
                     httpContext.User = result.Principal;
 

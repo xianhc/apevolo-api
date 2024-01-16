@@ -12,6 +12,7 @@ using ApeVolo.Common.Extention;
 using ApeVolo.Common.Global;
 using ApeVolo.Common.Helper;
 using ApeVolo.Common.WebApp;
+using ApeVolo.IBusiness.Dto.Permission;
 using ApeVolo.IBusiness.Interface.Permission;
 using ApeVolo.IBusiness.Interface.Queued;
 using ApeVolo.IBusiness.RequestModel;
@@ -93,26 +94,55 @@ public class AuthorizationController : BaseApiController
         if (!userDto.Enabled) return Error("用户未激活");
 
         var netUser = await _userService.QueryByIdAsync(userDto.Id);
+        if (netUser != null)
+        {
+            return await LoginResult(netUser, "login");
+        }
 
-        //用户权限点 路由
-        var permissionList = await _permissionService.QueryUserPermissionAsync(userDto.Id);
-        netUser.Authorizes.AddRange(permissionList.Select(s => s.Permission).Where(s => !s.IsNullOrEmpty()));
-        netUser.Authorizes.AddRange(netUser.Roles.Select(s => s.Permission));
-        netUser.PermissionUrl.AddRange(permissionList.Select(s => s.LinkUrl).Where(s => !s.IsNullOrEmpty()));
+        return Error();
+    }
 
-        var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-        var jwtUserVo = await _onlineUserService.FindJwtUserAsync(netUser);
-        var loginUserInfo = await _onlineUserService.SaveAsync(jwtUserVo, remoteIp);
-        var token = await _tokenService.IssueTokenAsync(loginUserInfo);
-        loginUserInfo.AccessToken = token.AccessToken;
-        var onlineKey = loginUserInfo.AccessToken.ToMd5String16();
-        await _apeContext.Cache.SetAsync(
-            GlobalConstants.CacheKey.OnlineKey + onlineKey,
-            loginUserInfo, TimeSpan.FromHours(3), CacheExpireType.Relative);
-        var dic = new Dictionary<string, object>
-            { { "user", jwtUserVo }, { "token", token.TokenType + " " + token.AccessToken } };
 
-        return dic.ToJson();
+    /// <summary>
+    /// 刷新Token
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("/auth/refreshToken")]
+    [Description("刷新Token")]
+    [AllowAnonymous]
+    public async Task<ActionResult<object>> RefreshToken(string token = "")
+    {
+        if (token.IsNullOrEmpty())
+        {
+            return Error("token已丢弃，请重新登录！");
+        }
+
+        var jwtSecurityToken = await _tokenService.ReadJwtToken(token);
+        if (jwtSecurityToken != null)
+        {
+            var userId = Convert.ToInt64(jwtSecurityToken.Claims
+                .FirstOrDefault(s => s.Type == AuthConstants.JwtClaimTypes.Jti)?.Value);
+            var loginTime = Convert.ToInt64(jwtSecurityToken.Claims
+                .FirstOrDefault(s => s.Type == AuthConstants.JwtClaimTypes.Iat)?.Value).TicksToDateTime();
+            var nowTime = DateTime.Now.ToLocalTime();
+            var refreshTime = loginTime.AddSeconds(_apeContext.Configs.JwtAuthOptions.RefreshTokenExpires);
+            // 允许token刷新时间内
+            if (nowTime <= refreshTime)
+            {
+                var netUser = await _userService.QueryByIdAsync(userId);
+                if (netUser.IsNotNull())
+                {
+                    if (netUser.UpdateTime == null || netUser.UpdateTime < loginTime)
+                    {
+                        return await LoginResult(netUser, "refresh");
+                    }
+                }
+            }
+        }
+
+        return Error("token验证失败，请重新登录！");
     }
 
 
@@ -190,6 +220,47 @@ public class AuthorizationController : BaseApiController
             GlobalConstants.CacheKey.UserInfoByName + _apeContext.HttpUser.Account.ToMd5String16());
 
         return Success();
+    }
+
+    #endregion
+
+    #region 私有方法
+
+    /// <summary>
+    /// 登录或刷新token相应结果
+    /// </summary>
+    /// <param name="userDto"></param>
+    /// <param name="type">login:登录,refresh:刷新token</param>
+    /// <returns></returns>
+    private async Task<string> LoginResult(UserDto userDto, string type)
+    {
+        //用户权限点 路由
+        var permissionList = await _permissionService.QueryUserPermissionAsync(userDto.Id);
+        userDto.Authorizes.AddRange(permissionList.Select(s => s.Permission).Where(s => !s.IsNullOrEmpty()));
+        userDto.Authorizes.AddRange(userDto.Roles.Select(s => s.Permission));
+        userDto.PermissionUrl.AddRange(permissionList.Select(s => s.LinkUrl).Where(s => !s.IsNullOrEmpty()));
+
+        var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
+        var jwtUserVo = await _onlineUserService.FindJwtUserAsync(userDto);
+        var loginUserInfo = await _onlineUserService.SaveAsync(jwtUserVo, remoteIp);
+        var token = await _tokenService.IssueTokenAsync(loginUserInfo);
+        loginUserInfo.AccessToken = token.AccessToken;
+        var onlineKey = loginUserInfo.AccessToken.ToMd5String16();
+        await _apeContext.Cache.SetAsync(
+            GlobalConstants.CacheKey.OnlineKey + onlineKey,
+            loginUserInfo, TimeSpan.FromHours(2), CacheExpireType.Absolute);
+
+        switch (type)
+        {
+            case "login":
+                var dic = new Dictionary<string, object>
+                    { { "user", jwtUserVo }, { "token", token } };
+                return dic.ToJson();
+            case "refresh":
+                return token.ToJson();
+            default:
+                return "";
+        }
     }
 
     #endregion

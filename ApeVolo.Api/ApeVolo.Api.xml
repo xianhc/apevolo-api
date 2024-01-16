@@ -168,6 +168,31 @@
             自定义权限处理器
             </summary>
         </member>
+        <member name="P:ApeVolo.Api.Authentication.Jwt.Token.AccessToken">
+            <summary>
+            授权token
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Api.Authentication.Jwt.Token.Expires">
+            <summary>
+            过期时间
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Api.Authentication.Jwt.Token.TokenType">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Api.Authentication.Jwt.Token.RefreshToken">
+            <summary>
+            刷新token
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Api.Authentication.Jwt.Token.RefreshTokenExpires">
+            <summary>
+            允许token时间内
+            </summary>
+        </member>
         <member name="T:ApeVolo.Api.AutoMapper.AutoMapperConfig">
             <summary>
             静态全局 AutoMapper 配置文件
@@ -191,6 +216,13 @@
             <param name="authUser"></param>
             <returns></returns>
         </member>
+        <member name="M:ApeVolo.Api.Controllers.Auth.AuthorizationController.RefreshToken(System.String)">
+            <summary>
+            刷新Token
+            </summary>
+            <param name="token"></param>
+            <returns></returns>
+        </member>
         <member name="M:ApeVolo.Api.Controllers.Auth.AuthorizationController.Captcha">
             <summary>
             获取图片验证码
@@ -207,6 +239,14 @@
             <summary>
             系统用户登出
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApeVolo.Api.Controllers.Auth.AuthorizationController.LoginResult(ApeVolo.IBusiness.Dto.Permission.UserDto,System.String)">
+            <summary>
+            登录或刷新token相应结果
+            </summary>
+            <param name="userDto"></param>
+            <param name="type">login:登录,refresh:刷新token</param>
             <returns></returns>
         </member>
         <member name="T:ApeVolo.Api.Controllers.Base.BaseApiController">
