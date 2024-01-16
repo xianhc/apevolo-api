@@ -83,10 +83,10 @@ public static partial class ExtObject
     /// </summary>
     /// <param name="time">时间</param>
     /// <returns></returns>
-    public static int ToUnixTimeStampSecond(this DateTime time)
+    public static long ToUnixTimeStampSecond(this DateTime time)
     {
         DateTime startTime = new DateTime(1970, 1, 1).ToLocalTime();
-        return (int)(time - startTime).TotalSeconds;
+        return (long)(time - startTime).TotalSeconds;
     }
 
     /// <summary>
