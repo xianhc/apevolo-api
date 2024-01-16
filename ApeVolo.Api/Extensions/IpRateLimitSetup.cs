@@ -15,7 +15,7 @@ public static class IpRateLimitSetup
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
         // 將速限計數器資料儲存在 Memory 中
-        //services.AddMemoryCache();
+        services.AddMemoryCache();
 
         // 從 appsettings.json 讀取 IpRateLimiting 設定 
         services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
@@ -26,7 +26,7 @@ public static class IpRateLimitSetup
         // 注入 counter and IP Rules 
         services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
         services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-
+        services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
         //如要使用redis 打开注释
         // services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
         // services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();

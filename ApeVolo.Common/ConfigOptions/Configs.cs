@@ -212,7 +212,7 @@ public class Configs
                     Audience = "http://localhost",
                     Issuer = "http://localhost",
                     SecurityKey = "5ixKD0BkJxYYroZTvdPs3w9NWRoiUacN",
-                    Expiration = 3600,
+                    Expires = 3600,
                     RefreshTokenExpires = 86400,
                     LoginPath = "/auth/login"
                 };

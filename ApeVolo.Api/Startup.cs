@@ -98,13 +98,13 @@ public class Startup
     public void Configure(IApplicationBuilder app, DataContext dataContext, IQuartzNetService quartzNetService,
         ISchedulerCenterService schedulerCenter, IOptionsMonitor<Configs> configs)
     {
+        //IP限流
+        app.UseIpLimitMiddleware();
         var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
         if (locOptions != null) app.UseRequestLocalization(locOptions.Value);
         //获取远程真实ip,如果不是nginx代理部署可以不要
         app.UseMiddleware<RealIpMiddleware>();
         app.UseSerilogRequestLogging();
-        //IP限流
-        app.UseIpLimitMiddleware();
         if (WebHostEnvironment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -116,6 +116,8 @@ public class Startup
 
             return next(context);
         });
+        //处理访问不存在的接口
+        //app.UseMiddleware<NotFoundMiddleware>();
 
         //autofac
         AutofacHelper.Container = app.ApplicationServices.GetAutofacRoot();

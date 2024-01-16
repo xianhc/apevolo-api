@@ -17,9 +17,7 @@ public static class CacheSetup
     {
         if (services.IsNull())
             throw new ArgumentNullException(nameof(services));
-        //MemoryCache要保留 IP限流用到了
         //也可以增加MemoryCache选项，但是MemoryCache不支持异步操作，需要自行实现
-        services.AddMemoryCache();
         if (configs.CacheOption.RedisCacheSwitch.Enabled)
         {
             //开启了redis就优先使用redis
