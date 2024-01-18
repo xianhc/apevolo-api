@@ -1,6 +1,6 @@
 ## 系统说明
 
-- 基于 .Net 6 、SqlSugar、Vue、RBAC、前后端分离的开箱则用的企业级中后台**权限管理系统**
+- 基于 .Net 8 、SqlSugar、Vue、RBAC、前后端分离的开箱则用的企业级中后台**权限管理系统**
 - 无业务逻辑代码入侵，适用于任何 .NET/C# 应用程序。
 - 预览体验：  [https://www.apevolo.com](https://www.apevolo.com)
 - 开发文档：  [http://doc.apevolo.com](http://doc.apevolo.com)
@@ -16,14 +16,14 @@
 ## 模块说明
 
 ```lua
-ApeVolo.Api              -- 对外API
-ApeVolo.Repository       -- 仓储层
-ApeVolo.IBusiness        -- 业务接口
-ApeVolo.Business         -- 业务实现
-ApeVolo.Common           -- 通用工具
-ApeVolo.Entity           -- 实体
-ApeVolo.EventBus         --事件总线
-ApeVolo.QuartzNetService -- 任务调度
+Ape.Volo.Api              -- 对外API
+Ape.Volo.Repository       -- 仓储层
+Ape.Volo.IBusiness        -- 业务接口
+Ape.Volo.Business         -- 业务实现
+Ape.Volo.Common           -- 通用工具
+Ape.Volo.Entity           -- 实体
+Ape.Volo.EventBus         --事件总线
+Ape.Volo.QuartzNetService -- 任务调度
 ```
 
 ## 系统特性
@@ -62,7 +62,7 @@ ApeVolo.QuartzNetService -- 任务调度
 
 ### 本地开发 运行
 
-下载项目，编译无误。直接启动`ApeVolo.Api`->系统便会自动创建数据库表并初始化相关基础数据，系统默认使用`Sqlite`数据库与`DistributedCache`缓存。
+下载项目，编译无误。直接启动`Ape.Volo.Api`->系统便会自动创建数据库表并初始化相关基础数据，系统默认使用`Sqlite`数据库与`DistributedCache`缓存。
 
 ### 本地开发 环境
 推荐使用 JetBrains `Rider`、`WebStorm`<br/>
