@@ -1,0 +1,57 @@
+using System.ComponentModel.DataAnnotations;
+using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.IBusiness.Base;
+using ApeVolo.Entity.Message.Email;
+
+namespace Ape.Volo.IBusiness.Dto.Message.Email;
+
+[AutoMapping(typeof(EmailAccount), typeof(CreateUpdateEmailAccountDto))]
+public class CreateUpdateEmailAccountDto : BaseEntityDto<long>
+{
+    /// <summary>
+    ///电子邮件地址
+    /// </summary>
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
+
+    /// <summary>
+    /// 电子邮件显示名称
+    /// </summary>
+    [Required]
+    public string DisplayName { get; set; }
+
+    /// <summary>
+    /// 电子邮件主机
+    /// </summary>
+    [Required]
+    public string Host { get; set; }
+
+    /// <summary>
+    /// 电子邮件端口
+    /// </summary>
+    public int Port { get; set; }
+
+    /// <summary>
+    /// 电子邮件用户名
+    /// </summary>
+    [Display]
+    [Required]
+    public string Username { get; set; }
+
+    /// <summary>
+    /// 电子邮件密码
+    /// </summary>
+    [Required]
+    public string Password { get; set; }
+
+    /// <summary>
+    /// 是否SSL
+    /// </summary>
+    public bool EnableSsl { get; set; } = false;
+
+    /// <summary>
+    /// 是否与请求一起发送应用程序的默认系统凭据
+    /// </summary>
+    public bool UseDefaultCredentials { get; set; } = false;
+}

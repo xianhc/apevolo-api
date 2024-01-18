@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ape.Volo.Common\Ape.Volo.Common.csproj" />
+    <ProjectReference Include="..\Ape.Volo.IBusiness\Ape.Volo.IBusiness.csproj" />
+  </ItemGroup>
+
+</Project>

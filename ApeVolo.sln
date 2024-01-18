@@ -1,23 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29609.76
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApeVolo.Repository", "ApeVolo.Repository\ApeVolo.Repository.csproj", "{86DA4A93-54FB-4E7A-884A-F45CEBF945A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.Repository", "Ape.Volo.Repository\Ape.Volo.Repository.csproj", "{86DA4A93-54FB-4E7A-884A-F45CEBF945A2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApeVolo.Common", "ApeVolo.Common\ApeVolo.Common.csproj", "{94E348C4-2AC6-4F81-A228-24853A128CCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.Common", "Ape.Volo.Common\Ape.Volo.Common.csproj", "{94E348C4-2AC6-4F81-A228-24853A128CCD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApeVolo.Api", "ApeVolo.Api\ApeVolo.Api.csproj", "{ADFA6CED-A6A5-48E1-B806-E78FD6D1D9A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.Api", "Ape.Volo.Api\Ape.Volo.Api.csproj", "{ADFA6CED-A6A5-48E1-B806-E78FD6D1D9A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApeVolo.Entity", "ApeVolo.Entity\ApeVolo.Entity.csproj", "{01B21D15-50CC-4D49-B9BB-8ECC80447DF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.Entity", "Ape.Volo.Entity\Ape.Volo.Entity.csproj", "{01B21D15-50CC-4D49-B9BB-8ECC80447DF0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApeVolo.IBusiness", "ApeVolo.IBusiness\ApeVolo.IBusiness.csproj", "{8C7CF236-5F1E-41CB-9263-8E8EA28E355E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.IBusiness", "Ape.Volo.IBusiness\Ape.Volo.IBusiness.csproj", "{8C7CF236-5F1E-41CB-9263-8E8EA28E355E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApeVolo.Business", "ApeVolo.Business\ApeVolo.Business.csproj", "{65013438-FB7D-4187-AAEF-885578FBA51F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.Business", "Ape.Volo.Business\Ape.Volo.Business.csproj", "{65013438-FB7D-4187-AAEF-885578FBA51F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApeVolo.QuartzNetService", "ApeVolo.QuartzNetService\ApeVolo.QuartzNetService.csproj", "{FB66E7D7-EF4A-4BCF-8364-A4EA4206A632}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.QuartzNetService", "Ape.Volo.QuartzNetService\Ape.Volo.QuartzNetService.csproj", "{FB66E7D7-EF4A-4BCF-8364-A4EA4206A632}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApeVolo.EventBus", "ApeVolo.EventBus\ApeVolo.EventBus.csproj", "{437F5EB3-F669-45F1-A617-B6BDBA0F2816}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.EventBus", "Ape.Volo.EventBus\Ape.Volo.EventBus.csproj", "{437F5EB3-F669-45F1-A617-B6BDBA0F2816}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

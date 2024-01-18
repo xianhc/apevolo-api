@@ -1,0 +1,1159 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Ape.Volo.Entity</name>
+    </assembly>
+    <members>
+        <member name="T:ApeVolo.Entity.Base.BaseEntity">
+            <summary>
+            实体基类
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Base.BaseEntity.CreateBy">
+            <summary>
+            创建者名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Base.BaseEntity.CreateTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Base.BaseEntity.UpdateBy">
+            <summary>
+            更新者名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Base.BaseEntity.UpdateTime">
+            <summary>
+            最后更新时间
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Base.RootKey`1">
+            <summary>
+            泛型主键
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:ApeVolo.Entity.Base.RootKey`1.Id">
+            <summary>
+            主键
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Message.Email.EmailAccount">
+            <summary>
+            邮件账户
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailAccount.Email">
+             <summary>
+            电子邮件地址
+             </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailAccount.DisplayName">
+            <summary>
+            电子邮件显示名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailAccount.Host">
+            <summary>
+            电子邮件主机
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailAccount.Port">
+            <summary>
+            电子邮件端口
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailAccount.Username">
+            <summary>
+            电子邮件用户名
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailAccount.Password">
+            <summary>
+            电子邮件密码
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailAccount.EnableSsl">
+            <summary>
+            是否SSL
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailAccount.UseDefaultCredentials">
+            <summary>
+            是否与请求一起发送应用程序的默认系统凭据
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailAccount.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Message.Email.EmailMessageTemplate">
+            <summary>
+            邮件模板
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailMessageTemplate.Name">
+            <summary>
+            模板名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailMessageTemplate.BccEmailAddresses">
+            <summary>
+            抄送邮箱地址
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailMessageTemplate.Subject">
+            <summary>
+            主题
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailMessageTemplate.Body">
+            <summary>
+            内容
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailMessageTemplate.IsActive">
+            <summary>
+            是否激活
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailMessageTemplate.EmailAccountId">
+            <summary>
+            邮箱账户标识符
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Message.Email.EmailMessageTemplate.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Monitor.AuditLog">
+            <summary>
+            系统审计记录
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.Area">
+            <summary>
+            区域
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.Controller">
+            <summary>
+            控制器
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.Action">
+            <summary>
+            方法
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.Method">
+            <summary>
+            请求方式
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.Description">
+            <summary>
+            /描述
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.RequestUrl">
+            <summary>
+            请求url
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.RequestParameters">
+            <summary>
+            请求参数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.ResponseData">
+            <summary>
+            响应数据
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.ExecutionDuration">
+            <summary>
+            执行耗时(毫秒)
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.RequestIp">
+            <summary>
+            请求IP
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.IpAddress">
+            <summary>
+            IP所属真实地址
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.OperatingSystem">
+            <summary>
+            操作系统
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.DeviceType">
+            <summary>
+            设备类型
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.BrowserName">
+            <summary>
+            浏览器名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.Version">
+            <summary>
+            浏览器版本
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.AuditLog.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Monitor.ExceptionLog">
+            <summary>
+            系统异常日志
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.Area">
+            <summary>
+            区域
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.Controller">
+            <summary>
+            控制器
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.Action">
+            <summary>
+            方法
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.Method">
+            <summary>
+            请求方式
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.Description">
+            <summary>
+            描述
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.RequestUrl">
+            <summary>
+            请求url
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.RequestParameters">
+            <summary>
+            请求参数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.ExceptionMessage">
+            <summary>
+            异常短信息
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.ExceptionMessageFull">
+            <summary>
+            异常完整信息
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.ExceptionStack">
+            <summary>
+            异常堆栈信息
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.LogLevel">
+            <summary>
+            等级
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.RequestIp">
+            <summary>
+            请求ip
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.IpAddress">
+            <summary>
+            ip所属真实地址
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.OperatingSystem">
+            <summary>
+            操作系统
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.DeviceType">
+            <summary>
+            设备类型
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.BrowserName">
+            <summary>
+            浏览器名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.Version">
+            <summary>
+            浏览器版本
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Monitor.ExceptionLog.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Permission.Department">
+            <summary>
+            部门
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Department.Name">
+            <summary>
+            部门名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Department.ParentId">
+            <summary>
+            父级部门ID
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Department.Sort">
+            <summary>
+            排序
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Department.Enabled">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Department.SubCount">
+            <summary>
+            子节点个数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Department.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Permission.Job">
+            <summary>
+            岗位
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Job.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Job.Sort">
+            <summary>
+            排序
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Job.Enabled">
+            <summary>
+            是否激活
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Job.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Permission.Menu">
+            <summary>
+            系统菜单
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.Title">
+            <summary>
+            菜单标题
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.LinkUrl">
+            <summary>
+            api地址
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.Path">
+            <summary>
+            组件路径
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.Permission">
+            <summary>
+            权限标识符
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.IFrame">
+            <summary>
+            是否iframe
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.Component">
+            <summary>
+            组件
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.ComponentName">
+            <summary>
+            组件名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.ParentId">
+            <summary>
+            父级菜单ID
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.Sort">
+            <summary>
+            排序
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.Icon">
+            <summary>
+            icon图标
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.Type">
+            <summary>
+            类型
+            1.目录 2.菜单 3.按钮
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.Cache">
+            <summary>
+            是否缓存
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.Hidden">
+            <summary>
+            是否隐藏
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.SubCount">
+            <summary>
+            子节点个数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.Children">
+            <summary>
+            子菜单集合
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Menu.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Permission.Role">
+            <summary>
+            角色
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Role.Name">
+            <summary>
+            角色名称
+            </summary>、
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Role.Level">
+            <summary>
+            角色等级
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Role.Description">
+            <summary>
+            描述
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Role.DataScope">
+            <summary>
+            数据权限
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Role.Permission">
+            <summary>
+            角色代码
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Role.MenuList">
+            <summary>
+            菜单集合
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Role.DepartmentList">
+            <summary>
+            部门集合
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.Role.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Permission.RoleMenu">
+            <summary>
+            角色菜单关联
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.RoleMenu.RoleId">
+            <summary>
+            角色ID
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.RoleMenu.MenuId">
+            <summary>
+            菜单ID
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Permission.RolesDepartments">
+            <summary>
+            角色部门关联
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.RolesDepartments.RoleId">
+            <summary>
+            角色ID
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.RolesDepartments.DeptId">
+            <summary>
+            部门ID
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Permission.User">
+            <summary>
+            系统用户
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.Username">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.NickName">
+            <summary>
+            昵称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.Email">
+            <summary>
+            邮箱
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.IsAdmin">
+            <summary>
+            是否内置管理员
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.Enabled">
+            <summary>
+            是否激活
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.Password">
+            <summary>
+            密码
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.DeptId">
+            <summary>
+            部门
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.Phone">
+            <summary>
+            电话
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.AvatarPath">
+            <summary>
+            头像路径
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.PasswordReSetTime">
+            <summary>
+            最后修改密码时间
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.Sex">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.Gender">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.Dept">
+            <summary>
+            部门
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.UserRoleList">
+            <summary>
+            用户角色集合
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.Roles">
+            <summary>
+            角色集合
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.UserJobList">
+            <summary>
+            用户岗位集合
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.User.Jobs">
+            <summary>
+            岗位集合
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Permission.UserJobs">
+            <summary>
+            用户岗位关联
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.UserJobs.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.UserJobs.JobId">
+            <summary>
+            岗位ID
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Permission.UserRoles">
+            <summary>
+            用户角色关联
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.UserRoles.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Permission.UserRoles.RoleId">
+            <summary>
+            角色ID
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Queued.QueuedEmail">
+            <summary>
+            邮件队列
+            </summary>=
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.From">
+            <summary>
+            发件邮箱
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.FromName">
+            <summary>
+            发件人名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.To">
+            <summary>
+            收件邮箱
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.ToName">
+            <summary>
+            收件人名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.ReplyTo">
+            <summary>
+            回复邮箱
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.ReplyToName">
+            <summary>
+            回复人名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.Priority">
+            <summary>
+            优先级
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.Cc">
+            <summary>
+            抄送
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.Bcc">
+            <summary>
+            密件抄送
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.Subject">
+            <summary>
+            标题
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.Body">
+            <summary>
+            内容
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.SentTries">
+            <summary>
+            发送上限次数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.SendTime">
+            <summary>
+            发送时间
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.EmailAccountId">
+            <summary>
+            发件邮箱ID
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Queued.QueuedEmail.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Seed.DataContext">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Entity.Seed.DataContext.#ctor(SqlSugar.ISqlSugarClient,Microsoft.Extensions.Options.IOptionsMonitor{Ape.Volo.Common.ConfigOptions.Configs})">
+            <summary>
+            
+            </summary>
+            <param name="sqlSugarClient"></param>
+            <param name="configs"></param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="P:ApeVolo.Entity.Seed.DataContext.ConnectObject">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Seed.DataContext.ConnectionString">
+            <summary>
+            连接字符串 
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Seed.DataContext.DbType">
+            <summary>
+            数据库类型 
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Entity.Seed.DataContext._db">
+            <summary>
+            数据连接对象 
+            </summary>
+        </member>
+        <member name="F:ApeVolo.Entity.Seed.DataContext._configs">
+            <summary>
+            数据连接对象 
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Entity.Seed.DataContext.GetCurrentDataBase">
+            <summary>
+            当前数据库
+            </summary>
+        </member>
+        <member name="M:ApeVolo.Entity.Seed.DataContext.GetEntityDb``1">
+            <summary>
+            获取数据库处理对象
+            </summary>
+            <returns>返回值</returns>
+        </member>
+        <member name="M:ApeVolo.Entity.Seed.DataContext.GetEntityDb``1(SqlSugar.SqlSugarClient)">
+            <summary>
+            获取数据库处理对象
+            </summary>
+            <param name="db">db</param>
+            <returns>返回值</returns>
+        </member>
+        <member name="M:ApeVolo.Entity.Seed.DataContext.CreateTableByEntity``1(System.Boolean,``0[])">
+            <summary>
+            根据实体类生成数据库表
+            </summary>
+            <param name="blnBackupTable">是否备份表</param>
+            <param name="entityList">指定的实体</param>
+        </member>
+        <member name="M:ApeVolo.Entity.Seed.DataContext.CreateTableByEntity(System.Boolean,System.Type[])">
+            <summary>
+            根据实体类生成数据库表
+            </summary>
+            <param name="blnBackupTable">是否备份表</param>
+            <param name="entityList">指定的实体</param>
+        </member>
+        <member name="M:ApeVolo.Entity.Seed.DataSeeder.InitSystemDataAsync(ApeVolo.Entity.Seed.DataContext,System.Boolean,System.Boolean)">
+            <summary>
+            异步添加种子数据
+            </summary>
+            <param name="dataContext"></param>
+            <param name="isInitData"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApeVolo.Entity.System.AppSecret">
+            <summary>
+            三方应用密钥
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.AppSecret.AppId">
+            <summary>
+            应用ID
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.AppSecret.AppSecretKey">
+            <summary>
+            应用秘钥
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.AppSecret.AppName">
+            <summary>
+            应用名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.AppSecret.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.AppSecret.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.System.Dict">
+            <summary>
+            字典
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.Dict.Name">
+            <summary>
+            字典名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:ApeVolo.Entity.System.Dict.Description">
+            <summary>
+            描述
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.Dict.DictDetails">
+            <summary>
+            字典详情
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.Dict.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.System.DictDetail">
+            <summary>
+            字典详情
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.DictDetail.DictId">
+            <summary>
+            字典ID
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.DictDetail.Label">
+            <summary>
+            字典标签
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.DictDetail.Value">
+            <summary>
+            字典值
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.DictDetail.DictSort">
+            <summary>
+            排序
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.DictDetail.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.System.FileRecord">
+            <summary>
+            文件记录
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.FileRecord.Description">
+            <summary>
+            文件描述
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.FileRecord.ContentType">
+            <summary>
+            文件类型
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.FileRecord.ContentTypeName">
+            <summary>
+            文件类别
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.FileRecord.ContentTypeNameEn">
+            <summary>
+            文件类别英文名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.FileRecord.OriginalName">
+            <summary>
+            文件原名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.FileRecord.NewName">
+            <summary>
+            文件新名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.FileRecord.FilePath">
+            <summary>
+            文件存储路径
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.FileRecord.Size">
+            <summary>
+            文件大小
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.FileRecord.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.System.QuartzNet">
+            <summary>
+            系统作业调度
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.TaskName">
+            <summary>
+            任务名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.TaskGroup">
+            <summary>
+            任务分组
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.Cron">
+            <summary>
+            cron 表达式
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.AssemblyName">
+            <summary>
+            程序集名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.ClassName">
+            <summary>
+            任务所在类
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.Description">
+            <summary>
+            任务描述
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.Principal">
+            <summary>
+            任务负责人
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.AlertEmail">
+            <summary>
+            告警邮箱
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.PauseAfterFailure">
+            <summary>
+            任务失败后是否暂停
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.RunTimes">
+            <summary>
+            执行次数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.StartTime">
+            <summary>
+            开始时间
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.EndTime">
+            <summary>
+            结束时间
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.TriggerType">
+            <summary>
+            触发器类型（0、simple 1、cron）
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.IntervalSecond">
+            <summary>
+            执行间隔时间, 秒为单位
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.CycleRunTimes">
+            <summary>
+            循环执行次数
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.IsEnable">
+            <summary>
+            是否启动
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.RunParams">
+            <summary>
+            执行传参
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.TriggerStatus">
+            <summary>
+            触发器状态
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.TriggerTypeStr">
+            <summary>
+            触发器模式
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNet.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.System.QuartzNetLog">
+            <summary>
+            系统作业调度执行日志
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNetLog.TaskId">
+            <summary>
+            任务Id
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNetLog.TaskName">
+            <summary>
+            任务名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNetLog.TaskGroup">
+            <summary>
+            任务分组
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNetLog.AssemblyName">
+            <summary>
+            程序集名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNetLog.ClassName">
+            <summary>
+            任务所在类
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNetLog.Cron">
+            <summary>
+            cron 表达式
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNetLog.ExceptionDetail">
+            <summary>
+            异常详情
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNetLog.ExecutionDuration">
+            <summary>
+            执行耗时（毫秒）
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNetLog.RunParams">
+            <summary>
+            执行传参
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNetLog.IsSuccess">
+            <summary>
+            是否成功
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.QuartzNetLog.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.System.Setting">
+            <summary>
+            系统设置
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.Setting.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.Setting.Value">
+            <summary>
+            值
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.Setting.Enabled">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.Setting.Description">
+            <summary>
+            描述
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.System.Setting.IsDeleted">
+            <summary>
+            是否已删除
+            </summary>
+        </member>
+        <member name="T:ApeVolo.Entity.Test.TestApeVolo">
+            <summary>
+            测试
+            </summary>
+        </member>
+        <member name="P:ApeVolo.Entity.Test.TestApeVolo.Sort">
+            <summary>
+            排序123
+            </summary>
+        </member>
+    </members>
+</doc>
