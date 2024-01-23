@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.Api", "Ape.Volo.Api\Ape.Volo.Api.csproj", "{ADFA6CED-A6A5-48E1-B806-E78FD6D1D9A9}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.Repository", "Ape.Volo.Repository\Ape.Volo.Repository.csproj", "{86DA4A93-54FB-4E7A-884A-F45CEBF945A2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.Common", "Ape.Volo.Common\Ape.Volo.Common.csproj", "{94E348C4-2AC6-4F81-A228-24853A128CCD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.Api", "Ape.Volo.Api\Ape.Volo.Api.csproj", "{ADFA6CED-A6A5-48E1-B806-E78FD6D1D9A9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ape.Volo.Entity", "Ape.Volo.Entity\Ape.Volo.Entity.csproj", "{01B21D15-50CC-4D49-B9BB-8ECC80447DF0}"
 EndProject
