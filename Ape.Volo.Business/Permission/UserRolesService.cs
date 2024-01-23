@@ -4,8 +4,8 @@ using Ape.Volo.Business.Base;
 using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.WebApp;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
-using ApeVolo.Entity.Permission;
 using SqlSugar;
 
 namespace Ape.Volo.Business.Permission;

@@ -1222,6 +1222,11 @@
             远程IP中间件，nginx代理服务的时候需要使用才能通过RemoteIpAddress获取客户端真实IP
             </summary>
         </member>
+        <member name="T:Ape.Volo.Api.Middleware.SerilogMiddleware">
+            <summary>
+            Serilog 处理中间件
+            </summary>
+        </member>
         <member name="T:Ape.Volo.Api.Middleware.SwaggerMiddleware">
             <summary>
             Swagger UI 中间件
@@ -1237,6 +1242,33 @@
             处理事件
             </summary>
             <param name="event"></param>
+        </member>
+        <member name="T:Ape.Volo.Api.Serilog.LoggerOutExtensions">
+            <summary>
+            日志输出扩展
+            </summary>
+        </member>
+        <member name="M:Ape.Volo.Api.Serilog.LoggerOutExtensions.WriteToConsole(Serilog.LoggerConfiguration)">
+            <summary>
+            控制台
+            </summary>
+            <param name="loggerConfiguration"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ape.Volo.Api.Serilog.LoggerOutExtensions.WriteToFile(Serilog.LoggerConfiguration,Serilog.Events.LogEventLevel)">
+            <summary>
+            文件
+            </summary>
+            <param name="loggerConfiguration"></param>
+            <param name="logEvent"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ape.Volo.Api.Serilog.LoggerOutExtensions.WriteToElasticsearch(Serilog.LoggerConfiguration)">
+            <summary>
+            Elasticsearch
+            </summary>
+            <param name="loggerConfiguration"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

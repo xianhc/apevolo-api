@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Ape.Volo.Entity.Message.Email;
 using Ape.Volo.IBusiness.Interface.Message.Email;
-using ApeVolo.Entity.Message.Email;
 using MimeKit;
 using MimeKit.Text;
 

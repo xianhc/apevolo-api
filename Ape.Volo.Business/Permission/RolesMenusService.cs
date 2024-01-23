@@ -1,6 +1,6 @@
 using Ape.Volo.Business.Base;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
-using ApeVolo.Entity.Permission;
 
 namespace Ape.Volo.Business.Permission;
 

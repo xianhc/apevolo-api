@@ -5,10 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper;
+using Ape.Volo.Common.SnowflakeIdHelper;
 using Ape.Volo.Common.WebApp;
+using Ape.Volo.Entity.Monitor;
 using Ape.Volo.IBusiness.Interface.Monitor;
 using Ape.Volo.IBusiness.Interface.System;
-using ApeVolo.Entity.Monitor;
 using IP2Region.Net.Abstractions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -107,7 +108,6 @@ public class AuditingFilter : IAsyncActionFilter
                 _httpUser?.Account,
                 _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                 _browserDetector.Browser?.Version));
-            ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
         }
     }
 
@@ -129,9 +129,9 @@ public class AuditingFilter : IAsyncActionFilter
             .FirstOrDefault();
         var auditLog = new AuditLog
         {
-            // Id = IdHelper.GetLongId(),
-            // CreateBy = _httpUser.Account,
-            // CreateTime = DateTime.Now,
+            Id = IdHelper.GetLongId(),
+            CreateBy = _httpUser.Account,
+            CreateTime = DateTime.Now,
             Area = routeValues["area"],
             Controller = routeValues["controller"],
             Action = routeValues["action"],

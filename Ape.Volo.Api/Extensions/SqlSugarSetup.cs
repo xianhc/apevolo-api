@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Ape.Volo.Api.Serilog;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.DI;
 using Ape.Volo.Common.Extention;
@@ -10,8 +11,9 @@ using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.SnowflakeIdHelper;
 using Ape.Volo.Common.WebApp;
-using ApeVolo.Entity.Base;
+using Ape.Volo.Entity.Base;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using SqlSugar;
 using StackExchange.Profiling;
 using MiniProfiler = StackExchange.Profiling.MiniProfiler;
@@ -33,116 +35,137 @@ public static class SqlSugarSetup
             throw new Exception("请确保配置数据库配置DataConnection无误;");
         }
 
-        var connectionMaster =
-            dataConnection.ConnectionItem.FirstOrDefault(x => x.ConnId == configs.DefaultDataBase && x.Enabled);
-        if (connectionMaster == null)
+        // var connectionMaster =
+        //     dataConnection.ConnectionItem.Where(x => x.ConnId == configs.DefaultDataBase && x.Enabled).ToList();
+        var allConnectionItem =
+            dataConnection.ConnectionItem.Where(x => x.Enabled).ToList();
+        if (!allConnectionItem.Any() || allConnectionItem.All(x => x.ConnId != configs.DefaultDataBase))
         {
-            throw new Exception($"请确保数据库ID:{configs.DefaultDataBase}的Enabled为true;");
+            throw new Exception($"请确保主库ID:{configs.DefaultDataBase}的Enabled为true;");
         }
 
-        if (connectionMaster.DbType == (int)DataBaseType.Sqlite)
+        if (!allConnectionItem.Any() || allConnectionItem.All(x => x.ConnId != configs.DefaultDataBase))
         {
-            connectionMaster.ConnectionString = "DataSource=" + Path.Combine(AppSettings.ContentRootPath,
-                connectionMaster.ConnectionString ?? string.Empty);
+            throw new Exception($"请确保日志库ID:{configs.LogDataBase}的Enabled为true;");
         }
 
-        List<ConnectionItem> connectionSlaves = new List<ConnectionItem>();
-        if (configs.IsCqrs)
-        {
-            connectionSlaves = dataConnection.ConnectionItem
-                .Where(x => x.DbType == connectionMaster.DbType && x.ConnId != configs.DefaultDataBase && x.Enabled)
-                .ToList();
-            if (!connectionSlaves.Any())
-            {
-                throw new Exception($"请确保数据库ID:{configs.DefaultDataBase}对应的从库的Enabled为true;");
-            }
-        }
-
+        List<ConnectionConfig> allConnectionConfig = new List<ConnectionConfig>();
         ConnectionConfig masterDb = null; //主库
-        var slaveDbs = new List<SlaveConnectionConfig>(); //从库列表
-        if (configs.IsCqrs)
+        List<SlaveConnectionConfig> slaveDbs = null; //从库列表
+
+        foreach (var connectionItem in allConnectionItem)
         {
-            connectionSlaves.ForEach(db =>
+            if (connectionItem.DbType == (int)DataBaseType.Sqlite)
             {
-                slaveDbs.Add(new SlaveConnectionConfig
+                connectionItem.ConnectionString = "DataSource=" + Path.Combine(AppSettings.ContentRootPath,
+                    connectionItem.ConnectionString ?? string.Empty);
+            }
+
+            List<ConnectionItem> connectionSlaves = new List<ConnectionItem>();
+            if (configs.IsCqrs)
+            {
+                connectionSlaves = dataConnection.ConnectionItem
+                    .Where(x => x.DbType == connectionItem.DbType && x.ConnId != connectionItem.ConnId && x.Enabled)
+                    .ToList();
+                if (!connectionSlaves.Any())
                 {
-                    HitRate = db.HitRate,
-                    ConnectionString = db.ConnectionString
+                    throw new Exception($"请确保数据库ID:{connectionItem.ConnId}对应的从库的Enabled为true;");
+                }
+            }
+
+            if (configs.IsCqrs)
+            {
+                slaveDbs = new List<SlaveConnectionConfig>();
+                connectionSlaves.ForEach(db =>
+                {
+                    slaveDbs.Add(new SlaveConnectionConfig
+                    {
+                        HitRate = db.HitRate,
+                        ConnectionString = db.ConnectionString
+                    });
                 });
-            });
+            }
+
+            masterDb = new ConnectionConfig
+            {
+                ConfigId = connectionItem.ConnId.ToLower(),
+                ConnectionString = connectionItem.ConnectionString,
+                DbType = (DbType)connectionItem.DbType,
+                LanguageType = LanguageType.Chinese,
+                IsAutoCloseConnection = true,
+                //IsShardSameThread = false,
+                MoreSettings = new ConnMoreSettings
+                {
+                    IsAutoRemoveDataCache = true,
+                    SqlServerCodeFirstNvarchar = true, //sqlserver默认使用nvarchar
+                },
+                ConfigureExternalServices = new ConfigureExternalServices
+                {
+                    EntityService = (c, p) =>
+                    {
+                        p.DbColumnName = UtilMethods.ToUnderLine(p.DbColumnName); //字段使用驼峰转下划线，不需要请注释
+                        if ((DbType)connectionItem.DbType == DbType.MySql && p.DataType == "varchar(max)")
+                        {
+                            p.DataType = "longtext";
+                        }
+
+                        /***低版本C#写法***/
+                        // int?  decimal?这种 isnullable=true 不支持string(下面.NET 7支持)
+                        if (p.IsPrimarykey == false && c.PropertyType.IsGenericType &&
+                            c.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                        {
+                            p.IsNullable = true;
+                        }
+
+                        /***高版C#写法***/
+                        //支持string?和string  
+                        // if (p.IsPrimarykey == false && new NullabilityInfoContext()
+                        //         .Create(c).WriteState is NullabilityState.Nullable)
+                        // {
+                        //     p.IsNullable = true;
+                        // }
+                    },
+                },
+                // 从库
+                SlaveConnectionConfigs = slaveDbs
+            };
+            allConnectionConfig.Add(masterDb);
         }
 
-        masterDb = new ConnectionConfig
-        {
-            ConfigId = connectionMaster.ConnId.ToLower(),
-            ConnectionString = connectionMaster.ConnectionString,
-            DbType = (DbType)connectionMaster.DbType,
-            LanguageType = LanguageType.Chinese,
-            IsAutoCloseConnection = true,
-            //IsShardSameThread = false,
-            MoreSettings = new ConnMoreSettings
+        var sugar = new SqlSugarScope(allConnectionConfig,
+            db =>
             {
-                IsAutoRemoveDataCache = true,
-                SqlServerCodeFirstNvarchar = true, //sqlserver默认使用nvarchar
-            },
-            ConfigureExternalServices = new ConfigureExternalServices
-            {
-                EntityService = (c, p) =>
-                {
-                    p.DbColumnName = UtilMethods.ToUnderLine(p.DbColumnName); //字段使用驼峰转下划线，不需要请注释
-                    if ((DbType)connectionMaster.DbType == DbType.MySql && p.DataType == "varchar(max)")
+                allConnectionConfig.Where(x => x.ConfigId.ToString() != configs.LogDataBase.ToLower()).ForEach(
+                    config =>
                     {
-                        p.DataType = "longtext";
-                    }
+                        var sugarScopeProvider = db.GetConnectionScope((string)config.ConfigId);
 
-                    /***低版本C#写法***/
-                    // int?  decimal?这种 isnullable=true 不支持string(下面.NET 7支持)
-                    if (p.IsPrimarykey == false && c.PropertyType.IsGenericType &&
-                        c.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                    {
-                        p.IsNullable = true;
-                    }
+                        #region 接口过滤器
 
-                    /***高版C#写法***/
-                    //支持string?和string  
-                    // if (p.IsPrimarykey == false && new NullabilityInfoContext()
-                    //         .Create(c).WriteState is NullabilityState.Nullable)
-                    // {
-                    //     p.IsNullable = true;
-                    // }
-                },
-            },
-            // 从库
-            SlaveConnectionConfigs = slaveDbs
-        };
+                        sugarScopeProvider.QueryFilter.AddTableFilter<ISoftDeletedEntity>(x => x.IsDeleted == false);
 
-        var sugar = new SqlSugarScope(masterDb,
-            config =>
-            {
-                #region 接口过滤器
+                        #endregion
 
-                config.QueryFilter.AddTableFilter<ISoftDeletedEntity>(x => x.IsDeleted == false);
+                        #region 读写事件
 
-                #endregion
+                        sugarScopeProvider.Aop.DataExecuting = DataExecuting;
 
-                #region 读写事件
+                        #endregion
 
-                config.Aop.DataExecuting = DataExecuting;
+                        #region 日志
 
-                #endregion
+                        sugarScopeProvider.Aop.OnLogExecuting = (sql, pars) => OnLogExecuting(sugarScopeProvider,
+                            Enum.GetName(typeof(SugarActionType), sugarScopeProvider.SugarActionType), sql, pars,
+                            configs, config);
 
-                #region 日志
+                        #endregion
 
-                config.Aop.OnLogExecuting = (sql, pars) => OnLogExecuting(sql, pars, configs);
+                        #region 耗时
 
-                #endregion
+                        sugarScopeProvider.Aop.OnLogExecuted = (_, _) => OnLogExecuted(configs, sugarScopeProvider.Ado);
 
-                #region 耗时
-
-                config.Aop.OnLogExecuted =
-                    (sql, pars) => OnLogExecuted(sql, pars, configs, config.Ado);
-
-                #endregion
+                        #endregion
+                    });
             });
         services.AddSingleton<ISqlSugarClient>(sugar);
     }
@@ -206,28 +229,36 @@ public static class SqlSugarSetup
 
     #region 日志
 
-    private static void OnLogExecuting(string sql, SugarParameter[] pars, Configs configs)
+    private static void OnLogExecuting(ISqlSugarClient sqlSugar, string operate, string sql,
+        SugarParameter[] pars, Configs configs, ConnectionConfig connection)
     {
-        if (sql.Contains("log_audit") || sql.Contains("log_exception"))
+        try
         {
-            return;
-        }
+            if (!configs.SqlLog.Enabled)
+            {
+                return;
+            }
 
-        if (configs.IsQuickDebug && configs.IsMiniProfiler)
-        {
-            MiniProfiler.Current.CustomTiming("SQL",
-                "【SQL参数】：\n" + GetParams(pars) + "【SQL语句】：\n" + sql);
-        }
+            if (configs.IsQuickDebug && configs.Middleware.MiniProfiler.Enabled)
+            {
+                MiniProfiler.Current.CustomTiming("SQL",
+                    "【SQL参数】:\n" + GetParams(pars) + "【SQL语句】：\n" + sql);
+            }
 
-        if (configs.IsSqlLog)
-        {
-            LogHelper.WriteSqlLog($"SqlLog{DateTime.Now:yyyy-MM-dd}",
-                new[] { "【SQL参数】：\n" + GetParams(pars), "【SQL语句】：\n" + sql });
+            if (configs.SqlLog.ToDb.Enabled || configs.SqlLog.ToFile.Enabled || configs.SqlLog.ToConsole.Enabled)
+            {
+                var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
+                using (LoggerPropertyConfiguration.Create.AddAopSqlProperty(sqlSugar, configs.SqlLog))
+                {
+                    Log.Information(
+                        "Executed Sql--> User:[{User}] Operate:[{Operate}] ConnId:[{ConnId}] {Sql}",
+                        httpUser?.Account, operate, connection.ConfigId, UtilMethods.GetNativeSql(sql, pars));
+                }
+            }
         }
-
-        if (configs.IsQuickDebug && configs.IsOutSqlToConsole)
+        catch (Exception e)
         {
-            ConsoleHelper.WriteLine($"{DateTime.Now}\n【SQL参数】：\n{GetParams(pars)}【SQL语句】：\n{sql}");
+            Log.Fatal("Error occured OnLogExecuting:" + e);
         }
     }
 
@@ -241,32 +272,33 @@ public static class SqlSugarSetup
         return pars.Aggregate("", (current, p) => current + $"{p.ParameterName}:{p.Value}\n");
     }
 
-    private static void OnLogExecuted(string sql, SugarParameter[] pars, Configs configs, IAdo ado)
+    private static void OnLogExecuted(Configs configs, IAdo ado)
     {
-        if (sql.Contains("log_audit") || sql.Contains("log_exception"))
+        if (!configs.SqlLog.Enabled)
         {
             return;
         }
 
-        if (configs.IsQuickDebug && configs.IsMiniProfiler)
+        if (configs.IsQuickDebug && configs.Middleware.MiniProfiler.Enabled)
         {
-            MiniProfiler.Current.CustomTiming("SQL", $"【SQL耗时】：:{ado.SqlExecutionTime.TotalMilliseconds}毫秒");
+            MiniProfiler.Current.CustomTiming("SQL",
+                $"【Sql耗时】:{Math.Round(ado.SqlExecutionTime.TotalMilliseconds / 1000d, 4)}秒\r\n");
         }
 
-        if (configs.IsSqlLog)
+        if (configs.SqlLog.ToConsole.Enabled)
         {
-            LogHelper.WriteSqlLog($"SqlLog{DateTime.Now:yyyy-MM-dd}",
-                new[] { $"【SQL耗时】：{ado.SqlExecutionTime.TotalMilliseconds}毫秒" });
-        }
-
-        if (configs.IsQuickDebug && configs.IsOutSqlToConsole)
-        {
-            ConsoleHelper.WriteLine($"【SQL耗时】：{ado.SqlExecutionTime.TotalMilliseconds}毫秒");
-        }
-
-        if (ado.SqlExecutionTime.TotalSeconds > 1)
-        {
-            //大于1秒
+            if (ado.SqlExecutionTime.TotalMilliseconds > 5000)
+            {
+                ConsoleHelper.WriteLine($"[Time]:{Math.Round(ado.SqlExecutionTime.TotalMilliseconds / 1000d, 4)}秒",
+                    ConsoleColor.DarkCyan);
+                ConsoleHelper.WriteLine($"[提示]:当前sql执行耗时较长,请检查进行优化\r\n",
+                    ConsoleColor.Red);
+            }
+            else
+            {
+                ConsoleHelper.WriteLine($"[Time]:{Math.Round(ado.SqlExecutionTime.TotalMilliseconds / 1000d, 4)}秒\r\n",
+                    ConsoleColor.DarkCyan);
+            }
         }
     }
 

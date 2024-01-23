@@ -5,7 +5,7 @@ using Ape.Volo.Common.Extention;
 using Microsoft.Extensions.Options;
 using SqlSugar;
 
-namespace ApeVolo.Entity.Seed;
+namespace Ape.Volo.Entity.Seed;
 
 /// <summary>
 /// 

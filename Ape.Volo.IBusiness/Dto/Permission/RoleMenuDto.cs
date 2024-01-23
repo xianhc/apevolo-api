@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Ape.Volo.Common.AttributeExt;
-using ApeVolo.Entity.Permission;
+using Ape.Volo.Entity.Permission;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 

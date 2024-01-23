@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
-using ApeVolo.Entity.Permission;
 using SqlSugar;
 
 namespace Ape.Volo.Business.Permission;

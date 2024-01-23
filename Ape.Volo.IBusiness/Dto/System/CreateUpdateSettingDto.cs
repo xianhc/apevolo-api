@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.System;
 
-[AutoMapping(typeof(ApeVolo.Entity.System.Setting), typeof(CreateUpdateSettingDto))]
+[AutoMapping(typeof(Setting), typeof(CreateUpdateSettingDto))]
 public class CreateUpdateSettingDto : BaseEntityDto<long>
 {
     [Required]

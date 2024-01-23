@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
-[AutoMapping(typeof(ApeVolo.Entity.Permission.Job), typeof(CreateUpdateJobDto))]
+[AutoMapping(typeof(Job), typeof(CreateUpdateJobDto))]
 public class CreateUpdateJobDto : BaseEntityDto<long>
 {
     //可以重写ErrorMessage消息,"名称"可以为占位符{0}，但是要要设置 [Display(Name = "名称")]

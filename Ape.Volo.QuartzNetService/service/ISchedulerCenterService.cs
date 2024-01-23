@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
-using ApeVolo.Entity.System;
 
 namespace Ape.Volo.QuartzNetService.service;
 

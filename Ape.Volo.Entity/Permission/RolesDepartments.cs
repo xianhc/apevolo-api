@@ -1,22 +1,23 @@
 using SqlSugar;
 
-namespace ApeVolo.Entity.Permission;
-
-/// <summary>
-/// 角色部门关联
-/// </summary>
-[SugarTable("sys_roles_depts")]
-public class RolesDepartments
+namespace Ape.Volo.Entity.Permission
 {
     /// <summary>
-    /// 角色ID
+    /// 角色部门关联
     /// </summary>
-    [SugarColumn(IsPrimaryKey = true)]
-    public long RoleId { get; set; }
+    [SugarTable("sys_roles_depts")]
+    public class RolesDepartments
+    {
+        /// <summary>
+        /// 角色ID
+        /// </summary>
+        [SugarColumn(IsPrimaryKey = true)]
+        public long RoleId { get; set; }
 
-    /// <summary>
-    /// 部门ID
-    /// </summary>
-    [SugarColumn(IsPrimaryKey = true)]
-    public long DeptId { get; set; }
+        /// <summary>
+        /// 部门ID
+        /// </summary>
+        [SugarColumn(IsPrimaryKey = true)]
+        public long DeptId { get; set; }
+    }
 }

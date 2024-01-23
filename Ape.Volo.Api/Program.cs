@@ -8,9 +8,9 @@ using Ape.Volo.Common.DI;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.SnowflakeIdHelper;
 using Ape.Volo.Common.WebApp;
+using Ape.Volo.Entity.Seed;
 using Ape.Volo.IBusiness.Interface.System;
 using Ape.Volo.QuartzNetService.service;
-using ApeVolo.Entity.Seed;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -45,9 +45,9 @@ builder.Host
 // 配置服务
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-builder.Services.AddSingleton(new AppSettings(builder.Environment));
-var configs = configuration.Get<Configs>();
+builder.Services.AddSingleton(new AppSettings(builder.Configuration, builder.Environment));
 builder.Services.Configure<Configs>(configuration);
+var configs = configuration.Get<Configs>();
 builder.Services.AddSerilogSetup();
 builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
 builder.Services.Configure<IISServerOptions>(options => { options.AllowSynchronousIO = true; });
@@ -108,7 +108,6 @@ if (app.Environment.IsDevelopment())
 app.Use(next => context =>
 {
     context.Request.EnableBuffering();
-
     return next(context);
 });
 

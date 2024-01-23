@@ -7,15 +7,19 @@ using System.Text;
 using System.Threading.Tasks;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
-using ApeVolo.Entity.Base;
-using ApeVolo.Entity.Message.Email;
-using ApeVolo.Entity.Permission;
-using ApeVolo.Entity.System;
+using Ape.Volo.Entity.Base;
+using Ape.Volo.Entity.Message.Email;
+using Ape.Volo.Entity.Monitor;
+using Ape.Volo.Entity.Permission;
+using Ape.Volo.Entity.System;
 using Newtonsoft.Json;
 using SqlSugar;
 
-namespace ApeVolo.Entity.Seed;
+namespace Ape.Volo.Entity.Seed;
 
+/// <summary>
+/// 
+/// </summary>
 public class DataSeeder
 {
     /// <summary>
@@ -23,6 +27,7 @@ public class DataSeeder
     /// </summary>
     /// <param name="dataContext"></param>
     /// <param name="isInitData"></param>
+    /// <param name="isQuickDebug"></param>
     /// <returns></returns>
     public static async Task InitSystemDataAsync(DataContext dataContext, bool isInitData, bool isQuickDebug)
     {
@@ -32,9 +37,11 @@ public class DataSeeder
             ConsoleHelper.WriteLine($"是否开发环境: {isQuickDebug}");
             ConsoleHelper.WriteLine($"ContentRootPath: {AppSettings.ContentRootPath}");
             ConsoleHelper.WriteLine($"WebRootPath: {AppSettings.WebRootPath}");
-            ConsoleHelper.WriteLine($"DB Type: {dataContext.DbType}");
-            ConsoleHelper.WriteLine($"DB ConnectString: {dataContext.ConnectionString}");
-            ConsoleHelper.WriteLine("初始化数据库....");
+            ConsoleHelper.WriteLine($"Master Db Id: {dataContext.Db.CurrentConnectionConfig.ConfigId}");
+            ConsoleHelper.WriteLine($"Master Db Type: {dataContext.Db.CurrentConnectionConfig.DbType}");
+            ConsoleHelper.WriteLine(
+                $"Master Db ConnectString: {dataContext.Db.CurrentConnectionConfig.ConnectionString}");
+            ConsoleHelper.WriteLine("初始化主库....");
             if (dataContext.DbType != DbType.Oracle)
             {
                 dataContext.Db.DbMaintenance.CreateDatabase();
@@ -44,46 +51,59 @@ public class DataSeeder
                 ConsoleHelper.WriteLine("sqlsugar官方表示Oracle不支持代码建库，请先建库再允许项目", ConsoleColor.Red);
             }
 
-            ConsoleHelper.WriteLine("初始化数据库成功。", ConsoleColor.Green);
-            ConsoleHelper.WriteLine();
+            ConsoleHelper.WriteLine("初始化主库成功。", ConsoleColor.Green);
+            ConsoleHelper.WriteLine("初始化主库数据表....");
 
-            ConsoleHelper.WriteLine("初始化数据表....");
+            #region 初始化主库数据表
 
             //继承自BaseEntity或者RootKey<>的类型
             //一些没有继承的需手动维护添加
             //例如，用户与岗位(UserJobs)
             var entityList = GlobalData.GetEntityAssembly().GetTypes()
                 .Where(x => (x.BaseType == typeof(BaseEntity) || x.BaseType == typeof(RootKey<long>)) &&
-                            x != typeof(BaseEntity)).ToList();
+                            x != typeof(BaseEntity) && x.Namespace != null &&
+                            !x.Namespace.StartsWith("Ape.Volo.Entity.Monitor")).ToList();
             entityList.Add(typeof(UserRoles));
             entityList.Add(typeof(UserJobs));
             entityList.Add(typeof(RoleMenu));
             entityList.Add(typeof(RolesDepartments));
 
-
+            var masterTables = dataContext.Db.DbMaintenance.GetTableInfoList();
             entityList.ForEach(entity =>
             {
                 var attr = entity.GetCustomAttribute<SugarTable>();
-
-                if (!dataContext.Db.DbMaintenance.IsAnyTable(attr == null ? entity.Name : attr.TableName))
+                var tableName = attr == null ? entity.Name : attr.TableName;
+                if (!masterTables.Any(x => x.Name.Contains(tableName)))
                 {
-                    ConsoleHelper.WriteLine(
-                        attr == null
-                            ? $"Entity:{entity.Name}-->缺少SugarTable特性"
-                            : $"Entity:{entity.Name}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->创建完成！");
-                    dataContext.Db.CodeFirst.InitTables(entity);
+                    if (entity.GetCustomAttribute<SplitTableAttribute>() != null)
+                    {
+                        dataContext.Db.CodeFirst.SplitTables().InitTables(entity);
+                        ConsoleHelper.WriteLine(
+                            attr == null
+                                ? $"Entity:{entity.Name}-->缺少SugarTable特性"
+                                : $"Entity:{entity.Name}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->创建完成！");
+                    }
+                    else
+                    {
+                        dataContext.Db.CodeFirst.InitTables(entity);
+                        ConsoleHelper.WriteLine(
+                            attr == null
+                                ? $"Entity:{entity.Name}-->缺少SugarTable特性"
+                                : $"Entity:{entity.Name}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->创建完成！");
+                    }
                 }
             });
 
-            ConsoleHelper.WriteLine("初始化数据表成功！", ConsoleColor.Green);
+            ConsoleHelper.WriteLine("初始化主库数据表成功！", ConsoleColor.Green);
             ConsoleHelper.WriteLine();
-            //添加初始数据
 
-            #region 添加初始数据
+            #endregion
+
+            #region 初始化主库数据
 
             if (isInitData)
             {
-                ConsoleHelper.WriteLine("初始化种子数据....");
+                ConsoleHelper.WriteLine("初始化主库种子数据....");
                 JsonSerializerSettings setting = new JsonSerializerSettings();
                 JsonConvert.DefaultSettings = () =>
                 {
@@ -366,8 +386,60 @@ public class DataSeeder
 
             #endregion
 
-            ConsoleHelper.WriteLine("程序已启动！", ConsoleColor.Green);
-            // return Task.CompletedTask;
+            #region 初始化日志库
+
+            if (!dataContext.Db.IsAnyConnection(SqlSugarConfig.LogId.ToLower()))
+            {
+                throw new ApplicationException("未配置日志数据库，请在appsettings.json中DataConnection节点中配置");
+            }
+
+            var logDb = dataContext.Db.GetConnection(SqlSugarConfig.LogId.ToLower());
+            ConsoleHelper.WriteLine($"Log Db Id: {logDb.CurrentConnectionConfig.ConfigId}");
+            ConsoleHelper.WriteLine($"Log Db Type: {logDb.CurrentConnectionConfig.DbType}");
+            ConsoleHelper.WriteLine($"Log Db ConnectString: {logDb.CurrentConnectionConfig.ConnectionString}");
+            ConsoleHelper.WriteLine("初始化日志库成功。", ConsoleColor.Green);
+            ConsoleHelper.WriteLine("初始化日志库数据表....");
+            logDb.DbMaintenance.CreateDatabase();
+            var logEntityList = GlobalData.GetEntityAssembly().GetTypes()
+                .Where(x => x.IsClass && x != typeof(SerilogBase) && x.Namespace != null &&
+                            x.Namespace.StartsWith("Ape.Volo.Entity.Monitor")).ToList();
+
+
+            var logTables = logDb.DbMaintenance.GetTableInfoList();
+
+            logEntityList.ForEach(entity =>
+            {
+                var attr = entity.GetCustomAttribute<SugarTable>();
+                if (attr == null)
+                {
+                    throw new Exception("日志库的库需增加SugarTable特性");
+                }
+
+                int lastUnderscoreIndex = attr.TableName.LastIndexOf('_');
+                var tableName = attr.TableName.Substring(0, lastUnderscoreIndex);
+                ;
+                if (!logTables.Any(x => x.Name.Contains(tableName)))
+                {
+                    if (entity.GetCustomAttribute<SplitTableAttribute>() != null)
+                    {
+                        logDb.CodeFirst.SplitTables().InitTables(entity);
+                        ConsoleHelper.WriteLine(
+                            $"Entity:{entity.Name}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->创建完成！");
+                    }
+                    else
+                    {
+                        logDb.CodeFirst.InitTables(entity);
+                        ConsoleHelper.WriteLine(
+                            $"Entity:{entity.Name}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->创建完成！");
+                    }
+                }
+            });
+            ConsoleHelper.WriteLine("初始化日志库数据表成功！", ConsoleColor.Green);
+            ConsoleHelper.WriteLine();
+
+            #endregion
+
+            ConsoleHelper.WriteLine("初始化完成，程序已启动....！", ConsoleColor.Green);
         }
         catch (Exception ex)
         {

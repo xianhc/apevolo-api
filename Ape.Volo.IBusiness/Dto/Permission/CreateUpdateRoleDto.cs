@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
-[AutoMapping(typeof(ApeVolo.Entity.Permission.Role), typeof(CreateUpdateRoleDto))]
+[AutoMapping(typeof(Role), typeof(CreateUpdateRoleDto))]
 public class CreateUpdateRoleDto : BaseEntityDto<long>
 {
     [Required]

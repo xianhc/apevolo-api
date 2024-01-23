@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>ApeVolo.Entity</RootNamespace>
+    <RootNamespace>Ape.Volo.Entity</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>ApeVolo.Entity.xml</DocumentationFile>
+    <DocumentationFile>Ape.Volo.Entity.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

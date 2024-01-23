@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
-[AutoMapping(typeof(ApeVolo.Entity.Permission.Department), typeof(CreateUpdateDepartmentDto))]
+[AutoMapping(typeof(Department), typeof(CreateUpdateDepartmentDto))]
 public class CreateUpdateDepartmentDto : BaseEntityDto<long>
 {
     [Required]

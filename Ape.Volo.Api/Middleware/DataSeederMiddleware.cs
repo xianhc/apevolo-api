@@ -1,6 +1,6 @@
 using System;
 using Ape.Volo.Common.Helper.Serilog;
-using ApeVolo.Entity.Seed;
+using Ape.Volo.Entity.Seed;
 using Microsoft.AspNetCore.Builder;
 using Serilog;
 

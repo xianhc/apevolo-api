@@ -1,23 +1,22 @@
 ﻿using System;
-using System.IO;
-using System.Text;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Api.Serilog;
+using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Global;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.Elasticsearch;
 
 namespace Ape.Volo.Api.Middleware;
 
+/// <summary>
+/// Serilog 处理中间件
+/// </summary>
 public static class SerilogMiddleware
 {
-    private const string SerilogOutputTemplate =
-        "{NewLine}时间:{Timestamp:yyyy-MM-dd HH:mm:ss.fff}{NewLine}所在类:{SourceContext}{NewLine}等级:{Level}{NewLine}信息:{Message}{NewLine}{Exception}";
-
     public static IHostBuilder UseSerilogMiddleware(this IHostBuilder builder, IConfiguration configuration)
     {
+        var configs = configuration.Get<Configs>();
         return builder.UseSerilog((context, logger) => //注册Serilog
         {
             //如要想使用setting配置方式，打开下面行注释。注释后面代码即可
@@ -29,35 +28,27 @@ public static class SerilogMiddleware
             logger.MinimumLevel.Override("Default", LogEventLevel.Information);
             logger.MinimumLevel.Override("System", LogEventLevel.Information);
 
+            if (AppSettings.IsDevelopment)
+            {
+                //开发模式下才输出到控制台
+                logger.WriteToConsole();
+            }
+
             foreach (LogEventLevel logEvent in Enum.GetValues(typeof(LogEventLevel)))
             {
-                logger.WriteTo.Logger(lg =>
-                    lg.Filter.ByIncludingOnly(p => p.Level == logEvent).WriteTo.Async(a =>
-                        a.File(Path.Combine(AppSettings.ContentRootPath, "Logs", logEvent.ToString(), ".log"),
-                            rollingInterval:
-                            RollingInterval.Day,
-                            outputTemplate:
-                            SerilogOutputTemplate, encoding:
-                            Encoding.UTF8)));
+                logger.WriteToFile(logEvent);
             }
 
-            var isQuickDebug = configuration["IsQuickDebug"].ToBool();
-            if (isQuickDebug)
+            if (configs.SqlLog.Enabled && configs.SqlLog.ToDb.Enabled)
             {
-                //开发环境下输出日志到控制台
-                logger.WriteTo.Console();
+                logger.WriteToDb();
             }
 
-            var elasticsearchEnabled = configuration["Middleware:Elasticsearch:Enabled"].ToBool();
-
-            //需要配置elasticsearch环境使用
-            //docker run --name elasticsearch -d -e ES_JAVA_OPTS="-Xms512m -Xmx512m" -e "discovery.type=single-node" -p 9200:9200 -p 9300:9300 elasticsearch:7.5.0
-            if (elasticsearchEnabled)
+            if (configs.Middleware.Elasticsearch.Enabled)
             {
-                logger.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://127.0.0.1:9200/"))
-                {
-                    AutoRegisterTemplate = true
-                });
+                //需要配置elasticsearch环境使用
+                //docker run --name elasticsearch -d -e ES_JAVA_OPTS="-Xms512m -Xmx512m" -e "discovery.type=single-node" -p 9200:9200 -p 9300:9300 elasticsearch:7.5.0
+                logger.WriteToElasticsearch();
             }
         });
     }

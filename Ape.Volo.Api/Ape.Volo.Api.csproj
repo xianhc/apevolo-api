@@ -1,56 +1,54 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
-    </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <DocumentationFile>Ape.Volo.Api.xml</DocumentationFile>
-        <NoWarn>1701;1702;1591</NoWarn>
-    </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>Ape.Volo.Api.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591</NoWarn>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <None Remove="index.html" />
-    </ItemGroup>
+  <ItemGroup>
+    <None Remove="index.html"/>
+  </ItemGroup>
 
-    <ItemGroup>
-        <EmbeddedResource Include="index.html" />
-    </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="index.html"/>
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.1" />
-        <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.3.8" />
-        <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.3.8" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.0" />
-        <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.1"/>
+    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.3.8"/>
+    <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.3.8"/>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.0"/>
+    <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0"/>
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Ape.Volo.Business\Ape.Volo.Business.csproj" />
-        <ProjectReference Include="..\Ape.Volo.Common\Ape.Volo.Common.csproj" />
-        <ProjectReference Include="..\Ape.Volo.EventBus\Ape.Volo.EventBus.csproj" />
-        <ProjectReference Include="..\Ape.Volo.QuartzNetService\Ape.Volo.QuartzNetService.csproj" />
-        <ProjectReference Include="..\Ape.Volo.Repository\Ape.Volo.Repository.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ape.Volo.Business\Ape.Volo.Business.csproj"/>
+    <ProjectReference Include="..\Ape.Volo.Common\Ape.Volo.Common.csproj"/>
+    <ProjectReference Include="..\Ape.Volo.EventBus\Ape.Volo.EventBus.csproj"/>
+    <ProjectReference Include="..\Ape.Volo.QuartzNetService\Ape.Volo.QuartzNetService.csproj"/>
+    <ProjectReference Include="..\Ape.Volo.Repository\Ape.Volo.Repository.csproj"/>
+  </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="MQ\Rabbit" />
-        <Folder Include="wwwroot\exportFile\" />
-    </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MQ\Rabbit"/>
+    <Folder Include="wwwroot\exportFile\"/>
+  </ItemGroup>
 
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\resources\lib\Crack\AsposeCells\Aspose.Cells.dll" />
-      <_ContentIncludedByDefault Remove="wwwroot\resources\lib\Crack\AsposeCells\readme.txt" />
-      <_ContentIncludedByDefault Remove="wwwroot\uploads\file\images\20231009100657_1711201552485584896.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\uploads\file\images\20231009101734_1711204223531618304.png" />
-    </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\uploads\file\images\20231009100657_1711201552485584896.png"/>
+    <_ContentIncludedByDefault Remove="wwwroot\uploads\file\images\20231009101734_1711204223531618304.png"/>
+  </ItemGroup>
 
-    <ProjectExtensions>
-        <VisualStudio>
-            <UserProperties appsettings_1json__JsonSchema="http://json.schemastore.org/band-manifest" />
-        </VisualStudio>
-    </ProjectExtensions>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties appsettings_1json__JsonSchema="http://json.schemastore.org/band-manifest"/>
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

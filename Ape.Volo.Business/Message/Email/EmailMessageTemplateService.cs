@@ -7,10 +7,10 @@ using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.WebApp;
+using Ape.Volo.Entity.Message.Email;
 using Ape.Volo.IBusiness.Dto.Message.Email;
 using Ape.Volo.IBusiness.Interface.Message.Email;
 using Ape.Volo.IBusiness.QueryModel;
-using ApeVolo.Entity.Message.Email;
 
 namespace Ape.Volo.Business.Message.Email;
 

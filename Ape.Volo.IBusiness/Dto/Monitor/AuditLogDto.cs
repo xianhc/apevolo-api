@@ -1,6 +1,6 @@
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Monitor;
 using Ape.Volo.IBusiness.Base;
-using ApeVolo.Entity.Monitor;
 
 namespace Ape.Volo.IBusiness.Dto.Monitor;
 

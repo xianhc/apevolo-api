@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 using Newtonsoft.Json;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
-[AutoMapping(typeof(ApeVolo.Entity.Permission.Role), typeof(RoleDto))]
+[AutoMapping(typeof(Role), typeof(RoleDto))]
 public class RoleDto : BaseEntityDto<long>
 {
     public string Name { get; set; }

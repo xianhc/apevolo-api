@@ -4,9 +4,9 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Ape.Volo.Common.Extention;
+using Ape.Volo.Entity.Message.Email;
 using Ape.Volo.IBusiness.Interface.Message.Email;
 using Ape.Volo.IBusiness.Interface.System;
-using ApeVolo.Entity.Message.Email;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 

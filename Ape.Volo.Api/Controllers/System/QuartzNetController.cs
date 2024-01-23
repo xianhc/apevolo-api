@@ -5,12 +5,12 @@ using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
+using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
 using Ape.Volo.IBusiness.Interface.System;
 using Ape.Volo.IBusiness.QueryModel;
 using Ape.Volo.IBusiness.RequestModel;
 using Ape.Volo.QuartzNetService.service;
-using ApeVolo.Entity.System;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 

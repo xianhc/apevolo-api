@@ -1,9 +1,10 @@
 ﻿using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.System;
 
-[AutoMapping(typeof(ApeVolo.Entity.System.FileRecord), typeof(FileRecordDto))]
+[AutoMapping(typeof(FileRecord), typeof(FileRecordDto))]
 public class FileRecordDto : BaseEntityDto<long>
 {
     public string Description { get; set; }

@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.System;
 
-[AutoMapping(typeof(ApeVolo.Entity.System.AppSecret), typeof(CreateUpdateAppSecretDto))]
+[AutoMapping(typeof(AppSecret), typeof(CreateUpdateAppSecretDto))]
 public class CreateUpdateAppSecretDto : BaseEntityDto<long>
 {
     public string AppId { get; set; }

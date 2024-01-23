@@ -258,10 +258,11 @@ public interface ISugarRepository<TEntity> where TEntity : class
     /// </summary>
     /// <param name="whereLambda">条件表达式</param>
     /// <param name="pagination">分页对象</param>
-    /// <param name="selectExpression"></param>
+    /// <param name="selectExpression">查询表达式</param>
+    /// /// <param name="isSplitTable">是否分表</param>
     /// <returns></returns>
     Task<List<TEntity>> QueryPageListAsync(Expression<Func<TEntity, bool>> whereLambda, Pagination pagination,
-        Expression<Func<TEntity, TEntity>> selectExpression = null);
+        Expression<Func<TEntity, TEntity>> selectExpression = null, bool isSplitTable = false);
 
     /// <summary>
     /// 实体列表 分页查询

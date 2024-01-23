@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
-[AutoMapping(typeof(ApeVolo.Entity.Permission.Menu), typeof(CreateUpdateMenuDto))]
+[AutoMapping(typeof(Menu), typeof(CreateUpdateMenuDto))]
 public class CreateUpdateMenuDto : BaseEntityDto<long>
 {
     [Required]

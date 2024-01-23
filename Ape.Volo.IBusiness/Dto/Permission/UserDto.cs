@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 using Newtonsoft.Json;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
-[AutoMapping(typeof(ApeVolo.Entity.Permission.User), typeof(UserDto))]
+[AutoMapping(typeof(User), typeof(UserDto))]
 public class UserDto : BaseEntityDto<long>
 {
     public UserDto()

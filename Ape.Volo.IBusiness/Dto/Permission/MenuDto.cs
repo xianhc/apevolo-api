@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
-[AutoMapping(typeof(ApeVolo.Entity.Permission.Menu), typeof(MenuDto))]
+[AutoMapping(typeof(Menu), typeof(MenuDto))]
 public class MenuDto : BaseEntityDto<long>
 {
     public string Title { get; set; }

@@ -1,8 +1,9 @@
 ﻿using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Permission;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
-[AutoMapping(typeof(ApeVolo.Entity.Permission.Department), typeof(DepartmentSmallDto))]
+[AutoMapping(typeof(Department), typeof(DepartmentSmallDto))]
 public class DepartmentSmallDto
 {
     public string Id { get; set; }

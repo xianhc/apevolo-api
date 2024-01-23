@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Ape.Volo.Common.Extention;
+using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Interface.System;
 using Ape.Volo.QuartzNetService.service;
-using ApeVolo.Entity.System;
 using Microsoft.Extensions.Logging;
 using Quartz;
 

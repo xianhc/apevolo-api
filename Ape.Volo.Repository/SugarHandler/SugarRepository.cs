@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extention;
@@ -19,7 +20,15 @@ public class SugarRepository<TEntity> : ISugarRepository<TEntity> where TEntity 
 {
     public SugarRepository(IUnitOfWork unitOfWork)
     {
-        SugarClient = unitOfWork.GetDbClient();
+        var sqlSugarScope = unitOfWork.GetDbClient();
+        var tenantAttribute = typeof(TEntity).GetCustomAttribute<TenantAttribute>();
+        if (tenantAttribute == null)
+        {
+            SugarClient = sqlSugarScope;
+            return;
+        }
+
+        SugarClient = sqlSugarScope.GetConnectionScope(tenantAttribute.configId.ToString()?.ToLower());
     }
 
     public ISqlSugarClient SugarClient { get; }
@@ -539,17 +548,23 @@ public class SugarRepository<TEntity> : ISugarRepository<TEntity> where TEntity 
     /// </summary>
     /// <param name="whereLambda">条件表达式</param>
     /// <param name="pagination">分页对象</param>
-    /// <param name="expression"></param>
+    /// <param name="selectExpression"></param>
+    /// <param name="isSplitTable">分表查询</param>
     /// <returns></returns>
     public async Task<List<TEntity>> QueryPageListAsync(Expression<Func<TEntity, bool>> whereLambda,
-        Pagination pagination, Expression<Func<TEntity, TEntity>> expression = null)
+        Pagination pagination, Expression<Func<TEntity, TEntity>> selectExpression = null, bool isSplitTable = false)
     {
         RefAsync<int> totalCount = 0;
         var query = SugarClient.Queryable<TEntity>();
         query = query.WhereIF(whereLambda != null, whereLambda);
-        if (expression != null)
+        if (selectExpression != null)
         {
-            query = query.Select(expression);
+            query = query.Select(selectExpression);
+        }
+
+        if (isSplitTable)
+        {
+            query = query.SplitTable();
         }
 
         query = query.OrderByIF(pagination.SortFields.Count > 0, string.Join(",", pagination.SortFields));

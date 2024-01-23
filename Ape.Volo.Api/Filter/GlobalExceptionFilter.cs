@@ -8,10 +8,11 @@ using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
+using Ape.Volo.Common.SnowflakeIdHelper;
 using Ape.Volo.Common.WebApp;
+using Ape.Volo.Entity.Monitor;
 using Ape.Volo.IBusiness.Interface.Monitor;
 using Ape.Volo.IBusiness.Interface.System;
-using ApeVolo.Entity.Monitor;
 using IP2Region.Net.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -49,7 +50,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         _logger = logger;
         _ipSearcher = searcher;
         _httpUser = httpUser;
-        _isMiniProfiler = (configs?.CurrentValue ?? new Configs()).IsMiniProfiler;
+        _isMiniProfiler = (configs?.CurrentValue ?? new Configs()).Middleware.MiniProfiler.Enabled;
     }
 
     public async Task OnExceptionAsync(ExceptionContext context)
@@ -103,7 +104,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 var log = CreateLog(context);
                 if (log.IsNotNull())
                 {
-                    await _exceptionLogService.AddEntityAsync(log);
+                    await _exceptionLogService.CreateAsync(log);
                 }
             }
             catch (Exception ex)
@@ -111,7 +112,6 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 _logger.LogCritical(WriteLog(context.HttpContext, remoteIp, ipAddress, ex, _httpUser.Account,
                     _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                     _browserDetector.Browser?.Version));
-                ConsoleHelper.WriteLine(ex.Message, ConsoleColor.Red);
             }
         }
     }
@@ -136,9 +136,9 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 .FirstOrDefault();
             log = new ExceptionLog
             {
-                // Id = IdHelper.GetLongId(),
-                // CreateBy = _httpUser.Account,
-                // CreateTime = DateTime.Now,
+                Id = IdHelper.GetLongId(),
+                CreateBy = _httpUser.Account,
+                CreateTime = DateTime.Now,
                 Area = routeValues["area"],
                 Controller = routeValues["controller"],
                 Action = routeValues["action"],

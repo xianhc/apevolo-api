@@ -2,8 +2,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Extention;
+using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Base;
-using ApeVolo.Entity.System;
 
 namespace Ape.Volo.IBusiness.Dto.System;
 

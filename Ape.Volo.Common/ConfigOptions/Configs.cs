@@ -67,36 +67,6 @@ public class Configs
 
     #endregion
 
-    #region 是否记录Sql日志
-
-    private bool? _isSqlLog;
-
-    /// <summary>
-    /// 是否记录Sql日志
-    /// </summary>
-    public bool IsSqlLog
-    {
-        get => _isSqlLog ?? false;
-        set => _isSqlLog = value;
-    }
-
-    #endregion
-
-    #region 是否输出sql到控制台
-
-    private bool? _isOutSqlToConsole;
-
-    /// <summary>
-    /// 是否开发模式
-    /// </summary>
-    public bool IsOutSqlToConsole
-    {
-        get => _isOutSqlToConsole ?? false;
-        set => _isOutSqlToConsole = value;
-    }
-
-    #endregion
-
     #region 默认DB
 
     private string _defaultDataBase;
@@ -106,8 +76,23 @@ public class Configs
     /// </summary>
     public string DefaultDataBase
     {
-        get => _defaultDataBase ?? "Ape.Volo.Sqlite";
+        get => _defaultDataBase ?? "Ape.Volo.Sqlite.Master";
         set => _defaultDataBase = value;
+    }
+
+    #endregion
+
+    #region 日志DB
+
+    private string _logDataBase;
+
+    /// <summary>
+    /// 默认DB
+    /// </summary>
+    public string LogDataBase
+    {
+        get => _logDataBase ?? "Ape.Volo.Sqlite.Log";
+        set => _logDataBase = value;
     }
 
     #endregion
@@ -399,7 +384,6 @@ public class Configs
 
     #endregion
 
-
     #region AOP
 
     private Aop _aop;
@@ -431,20 +415,6 @@ public class Configs
 
     #endregion
 
-    #region 性能分析
-
-    private bool? _isMiniProfiler;
-
-    /// <summary>
-    /// 性能分析
-    /// </summary>
-    public bool IsMiniProfiler
-    {
-        get => _isMiniProfiler ?? false;
-        set => _isMiniProfiler = value;
-    }
-
-    #endregion
 
     #region 文件上传大小限制
 
@@ -483,6 +453,46 @@ public class Configs
             return _swagger;
         }
         set => _swagger = value;
+    }
+
+    #endregion
+
+    #region 输入日志
+
+    private SqlLog _sqlLog;
+
+    /// <summary>
+    /// 输入日志
+    /// </summary>
+    public SqlLog SqlLog
+    {
+        get
+        {
+            if (_sqlLog == null)
+            {
+                _sqlLog = new SqlLog();
+                _sqlLog.Enabled = false;
+                _sqlLog.ToDb ??= new ToDb()
+                {
+                    Enabled = false
+                };
+                _sqlLog.ToFile ??= new ToFile()
+                {
+                    Enabled = false
+                };
+                _sqlLog.ToConsole ??= new ToConsole()
+                {
+                    Enabled = false
+                };
+                _sqlLog.ToElasticsearch ??= new ToElasticsearch()
+                {
+                    Enabled = false
+                };
+            }
+
+            return _sqlLog;
+        }
+        set => _sqlLog = value;
     }
 
     #endregion

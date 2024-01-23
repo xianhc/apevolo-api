@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
 using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Global;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.Vo;
-using ApeVolo.Entity.Permission;
 using SqlSugar;
 
 namespace Ape.Volo.Business.Permission;

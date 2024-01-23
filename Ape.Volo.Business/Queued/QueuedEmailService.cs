@@ -10,11 +10,11 @@ using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.WebApp;
+using Ape.Volo.Entity.Queued;
 using Ape.Volo.IBusiness.Dto.Queued;
 using Ape.Volo.IBusiness.Interface.Message.Email;
 using Ape.Volo.IBusiness.Interface.Queued;
 using Ape.Volo.IBusiness.QueryModel;
-using ApeVolo.Entity.Queued;
 
 namespace Ape.Volo.Business.Queued;
 

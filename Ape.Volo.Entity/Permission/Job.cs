@@ -1,8 +1,8 @@
 using Ape.Volo.Common.Model;
-using ApeVolo.Entity.Base;
+using Ape.Volo.Entity.Base;
 using SqlSugar;
 
-namespace ApeVolo.Entity.Permission;
+namespace Ape.Volo.Entity.Permission;
 
 /// <summary>
 /// 岗位

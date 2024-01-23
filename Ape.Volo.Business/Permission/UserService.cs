@@ -13,11 +13,11 @@ using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.SnowflakeIdHelper;
 using Ape.Volo.Common.WebApp;
+using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.ExportModel.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
-using ApeVolo.Entity.Permission;
 using Microsoft.AspNetCore.Http;
 using SqlSugar;
 

@@ -1,8 +1,9 @@
 ﻿using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Permission;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
-[AutoMapping(typeof(ApeVolo.Entity.Permission.Role), typeof(RoleSmallDto))]
+[AutoMapping(typeof(Role), typeof(RoleSmallDto))]
 public class RoleSmallDto
 {
     public long Id { get; set; }

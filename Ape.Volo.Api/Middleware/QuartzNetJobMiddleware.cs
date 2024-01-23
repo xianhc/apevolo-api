@@ -2,9 +2,9 @@
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper.Serilog;
+using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Interface.System;
 using Ape.Volo.QuartzNetService.service;
-using ApeVolo.Entity.System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

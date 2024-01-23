@@ -1,6 +1,6 @@
 ﻿using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Message.Email;
 using Ape.Volo.IBusiness.Base;
-using ApeVolo.Entity.Message.Email;
 
 namespace Ape.Volo.IBusiness.Dto.Message.Email;
 

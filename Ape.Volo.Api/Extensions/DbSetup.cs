@@ -1,6 +1,6 @@
 ﻿using System;
 using Ape.Volo.Common.Extention;
-using ApeVolo.Entity.Seed;
+using Ape.Volo.Entity.Seed;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Ape.Volo.Api.Extensions;

@@ -6,10 +6,10 @@ using Ape.Volo.Business.Base;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.WebApp;
+using Ape.Volo.Entity.Monitor;
 using Ape.Volo.IBusiness.Dto.Monitor;
 using Ape.Volo.IBusiness.Interface.Monitor;
 using Ape.Volo.IBusiness.QueryModel;
-using ApeVolo.Entity.Monitor;
 
 namespace Ape.Volo.Business.Monitor;
 
@@ -30,7 +30,8 @@ public class ExceptionLogService : BaseServices<ExceptionLog>, IExceptionLogServ
 
     public async Task<bool> CreateAsync(ExceptionLog exceptionLog)
     {
-        return await AddEntityAsync(exceptionLog);
+        //return await AddEntityAsync(exceptionLog);
+        return await SugarRepository.SugarClient.Insertable(exceptionLog).SplitTable().ExecuteCommandAsync() > 0;
     }
 
     public async Task<List<ExceptionLogDto>> QueryAsync(LogQueryCriteria logQueryCriteria, Pagination pagination)
@@ -47,7 +48,7 @@ public class ExceptionLogService : BaseServices<ExceptionLog>, IExceptionLogServ
                 l.CreateTime >= logQueryCriteria.CreateTime[0] && l.CreateTime <= logQueryCriteria.CreateTime[1]);
         }
 
-        var logs = await SugarRepository.QueryPageListAsync(whereLambda, pagination);
+        var logs = await SugarRepository.QueryPageListAsync(whereLambda, pagination, null, true);
         return ApeContext.Mapper.Map<List<ExceptionLogDto>>(logs);
     }
 

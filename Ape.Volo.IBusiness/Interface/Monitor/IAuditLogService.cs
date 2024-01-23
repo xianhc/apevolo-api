@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ape.Volo.Common.Model;
+using Ape.Volo.Entity.Monitor;
 using Ape.Volo.IBusiness.Base;
 using Ape.Volo.IBusiness.Dto.Monitor;
 using Ape.Volo.IBusiness.QueryModel;
-using ApeVolo.Entity.Monitor;
 
 namespace Ape.Volo.IBusiness.Interface.Monitor;
 

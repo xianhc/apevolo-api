@@ -1,7 +1,7 @@
 ﻿using System;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Entity.Queued;
 using Ape.Volo.IBusiness.Base;
-using ApeVolo.Entity.Queued;
 
 namespace Ape.Volo.IBusiness.Dto.Queued;
 

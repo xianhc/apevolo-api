@@ -1,13 +1,17 @@
+using System;
+using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
-using ApeVolo.Entity.Base;
+using Ape.Volo.Entity.Base;
 using SqlSugar;
 
-namespace ApeVolo.Entity.Monitor;
+namespace Ape.Volo.Entity.Monitor;
 
 /// <summary>
 /// 系统异常日志
 /// </summary>
-[SugarTable("log_exception")]
+[Tenant(SqlSugarConfig.LogId)]
+[SplitTable(SplitType.Month)]
+[SugarTable($@"{"log_exception"}_{{year}}{{month}}{{day}}")]
 public class ExceptionLog : BaseEntity, ISoftDeletedEntity
 {
     /// <summary>
@@ -111,6 +115,13 @@ public class ExceptionLog : BaseEntity, ISoftDeletedEntity
     /// </summary>
     [SugarColumn(IsNullable = true)]
     public string Version { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [SplitField]
+    [SugarColumn(IsNullable = true)]
+    public new DateTime CreateTime { get; set; }
 
     /// <summary>
     /// 是否已删除
