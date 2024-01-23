@@ -101,7 +101,8 @@ public static class LoggerOutExtensions
     {
         //只记录 Insert、Update、Delete语句
         return batch.Where(s =>
-                s.WithProperty<bool>(LoggerProperty.RecordSqlLog, q => q))
+                s.WithProperty<bool>(LoggerProperty.RecordSqlLog, q => q) &&
+                s.WithProperty<bool>(LoggerProperty.ToDb, q => q))
             .Where(s => s.WithProperty<SugarActionType>(LoggerProperty.SugarActionType,
                 q => !new[] { SugarActionType.UnKnown, SugarActionType.Query }.Contains(q))).ToList();
     }
