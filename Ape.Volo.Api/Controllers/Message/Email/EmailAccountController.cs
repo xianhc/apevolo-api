@@ -104,11 +104,11 @@ public class EmailAccountController : BaseApiController
         var emailAccountList = await _emailAccountService.QueryAsync(emailAccountQueryCriteria, pagination);
 
 
-        return new ActionResultVm<EmailAccountDto>
+        return JsonContent(new ActionResultVm<EmailAccountDto>
         {
             Content = emailAccountList,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     /// <summary>

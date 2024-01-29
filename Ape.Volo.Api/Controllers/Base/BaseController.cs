@@ -37,6 +37,22 @@ public class BaseController : Controller
 
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    protected ContentResult JsonContent(object obj)
+    {
+        return new ContentResult
+        {
+            Content = obj.ToJson(),
+            ContentType = "application/json; charset=utf-8",
+            StatusCode = StatusCodes.Status200OK
+        };
+    }
+
+
+    /// <summary>
     /// 返回成功
     /// </summary>
     /// <param name="msg">消息</param>

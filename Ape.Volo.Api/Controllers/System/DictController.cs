@@ -99,11 +99,11 @@ public class DictController : BaseApiController
     {
         var list = await _dictService.QueryAsync(dictQueryCriteria, pagination);
 
-        return new ActionResultVm<DictDto>
+        return JsonContent(new ActionResultVm<DictDto>
         {
             Content = list,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     /// <summary>

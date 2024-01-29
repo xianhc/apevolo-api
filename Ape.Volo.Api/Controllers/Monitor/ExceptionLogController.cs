@@ -51,11 +51,11 @@ public class ExceptionLogController : BaseApiController
     {
         var exceptionLogs = await _exceptionLogService.QueryAsync(logQueryCriteria, pagination);
 
-        return new ActionResultVm<ExceptionLogDto>
+        return JsonContent(new ActionResultVm<ExceptionLogDto>
         {
             Content = exceptionLogs,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     /// <summary>

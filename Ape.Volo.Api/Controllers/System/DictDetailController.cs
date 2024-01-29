@@ -102,11 +102,11 @@ public class DictDetailController : BaseApiController
         Pagination pagination)
     {
         var list = await _dictDetailService.QueryAsync(dictDetailQueryCriteria, pagination);
-        return new ActionResultVm<DictDetailDto>
+        return JsonContent(new ActionResultVm<DictDetailDto>
         {
             Content = list,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     #endregion

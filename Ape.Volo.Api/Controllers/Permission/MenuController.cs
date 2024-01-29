@@ -149,11 +149,11 @@ public class MenusController : BaseApiController
     public async Task<ActionResult<object>> Query(MenuQueryCriteria menuQueryCriteria)
     {
         var menuList = await _menuService.QueryAsync(menuQueryCriteria);
-        return new ActionResultVm<MenuDto>
+        return JsonContent(new ActionResultVm<MenuDto>
         {
             Content = menuList,
             TotalElements = menuList.Count
-        }.ToJson();
+        });
     }
 
 

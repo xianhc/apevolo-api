@@ -143,11 +143,11 @@ public class DeptController : BaseApiController
         var deptList = await _departmentService.QueryAsync(deptQueryCriteria, pagination);
 
 
-        return new ActionResultVm<DepartmentDto>
+        return JsonContent(new ActionResultVm<DepartmentDto>
         {
             Content = deptList,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     /// <summary>
@@ -185,11 +185,11 @@ public class DeptController : BaseApiController
 
         var deptList = await _departmentService.QuerySuperiorDeptAsync(idCollection.IdArray);
 
-        return new ActionResultVm<DepartmentDto>
+        return JsonContent(new ActionResultVm<DepartmentDto>
         {
             Content = deptList,
             TotalElements = deptList.Count
-        }.ToJson();
+        });
     }
 
     #endregion

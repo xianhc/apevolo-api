@@ -39,11 +39,11 @@ public class OnlineUserController : BaseApiController
     {
         var onlineUserList = await _onlineUserService.QueryAsync(pagination);
 
-        return new ActionResultVm<Common.WebApp.LoginUserInfo>
+        return JsonContent(new ActionResultVm<Common.WebApp.LoginUserInfo>
         {
             Content = onlineUserList,
             TotalElements = onlineUserList.Count
-        }.ToJson();
+        });
     }
 
     /// <summary>

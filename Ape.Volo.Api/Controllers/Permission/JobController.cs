@@ -105,12 +105,11 @@ public class JobController : BaseApiController
     public async Task<ActionResult<object>> Query(JobQueryCriteria jobQueryCriteria, Pagination pagination)
     {
         var jobList = await _jobService.QueryAsync(jobQueryCriteria, pagination);
-
-        return new ActionResultVm<JobDto>
+        return JsonContent(new ActionResultVm<JobDto>
         {
             Content = jobList,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     /// <summary>

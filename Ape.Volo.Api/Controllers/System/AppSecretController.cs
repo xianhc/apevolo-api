@@ -112,11 +112,11 @@ public class AppSecretController : BaseApiController
     {
         var appSecretList = await _appSecretService.QueryAsync(appsecretQueryCriteria, pagination);
 
-        return new ActionResultVm<AppSecretDto>
+        return JsonContent(new ActionResultVm<AppSecretDto>
         {
             Content = appSecretList,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
 

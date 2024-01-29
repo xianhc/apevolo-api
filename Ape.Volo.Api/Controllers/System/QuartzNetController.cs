@@ -164,11 +164,11 @@ public class QuartzNetController : BaseApiController
             quartzNet.TriggerStatus = await _schedulerCenterService.GetTriggerStatus(quartzNet);
         }
 
-        return new ActionResultVm<QuartzNetDto>
+        return JsonContent(new ActionResultVm<QuartzNetDto>
         {
             Content = quartzNetList,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     /// <summary>
@@ -304,11 +304,11 @@ public class QuartzNetController : BaseApiController
     {
         var quartzNetLogList = await _quartzNetLogService.QueryAsync(quartzNetLogQueryCriteria, pagination);
 
-        return new ActionResultVm<QuartzNetLogDto>
+        return JsonContent(new ActionResultVm<QuartzNetLogDto>
         {
             Content = quartzNetLogList,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     /// <summary>

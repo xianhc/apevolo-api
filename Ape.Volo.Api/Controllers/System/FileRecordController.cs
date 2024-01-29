@@ -116,11 +116,11 @@ public class FileRecordController : BaseApiController
     {
         var fileRecordList = await _fileRecordService.QueryAsync(fileRecordQueryCriteria, pagination);
 
-        return new ActionResultVm<FileRecordDto>
+        return JsonContent(new ActionResultVm<FileRecordDto>
         {
             Content = fileRecordList,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
 

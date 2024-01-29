@@ -138,11 +138,11 @@ public class RoleController : BaseApiController
     {
         var roleList = await _roleService.QueryAsync(roleQueryCriteria, pagination);
 
-        return new ActionResultVm<RoleDto>
+        return JsonContent(new ActionResultVm<RoleDto>
         {
             Content = roleList,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     /// <summary>

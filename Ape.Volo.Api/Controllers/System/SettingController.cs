@@ -111,11 +111,11 @@ public class SettingController : BaseApiController
     {
         var settingList = await _settingService.QueryAsync(settingQueryCriteria, pagination);
 
-        return new ActionResultVm<SettingDto>
+        return JsonContent(new ActionResultVm<SettingDto>
         {
             Content = settingList,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
 

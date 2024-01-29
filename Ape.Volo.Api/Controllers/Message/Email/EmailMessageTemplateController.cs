@@ -112,11 +112,11 @@ public class EmailMessageTemplateController : BaseApiController
         var emailMessageTemplateList =
             await _emailMessageTemplateService.QueryAsync(messageTemplateQueryCriteria, pagination);
 
-        return new ActionResultVm<EmailMessageTemplateDto>
+        return JsonContent(new ActionResultVm<EmailMessageTemplateDto>
         {
             Content = emailMessageTemplateList,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     #endregion

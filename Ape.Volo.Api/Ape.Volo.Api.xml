@@ -266,6 +266,13 @@
             <param name="vm"></param>
             <returns></returns>
         </member>
+        <member name="M:Ape.Volo.Api.Controllers.Base.BaseController.JsonContent(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
         <member name="M:Ape.Volo.Api.Controllers.Base.BaseController.Success(System.String)">
             <summary>
             返回成功

@@ -52,11 +52,11 @@ public class AuditingController : BaseApiController
     {
         var auditInfos = await _auditInfoService.QueryAsync(logQueryCriteria, pagination);
 
-        return new ActionResultVm<AuditLogDto>
+        return JsonContent(new ActionResultVm<AuditLogDto>
         {
             Content = auditInfos,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
 
@@ -73,11 +73,11 @@ public class AuditingController : BaseApiController
     {
         var auditInfos = await _auditInfoService.QueryByCurrentAsync(_httpUser.Account, pagination);
 
-        return new ActionResultVm<AuditLogDto>
+        return JsonContent(new ActionResultVm<AuditLogDto>
         {
             Content = auditInfos,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     #endregion

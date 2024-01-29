@@ -91,10 +91,10 @@ public class QueuedEmailController : BaseApiController
         var queuedEmailDtoList = await _queuedEmailService.QueryAsync(queuedEmailQueryCriteria, pagination);
 
 
-        return new ActionResultVm<QueuedEmailDto>
+        return JsonContent(new ActionResultVm<QueuedEmailDto>
         {
             Content = queuedEmailDtoList,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 }

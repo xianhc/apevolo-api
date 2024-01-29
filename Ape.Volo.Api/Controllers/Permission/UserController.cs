@@ -171,11 +171,11 @@ public class UserController : BaseApiController
         Pagination pagination)
     {
         var list = await _userService.QueryAsync(userQueryCriteria, pagination);
-        return new ActionResultVm<UserDto>
+        return JsonContent(new ActionResultVm<UserDto>
         {
             Content = list,
             TotalElements = pagination.TotalElements
-        }.ToJson();
+        });
     }
 
     /// <summary>
