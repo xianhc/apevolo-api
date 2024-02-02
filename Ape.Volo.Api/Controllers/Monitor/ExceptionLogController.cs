@@ -58,37 +58,5 @@ public class ExceptionLogController : BaseApiController
         });
     }
 
-    /// <summary>
-    /// 查看日志堆栈详情
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpGet]
-    [Route("detail/{id}")]
-    [Description("日志详细")]
-    [ApeVoloAuthorize(new[] { "admin", "log_list" })]
-    public async Task<ActionResult<object>> QueryDetail(string id)
-    {
-        if (id.IsNullOrEmpty())
-        {
-            return Error("id is null");
-        }
-
-        var newId = Convert.ToInt64(id);
-        var log = await _exceptionLogService.TableWhere(x => x.Id == newId).SingleAsync();
-        Dictionary<string, string> logDetail = new Dictionary<string, string>
-        {
-            {
-                "ExceptionInfoFull",
-                log.RequestUrl + "\r\n" +
-                log.RequestParameters + "\r\n" +
-                //log.ExceptionMessage + "\r\n" +
-                log.ExceptionMessageFull + "\r\n" +
-                log.ExceptionStack
-            }
-        };
-        return logDetail.ToJson();
-    }
-
     #endregion
 }
