@@ -137,7 +137,7 @@ public class AuditingFilter : IAsyncActionFilter
             Action = routeValues["action"],
             Method = httpContext.Request.Method,
             Description = descriptionAttribute?.Description,
-            RequestUrl = httpContext.Request.GetDisplayUrl(),
+            RequestUrl = httpContext.Request.Path,
             RequestParameters = arguments.ToJson(),
             RequestIp = remoteIp,
             IpAddress = _ipSearcher.Search(remoteIp),

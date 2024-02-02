@@ -144,7 +144,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 Action = routeValues["action"],
                 Method = httpContext.Request.Method,
                 Description = descriptionAttribute?.Description,
-                RequestUrl = httpContext.Request.GetDisplayUrl(),
+                RequestUrl = httpContext.Request.Path,
                 RequestParameters = arguments.ToJson(),
                 ExceptionMessage = context.Exception.Message,
                 ExceptionMessageFull = ExceptionHelper.GetExceptionAllMsg(context.Exception),
