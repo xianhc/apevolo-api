@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
 using Ape.Volo.Common.AttributeExt;
@@ -24,12 +23,9 @@ public class DeptController : BaseApiController
 {
     #region 构造函数
 
-    public DeptController(IDepartmentService departmentService, IRoleDeptService roleDeptService,
-        IUserService userService)
+    public DeptController(IDepartmentService departmentService)
     {
         _departmentService = departmentService;
-        _roleDeptService = roleDeptService;
-        _userService = userService;
     }
 
     #endregion
@@ -37,8 +33,6 @@ public class DeptController : BaseApiController
     #region 字段
 
     private readonly IDepartmentService _departmentService;
-    private readonly IRoleDeptService _roleDeptService;
-    private readonly IUserService _userService;
 
     #endregion
 
@@ -105,26 +99,7 @@ public class DeptController : BaseApiController
         }
 
         List<long> ids = new List<long>(idCollection.IdArray);
-        var allIds = await _departmentService.GetChildIds(ids, null);
-
-
-        var users = await _userService.QueryByDeptIdsAsync(allIds);
-        if (users.Any())
-        {
-            var dept = await _departmentService.QueryByIdAsync(users.FirstOrDefault()!.DeptId);
-            return Error($"所选部门({dept.Name})存在用户关联，请解除后再试！");
-        }
-
-
-        var rolesDepartments = await _roleDeptService.QueryByDeptIdsAsync(allIds);
-        if (rolesDepartments.Any())
-        {
-            var dept = await _departmentService.QueryByIdAsync(rolesDepartments.FirstOrDefault()!.DeptId);
-            return Error($"所选部门({dept.Name})存在角色关联，请解除后再试！");
-        }
-
-
-        await _departmentService.DeleteAsync(allIds);
+        await _departmentService.DeleteAsync(ids);
         return Success();
     }
 

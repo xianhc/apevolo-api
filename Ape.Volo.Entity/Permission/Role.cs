@@ -45,17 +45,26 @@ namespace Ape.Volo.Entity.Permission
         /// 菜单集合
         /// </summary>
         [SugarColumn(IsIgnore = true)]
+        [Navigate(typeof(RoleMenu), nameof(RoleMenu.RoleId), nameof(RoleMenu.MenuId))]
         public List<Menu> MenuList { get; set; }
 
         /// <summary>
         /// 部门集合
         /// </summary>
         [SugarColumn(IsIgnore = true)]
+        [Navigate(typeof(RolesDepartments), nameof(RolesDepartments.RoleId), nameof(RolesDepartments.DeptId))]
         public List<Department> DepartmentList { get; set; }
 
         /// <summary>
         /// 是否已删除
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        /// <summary>
+        /// 用户列表
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        [Navigate(typeof(UserRoles), nameof(UserRoles.RoleId), nameof(UserRoles.UserId))]
+        public List<User> Users { get; set; }
     }
 }

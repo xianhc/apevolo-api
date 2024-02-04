@@ -26,13 +26,6 @@ public interface IRoleService : IBaseServices<Role>
     #region 扩展接口
 
     /// <summary>
-    /// 根据用户ID获取角色
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    Task<List<RoleSmallDto>> QueryByUserIdAsync(long id);
-
-    /// <summary>
     /// 获取全部角色
     /// </summary>
     /// <returns></returns>

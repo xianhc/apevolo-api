@@ -62,23 +62,15 @@ public class JobService : BaseServices<Job>, IJobService
 
     public async Task<bool> DeleteAsync(HashSet<long> ids)
     {
-        var jobs = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
+        var jobs = await TableWhere(x => ids.Contains(x.Id)).Includes(x => x.Users).ToListAsync();
         if (jobs.Count < 1)
         {
             throw new BadRequestException("数据不存在！");
         }
 
-        var userJobs = await SugarRepository.QueryMuchAsync<UserJobs, User, UserJobs>(
-            (uj, u) => new object[]
-            {
-                JoinType.Left, uj.UserId == u.Id
-            },
-            (uj, u) => uj,
-            (uj, u) => ids.Contains(uj.JobId)
-        );
-        if (userJobs.Count > 0)
+        if (jobs.Any(job => job.Users != null && job.Users.Count != 0))
         {
-            throw new BadRequestException("数据被使用，无法删除");
+            throw new BadRequestException("存在用户关联，请解除后再试！");
         }
 
         return await LogicDelete<Job>(x => ids.Contains(x.Id)) > 0;

@@ -39,12 +39,6 @@ public interface IDepartmentService : IBaseServices<Department>
     /// <returns></returns>
     Task<DepartmentSmallDto> QueryByIdAsync(long id);
 
-    /// <summary>
-    /// 根据角色获取部门
-    /// </summary>
-    /// <param name="roleId"></param>
-    /// <returns></returns>
-    Task<List<DepartmentDto>> QueryByRoleIdAsync(long roleId);
 
     /// <summary>
     /// 获取子级所有部门

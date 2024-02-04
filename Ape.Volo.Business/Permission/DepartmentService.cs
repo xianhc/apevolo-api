@@ -118,27 +118,41 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     [UseTran]
     public async Task<bool> DeleteAsync(List<long> ids)
     {
-        var departmentList = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
-        if (departmentList.Any())
+        var allIds = await GetChildIds(ids, null);
+        var departmentList = await TableWhere(x => allIds.Contains(x.Id)).Includes(x => x.User).Includes(x => x.Roles)
+            .ToListAsync();
+        if (departmentList.Count < 1)
         {
-            await LogicDelete<Department>(x => ids.Contains(x.Id));
+            throw new BadRequestException("数据不存在！");
+        }
 
-            var pIds = departmentList.Select(x => x.ParentId);
+        if (departmentList.Any(dept => dept.User != null))
+        {
+            throw new BadRequestException("存在用户关联，请解除后再试！");
+        }
 
-            var updateDepartmentList = await TableWhere(x => pIds.Contains(x.Id)).ToListAsync();
+        if (departmentList.Any(dept => dept.Roles != null && dept.Roles.Count != 0))
+        {
+            throw new BadRequestException("存在角色关联，请解除后再试！");
+        }
 
-            if (updateDepartmentList.Any())
+        await LogicDelete<Department>(x => allIds.Contains(x.Id));
+
+        var pIds = departmentList.Select(x => x.ParentId);
+
+        var updateDepartmentList = await TableWhere(x => pIds.Contains(x.Id)).ToListAsync();
+
+        if (updateDepartmentList.Any())
+        {
+            foreach (var department in updateDepartmentList)
             {
-                foreach (var department in updateDepartmentList)
-                {
-                    var count = await SugarClient.Queryable<Department>().Where(x => x.ParentId == department.Id)
-                        .CountAsync();
-                    department.SubCount = count;
-                    // await UpdateEntityAsync(department);
-                }
-
-                await SugarRepository.UpdateColumnsAsync(updateDepartmentList, x => x.SubCount);
+                var count = await SugarClient.Queryable<Department>().Where(x => x.ParentId == department.Id)
+                    .CountAsync();
+                department.SubCount = count;
+                // await UpdateEntityAsync(department);
             }
+
+            await SugarRepository.UpdateColumnsAsync(updateDepartmentList, x => x.SubCount);
         }
 
         return true;
@@ -213,22 +227,6 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     {
         return ApeContext.Mapper.Map<DepartmentSmallDto>(await SugarRepository.QueryFirstAsync(x =>
             x.Id == id && x.Enabled));
-    }
-
-
-    public async Task<List<DepartmentDto>> QueryByRoleIdAsync(long roleId)
-    {
-        var departments =
-            await SugarRepository
-                .QueryMuchAsync<Department, RolesDepartments, Department>(
-                    (d, rd) => new object[]
-                    {
-                        JoinType.Left, d.Id == rd.DeptId
-                    }, (d, rd) => d,
-                    (d, rd) => roleId == rd.RoleId
-                );
-        departments = TreeHelper<Department>.SetLeafProperty(departments, "Id", "PId", 0);
-        return ApeContext.Mapper.Map<List<DepartmentDto>>(departments);
     }
 
     #endregion

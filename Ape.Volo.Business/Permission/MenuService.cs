@@ -25,15 +25,16 @@ public class MenuService : BaseServices<Menu>, IMenuService
 {
     #region 字段
 
-    private readonly IUserRolesService _userRolesService;
+    private readonly IUserService _userService;
 
     #endregion
 
     #region 构造函数
 
-    public MenuService(IUserRolesService userRolesService, ApeContext apeContext) : base(apeContext)
+    public MenuService(IUserService userService, ApeContext apeContext) :
+        base(apeContext)
     {
-        _userRolesService = userRolesService;
+        _userService = userService;
     }
 
     #endregion
@@ -288,9 +289,9 @@ public class MenuService : BaseServices<Menu>, IMenuService
     [UseCache(KeyPrefix = GlobalConstants.CacheKey.UserBuildMenuById)]
     public async Task<List<MenuTreeVo>> BuildTreeAsync(long userId)
     {
-        var userRoles = await _userRolesService.QueryAsync(userId);
+        var user = await _userService.QueryByIdAsync(userId);
         var roleIds = new List<long>();
-        roleIds.AddRange(userRoles.Select(r => r.RoleId));
+        roleIds.AddRange(user.Roles.Select(r => r.Id));
         var menuList = await SugarRepository.QueryMuchAsync<Menu, RoleMenu, MenuDto>(
             (m, rm) => new object[]
             {
@@ -460,40 +461,6 @@ public class MenuService : BaseServices<Menu>, IMenuService
         }
 
         return menuDtos;
-    }
-
-    /// <summary>
-    /// 根据角色获取菜单数据
-    /// </summary>
-    /// <param name="roleId"></param>
-    /// <returns></returns>
-    public async Task<List<MenuDto>> FindByRoleIdAsync(long roleId)
-    {
-        var menuList = await SugarRepository.QueryMuchAsync<Menu, RoleMenu, MenuDto>(
-            (m, rm) => new object[]
-            {
-                JoinType.Left, m.Id == rm.MenuId
-            }, (m, rm) => new MenuDto
-            {
-                Title = m.Title,
-                LinkUrl = m.LinkUrl,
-                Path = m.Path,
-                Permission = m.Permission,
-                IFrame = m.IFrame,
-                Component = m.Component,
-                ComponentName = m.ComponentName,
-                ParentId = m.ParentId,
-                Sort = m.Sort,
-                Icon = m.Icon,
-                Type = m.Type,
-                IsDeleted = m.IsDeleted,
-                Id = m.Id,
-                CreateTime = m.CreateTime,
-                CreateBy = m.CreateBy
-            },
-            (m, rm) => roleId == rm.RoleId
-        );
-        return menuList;
     }
 
     private async Task<List<long>> GetParentIdsAsync(Menu m, List<long> parentIds)

@@ -36,12 +36,6 @@ public interface IMenuService : IBaseServices<Menu>
     /// <returns></returns>
     Task<List<MenuDto>> FindByPIdAsync(long pid = 0);
 
-    /// <summary>
-    /// 根据角色ID获取菜单
-    /// </summary>
-    /// <param name="roleId"></param>
-    /// <returns></returns>
-    Task<List<MenuDto>> FindByRoleIdAsync(long roleId);
 
     /// <summary>
     /// 构建前端菜单树

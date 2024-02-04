@@ -32,7 +32,6 @@ public class UserService : BaseServices<User>, IUserService
 
     private readonly IDepartmentService _departmentService;
     private readonly IRoleService _roleService;
-    private readonly IJobService _jobService;
     private readonly IDataScopeService _dataScopeService;
 
     #endregion
@@ -40,11 +39,10 @@ public class UserService : BaseServices<User>, IUserService
     #region 构造函数
 
     public UserService(IDepartmentService departmentService, ApeContext apeContext,
-        IRoleService roleService, IJobService jobService, IDataScopeService dataScopeService) : base(apeContext)
+        IRoleService roleService, IDataScopeService dataScopeService) : base(apeContext)
     {
         _departmentService = departmentService;
         _roleService = roleService;
-        _jobService = jobService;
         _dataScopeService = dataScopeService;
     }
 
@@ -108,7 +106,7 @@ public class UserService : BaseServices<User>, IUserService
     public async Task<bool> UpdateAsync(CreateUpdateUserDto createUpdateUserDto)
     {
         //取出待更新数据
-        var oldUser = await TableWhere(x => x.Id == createUpdateUserDto.Id).FirstAsync();
+        var oldUser = await TableWhere(x => x.Id == createUpdateUserDto.Id).Includes(x => x.Roles).FirstAsync();
         if (oldUser.IsNull())
         {
             throw new BadRequestException("数据不存在！");
@@ -133,7 +131,7 @@ public class UserService : BaseServices<User>, IUserService
         }
 
         //验证角色等级
-        var levels = (await _roleService.QueryByUserIdAsync(oldUser.Id)).Select(x => x.Level);
+        var levels = oldUser.Roles.Select(x => x.Level);
         await _roleService.VerificationUserRoleLevelAsync(levels.Min());
         var user = ApeContext.Mapper.Map<User>(createUpdateUserDto);
         user.DeptId = user.Dept.Id;
@@ -162,18 +160,7 @@ public class UserService : BaseServices<User>, IUserService
         await SugarClient.Insertable(userJobs).ExecuteCommandAsync();
 
         //清理缓存
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
-                                           user.Id.ToString().ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoByName +
-                                           user.Username.ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserRolesById +
-                                           user.Id.ToString().ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserJobsById +
-                                           user.Id.ToString().ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(
-            GlobalConstants.CacheKey.UserPermissionById + user.Id.ToString().ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserBuildMenuById +
-                                           user.Id.ToString().ToMd5String16());
+        await ClearUserCache(user);
         return true;
     }
 
@@ -206,21 +193,10 @@ public class UserService : BaseServices<User>, IUserService
         var whereExpression = await GetWhereExpression(userQueryCriteria);
         Expression<Func<User, Department>> navigationExpression =
             user => user.Dept;
-        Expression<Func<User, List<UserJobs>>> navigationUserJobs = user => user.UserJobList;
-        Expression<Func<User, List<UserRoles>>> navigationUserRoles = user => user.UserRoleList;
+        Expression<Func<User, List<Role>>> navigationUserRoles = user => user.Roles;
+        Expression<Func<User, List<Job>>> navigationUserJobs = user => user.Jobs;
         var users = await SugarRepository.QueryPageListAsync(whereExpression, pagination, null, navigationExpression,
             navigationUserJobs, navigationUserRoles);
-        foreach (var user in users)
-        {
-            user.DeptId = 0;
-            //岗位
-            var jobIds = user.UserJobList.Select(j => j.JobId).ToList();
-            user.Jobs = await _jobService.TableWhere(x => jobIds.Contains(x.Id)).ToListAsync();
-
-            //角色
-            var roleIds = user.UserRoleList.Select(r => r.RoleId).ToList();
-            user.Roles = await _roleService.TableWhere(x => roleIds.Contains(x.Id)).ToListAsync();
-        }
 
         return ApeContext.Mapper.Map<List<UserDto>>(users);
     }
@@ -233,22 +209,10 @@ public class UserService : BaseServices<User>, IUserService
         var whereExpression = await GetWhereExpression(userQueryCriteria);
         Expression<Func<User, Department>> navigationExpression =
             user => user.Dept;
-        Expression<Func<User, List<UserJobs>>> navigationUserJobs = user => user.UserJobList;
-        Expression<Func<User, List<UserRoles>>> navigationUserRoles = user => user.UserRoleList;
+        Expression<Func<User, List<Role>>> navigationUserRoles = user => user.Roles;
+        Expression<Func<User, List<Job>>> navigationUserJobs = user => user.Jobs;
         var users = await Table.Includes(navigationExpression).Includes(navigationUserJobs)
             .Includes(navigationUserRoles).WhereIF(whereExpression != null, whereExpression).ToListAsync();
-        foreach (var user in users)
-        {
-            user.DeptId = 0;
-            //岗位
-            var jobIds = user.UserJobList.Select(j => j.JobId).ToList();
-            user.Jobs = await _jobService.TableWhere(x => jobIds.Contains(x.Id)).ToListAsync();
-
-            //角色
-            var roleIds = user.UserRoleList.Select(r => r.RoleId).ToList();
-            user.Roles = await _roleService.TableWhere(x => roleIds.Contains(x.Id)).ToListAsync();
-        }
-
         List<ExportBase> userExports = new List<ExportBase>();
         userExports.AddRange(users.Select(x => new UserExport()
         {
@@ -274,17 +238,10 @@ public class UserService : BaseServices<User>, IUserService
     [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.UserInfoById)]
     public async Task<UserDto> QueryByIdAsync(long userId)
     {
-        UserDto userDto = null;
-        var user = await TableWhere(x => x.Id == userId).FirstAsync();
+        var user = await TableWhere(x => x.Id == userId).Includes(x => x.Dept).Includes(x => x.Roles)
+            .Includes(x => x.Jobs).FirstAsync();
 
-
-        if (user != null)
-        {
-            userDto = ApeContext.Mapper.Map<UserDto>(user);
-            await AddUserAttributes(userDto);
-        }
-
-        return userDto;
+        return ApeContext.Mapper.Map<UserDto>(user);
     }
 
     /// <summary>
@@ -298,29 +255,14 @@ public class UserService : BaseServices<User>, IUserService
         User user;
         if (userName.IsEmail())
         {
-            user = await SugarRepository.QueryFirstAsync(s => s.Email == userName);
+            user = await TableWhere(s => s.Email == userName).FirstAsync();
         }
         else
         {
-            user = await SugarRepository.QueryFirstAsync(s => s.Username == userName);
+            user = await TableWhere(s => s.Username == userName).FirstAsync();
         }
 
         return ApeContext.Mapper.Map<UserDto>(user);
-    }
-
-
-    public async Task<List<UserDto>> QueryByRoleIdAsync(long roleId)
-    {
-        var users =
-            await SugarRepository.QueryMuchAsync<User, UserRoles, User>(
-                (u, ur) => new object[]
-                {
-                    JoinType.Left, u.Id == ur.UserId,
-                },
-                (u, ur) => u,
-                (u, ur) => ur.RoleId == roleId
-            );
-        return ApeContext.Mapper.Map<List<UserDto>>(users);
     }
 
     /// <summary>
@@ -466,33 +408,7 @@ public class UserService : BaseServices<User>, IUserService
 
     #endregion
 
-    #region 私有方法  补充用户属性
-
-    private async Task AddUserAttributes(UserDto userDto)
-    {
-        //补充部门岗位属性
-        var dept = await _departmentService.QueryByIdAsync(userDto.DeptId);
-        userDto.Dept = dept;
-        userDto.Jobs = await GetJobListAsync(userDto.Id);
-        //用户角色
-        userDto.Roles.AddRange(await _roleService.QueryByUserIdAsync(userDto.Id));
-    }
-
-    private async Task<List<JobSmallDto>> GetJobListAsync(long userId)
-    {
-        var jobs = await SugarRepository
-            .QueryMuchAsync<User, UserJobs, Job, Job>(
-                (u, uj, j) => new object[]
-                {
-                    JoinType.Left, u.Id == uj.UserId,
-                    JoinType.Left, uj.JobId == j.Id
-                },
-                (u, uj, j) => j,
-                (u, uj, j) => u.Id == userId
-            );
-        return ApeContext.Mapper.Map<List<JobSmallDto>>(jobs);
-    }
-
+    #region 用户缓存
 
     private async Task ClearUserCache(User user)
     {
@@ -550,7 +466,7 @@ public class UserService : BaseServices<User>, IUserService
         }
 
         //数据权限 
-        if (!ApeContext.LoginUserInfo.IsNotNull())
+        if (ApeContext.LoginUserInfo.IsNotNull())
         {
             List<long> deptIds =
                 await _dataScopeService.GetDataScopeDeptList(ApeContext.LoginUserInfo.UserId,

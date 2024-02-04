@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.Base;
 using SqlSugar;
@@ -32,4 +33,12 @@ public class Job : BaseEntity, ISoftDeletedEntity
     /// 是否已删除
     /// </summary>
     public bool IsDeleted { get; set; }
+
+
+    /// <summary>
+    /// 用户列表
+    /// </summary>
+    [SugarColumn(IsIgnore = true)]
+    [Navigate(typeof(UserJobs), nameof(UserJobs.JobId), nameof(UserJobs.UserId))]
+    public List<User> Users { get; set; }
 }

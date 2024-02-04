@@ -26,25 +26,12 @@ public class RoleService : BaseServices<Role>, IRoleService
 {
     #region 字段
 
-    private readonly IMenuService _menuService;
-    private readonly IRolesMenusService _rolesMenusService;
-    private readonly IUserRolesService _userRolesService;
-    private readonly IDepartmentService _departmentService;
-    private readonly IRoleDeptService _roleDeptService;
-
     #endregion
 
     #region 构造函数
 
-    public RoleService(IMenuService menuService, IDepartmentService departmentService
-        , IRolesMenusService rolesMenusService, IUserRolesService userRolesService,
-        IRoleDeptService roleDeptService, ApeContext apeContext) : base(apeContext)
+    public RoleService(ApeContext apeContext) : base(apeContext)
     {
-        _menuService = menuService;
-        _departmentService = departmentService;
-        _rolesMenusService = rolesMenusService;
-        _userRolesService = userRolesService;
-        _roleDeptService = roleDeptService;
     }
 
     #endregion
@@ -73,7 +60,7 @@ public class RoleService : BaseServices<Role>, IRoleService
             var roleDepts = new List<RolesDepartments>();
             roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RolesDepartments
                 { RoleId = role.Id, DeptId = rd.Id }));
-            await _roleDeptService.CreateAsync(roleDepts);
+            await SugarClient.Insertable(roleDepts).ExecuteCommandAsync();
         }
 
         return true;
@@ -106,13 +93,13 @@ public class RoleService : BaseServices<Role>, IRoleService
         await UpdateEntityAsync(role);
 
         //删除部门权限关联
-        await _roleDeptService.DeleteByRoleIdAsync(role.Id);
+        await SugarClient.Deleteable<RolesDepartments>().Where(x => x.RoleId == role.Id).ExecuteCommandAsync();
         if (!createUpdateRoleDto.Depts.IsNullOrEmpty() && createUpdateRoleDto.Depts.Count > 0)
         {
             var roleDepts = new List<RolesDepartments>();
             roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RolesDepartments
                 { RoleId = role.Id, DeptId = rd.Id }));
-            await _roleDeptService.CreateAsync(roleDepts);
+            await SugarClient.Insertable(roleDepts).ExecuteCommandAsync();
         }
 
         return true;
@@ -122,7 +109,19 @@ public class RoleService : BaseServices<Role>, IRoleService
     public async Task<bool> DeleteAsync(HashSet<long> ids)
     {
         //返回用户列表的最大角色等级
-        var roles = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
+        var roles = await TableWhere(x => ids.Contains(x.Id)).Includes(x => x.Users).ToListAsync();
+        int userCount = 0;
+        if (roles.Any(role => role.Users != null && role.Users.Count != 0))
+        {
+            userCount++;
+        }
+
+        if (userCount > 0)
+        {
+            throw new BadRequestException("存在用户关联，请解除后再试！");
+        }
+
+
         List<int> levels = new List<int>();
         levels.AddRange(roles.Select(x => x.Level).ToList());
         int minLevel = levels.Min();
@@ -136,20 +135,13 @@ public class RoleService : BaseServices<Role>, IRoleService
     public async Task<List<RoleDto>> QueryAsync(RoleQueryCriteria roleQueryCriteria, Pagination pagination)
     {
         var whereExpression = GetWhereExpression(roleQueryCriteria);
-        var roleList = await SugarRepository.QueryPageListAsync(whereExpression, pagination);
-        foreach (var role in roleList)
-        {
-            //菜单
-            var menus = ApeContext.Mapper.Map<List<Menu>>(
-                await _menuService.FindByRoleIdAsync(role.Id));
-            role.MenuList = menus;
+        Expression<Func<Role, List<Menu>>> navigationUserMenus = role => role.MenuList;
+        Expression<Func<Role, List<Department>>> navigationUserDepts = role => role.DepartmentList;
 
-            //部门
-            var departments =
-                ApeContext.Mapper.Map<List<Department>>(
-                    await _departmentService.QueryByRoleIdAsync(role.Id));
-            role.DepartmentList = departments;
-        }
+        var roleList =
+            await SugarRepository.QueryPageListAsync<Role, Menu, Department>(whereExpression, pagination,
+                null, null, navigationUserMenus,
+                navigationUserDepts);
 
         return ApeContext.Mapper.Map<List<RoleDto>>(roleList);
     }
@@ -162,21 +154,7 @@ public class RoleService : BaseServices<Role>, IRoleService
     public async Task<List<ExportBase>> DownloadAsync(RoleQueryCriteria roleQueryCriteria)
     {
         var whereExpression = GetWhereExpression(roleQueryCriteria);
-        var roles = await TableWhere(whereExpression).ToListAsync();
-        foreach (var role in roles)
-        {
-            //菜单
-            var menus = ApeContext.Mapper.Map<List<Menu>>(
-                await _menuService.FindByRoleIdAsync(role.Id));
-            role.MenuList = menus;
-
-            //部门
-            var departments =
-                ApeContext.Mapper.Map<List<Department>>(
-                    await _departmentService.QueryByRoleIdAsync(role.Id));
-            role.DepartmentList = departments;
-        }
-
+        var roles = await TableWhere(whereExpression).Includes(x => x.DepartmentList).ToListAsync();
         List<ExportBase> roleExports = new List<ExportBase>();
         roleExports.AddRange(roles.Select(x => new RoleExport()
         {
@@ -196,41 +174,9 @@ public class RoleService : BaseServices<Role>, IRoleService
 
     #region 扩展方法
 
-    /// <summary>
-    /// 获取用户全部角色
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    public async Task<List<RoleSmallDto>> QueryByUserIdAsync(long id)
-    {
-        var roleSmallList =
-            await SugarRepository.QueryMuchAsync<Role, UserRoles, Role>(
-                (r, ur) => new object[]
-                {
-                    JoinType.Left, r.Id == ur.RoleId
-                },
-                (r, ur) => r,
-                (r, ur) => ur.UserId == id
-            );
-
-        return ApeContext.Mapper.Map<List<RoleSmallDto>>(roleSmallList);
-    }
-
     public async Task<List<RoleDto>> QueryAllAsync()
     {
-        var roleList = await SugarRepository.QueryListAsync();
-        foreach (var role in roleList)
-        {
-            //菜单
-            var menus = ApeContext.Mapper.Map<List<Menu>>(
-                await _menuService.FindByRoleIdAsync(role.Id));
-            role.MenuList = menus;
-
-            //部门
-            var depts = ApeContext.Mapper.Map<List<Department>>(
-                await _departmentService.QueryByRoleIdAsync(role.Id));
-            role.DepartmentList = depts;
-        }
+        var roleList = await TableWhere().Includes(x => x.MenuList).Includes(x => x.DepartmentList).ToListAsync();
 
         return ApeContext.Mapper.Map<List<RoleDto>>(roleList);
     }
@@ -278,7 +224,7 @@ public class RoleService : BaseServices<Role>, IRoleService
     [UseTran]
     public async Task<bool> UpdateRolesMenusAsync(CreateUpdateRoleDto createUpdateRoleDto)
     {
-        var role = await TableWhere(x => x.Id == createUpdateRoleDto.Id).SingleAsync();
+        var role = await TableWhere(x => x.Id == createUpdateRoleDto.Id).Includes(x => x.Users).SingleAsync();
         await VerificationUserRoleLevelAsync(role.Level);
 
 
@@ -289,16 +235,15 @@ public class RoleService : BaseServices<Role>, IRoleService
             roleMenus.AddRange(createUpdateRoleDto.Menus.Select(rm => new RoleMenu
                 { RoleId = role.Id, MenuId = rm.Id }));
 
-            await _rolesMenusService.SugarClient.Deleteable<RoleMenu>(x => x.RoleId == role.Id).ExecuteCommandAsync();
-            await _rolesMenusService.SugarClient.Insertable<RoleMenu>(roleMenus).ExecuteCommandAsync();
+            await SugarClient.Deleteable<RoleMenu>().Where(x => x.RoleId == role.Id).ExecuteCommandAsync();
+            await SugarClient.Insertable(roleMenus).ExecuteCommandAsync();
         }
 
-        //获取所有用户  删除缓存
-        var userRoles = await _userRolesService.QueryByRoleIdsAsync(new HashSet<long> { role.Id });
-        foreach (var ur in userRoles)
+        //删除用户缓存
+        foreach (var user in role.Users)
         {
             await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserPermissionById +
-                                               ur.UserId.ToString().ToMd5String16());
+                                               user.Id.ToString().ToMd5String16());
         }
 
         return true;

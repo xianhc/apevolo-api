@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.Base;
 using SqlSugar;
@@ -44,5 +45,19 @@ namespace Ape.Volo.Entity.Permission
         /// 是否已删除
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        /// <summary>
+        /// 用户
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        [Navigate(NavigateType.OneToOne, nameof(Id), nameof(User.DeptId))]
+        public User User { get; set; }
+
+        /// <summary>
+        /// 用户集合
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        [Navigate(typeof(RolesDepartments), nameof(RolesDepartments.DeptId), nameof(RolesDepartments.RoleId))]
+        public List<Role> Roles { get; set; }
     }
 }

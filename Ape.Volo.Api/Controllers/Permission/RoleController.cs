@@ -11,6 +11,7 @@ using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
 using Ape.Volo.IBusiness.RequestModel;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ape.Volo.Api.Controllers.Permission;
@@ -25,16 +26,21 @@ public class RoleController : BaseApiController
     #region 字段
 
     private readonly IRoleService _roleService;
-    private readonly IUserRolesService _userRolesService;
+    private readonly IMapper _mapper;
 
     #endregion
 
     #region 构造函数
 
-    public RoleController(IRoleService roleService, IUserRolesService userRolesService)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="roleService"></param>
+    /// <param name="mapper"></param>
+    public RoleController(IRoleService roleService, IMapper mapper)
     {
         _roleService = roleService;
-        _userRolesService = userRolesService;
+        _mapper = mapper;
     }
 
     #endregion
@@ -97,13 +103,6 @@ public class RoleController : BaseApiController
             return Error(actionError);
         }
 
-        //检查待删除的角色是否有用户存在
-        var userRoles = await _userRolesService.QueryByRoleIdsAsync(idCollection.IdArray);
-        if (!userRoles.IsNullOrEmpty() && userRoles.Count > 0)
-        {
-            return Error("数据被使用，无法删除");
-        }
-
         await _roleService.DeleteAsync(idCollection.IdArray);
         return Success();
     }
@@ -120,8 +119,9 @@ public class RoleController : BaseApiController
     public async Task<ActionResult<object>> QuerySingle(string id)
     {
         var newId = Convert.ToInt64(id);
-        var role = await _roleService.TableWhere(x => x.Id == newId).SingleAsync();
-        return role.ToJson();
+        var role = await _roleService.TableWhere(x => x.Id == newId).Includes(x => x.MenuList)
+            .Includes(x => x.DepartmentList).SingleAsync();
+        return _mapper.Map<RoleDto>(role).ToJson();
     }
 
     /// <summary>

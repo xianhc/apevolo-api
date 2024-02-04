@@ -98,31 +98,18 @@ namespace Ape.Volo.Entity.Permission
         [Navigate(NavigateType.OneToOne, nameof(DeptId))]
         public Department Dept { get; set; }
 
-
-        /// <summary>
-        /// 用户角色集合
-        /// </summary>
-        [SugarColumn(IsIgnore = true)]
-        [Navigate(NavigateType.OneToMany, nameof(UserRoles.UserId))]
-        public List<UserRoles> UserRoleList { get; set; }
-
         /// <summary>
         /// 角色集合
         /// </summary>
         [SugarColumn(IsIgnore = true)]
+        [Navigate(typeof(UserRoles), nameof(UserRoles.UserId), nameof(UserRoles.RoleId))]
         public List<Role> Roles { get; set; }
-
-        /// <summary>
-        /// 用户岗位集合
-        /// </summary>
-        [SugarColumn(IsIgnore = true)]
-        [Navigate(NavigateType.OneToMany, nameof(UserJobs.UserId))]
-        public List<UserJobs> UserJobList { get; set; }
 
         /// <summary>
         /// 岗位集合
         /// </summary>
         [SugarColumn(IsIgnore = true)]
+        [Navigate(typeof(UserJobs), nameof(UserJobs.UserId), nameof(UserJobs.JobId))]
         public List<Job> Jobs { get; set; }
 
         #endregion

@@ -40,20 +40,7 @@ public interface IUserService : IBaseServices<User>
     /// <param name="userName">用户名</param>
     /// <returns>用户实体</returns>
     Task<UserDto> QueryByNameAsync(string userName);
-    // /// <summary>
-    // /// 用户岗位列表
-    // /// </summary>
-    // /// <param name="userId"></param>
-    // /// <returns></returns>
-    // Task<List<JobSmallDto>> GetJobListAsync(string userId);
 
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="roleId"></param>
-    /// <returns></returns>
-    Task<List<UserDto>> QueryByRoleIdAsync(long roleId);
 
     /// <summary>
     /// 根据部门ID查找用户
