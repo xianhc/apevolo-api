@@ -34,8 +34,12 @@ public static class SwaggerSetup
 
             try
             {
-                var xmlPath = Path.Combine(basePath, "Ape.Volo.Api.xml");
-                c.IncludeXmlComments(xmlPath, true);
+                var apiXml = Path.Combine(basePath, "Ape.Volo.Api.xml");
+                var commonXml = Path.Combine(basePath, "Ape.Volo.Common.xml");
+                var iBusinessXml = Path.Combine(basePath, "Ape.Volo.IBusiness.xml");
+                c.IncludeXmlComments(apiXml, true);
+                c.IncludeXmlComments(commonXml, true);
+                c.IncludeXmlComments(iBusinessXml, true);
             }
             catch (Exception ex)
             {

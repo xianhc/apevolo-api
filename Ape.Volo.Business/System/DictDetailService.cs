@@ -31,7 +31,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
     public async Task<bool> CreateAsync(CreateUpdateDictDetailDto createUpdateDictDetailDto)
     {
         if (await TableWhere(dd =>
-                dd.DictId == createUpdateDictDetailDto.dict.Id &&
+                dd.DictId == createUpdateDictDetailDto.Dict.Id &&
                 dd.Label == createUpdateDictDetailDto.Label &&
                 dd.Value == createUpdateDictDetailDto.Value).AnyAsync())
         {
@@ -39,7 +39,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
         }
 
         var dictDetail = ApeContext.Mapper.Map<DictDetail>(createUpdateDictDetailDto);
-        dictDetail.DictId = createUpdateDictDetailDto.dict.Id;
+        dictDetail.DictId = createUpdateDictDetailDto.Dict.Id;
         return await AddEntityAsync(dictDetail);
     }
 
@@ -51,7 +51,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
         }
 
         var dictDetail = ApeContext.Mapper.Map<DictDetail>(createUpdateDictDetailDto);
-        dictDetail.DictId = createUpdateDictDetailDto.dict.Id;
+        dictDetail.DictId = createUpdateDictDetailDto.Dict.Id;
         return await UpdateEntityAsync(dictDetail);
     }
 

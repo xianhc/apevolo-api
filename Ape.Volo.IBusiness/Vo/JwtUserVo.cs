@@ -8,14 +8,18 @@ namespace Ape.Volo.IBusiness.Vo;
 /// </summary>
 public class JwtUserVo
 {
-    //public List<RoleSmallDto> Roles { get; set; }
+    /// <summary>
+    /// 用户
+    /// </summary>
     public UserDto User { get; set; }
 
+    /// <summary>
+    /// 角色权限
+    /// </summary>
     public List<string> Roles { get; set; }
 
-    //public DepartmentSmallDto Dept { get; set; }
-
-    // public List<JobSmallDto> Jobs { get; set; }
-
+    /// <summary>
+    /// 部门权限
+    /// </summary>
     public List<string> DataScopes { get; set; }
 }

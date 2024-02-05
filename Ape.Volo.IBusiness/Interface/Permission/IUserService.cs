@@ -16,11 +16,40 @@ public interface IUserService : IBaseServices<User>
 {
     #region 基础接口
 
+    /// <summary>
+    /// 创建
+    /// </summary>
+    /// <param name="createUpdateUserDto"></param>
+    /// <returns></returns>
     Task<bool> CreateAsync(CreateUpdateUserDto createUpdateUserDto);
+
+    /// <summary>
+    /// 更新
+    /// </summary>
+    /// <param name="createUpdateUserDto"></param>
+    /// <returns></returns>
     Task<bool> UpdateAsync(CreateUpdateUserDto createUpdateUserDto);
+
+    /// <summary>
+    /// 删除
+    /// </summary>
+    /// <param name="ids"></param>
+    /// <returns></returns>
     Task<bool> DeleteAsync(HashSet<long> ids);
+
+    /// <summary>
+    /// 查询
+    /// </summary>
+    /// <param name="userQueryCriteria"></param>
+    /// <param name="pagination"></param>
+    /// <returns></returns>
     Task<List<UserDto>> QueryAsync(UserQueryCriteria userQueryCriteria, Pagination pagination);
 
+    /// <summary>
+    /// 下载
+    /// </summary>
+    /// <param name="userQueryCriteria"></param>
+    /// <returns></returns>
     Task<List<ExportBase>> DownloadAsync(UserQueryCriteria userQueryCriteria);
 
     #endregion

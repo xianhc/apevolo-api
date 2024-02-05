@@ -7,6 +7,9 @@ namespace Ape.Volo.Common.Model;
 /// </summary>
 public class Pagination
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public Pagination()
     {
         PageIndex = 1;

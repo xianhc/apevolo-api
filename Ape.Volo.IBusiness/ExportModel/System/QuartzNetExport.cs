@@ -5,6 +5,9 @@ using Ape.Volo.Common.Model;
 
 namespace Ape.Volo.IBusiness.ExportModel.System;
 
+/// <summary>
+/// 任务调度导出模板
+/// </summary>
 public class QuartzNetExport : ExportBase
 {
     /// <summary>

@@ -5,6 +5,9 @@ using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.Message.Email;
 
+/// <summary>
+/// 邮箱模板Dto
+/// </summary>
 [AutoMapping(typeof(EmailMessageTemplate), typeof(CreateUpdateEmailMessageTemplateDto))]
 public class CreateUpdateEmailMessageTemplateDto : BaseEntityDto<long>
 {

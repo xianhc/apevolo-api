@@ -64,9 +64,9 @@ public class EmailScheduleTask : IEmailScheduleTask
             var bcc = string.IsNullOrWhiteSpace(queuedEmail.Bcc)
                 ? null
                 : queuedEmail.Bcc.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-            var cc = string.IsNullOrWhiteSpace(queuedEmail.CC)
+            var cc = string.IsNullOrWhiteSpace(queuedEmail.Cc)
                 ? null
-                : queuedEmail.CC.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                : queuedEmail.Cc.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
             try
             {

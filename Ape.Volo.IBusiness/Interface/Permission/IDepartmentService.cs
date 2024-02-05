@@ -15,10 +15,40 @@ public interface IDepartmentService : IBaseServices<Department>
 {
     #region 基础接口
 
+    /// <summary>
+    /// 创建
+    /// </summary>
+    /// <param name="createUpdateDepartmentDto"></param>
+    /// <returns></returns>
     Task<bool> CreateAsync(CreateUpdateDepartmentDto createUpdateDepartmentDto);
+
+    /// <summary>
+    /// 更新
+    /// </summary>
+    /// <param name="createUpdateDepartmentDto"></param>
+    /// <returns></returns>
     Task<bool> UpdateAsync(CreateUpdateDepartmentDto createUpdateDepartmentDto);
+
+    /// <summary>
+    /// 删除
+    /// </summary>
+    /// <param name="ids"></param>
+    /// <returns></returns>
     Task<bool> DeleteAsync(List<long> ids);
+
+    /// <summary>
+    /// 查询
+    /// </summary>
+    /// <param name="deptQueryCriteria"></param>
+    /// <param name="pagination"></param>
+    /// <returns></returns>
     Task<List<DepartmentDto>> QueryAsync(DeptQueryCriteria deptQueryCriteria, Pagination pagination);
+
+    /// <summary>
+    /// 下载
+    /// </summary>
+    /// <param name="deptQueryCriteria"></param>
+    /// <returns></returns>
     Task<List<ExportBase>> DownloadAsync(DeptQueryCriteria deptQueryCriteria);
 
     #endregion

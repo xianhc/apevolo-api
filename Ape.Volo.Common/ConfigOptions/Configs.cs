@@ -91,7 +91,7 @@ public class Configs
     /// </summary>
     public string LogDataBase
     {
-        get => _logDataBase ?? "Ape.Volo.Sqlite.Log";
+        get => _logDataBase ?? "Ape.Volo.Log";
         set => _logDataBase = value;
     }
 

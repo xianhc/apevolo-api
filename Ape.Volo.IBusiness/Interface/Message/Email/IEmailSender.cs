@@ -4,6 +4,9 @@ using Ape.Volo.Entity.Message.Email;
 
 namespace Ape.Volo.IBusiness.Interface.Message.Email;
 
+/// <summary>
+/// 邮件发送接口
+/// </summary>
 public interface IEmailSender
 {
     /// <summary>

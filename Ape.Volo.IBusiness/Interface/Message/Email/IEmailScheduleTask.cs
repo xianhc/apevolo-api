@@ -2,6 +2,9 @@
 
 namespace Ape.Volo.IBusiness.Interface.Message.Email;
 
+/// <summary>
+/// 邮件任务计划
+/// </summary>
 public interface IEmailScheduleTask
 {
     /// <summary>

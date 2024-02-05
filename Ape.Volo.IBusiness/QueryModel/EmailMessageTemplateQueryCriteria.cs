@@ -3,10 +3,18 @@ using System.Collections.Generic;
 
 namespace Ape.Volo.IBusiness.QueryModel;
 
-public class EmailMessageTemplateQueryCriteria
+/// <summary>
+/// 邮箱模板查询参数
+/// </summary>
+public class EmailMessageTemplateQueryCriteria : DateRange
 {
+    /// <summary>
+    /// 名称
+    /// </summary>
     public string Name { get; set; }
 
+    /// <summary>
+    /// 是否激活
+    /// </summary>
     public bool? IsActive { get; set; }
-    public List<DateTime> CreateTime { get; set; }
 }

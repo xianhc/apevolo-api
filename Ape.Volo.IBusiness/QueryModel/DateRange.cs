@@ -1,15 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Ape.Volo.IBusiness.QueryModel;
 
 /// <summary>
-/// 角色查询参数
+/// 日期范围
 /// </summary>
-public class RoleQueryCriteria : DateRange
+public class DateRange
 {
     /// <summary>
-    /// 角色名称
+    /// 开始[0]--结束[1]
     /// </summary>
-    public string RoleName { get; set; }
+    public List<DateTime> CreateTime { get; set; }
 }

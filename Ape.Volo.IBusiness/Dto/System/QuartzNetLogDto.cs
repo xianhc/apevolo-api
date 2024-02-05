@@ -4,6 +4,9 @@ using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.System;
 
+/// <summary>
+/// 任务调度日志Dto
+/// </summary>
 [AutoMapping(typeof(QuartzNetLog), typeof(QuartzNetLogDto))]
 public class QuartzNetLogDto : BaseEntityDto<long>
 {

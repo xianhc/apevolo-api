@@ -3,11 +3,23 @@ using System.Collections.Generic;
 
 namespace Ape.Volo.IBusiness.QueryModel;
 
-public class EmailAccountQueryCriteria
+/// <summary>
+/// 邮箱账户查询参数
+/// </summary>
+public class EmailAccountQueryCriteria : DateRange
 {
+    /// <summary>
+    /// 邮箱
+    /// </summary>
     public string Email { get; set; }
-    public string DisplayName { get; set; }
-    public string Username { get; set; }
 
-    public List<DateTime> CreateTime { get; set; }
+    /// <summary>
+    /// 现实名称
+    /// </summary>
+    public string DisplayName { get; set; }
+
+    /// <summary>
+    /// 用户名
+    /// </summary>
+    public string Username { get; set; }
 }

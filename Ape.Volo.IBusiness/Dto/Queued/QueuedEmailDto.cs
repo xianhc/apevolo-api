@@ -5,6 +5,9 @@ using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.Queued;
 
+/// <summary>
+/// 邮件队列Dto
+/// </summary>
 [AutoMapping(typeof(QueuedEmail), typeof(QueuedEmailDto))]
 public class QueuedEmailDto : BaseEntityDto<long>
 {
@@ -46,7 +49,7 @@ public class QueuedEmailDto : BaseEntityDto<long>
     /// <summary>
     /// 抄送
     /// </summary>
-    public string CC { get; set; }
+    public string Cc { get; set; }
 
     /// <summary>
     /// 密件抄送

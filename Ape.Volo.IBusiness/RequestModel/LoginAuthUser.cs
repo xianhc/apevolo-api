@@ -2,6 +2,9 @@
 
 namespace Ape.Volo.IBusiness.RequestModel;
 
+/// <summary>
+/// 登录用户
+/// </summary>
 public class LoginAuthUser
 {
     /// <summary>

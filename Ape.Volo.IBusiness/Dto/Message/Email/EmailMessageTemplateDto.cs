@@ -4,6 +4,9 @@ using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.Message.Email;
 
+/// <summary>
+/// 邮箱模板Dto
+/// </summary>
 [AutoMapping(typeof(EmailMessageTemplate), typeof(EmailMessageTemplateDto))]
 public class EmailMessageTemplateDto : BaseEntityDto<long>
 {

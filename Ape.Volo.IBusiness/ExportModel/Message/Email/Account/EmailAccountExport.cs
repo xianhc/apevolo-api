@@ -4,12 +4,15 @@ using Ape.Volo.Common.Model;
 
 namespace Ape.Volo.IBusiness.ExportModel.Message.Email.Account;
 
+/// <summary>
+/// 邮箱账户导出模板
+/// </summary>
 public class EmailAccountExport : ExportBase
 {
     /// <summary>
-    ///电子邮件地址
+    ///邮箱
     /// </summary>
-    [Display(Name = "EmailAccount.Email")]
+    [Display(Name = "邮箱")]
     public string Email { get; set; }
 
     /// <summary>

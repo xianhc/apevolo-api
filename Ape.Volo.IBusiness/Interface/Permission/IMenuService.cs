@@ -9,14 +9,46 @@ using Ape.Volo.IBusiness.Vo;
 
 namespace Ape.Volo.IBusiness.Interface.Permission;
 
+/// <summary>
+/// 菜单接口
+/// </summary>
 public interface IMenuService : IBaseServices<Menu>
 {
     #region 基础接口
 
+    /// <summary>
+    /// 创建
+    /// </summary>
+    /// <param name="createUpdateMenuDto"></param>
+    /// <returns></returns>
     Task<bool> CreateAsync(CreateUpdateMenuDto createUpdateMenuDto);
+
+    /// <summary>
+    /// 更新
+    /// </summary>
+    /// <param name="createUpdateMenuDto"></param>
+    /// <returns></returns>
     Task<bool> UpdateAsync(CreateUpdateMenuDto createUpdateMenuDto);
+
+    /// <summary>
+    /// 删除
+    /// </summary>
+    /// <param name="ids"></param>
+    /// <returns></returns>
     Task<bool> DeleteAsync(HashSet<long> ids);
+
+    /// <summary>
+    /// 查询
+    /// </summary>
+    /// <param name="menuQueryCriteria"></param>
+    /// <returns></returns>
     Task<List<MenuDto>> QueryAsync(MenuQueryCriteria menuQueryCriteria);
+
+    /// <summary>
+    /// 下载
+    /// </summary>
+    /// <param name="menuQueryCriteria"></param>
+    /// <returns></returns>
     Task<List<ExportBase>> DownloadAsync(MenuQueryCriteria menuQueryCriteria);
 
     #endregion

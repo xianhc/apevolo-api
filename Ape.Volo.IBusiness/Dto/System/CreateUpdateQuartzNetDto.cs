@@ -7,6 +7,9 @@ using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.System;
 
+/// <summary>
+/// 任务调度Dto
+/// </summary>
 [AutoMapping(typeof(QuartzNet), typeof(CreateUpdateQuartzNetDto))]
 public class CreateUpdateQuartzNetDto : BaseEntityDto<long>
 {

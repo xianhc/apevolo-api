@@ -14,8 +14,14 @@ namespace Ape.Volo.IBusiness.Base;
 /// <typeparam name="TEntity"></typeparam>
 public interface IBaseServices<TEntity> where TEntity : class
 {
+    /// <summary>
+    /// sqlSugarClient
+    /// </summary>
     ISqlSugarClient SugarClient { get; }
 
+    /// <summary>
+    /// 自定义全局上下文
+    /// </summary>
     ApeContext ApeContext { get; }
 
 

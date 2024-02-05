@@ -2,5 +2,5 @@
 
 public class SqlSugarConfig
 {
-    public const string LogId = "Ape.Volo.Sqlite.Log";
+    public const string LogId = "Ape.Volo.Log";
 }

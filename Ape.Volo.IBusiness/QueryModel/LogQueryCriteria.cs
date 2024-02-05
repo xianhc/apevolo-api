@@ -3,9 +3,13 @@ using System.Collections.Generic;
 
 namespace Ape.Volo.IBusiness.QueryModel;
 
-public class LogQueryCriteria
+/// <summary>
+/// 日志查询参数
+/// </summary>
+public class LogQueryCriteria : DateRange
 {
+    /// <summary>
+    /// 关键字
+    /// </summary>
     public string KeyWords { get; set; }
-
-    public List<DateTime> CreateTime { get; set; }
 }

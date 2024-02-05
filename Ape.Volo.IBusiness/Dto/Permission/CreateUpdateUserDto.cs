@@ -6,6 +6,9 @@ using Ape.Volo.IBusiness.Base;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
+/// <summary>
+/// 用户Dto
+/// </summary>
 [AutoMapping(typeof(User), typeof(CreateUpdateUserDto))]
 public class CreateUpdateUserDto : BaseEntityDto<long>
 {
@@ -40,6 +43,9 @@ public class CreateUpdateUserDto : BaseEntityDto<long>
     [RegularExpression(@"^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$")]
     public string Phone { get; set; }
 
+    /// <summary>
+    /// 性别
+    /// </summary>
     [Display(Name = "User.Gender")]
     [Required(ErrorMessage = "{0}required")]
     public string Gender { get; set; }

@@ -6,6 +6,9 @@ using MailKit.Net.Smtp;
 
 namespace Ape.Volo.IBusiness.Interface.Message.Email;
 
+/// <summary>
+/// 邮箱Smtp接口
+/// </summary>
 public interface ISmtpBuilder
 {
     /// <summary>

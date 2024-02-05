@@ -3,8 +3,13 @@ using System.Collections.Generic;
 
 namespace Ape.Volo.IBusiness.QueryModel;
 
-public class FileRecordQueryCriteria
+/// <summary>
+/// 文件记录查询参数
+/// </summary>
+public class FileRecordQueryCriteria : DateRange
 {
+    /// <summary>
+    /// 关键字
+    /// </summary>
     public string KeyWords { get; set; }
-    public List<DateTime> CreateTime { get; set; }
 }

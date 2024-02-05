@@ -7,9 +7,15 @@ using Newtonsoft.Json;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
+/// <summary>
+/// 用户Dto
+/// </summary>
 [AutoMapping(typeof(User), typeof(UserDto))]
 public class UserDto : BaseEntityDto<long>
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public UserDto()
     {
         Roles = new List<RoleSmallDto>();
@@ -80,7 +86,7 @@ public class UserDto : BaseEntityDto<long>
     public DateTime? PasswordReSetTime { get; set; }
 
     /// <summary>
-    /// 用户的权限点
+    /// 角色列表
     /// </summary>
     public List<RoleSmallDto> Roles { get; set; }
 
@@ -89,6 +95,9 @@ public class UserDto : BaseEntityDto<long>
     /// </summary>
     public DepartmentSmallDto Dept { get; set; }
 
+    /// <summary>
+    /// 岗位列表
+    /// </summary>
     public List<JobSmallDto> Jobs { get; set; }
 
     /// <summary>

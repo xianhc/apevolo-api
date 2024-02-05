@@ -15,8 +15,19 @@ public interface IExceptionLogService : IBaseServices<ExceptionLog>
 {
     #region 基础接口
 
+    /// <summary>
+    /// 创建
+    /// </summary>
+    /// <param name="exceptionLog"></param>
+    /// <returns></returns>
     Task<bool> CreateAsync(ExceptionLog exceptionLog);
 
+    /// <summary>
+    /// 查询
+    /// </summary>
+    /// <param name="logQueryCriteria"></param>
+    /// <param name="pagination"></param>
+    /// <returns></returns>
     Task<List<ExceptionLogDto>> QueryAsync(LogQueryCriteria logQueryCriteria, Pagination pagination);
 
     #endregion

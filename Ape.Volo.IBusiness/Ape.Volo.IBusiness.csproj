@@ -7,6 +7,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Ape.Volo.Entity\Ape.Volo.Entity.csproj" />
   </ItemGroup>
+  
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>Ape.Volo.IBusiness.xml</DocumentationFile>
+  </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Dto\Message" />
