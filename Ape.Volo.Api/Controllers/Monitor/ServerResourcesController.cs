@@ -28,6 +28,7 @@ public class ServerResourcesController : BaseApiController
     [Route("service/resources/info")]
     [Description("服务器信息")]
     [ApeVoloAuthorize(new[] { "admin" })]
+    [NotAudit]
     public async Task<ActionResult<object>> Query()
     {
         var resourcesInfo = await _serverResourcesService.Query();

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.SnowflakeIdHelper;
@@ -62,6 +63,13 @@ public class AuditingFilter : IAsyncActionFilter
             sw.Start();
             var resultContext = await next();
             sw.Stop();
+
+            var action = (ControllerActionDescriptor)context.ActionDescriptor;
+            if (action.MethodInfo.IsDefined(typeof(NotAuditAttribute), false))
+            {
+                return;
+            }
+
             //执行结果
             //var action = context.ActionDescriptor as ControllerActionDescriptor;
             //var isTrue = action.MethodInfo.IsDefined(typeof(DescriptionAttribute), false);
@@ -70,33 +78,27 @@ public class AuditingFilter : IAsyncActionFilter
                 var result = resultContext.Result;
                 if (context.HttpContext.IsNotNull() && result.IsNotNull())
                 {
-                    var reqUrlPath = context.HttpContext.Request.Path.Value?.ToLower();
-                    var settingDto = await _settingService.FindSettingByName("LgnoreAuditLogUrlPath");
-                    var lgnoreAuditLogUrlPathList = settingDto.Value.Split("|");
-                    if (!lgnoreAuditLogUrlPathList.Contains(reqUrlPath))
+                    var auditInfo = CreateAuditLog(context);
+                    switch (result?.GetType().FullName)
                     {
-                        var auditInfo = CreateAuditLog(context);
-                        switch (result?.GetType().FullName)
+                        case "Microsoft.AspNetCore.Mvc.ObjectResult":
                         {
-                            case "Microsoft.AspNetCore.Mvc.ObjectResult":
-                            {
-                                var value = ((ObjectResult)result).Value;
-                                if (value != null)
-                                    auditInfo.ResponseData = value.ToString();
-                                break;
-                            }
-                            case "Microsoft.AspNetCore.Mvc.FileContentResult":
-                                auditInfo.ResponseData = ((FileContentResult)result).FileDownloadName;
-                                break;
-                            default:
-                                auditInfo.ResponseData = ((ContentResult)result)?.Content;
-                                break;
+                            var value = ((ObjectResult)result).Value;
+                            if (value != null)
+                                auditInfo.ResponseData = value.ToString();
+                            break;
                         }
-
-                        //用时
-                        auditInfo.ExecutionDuration = Convert.ToInt32(sw.ElapsedMilliseconds);
-                        await _auditInfoService.CreateAsync(auditInfo);
+                        case "Microsoft.AspNetCore.Mvc.FileContentResult":
+                            auditInfo.ResponseData = ((FileContentResult)result).FileDownloadName;
+                            break;
+                        default:
+                            auditInfo.ResponseData = ((ContentResult)result)?.Content;
+                            break;
                     }
+
+                    //用时
+                    auditInfo.ExecutionDuration = Convert.ToInt32(sw.ElapsedMilliseconds);
+                    await _auditInfoService.CreateAsync(auditInfo);
                 }
             }
         }

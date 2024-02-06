@@ -112,6 +112,7 @@ public class AuthorizationController : BaseApiController
     [Route("/auth/refreshToken")]
     [Description("刷新Token")]
     [AllowAnonymous]
+    [NotAudit]
     public async Task<ActionResult<object>> RefreshToken(string token = "")
     {
         if (token.IsNullOrEmpty())
@@ -150,6 +151,7 @@ public class AuthorizationController : BaseApiController
     [Route("/auth/info")]
     [Description("个人信息")]
     [ApeVoloOnline]
+    [NotAudit]
     public async Task<ActionResult<object>> GetInfo()
     {
         var netUser = await _userService.QueryByIdAsync(_apeContext.HttpUser.Id);
@@ -169,6 +171,7 @@ public class AuthorizationController : BaseApiController
     [Description("获取验证码")]
     [Route("/auth/captcha")]
     [AllowAnonymous]
+    [NotAudit]
     public async Task<ActionResult<object>> Captcha()
     {
         var (imgBytes, code) = SixLaborsImageHelper.BuildVerifyCode();

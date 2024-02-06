@@ -47,6 +47,7 @@ public class AuditingController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
+    [NotAudit]
     public async Task<ActionResult<object>> Query(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
     {
@@ -69,6 +70,7 @@ public class AuditingController : BaseApiController
     [Route("current")]
     [Description("用户行为")]
     [ApeVoloOnline]
+    [NotAudit]
     public async Task<ActionResult<object>> FindListByCurrent(Pagination pagination)
     {
         var auditInfos = await _auditInfoService.QueryByCurrentAsync(_httpUser.Account, pagination);

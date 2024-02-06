@@ -46,6 +46,7 @@ public class ExceptionLogController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
+    [NotAudit]
     public async Task<ActionResult<object>> Query(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
     {

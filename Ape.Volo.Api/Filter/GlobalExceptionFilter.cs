@@ -117,7 +117,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
     }
 
     /// <summary>
-    /// 创建审计对象
+    /// 创建异常对象
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
