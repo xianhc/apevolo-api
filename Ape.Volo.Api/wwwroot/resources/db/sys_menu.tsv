@@ -1540,7 +1540,7 @@
         "IsDeleted":false
     },
     {
-        "Id":1498208392836026368,
+        "Id":"1498208392836026368",
         "Title":"文件存储",
         "linkUrl":"/api/storage/query",
         "Path":"storage",
@@ -1548,7 +1548,7 @@
         "IFrame":false,
         "Component":"system/storage/index",
         "Component_name":"storage",
-        "ParentId":1306054134650114048,
+        "ParentId":"1306054134650114048",
         "Sort":5,
         "Icon":"file",
         "Type":2,
@@ -1562,7 +1562,7 @@
         "IsDeleted":false
     },
     {
-        "Id":1498211748094676992,
+        "Id":"1498211748094676992",
         "Title":"文件新增",
         "linkUrl":"/api/storage/upload",
         "Path":null,
@@ -1570,7 +1570,7 @@
         "IFrame":false,
         "Component":null,
         "Component_name":null,
-        "ParentId":1498208392836026368,
+        "ParentId":"1498208392836026368",
         "Sort":1,
         "Icon":null,
         "Type":3,
@@ -1584,7 +1584,7 @@
         "IsDeleted":false
     },
     {
-        "Id":1498211968836702208,
+        "Id":"1498211968836702208",
         "Title":"文件编辑",
         "linkUrl":"/api/storage/edit",
         "Path":null,
@@ -1592,7 +1592,7 @@
         "IFrame":false,
         "Component":null,
         "Component_name":null,
-        "ParentId":1498208392836026368,
+        "ParentId":"1498208392836026368",
         "Sort":2,
         "Icon":null,
         "Type":3,
@@ -1606,7 +1606,7 @@
         "IsDeleted":false
     },
     {
-        "Id":1498212240258502656,
+        "Id":"1498212240258502656",
         "Title":"文件删除",
         "linkUrl":"/api/storage/delete",
         "Path":null,
@@ -1614,7 +1614,7 @@
         "IFrame":false,
         "Component":null,
         "Component_name":null,
-        "ParentId":1498208392836026368,
+        "ParentId":"1498208392836026368",
         "Sort":3,
         "Icon":null,
         "Type":3,
@@ -1628,7 +1628,7 @@
         "IsDeleted":false
     },
     {
-        "Id":1498212524883972096,
+        "Id":"1498212524883972096",
         "Title":"文件导出",
         "linkUrl":"/api/storage/download",
         "Path":null,
@@ -1636,7 +1636,7 @@
         "IFrame":false,
         "Component":null,
         "Component_name":null,
-        "ParentId":1498208392836026368,
+        "ParentId":"1498208392836026368",
         "Sort":4,
         "Icon":null,
         "Type":3,

@@ -46,17 +46,5 @@
         "UpdateBy":null,
         "UpdateTime":null,
         "IsDeleted":false
-    },
-    {
-        "Id":"1431890848454283264",
-        "Name":"LgnoreAuditLogUrlPath",
-        "Value":"/api/auditing/query|/api/auditing/current|/auth/code",
-        "Enabled":true,
-        "Description":"忽略记录审计日志的URL,多个用竖杠\"|\"隔开",
-        "CreateBy":"apevolo",
-        "CreateTime":"/Date(1609430400000+0800)/",
-        "UpdateBy":null,
-        "UpdateTime":null,
-        "IsDeleted":false
     }
 ]
