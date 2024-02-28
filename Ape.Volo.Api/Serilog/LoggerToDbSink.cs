@@ -83,16 +83,7 @@ public class LoggerToDbSink : IBatchedLogEventSink
 
         try
         {
-            var tenantAttr = typeof(InformationLog).GetCustomAttribute<TenantAttribute>();
-            if (tenantAttr != null)
-            {
-                if (db is SqlSugarScope sugarScope)
-                {
-                    db = sugarScope.GetConnectionScope(tenantAttr.configId.ToString()?.ToLower());
-
-                    await db.Insertable(logs).SplitTable().ExecuteCommandAsync();
-                }
-            }
+            await db.AsTenant().InsertableWithAttr(logs).SplitTable().ExecuteCommandAsync();
         }
         catch (Exception e)
         {
@@ -124,16 +115,7 @@ public class LoggerToDbSink : IBatchedLogEventSink
 
         try
         {
-            var tenantAttr = typeof(WarningLog).GetCustomAttribute<TenantAttribute>();
-            if (tenantAttr != null)
-            {
-                if (db is SqlSugarScope sugarScope)
-                {
-                    db = sugarScope.GetConnectionScope(tenantAttr.configId.ToString()?.ToLower());
-
-                    await db.Insertable(logs).SplitTable().ExecuteCommandAsync();
-                }
-            }
+            await db.AsTenant().InsertableWithAttr(logs).SplitTable().ExecuteCommandAsync();
         }
         catch (Exception e)
         {
@@ -165,16 +147,7 @@ public class LoggerToDbSink : IBatchedLogEventSink
 
         try
         {
-            var tenantAttr = typeof(ErrorLog).GetCustomAttribute<TenantAttribute>();
-            if (tenantAttr != null)
-            {
-                if (db is SqlSugarScope sugarScope)
-                {
-                    db = sugarScope.GetConnectionScope(tenantAttr.configId.ToString()?.ToLower());
-
-                    await db.Insertable(logs).SplitTable().ExecuteCommandAsync();
-                }
-            }
+            await db.AsTenant().InsertableWithAttr(logs).SplitTable().ExecuteCommandAsync();
         }
         catch (Exception e)
         {
@@ -206,16 +179,7 @@ public class LoggerToDbSink : IBatchedLogEventSink
 
         try
         {
-            var tenantAttr = typeof(FatalLog).GetCustomAttribute<TenantAttribute>();
-            if (tenantAttr != null)
-            {
-                if (db is SqlSugarScope sugarScope)
-                {
-                    db = sugarScope.GetConnectionScope(tenantAttr.configId.ToString()?.ToLower());
-
-                    await db.Insertable(logs).SplitTable().ExecuteCommandAsync();
-                }
-            }
+            await db.AsTenant().InsertableWithAttr(logs).SplitTable().ExecuteCommandAsync();
         }
         catch (Exception e)
         {
@@ -248,16 +212,7 @@ public class LoggerToDbSink : IBatchedLogEventSink
 
         try
         {
-            var tenantAttr = typeof(InformationLog).GetCustomAttribute<TenantAttribute>();
-            if (tenantAttr != null)
-            {
-                if (db is SqlSugarScope sugarScope)
-                {
-                    db = sugarScope.GetConnectionScope(tenantAttr.configId.ToString()?.ToLower());
-
-                    await db.Insertable(logs).SplitTable().ExecuteCommandAsync();
-                }
-            }
+            await db.AsTenant().InsertableWithAttr(logs).SplitTable().ExecuteCommandAsync();
         }
         catch (Exception e)
         {

@@ -281,6 +281,26 @@ public interface ISugarRepository<TEntity> where TEntity : class
         Expression<Func<TEntity, List<T2>>> navigationExpression2 = null,
         Expression<Func<TEntity, List<T3>>> navigationExpression3 = null);
 
+
+    /// <summary>
+    /// 实体列表 分页查询
+    /// </summary>
+    /// <param name="whereLambda">条件表达式</param>
+    /// <param name="pagination">分页对象</param>
+    /// <param name="selectExpression"></param>
+    /// <param name="navigationExpression">导航属性</param>
+    /// <param name="navigationExpression2"></param>
+    /// <param name="navigationExpression3"></param>
+    /// <param name="navigationExpression4"></param>
+    /// <returns></returns>
+    Task<List<TEntity>> QueryPageListAsync<T, T2, T3, T4>(Expression<Func<TEntity, bool>> whereLambda,
+        Pagination pagination,
+        Expression<Func<TEntity, TEntity>> selectExpression = null,
+        Expression<Func<TEntity, T>> navigationExpression = null,
+        Expression<Func<TEntity, List<T2>>> navigationExpression2 = null,
+        Expression<Func<TEntity, List<T3>>> navigationExpression3 = null,
+        Expression<Func<TEntity, List<T4>>> navigationExpression4 = null);
+
     /// <summary>
     /// 实体列表
     /// </summary>

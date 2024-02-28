@@ -88,7 +88,7 @@ public static class SqlSugarSetup
 
             masterDb = new ConnectionConfig
             {
-                ConfigId = connectionItem.ConnId.ToLower(),
+                ConfigId = connectionItem.ConnId,
                 ConnectionString = connectionItem.ConnectionString,
                 DbType = (DbType)connectionItem.DbType,
                 LanguageType = LanguageType.Chinese,
@@ -135,7 +135,7 @@ public static class SqlSugarSetup
         var sugar = new SqlSugarScope(allConnectionConfig,
             db =>
             {
-                allConnectionConfig.Where(x => x.ConfigId.ToString() != configs.LogDataBase.ToLower()).ForEach(
+                allConnectionConfig.Where(x => x.ConfigId.ToString() != configs.LogDataBase).ForEach(
                     config =>
                     {
                         var sugarScopeProvider = db.GetConnectionScope((string)config.ConfigId);

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Entity.Base;
@@ -48,7 +49,7 @@ public class DataSeeder
             }
             else
             {
-                ConsoleHelper.WriteLine("sqlsugar官方表示Oracle不支持代码建库，请先建库再允许项目", ConsoleColor.Red);
+                throw new Exception("sqlsugar官方表示Oracle不支持代码建库，请先建库再启动项目");
             }
 
             ConsoleHelper.WriteLine("初始化主库成功。", ConsoleColor.Green);
@@ -63,33 +64,36 @@ public class DataSeeder
                 .Where(x => (x.BaseType == typeof(BaseEntity) || x.BaseType == typeof(RootKey<long>)) &&
                             x != typeof(BaseEntity) && x.Namespace != null &&
                             !x.Namespace.StartsWith("Ape.Volo.Entity.Monitor")).ToList();
-            entityList.Add(typeof(UserRoles));
-            entityList.Add(typeof(UserJobs));
+            entityList.Add(typeof(UserRole));
+            entityList.Add(typeof(UserJob));
             entityList.Add(typeof(RoleMenu));
-            entityList.Add(typeof(RolesDepartments));
+            entityList.Add(typeof(RoleDepartment));
+            entityList.Add(typeof(RoleApis));
 
             var masterTables = dataContext.Db.DbMaintenance.GetTableInfoList();
             entityList.ForEach(entity =>
             {
-                var attr = entity.GetCustomAttribute<SugarTable>();
-                var tableName = attr == null ? entity.Name : attr.TableName;
-                if (!masterTables.Any(x => x.Name.Contains(tableName)))
+                var entityInfo = dataContext.Db.EntityMaintenance.GetEntityInfo(entity);
+                // var attr = entity.GetCustomAttribute<SugarTable>();
+                // var tableName = attr == null ? entity.Name : attr.TableName;
+                if (entityInfo.DbTableName.IsNullOrEmpty())
+                {
+                    throw new Exception($"类{entityInfo.EntityName}缺少SugarTable表名");
+                }
+
+                if (!masterTables.Any(x => x.Name.Contains(entityInfo.DbTableName)))
                 {
                     if (entity.GetCustomAttribute<SplitTableAttribute>() != null)
                     {
                         dataContext.Db.CodeFirst.SplitTables().InitTables(entity);
                         ConsoleHelper.WriteLine(
-                            attr == null
-                                ? $"Entity:{entity.Name}-->缺少SugarTable特性"
-                                : $"Entity:{entity.Name}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->创建完成！");
+                            $"Entity:{entity.Name}-->Table:{entityInfo.DbTableName}-->Desc:{entityInfo.TableDescription}-->创建完成！");
                     }
                     else
                     {
                         dataContext.Db.CodeFirst.InitTables(entity);
                         ConsoleHelper.WriteLine(
-                            attr == null
-                                ? $"Entity:{entity.Name}-->缺少SugarTable特性"
-                                : $"Entity:{entity.Name}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->创建完成！");
+                            $"Entity:{entity.Name}-->Table:{entityInfo.DbTableName}-->Desc:{entityInfo.TableDescription}-->创建完成！");
                     }
                 }
             });
@@ -326,17 +330,17 @@ public class DataSeeder
 
                 #region 用户与角色
 
-                if (!await dataContext.Db.Queryable<UserRoles>().AnyAsync())
+                if (!await dataContext.Db.Queryable<UserRole>().AnyAsync())
                 {
-                    var attr = typeof(UserRoles).GetCustomAttribute<SugarTable>();
+                    var attr = typeof(UserRole).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await dataContext.GetEntityDb<UserRoles>().InsertRangeAsync(
-                            JsonConvert.DeserializeObject<List<UserRoles>>(
+                        await dataContext.GetEntityDb<UserRole>().InsertRangeAsync(
+                            JsonConvert.DeserializeObject<List<UserRole>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(UserRoles)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            $"Entity:{nameof(UserRole)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
                             ConsoleColor.Green);
                     }
                 }
@@ -345,17 +349,17 @@ public class DataSeeder
 
                 #region 用户与岗位
 
-                if (!await dataContext.Db.Queryable<UserJobs>().AnyAsync())
+                if (!await dataContext.Db.Queryable<UserJob>().AnyAsync())
                 {
-                    var attr = typeof(UserJobs).GetCustomAttribute<SugarTable>();
+                    var attr = typeof(UserJob).GetCustomAttribute<SugarTable>();
                     if (attr != null)
                     {
-                        await dataContext.GetEntityDb<UserJobs>()
-                            .InsertRangeAsync(JsonConvert.DeserializeObject<List<UserJobs>>(
+                        await dataContext.GetEntityDb<UserJob>()
+                            .InsertRangeAsync(JsonConvert.DeserializeObject<List<UserJob>>(
                                 FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
                                 setting));
                         ConsoleHelper.WriteLine(
-                            $"Entity:{nameof(UserJobs)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            $"Entity:{nameof(UserJob)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
                             ConsoleColor.Green);
                     }
                 }
@@ -381,6 +385,44 @@ public class DataSeeder
 
                 #endregion
 
+                #region Apis
+
+                if (!await dataContext.Db.Queryable<Apis>().AnyAsync())
+                {
+                    var attr = typeof(Apis).GetCustomAttribute<SugarTable>();
+                    if (attr != null)
+                    {
+                        await dataContext.GetEntityDb<Apis>().InsertRangeAsync(
+                            JsonConvert.DeserializeObject<List<Apis>>(
+                                FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
+                                setting));
+                        ConsoleHelper.WriteLine(
+                            $"Entity:{nameof(Apis)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
+                    }
+                }
+
+                #endregion
+
+                #region 角色与Apis
+
+                if (!await dataContext.Db.Queryable<RoleApis>().AnyAsync())
+                {
+                    var attr = typeof(RoleApis).GetCustomAttribute<SugarTable>();
+                    if (attr != null)
+                    {
+                        await dataContext.GetEntityDb<RoleApis>().InsertRangeAsync(
+                            JsonConvert.DeserializeObject<List<RoleApis>>(
+                                FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
+                                setting));
+                        ConsoleHelper.WriteLine(
+                            $"Entity:{nameof(RoleApis)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
+                    }
+                }
+
+                #endregion
+
                 ConsoleHelper.WriteLine("初始化数据完成！", ConsoleColor.Green);
             }
 
@@ -388,12 +430,12 @@ public class DataSeeder
 
             #region 初始化日志库
 
-            if (!dataContext.Db.IsAnyConnection(SqlSugarConfig.LogId.ToLower()))
+            if (!dataContext.Db.IsAnyConnection(SqlSugarConfig.LogId))
             {
                 throw new ApplicationException("未配置日志数据库，请在appsettings.json中DataConnection节点中配置");
             }
 
-            var logDb = dataContext.Db.GetConnection(SqlSugarConfig.LogId.ToLower());
+            var logDb = dataContext.Db.GetConnectionScope(SqlSugarConfig.LogId);
             ConsoleHelper.WriteLine($"Log Db Id: {logDb.CurrentConnectionConfig.ConfigId}");
             ConsoleHelper.WriteLine($"Log Db Type: {logDb.CurrentConnectionConfig.DbType}");
             ConsoleHelper.WriteLine($"Log Db ConnectString: {logDb.CurrentConnectionConfig.ConnectionString}");
@@ -409,28 +451,30 @@ public class DataSeeder
 
             logEntityList.ForEach(entity =>
             {
-                var attr = entity.GetCustomAttribute<SugarTable>();
-                if (attr == null)
+                var entityInfo = dataContext.Db.EntityMaintenance.GetEntityInfo(entity);
+                // var attr = entity.GetCustomAttribute<SugarTable>();
+                // var tableName = attr == null ? entity.Name : attr.TableName;
+                if (entityInfo.DbTableName.IsNullOrEmpty())
                 {
-                    throw new Exception("日志库的库需增加SugarTable特性");
+                    throw new Exception($"类{entityInfo.EntityName}缺少SugarTable表名");
                 }
 
-                int lastUnderscoreIndex = attr.TableName.LastIndexOf('_');
-                var tableName = attr.TableName.Substring(0, lastUnderscoreIndex);
-                ;
+                int lastUnderscoreIndex = entityInfo.DbTableName.LastIndexOf('_');
+                var tableName = entityInfo.DbTableName.Substring(0, lastUnderscoreIndex);
+
                 if (!logTables.Any(x => x.Name.Contains(tableName)))
                 {
                     if (entity.GetCustomAttribute<SplitTableAttribute>() != null)
                     {
                         logDb.CodeFirst.SplitTables().InitTables(entity);
                         ConsoleHelper.WriteLine(
-                            $"Entity:{entity.Name}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->创建完成！");
+                            $"Entity:{entity.Name}-->Table:{entityInfo.DbTableName}-->Desc:{entityInfo.TableDescription}-->创建完成！");
                     }
                     else
                     {
                         logDb.CodeFirst.InitTables(entity);
                         ConsoleHelper.WriteLine(
-                            $"Entity:{entity.Name}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->创建完成！");
+                            $"Entity:{entity.Name}-->Table:{entityInfo.DbTableName}-->Desc:{entityInfo.TableDescription}-->创建完成！");
                     }
                 }
             });
