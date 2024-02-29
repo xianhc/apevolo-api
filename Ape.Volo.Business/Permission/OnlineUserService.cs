@@ -39,7 +39,7 @@ public class OnlineUserService : IOnlineUserService
     /// </summary>
     /// <param name="jwtUserVo"></param>
     /// <param name="remoteIp"></param>
-    public async Task<LoginUserInfo> SaveAsync(JwtUserVo jwtUserVo, string remoteIp)
+    public async Task<LoginUserInfo> SaveLoginUserAsync(JwtUserVo jwtUserVo, string remoteIp)
     {
         var onlineUser = new LoginUserInfo
         {
@@ -55,22 +55,18 @@ public class OnlineUserService : IOnlineUserService
             BrowserName = _browserDetector.Browser?.Name,
             Version = _browserDetector.Browser?.Version,
             LoginTime = DateTime.Now,
-            CurrentPermission = new CurrentPermission
-                { Roles = jwtUserVo.User.Authorizes, Urls = jwtUserVo.User.PermissionUrl }
+            IsAdmin = jwtUserVo.User.IsAdmin
         };
         return await Task.FromResult(onlineUser);
-        // return await _redisCacheService.SetCacheAsync(GlobalConstants.CacheKey.OnlineKey + onlineUser.RemoteToken,
-        //     onlineUser,
-        //     TimeSpan.FromMinutes(30), RedisExpireType.Relative);
     }
 
-    public async Task<JwtUserVo> FindJwtUserAsync(UserDto userDto)
+    public async Task<JwtUserVo> CreateJwtUserAsync(UserDto userDto, List<string> permissionRoles)
     {
         var jwtUser = new JwtUserVo
         {
             User = userDto,
             DataScopes = new List<string>(),
-            Roles = userDto.Authorizes
+            Roles = permissionRoles
         };
         return await Task.FromResult(jwtUser);
     }

@@ -12,10 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Ape.Volo.Api.Controllers.Message.Email;
 
 /// <summary>
-/// 邮箱账户
+/// 邮件模板管理
 /// </summary>
-[Area("邮件管理")]
-[Route("/api/email/template")]
+[Area("邮件模板管理")]
+[Route("/api/email/template", Order = 18)]
 public class EmailMessageTemplateController : BaseApiController
 {
     #region 字段

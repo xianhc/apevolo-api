@@ -15,8 +15,8 @@ namespace Ape.Volo.Api.Controllers.System;
 /// <summary>
 /// 字典管理
 /// </summary>
-[Area("系统管理")]
-[Route("/api/dict")]
+[Area("字典管理")]
+[Route("/api/dict", Order = 7)]
 public class DictController : BaseApiController
 {
     #region 字段
@@ -46,6 +46,12 @@ public class DictController : BaseApiController
     [Description("创建")]
     public async Task<ActionResult<object>> Create([FromBody] CreateUpdateDictDto createUpdateDictDto)
     {
+        if (!ModelState.IsValid)
+        {
+            var actionError = ModelState.GetErrors();
+            return Error(actionError);
+        }
+
         await _dictService.CreateAsync(createUpdateDictDto);
         return Success();
     }
@@ -61,6 +67,12 @@ public class DictController : BaseApiController
     [Description("编辑")]
     public async Task<ActionResult<object>> Update([FromBody] CreateUpdateDictDto createUpdateDictDto)
     {
+        if (!ModelState.IsValid)
+        {
+            var actionError = ModelState.GetErrors();
+            return Error(actionError);
+        }
+
         await _dictService.UpdateAsync(createUpdateDictDto);
         return NoContent();
     }

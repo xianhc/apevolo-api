@@ -57,8 +57,8 @@ public class RoleService : BaseServices<Role>, IRoleService
 
         if (!createUpdateRoleDto.Depts.IsNullOrEmpty() && createUpdateRoleDto.Depts.Count > 0)
         {
-            var roleDepts = new List<RolesDepartments>();
-            roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RolesDepartments
+            var roleDepts = new List<RoleDepartment>();
+            roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RoleDepartment
                 { RoleId = role.Id, DeptId = rd.Id }));
             await SugarClient.Insertable(roleDepts).ExecuteCommandAsync();
         }
@@ -93,11 +93,11 @@ public class RoleService : BaseServices<Role>, IRoleService
         await UpdateEntityAsync(role);
 
         //删除部门权限关联
-        await SugarClient.Deleteable<RolesDepartments>().Where(x => x.RoleId == role.Id).ExecuteCommandAsync();
+        await SugarClient.Deleteable<RoleDepartment>().Where(x => x.RoleId == role.Id).ExecuteCommandAsync();
         if (!createUpdateRoleDto.Depts.IsNullOrEmpty() && createUpdateRoleDto.Depts.Count > 0)
         {
-            var roleDepts = new List<RolesDepartments>();
-            roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RolesDepartments
+            var roleDepts = new List<RoleDepartment>();
+            roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RoleDepartment
                 { RoleId = role.Id, DeptId = rd.Id }));
             await SugarClient.Insertable(roleDepts).ExecuteCommandAsync();
         }
@@ -137,11 +137,12 @@ public class RoleService : BaseServices<Role>, IRoleService
         var whereExpression = GetWhereExpression(roleQueryCriteria);
         Expression<Func<Role, List<Menu>>> navigationUserMenus = role => role.MenuList;
         Expression<Func<Role, List<Department>>> navigationUserDepts = role => role.DepartmentList;
+        Expression<Func<Role, List<Apis>>> navigationRoleApis = role => role.Apis;
 
         var roleList =
-            await SugarRepository.QueryPageListAsync<Role, Menu, Department>(whereExpression, pagination,
+            await SugarRepository.QueryPageListAsync<Role, Menu, Department, Apis>(whereExpression, pagination,
                 null, null, navigationUserMenus,
-                navigationUserDepts);
+                navigationUserDepts, navigationRoleApis);
 
         return ApeContext.Mapper.Map<List<RoleDto>>(roleList);
     }
@@ -185,7 +186,7 @@ public class RoleService : BaseServices<Role>, IRoleService
     {
         List<int> levels = new List<int>();
         var roles =
-            await SugarRepository.QueryMuchAsync<Role, UserRoles, Role>(
+            await SugarRepository.QueryMuchAsync<Role, UserRole, Role>(
                 (r, ur) => new object[]
                 {
                     JoinType.Left, r.Id == ur.RoleId
@@ -202,7 +203,7 @@ public class RoleService : BaseServices<Role>, IRoleService
     {
         List<int> levels = new List<int>();
         var roles =
-            await SugarRepository.QueryMuchAsync<Role, UserRoles, Role>(
+            await SugarRepository.QueryMuchAsync<Role, UserRole, Role>(
                 (r, ur) => new object[]
                 {
                     JoinType.Left, r.Id == ur.RoleId
@@ -242,8 +243,40 @@ public class RoleService : BaseServices<Role>, IRoleService
         //删除用户缓存
         foreach (var user in role.Users)
         {
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserPermissionById +
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserPermissionRoles +
                                                user.Id.ToString().ToMd5String16());
+        }
+
+        return true;
+    }
+
+
+    [UseTran]
+    public async Task<bool> UpdateRolesApisAsync(CreateUpdateRoleDto createUpdateRoleDto)
+    {
+        var role = await TableWhere(x => x.Id == createUpdateRoleDto.Id).Includes(x => x.Users).SingleAsync();
+        await VerificationUserRoleLevelAsync(role.Level);
+
+
+        //删除菜单
+        List<RoleApis> roleApis = new List<RoleApis>();
+        if (createUpdateRoleDto.Apis.Any())
+        {
+            // 这里过滤一下自生成的一级节点ID
+            createUpdateRoleDto.Apis = createUpdateRoleDto.Apis.Where(x => x.Id > 10000).ToList();
+            roleApis.AddRange(createUpdateRoleDto.Apis.Select(ra => new RoleApis()
+                { RoleId = role.Id, ApisId = ra.Id }));
+
+            await SugarClient.Deleteable<RoleApis>().Where(x => x.RoleId == role.Id).ExecuteCommandAsync();
+            await SugarClient.Insertable(roleApis).ExecuteCommandAsync();
+
+
+            //删除用户缓存
+            foreach (var user in role.Users)
+            {
+                await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserPermissionUrls +
+                                                   user.Id.ToString().ToMd5String16());
+            }
         }
 
         return true;

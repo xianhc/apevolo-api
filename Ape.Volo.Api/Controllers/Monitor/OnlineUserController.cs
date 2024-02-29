@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -14,8 +13,8 @@ namespace Ape.Volo.Api.Controllers.Monitor;
 /// <summary>
 /// 在线用户
 /// </summary>
-[Area("监控管理")]
-[Route("/api/online")]
+[Area("在线用户管理")]
+[Route("/api/online", Order = 15)]
 public class OnlineUserController : BaseApiController
 {
     private readonly IOnlineUserService _onlineUserService;
@@ -54,7 +53,6 @@ public class OnlineUserController : BaseApiController
     [HttpDelete]
     [Route("out")]
     [Description("强退用户")]
-    [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> DropOut([FromBody] IdCollectionString idCollection)
     {
         if (!ModelState.IsValid)
@@ -75,7 +73,6 @@ public class OnlineUserController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> Download()
     {
         var appSecretExports = await _onlineUserService.DownloadAsync();

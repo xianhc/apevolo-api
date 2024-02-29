@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -17,8 +16,8 @@ namespace Ape.Volo.Api.Controllers.Permission;
 /// <summary>
 /// 部门管理
 /// </summary>
-[Area("权限管理")]
-[Route("/api/dept")]
+[Area("部门管理")]
+[Route("/api/dept", Order = 4)]
 public class DeptController : BaseApiController
 {
     #region 构造函数
@@ -149,7 +148,6 @@ public class DeptController : BaseApiController
     [HttpPost]
     [Route("superior")]
     [Description("获取同级、父级部门")]
-    [ApeVoloAuthorize(new[] { "admin", "dept_list" })]
     public async Task<ActionResult<object>> GetSuperior([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)

@@ -48,4 +48,9 @@ public class CreateUpdateRoleDto : BaseEntityDto<long>
     /// 角色菜单
     /// </summary>
     public List<RoleMenuDto> Menus { get; set; }
+
+    /// <summary>
+    /// 角色菜单
+    /// </summary>
+    public List<RoleApisDto> Apis { get; set; }
 }

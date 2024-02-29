@@ -13,10 +13,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Ape.Volo.Api.Controllers.Message.Email;
 
 /// <summary>
-/// 邮箱账户
+/// 邮箱账户管理
 /// </summary>
-[Area("邮件管理")]
-[Route("/api/email/account")]
+[Area("邮箱账户管理")]
+[Route("/api/email/account", Order = 17)]
 public class EmailAccountController : BaseApiController
 {
     private readonly IEmailAccountService _emailAccountService;
@@ -98,7 +98,7 @@ public class EmailAccountController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("列表")]
-    public async Task<ActionResult<object>> FindList(EmailAccountQueryCriteria emailAccountQueryCriteria,
+    public async Task<ActionResult<object>> Query(EmailAccountQueryCriteria emailAccountQueryCriteria,
         Pagination pagination)
     {
         var emailAccountList = await _emailAccountService.QueryAsync(emailAccountQueryCriteria, pagination);

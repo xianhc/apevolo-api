@@ -6,12 +6,12 @@
 public class PermissionVo
 {
     /// <summary>
-    /// 路由
+    /// 请求路径
     /// </summary>
-    public string LinkUrl { get; set; }
+    public string Url { get; set; }
 
     /// <summary>
-    /// 权限点
+    /// 请求方法
     /// </summary>
-    public string Permission { get; set; }
+    public string Method { get; set; }
 }

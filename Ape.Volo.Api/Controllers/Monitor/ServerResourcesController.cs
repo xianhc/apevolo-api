@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Ape.Volo.Api.Controllers.Monitor;
 
 /// <summary>
-/// 服务器监控
+/// 服务器管理
 /// </summary>
-[Area("监控管理")]
-[Route("/api/")]
+[Area("服务器管理")]
+[Route("/api/service", Order = 16)]
 public class ServerResourcesController : BaseApiController
 {
     private readonly IServerResourcesService _serverResourcesService;
@@ -25,9 +25,8 @@ public class ServerResourcesController : BaseApiController
     #region 对内接口
 
     [HttpGet]
-    [Route("service/resources/info")]
+    [Route("resources/info")]
     [Description("服务器信息")]
-    [ApeVoloAuthorize(new[] { "admin" })]
     [NotAudit]
     public async Task<ActionResult<object>> Query()
     {

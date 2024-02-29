@@ -15,8 +15,8 @@ namespace Ape.Volo.Api.Controllers.System;
 /// <summary>
 /// 全局设置管理
 /// </summary>
-[Area("系统管理")]
-[Route("/api/setting")]
+[Area("全局设置管理")]
+[Route("/api/setting", Order = 10)]
 public class SettingController : BaseApiController
 {
     #region 字段

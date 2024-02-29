@@ -13,10 +13,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Ape.Volo.Api.Controllers.System;
 
 /// <summary>
-/// 全局设置管理
+/// 应用密钥管理
 /// </summary>
-[Area("系统管理")]
-[Route("/api/appSecret")]
+[Area("应用密钥管理")]
+[Route("/api/appSecret", Order = 11)]
 public class AppSecretController : BaseApiController
 {
     #region 字段

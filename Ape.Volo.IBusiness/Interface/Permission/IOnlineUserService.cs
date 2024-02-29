@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Ape.Volo.Common.WebApp;
 using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Vo;
@@ -17,14 +18,15 @@ public interface IOnlineUserService
     /// </summary>
     /// <param name="jwtUserVo"></param>
     /// <param name="remoteIp"></param>
-    Task<LoginUserInfo> SaveAsync(JwtUserVo jwtUserVo, string remoteIp);
+    Task<LoginUserInfo> SaveLoginUserAsync(JwtUserVo jwtUserVo, string remoteIp);
 
     /// <summary>
     /// jwt用户信息
     /// </summary>
     /// <param name="userDto"></param>
+    /// <param name="permissionRoles"></param>
     /// <returns></returns>
-    Task<JwtUserVo> FindJwtUserAsync(UserDto userDto);
+    Task<JwtUserVo> CreateJwtUserAsync(UserDto userDto, List<string> permissionRoles);
 
     #endregion
 }

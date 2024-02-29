@@ -18,11 +18,6 @@ public class CreateUpdateMenuDto : BaseEntityDto<long>
     public string Title { get; set; }
 
     /// <summary>
-    /// 路由地址
-    /// </summary>
-    public string LinkUrl { get; set; }
-
-    /// <summary>
     /// 路径
     /// </summary>
     public string Path { get; set; }

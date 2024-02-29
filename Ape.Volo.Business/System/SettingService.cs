@@ -97,7 +97,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
         return settingExports;
     }
 
-    [UseCache(Expiration = 20, KeyPrefix = GlobalConstants.CacheKey.LoadSettingByName)]
+    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.LoadSettingByName)]
     public async Task<SettingDto> FindSettingByName(string settingName)
     {
         if (settingName.IsNullOrEmpty())

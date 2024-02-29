@@ -17,8 +17,8 @@ namespace Ape.Volo.Api.Controllers.System;
 /// <summary>
 /// 文件存储管理
 /// </summary>
-[Area("系统管理")]
-[Route("/api/storage")]
+[Area("文件存储管理")]
+[Route("/api/storage", Order = 12)]
 public class FileRecordController : BaseApiController
 {
     #region 字段
@@ -44,7 +44,7 @@ public class FileRecordController : BaseApiController
     /// <param name="file"></param>
     /// <param name="description"></param>
     /// <returns></returns>
-    [HttpOptions, HttpPost]
+    [HttpPost, HttpOptions]
     [Route("upload")]
     [Description("创建")]
     [CheckParamNotEmpty("description")]
@@ -77,6 +77,12 @@ public class FileRecordController : BaseApiController
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateFileRecordDto createUpdateAppSecretDto)
     {
+        if (!ModelState.IsValid)
+        {
+            var actionError = ModelState.GetErrors();
+            return Error(actionError);
+        }
+
         await _fileRecordService.UpdateAsync(createUpdateAppSecretDto);
         return NoContent();
     }

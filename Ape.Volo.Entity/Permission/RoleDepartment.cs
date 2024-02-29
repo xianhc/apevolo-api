@@ -3,21 +3,21 @@ using SqlSugar;
 namespace Ape.Volo.Entity.Permission
 {
     /// <summary>
-    /// 用户岗位关联
+    /// 角色部门关联
     /// </summary>
-    [SugarTable("sys_users_jobs")]
-    public class UserJobs
+    [SugarTable("sys_role_dept")]
+    public class RoleDepartment
     {
         /// <summary>
-        /// 用户ID
+        /// 角色ID
         /// </summary>
         [SugarColumn(IsPrimaryKey = true)]
-        public long UserId { get; set; }
+        public long RoleId { get; set; }
 
         /// <summary>
-        /// 岗位ID
+        /// 部门ID
         /// </summary>
         [SugarColumn(IsPrimaryKey = true)]
-        public long JobId { get; set; }
+        public long DeptId { get; set; }
     }
 }

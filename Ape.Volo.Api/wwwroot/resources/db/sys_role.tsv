@@ -1,28 +1,28 @@
 [
-    {
-        "Id":"1306054134645919752",
-        "Name":"内置管理员",
-        "Level":1,
-        "Description":"-",
-        "DataScope":"全部",
-        "Permission":"admin",
-        "CreateBy":"apevolo",
-        "CreateTime":"\/Date(1609430400000+0800)\/",
-        "UpdateBy":null,
-        "UpdateTime":null,
-        "IsDeleted":false
-    },
-    {
-        "Id":"1521439155194695680",
-        "Name":"游客",
-        "Level":1,
-        "Description":"-",
-        "DataScope":"全部",
-        "Permission":"guest",
-        "CreateBy":"apevolo",
-        "CreateTime":"\/Date(1609430400000+0800)\/",
-        "UpdateBy":null,
-        "UpdateTime":null,
-        "IsDeleted":false
-    }
+  {
+    "Id": "1306054134645919752",
+    "Name": "内置管理员",
+    "Level": 1,
+    "Description": "-",
+    "DataScope": "全部",
+    "Permission": "admin",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1521439155194695680",
+    "Name": "游客",
+    "Level": 1,
+    "Description": "-",
+    "DataScope": "全部",
+    "Permission": "guest",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  }
 ]

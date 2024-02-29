@@ -12,9 +12,17 @@ namespace Ape.Volo.IBusiness.Interface.Permission;
 public interface IPermissionService : IBaseServices<Role>
 {
     /// <summary>
-    /// 查询用户角色
+    /// 获取权限标识符
     /// </summary>
     /// <param name="userId">用户ID</param>
     /// <returns></returns>
-    Task<List<PermissionVo>> QueryUserPermissionAsync(long userId);
+    Task<List<string>> GetPermissionRolesAsync(long userId);
+
+
+    /// <summary>
+    /// 获取权限urls
+    /// </summary>
+    /// <param name="userId">用户ID</param>
+    /// <returns></returns>
+    Task<List<PermissionVo>> GetPermissionVoAsync(long userId);
 }

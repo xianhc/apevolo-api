@@ -27,7 +27,7 @@ namespace Ape.Volo.Api.Controllers.Auth;
 /// 授权管理
 /// </summary>
 [Area("授权管理")]
-[Route("[controller]/[action]")]
+[Route("/auth")]
 public class AuthorizationController : BaseApiController
 {
     #region 字段
@@ -65,7 +65,7 @@ public class AuthorizationController : BaseApiController
     /// <param name="authUser"></param>
     /// <returns></returns>
     [HttpPost]
-    [Route("/auth/login")]
+    [Route("login")]
     [Description("用户登录")]
     [AllowAnonymous]
     public async Task<ActionResult<object>> Login([FromBody] LoginAuthUser authUser)
@@ -109,7 +109,7 @@ public class AuthorizationController : BaseApiController
     /// <param name="token"></param>
     /// <returns></returns>
     [HttpPost]
-    [Route("/auth/refreshToken")]
+    [Route("refreshToken")]
     [Description("刷新Token")]
     [AllowAnonymous]
     [NotAudit]
@@ -148,18 +148,15 @@ public class AuthorizationController : BaseApiController
 
 
     [HttpGet]
-    [Route("/auth/info")]
+    [Route("info")]
     [Description("个人信息")]
-    [ApeVoloOnline]
     [NotAudit]
     public async Task<ActionResult<object>> GetInfo()
     {
         var netUser = await _userService.QueryByIdAsync(_apeContext.HttpUser.Id);
-        //用户权限点 路由
-        var permissionList = await _permissionService.QueryUserPermissionAsync(_apeContext.HttpUser.Id);
-        netUser.Authorizes.AddRange(permissionList.Select(s => s.Permission).Where(s => !s.IsNullOrEmpty()));
-        netUser.Authorizes.AddRange(netUser.Roles.Select(r => r.Permission));
-        var jwtUserVo = await _onlineUserService.FindJwtUserAsync(netUser);
+        var permissionRoles = await _permissionService.GetPermissionRolesAsync(netUser.Id);
+        permissionRoles.AddRange(netUser.Roles.Select(r => r.Permission));
+        var jwtUserVo = await _onlineUserService.CreateJwtUserAsync(netUser, permissionRoles);
         return jwtUserVo.ToJson();
     }
 
@@ -169,7 +166,7 @@ public class AuthorizationController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Description("获取验证码")]
-    [Route("/auth/captcha")]
+    [Route("captcha")]
     [AllowAnonymous]
     [NotAudit]
     public async Task<ActionResult<object>> Captcha()
@@ -188,8 +185,7 @@ public class AuthorizationController : BaseApiController
     /// <returns></returns>
     [HttpPost]
     [Description("获取邮箱验证码")]
-    [Route("/auth/code/reset/email")]
-    [ApeVoloOnline]
+    [Route("code/reset/email")]
     public async Task<ActionResult<object>> ResetEmail(string email)
     {
         if (!email.IsEmail()) throw new BadRequestException("请输入正确的邮箱！");
@@ -204,9 +200,8 @@ public class AuthorizationController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpDelete]
-    [Route("/auth/logout")]
+    [Route("logout")]
     [Description("用户登出")]
-    //[ApeVoloOnline]
     [AllowAnonymous]
     public async Task<ActionResult<object>> Logout()
     {
@@ -234,15 +229,12 @@ public class AuthorizationController : BaseApiController
     /// <returns></returns>
     private async Task<string> LoginResult(UserDto userDto, string type)
     {
-        //用户权限点 路由
-        var permissionList = await _permissionService.QueryUserPermissionAsync(userDto.Id);
-        userDto.Authorizes.AddRange(permissionList.Select(s => s.Permission).Where(s => !s.IsNullOrEmpty()));
-        userDto.Authorizes.AddRange(userDto.Roles.Select(s => s.Permission));
-        userDto.PermissionUrl.AddRange(permissionList.Select(s => s.LinkUrl).Where(s => !s.IsNullOrEmpty()));
+        var permissionRoles = await _permissionService.GetPermissionRolesAsync(userDto.Id);
+        permissionRoles.AddRange(userDto.Roles.Select(r => r.Permission));
 
         var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-        var jwtUserVo = await _onlineUserService.FindJwtUserAsync(userDto);
-        var loginUserInfo = await _onlineUserService.SaveAsync(jwtUserVo, remoteIp);
+        var jwtUserVo = await _onlineUserService.CreateJwtUserAsync(userDto, permissionRoles);
+        var loginUserInfo = await _onlineUserService.SaveLoginUserAsync(jwtUserVo, remoteIp);
         var token = await _tokenService.IssueTokenAsync(loginUserInfo);
         loginUserInfo.AccessToken = token.AccessToken;
         var onlineKey = loginUserInfo.AccessToken.ToMd5String16();

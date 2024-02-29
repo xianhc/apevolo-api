@@ -57,7 +57,7 @@ namespace Ape.Volo.Entity.Permission
         /// 用户集合
         /// </summary>
         [SugarColumn(IsIgnore = true)]
-        [Navigate(typeof(RolesDepartments), nameof(RolesDepartments.DeptId), nameof(RolesDepartments.RoleId))]
+        [Navigate(typeof(RoleDepartment), nameof(RoleDepartment.DeptId), nameof(RoleDepartment.RoleId))]
         public List<Role> Roles { get; set; }
     }
 }

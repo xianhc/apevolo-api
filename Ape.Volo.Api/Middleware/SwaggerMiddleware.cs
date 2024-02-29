@@ -25,9 +25,22 @@ public static class SwaggerMiddleware
         if (configs.Swagger.Enabled)
         {
             app.UseSwagger();
+            // app.UseSwagger(c =>
+            // {
+            //     c.PreSerializeFilters.Add((doc, item) =>
+            //     {
+            //         //根据代理服务器提供的协议、地址和路由，生成api文档服务地址
+            //         doc.Servers = new List<OpenApiServer>
+            //         {
+            //             new OpenApiServer
+            //                 { Url = $"{item.Scheme}://{item.Host.Value}" }
+            //         };
+            //     });
+            // });
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint($"/swagger/{configs.Swagger.Name}/swagger.json", configs.Swagger.Version);
+                c.RoutePrefix = "";
 
                 var stream = streamHtml?.Invoke();
                 if (stream == null)
@@ -38,7 +51,6 @@ public static class SwaggerMiddleware
                 }
 
                 c.IndexStream = streamHtml;
-                c.RoutePrefix = "";
             });
         }
     }

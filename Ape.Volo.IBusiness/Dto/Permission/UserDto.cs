@@ -19,8 +19,6 @@ public class UserDto : BaseEntityDto<long>
     public UserDto()
     {
         Roles = new List<RoleSmallDto>();
-        PermissionUrl = new List<string>();
-        Authorizes = new List<string>();
         Jobs = new List<JobSmallDto>();
     }
 
@@ -99,16 +97,4 @@ public class UserDto : BaseEntityDto<long>
     /// 岗位列表
     /// </summary>
     public List<JobSmallDto> Jobs { get; set; }
-
-    /// <summary>
-    /// 权限
-    /// </summary>
-    [JsonIgnore]
-    public List<string> Authorizes { get; set; }
-
-    /// <summary>
-    /// 用户的权限url
-    /// </summary>
-    [JsonIgnore]
-    public List<string> PermissionUrl { get; set; }
 }

@@ -31,7 +31,6 @@ public class OnlineUserService : IOnlineUserService
                 var loginUserInfo =
                     await _cache.GetAsync<LoginUserInfo>(item);
                 if (loginUserInfo.IsNull()) continue;
-                loginUserInfo.CurrentPermission = null;
                 loginUserInfo.AccessToken = loginUserInfo.AccessToken.ToMd5String16();
                 loginUserInfos.Add(loginUserInfo);
             }
@@ -68,7 +67,6 @@ public class OnlineUserService : IOnlineUserService
                     await _cache.GetAsync<LoginUserInfo>(item);
                 if (loginUserInfo != null)
                 {
-                    loginUserInfo.CurrentPermission = null;
                     onlineUserExports.Add(loginUserInfo.ChangeType<OnlineUserExport>());
                 }
             }

@@ -82,9 +82,9 @@ public class UserService : BaseServices<User>, IUserService
             throw new BadRequestException("角色至少选择一个");
         }
 
-        await SugarClient.Deleteable<UserRoles>().Where(x => x.UserId == user.Id).ExecuteCommandAsync();
-        var userRoles = new List<UserRoles>();
-        userRoles.AddRange(user.Roles.Select(x => new UserRoles() { UserId = user.Id, RoleId = x.Id }));
+        await SugarClient.Deleteable<UserRole>().Where(x => x.UserId == user.Id).ExecuteCommandAsync();
+        var userRoles = new List<UserRole>();
+        userRoles.AddRange(user.Roles.Select(x => new UserRole() { UserId = user.Id, RoleId = x.Id }));
         await SugarClient.Insertable(userRoles).ExecuteCommandAsync();
 
         //岗位
@@ -94,9 +94,9 @@ public class UserService : BaseServices<User>, IUserService
         }
 
 
-        await SugarClient.Deleteable<UserJobs>().Where(x => x.UserId == user.Id).ExecuteCommandAsync();
-        var userJobs = new List<UserJobs>();
-        userJobs.AddRange(user.Jobs.Select(x => new UserJobs() { UserId = user.Id, JobId = x.Id }));
+        await SugarClient.Deleteable<UserJob>().Where(x => x.UserId == user.Id).ExecuteCommandAsync();
+        var userJobs = new List<UserJob>();
+        userJobs.AddRange(user.Jobs.Select(x => new UserJob() { UserId = user.Id, JobId = x.Id }));
         await SugarClient.Insertable(userJobs).ExecuteCommandAsync();
 
         return true;
@@ -143,9 +143,9 @@ public class UserService : BaseServices<User>, IUserService
             throw new BadRequestException("角色至少选择一个！");
         }
 
-        await SugarClient.Deleteable<UserRoles>().Where(x => x.UserId == user.Id).ExecuteCommandAsync();
-        var userRoles = new List<UserRoles>();
-        userRoles.AddRange(user.Roles.Select(x => new UserRoles() { UserId = user.Id, RoleId = x.Id }));
+        await SugarClient.Deleteable<UserRole>().Where(x => x.UserId == user.Id).ExecuteCommandAsync();
+        var userRoles = new List<UserRole>();
+        userRoles.AddRange(user.Roles.Select(x => new UserRole() { UserId = user.Id, RoleId = x.Id }));
         await SugarClient.Insertable(userRoles).ExecuteCommandAsync();
 
         //岗位
@@ -154,9 +154,9 @@ public class UserService : BaseServices<User>, IUserService
             throw new BadRequestException("岗位至少选择一个！");
         }
 
-        await SugarClient.Deleteable<UserJobs>().Where(x => x.UserId == user.Id).ExecuteCommandAsync();
-        var userJobs = new List<UserJobs>();
-        userJobs.AddRange(user.Jobs.Select(x => new UserJobs() { UserId = user.Id, JobId = x.Id }));
+        await SugarClient.Deleteable<UserJob>().Where(x => x.UserId == user.Id).ExecuteCommandAsync();
+        var userJobs = new List<UserJob>();
+        userJobs.AddRange(user.Jobs.Select(x => new UserJob() { UserId = user.Id, JobId = x.Id }));
         await SugarClient.Insertable(userJobs).ExecuteCommandAsync();
 
         //清理缓存
@@ -195,7 +195,9 @@ public class UserService : BaseServices<User>, IUserService
             user => user.Dept;
         Expression<Func<User, List<Role>>> navigationUserRoles = user => user.Roles;
         Expression<Func<User, List<Job>>> navigationUserJobs = user => user.Jobs;
-        var users = await SugarRepository.QueryPageListAsync(whereExpression, pagination, null, navigationExpression,
+        var users = await SugarRepository.QueryPageListAsync(whereExpression,
+            pagination, null,
+            navigationExpression,
             navigationUserJobs, navigationUserRoles);
 
         return ApeContext.Mapper.Map<List<UserDto>>(users);
@@ -422,7 +424,9 @@ public class UserService : BaseServices<User>, IUserService
         await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserJobsById +
                                            user.Id.ToString().ToMd5String16());
         await ApeContext.Cache.RemoveAsync(
-            GlobalConstants.CacheKey.UserPermissionById + user.Id.ToString().ToMd5String16());
+            GlobalConstants.CacheKey.UserPermissionUrls + user.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(
+            GlobalConstants.CacheKey.UserPermissionRoles + user.Id.ToString().ToMd5String16());
         await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserBuildMenuById +
                                            user.Id.ToString().ToMd5String16());
     }

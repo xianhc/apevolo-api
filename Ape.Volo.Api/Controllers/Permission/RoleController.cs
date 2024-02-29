@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -19,8 +18,8 @@ namespace Ape.Volo.Api.Controllers.Permission;
 /// <summary>
 /// 角色管理
 /// </summary>
-[Area("权限管理")]
-[Route("/api/role")]
+[Area("角色管理")]
+[Route("/api/role", Order = 2)]
 public class RoleController : BaseApiController
 {
     #region 字段
@@ -113,13 +112,17 @@ public class RoleController : BaseApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("{id}")]
+    [Route("querySingle")]
     [Description("查看指定角色")]
-    [ApeVoloAuthorize(new[] { "roles_list" })]
     public async Task<ActionResult<object>> QuerySingle(string id)
     {
+        if (id.IsNullOrEmpty())
+        {
+            return Error("id cannot be empty");
+        }
+
         var newId = Convert.ToInt64(id);
-        var role = await _roleService.TableWhere(x => x.Id == newId).Includes(x => x.MenuList)
+        var role = await _roleService.TableWhere(x => x.Id == newId).Includes(x => x.MenuList).Includes(x => x.Apis)
             .Includes(x => x.DepartmentList).SingleAsync();
         return _mapper.Map<RoleDto>(role).ToJson();
     }
@@ -167,7 +170,6 @@ public class RoleController : BaseApiController
     [HttpGet]
     [Route("all")]
     [Description("查询全部")]
-    [ApeVoloAuthorize(new[] { "admin", "roles_list" })]
     public async Task<ActionResult<object>> GetAllRoles()
     {
         var allRoles = await _roleService.QueryAllAsync();
@@ -183,7 +185,6 @@ public class RoleController : BaseApiController
     [HttpGet]
     [Route("level")]
     [Description("当前用户等级")]
-    [ApeVoloAuthorize(new[] { "admin", "roles_list" })]
     public async Task<ActionResult<object>> GetRoleLevel(int? level)
     {
         var curLevel = await _roleService.VerificationUserRoleLevelAsync(level);

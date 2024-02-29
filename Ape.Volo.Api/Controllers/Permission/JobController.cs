@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -16,8 +15,8 @@ namespace Ape.Volo.Api.Controllers.Permission;
 /// <summary>
 /// 岗位管理
 /// </summary>
-[Area("权限管理")]
-[Route("/api/job")]
+[Area("岗位管理")]
+[Route("/api/job", Order = 6)]
 public class JobController : BaseApiController
 {
     #region 字段
@@ -69,6 +68,12 @@ public class JobController : BaseApiController
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateJobDto createUpdateJobDto)
     {
+        if (!ModelState.IsValid)
+        {
+            var actionError = ModelState.GetErrors();
+            return Error(actionError);
+        }
+
         await _jobService.UpdateAsync(createUpdateJobDto);
         return NoContent();
     }
@@ -119,7 +124,6 @@ public class JobController : BaseApiController
     [HttpGet]
     [Route("queryAll")]
     [Description("查询全部")]
-    [ApeVoloAuthorize(new[] { "admin", "job_list" })]
     public async Task<ActionResult<object>> QueryAll()
     {
         var jobList = await _jobService.QueryAllAsync();

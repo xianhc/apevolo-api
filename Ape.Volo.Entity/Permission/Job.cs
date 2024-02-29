@@ -39,6 +39,6 @@ public class Job : BaseEntity, ISoftDeletedEntity
     /// 用户列表
     /// </summary>
     [SugarColumn(IsIgnore = true)]
-    [Navigate(typeof(UserJobs), nameof(UserJobs.JobId), nameof(UserJobs.UserId))]
+    [Navigate(typeof(UserJob), nameof(UserJob.JobId), nameof(UserJob.UserId))]
     public List<User> Users { get; set; }
 }

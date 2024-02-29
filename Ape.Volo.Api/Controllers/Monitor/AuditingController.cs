@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
 using Ape.Volo.Common.AttributeExt;
-using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.WebApp;
 using Ape.Volo.IBusiness.Dto.Monitor;
@@ -15,8 +14,8 @@ namespace Ape.Volo.Api.Controllers.Monitor;
 /// <summary>
 /// 审计管理
 /// </summary>
-[Area("监控管理")]
-[Route("/api/auditing")]
+[Area("审计管理")]
+[Route("/api/auditing", Order = 13)]
 public class AuditingController : BaseApiController
 {
     #region 字段
@@ -69,7 +68,6 @@ public class AuditingController : BaseApiController
     [HttpGet]
     [Route("current")]
     [Description("用户行为")]
-    [ApeVoloOnline]
     [NotAudit]
     public async Task<ActionResult<object>> FindListByCurrent(Pagination pagination)
     {

@@ -52,7 +52,7 @@ namespace Ape.Volo.Entity.Permission
         /// 部门集合
         /// </summary>
         [SugarColumn(IsIgnore = true)]
-        [Navigate(typeof(RolesDepartments), nameof(RolesDepartments.RoleId), nameof(RolesDepartments.DeptId))]
+        [Navigate(typeof(RoleDepartment), nameof(RoleDepartment.RoleId), nameof(RoleDepartment.DeptId))]
         public List<Department> DepartmentList { get; set; }
 
         /// <summary>
@@ -64,7 +64,15 @@ namespace Ape.Volo.Entity.Permission
         /// 用户列表
         /// </summary>
         [SugarColumn(IsIgnore = true)]
-        [Navigate(typeof(UserRoles), nameof(UserRoles.RoleId), nameof(UserRoles.UserId))]
+        [Navigate(typeof(UserRole), nameof(UserRole.RoleId), nameof(UserRole.UserId))]
         public List<User> Users { get; set; }
+
+
+        /// <summary>
+        /// 菜单集合
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        [Navigate(typeof(RoleApis), nameof(RoleApis.RoleId), nameof(RoleApis.ApisId))]
+        public List<Apis> Apis { get; set; }
     }
 }

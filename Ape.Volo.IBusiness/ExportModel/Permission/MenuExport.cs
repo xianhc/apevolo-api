@@ -16,12 +16,6 @@ public class MenuExport : ExportBase
     public string Title { get; set; }
 
     /// <summary>
-    /// 菜单URL
-    /// </summary>
-    [Display(Name = "菜单URL")]
-    public string LinkUrl { get; set; }
-
-    /// <summary>
     /// 组件路径
     /// </summary>
     [Display(Name = "组件路径")]

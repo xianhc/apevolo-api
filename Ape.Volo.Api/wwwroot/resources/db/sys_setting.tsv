@@ -1,50 +1,50 @@
 [
-    {
-        "Id":"1431882983123456000",
-        "Name":"DefaultEmailAccountId",
-        "Value":"1311994912685690880",
-        "Enabled":true,
-        "Description":"默认系统邮件发送账户",
-        "CreateBy":"apevolo",
-        "CreateTime":"/Date(1609430400000+0800)/",
-        "UpdateBy":null,
-        "UpdateTime":null,
-        "IsDeleted":false
-    },
-    {
-        "Id":"1431883253819641856",
-        "Name":"IsRealTimeAuthentication",
-        "Value":"false",
-        "Enabled":true,
-        "Description":"是否实时验证角色最新权限",
-        "CreateBy":"apevolo",
-        "CreateTime":"/Date(1609430400000+0800)/",
-        "UpdateBy":null,
-        "UpdateTime":null,
-        "IsDeleted":false
-    },
-    {
-        "Id":"1431883929337466880",
-        "Name":"IsExceptionLogSaveDB",
-        "Value":"true",
-        "Enabled":true,
-        "Description":"异常日志是否保存到数据库",
-        "CreateBy":"apevolo",
-        "CreateTime":"/Date(1609430400000+0800)/",
-        "UpdateBy":null,
-        "UpdateTime":null,
-        "IsDeleted":false
-    },
-    {
-        "Id":"1431884349287960576",
-        "Name":"IsAuditLogSaveDB",
-        "Value":"true",
-        "Enabled":true,
-        "Description":"审计日志是否保存到数据库",
-        "CreateBy":"apevolo",
-        "CreateTime":"/Date(1609430400000+0800)/",
-        "UpdateBy":null,
-        "UpdateTime":null,
-        "IsDeleted":false
-    }
+  {
+    "Id": "1431882983123456000",
+    "Name": "DefaultEmailAccountId",
+    "Value": "1311994912685690880",
+    "Enabled": true,
+    "Description": "默认系统邮件发送账户",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1431883253819641856",
+    "Name": "IsAdminNotAuthentication",
+    "Value": "false",
+    "Enabled": true,
+    "Description": "系统管理免接口鉴权",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1431883929337466880",
+    "Name": "IsExceptionLogSaveDB",
+    "Value": "true",
+    "Enabled": true,
+    "Description": "异常日志是否保存到数据库",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1431884349287960576",
+    "Name": "IsAuditLogSaveDB",
+    "Value": "true",
+    "Enabled": true,
+    "Description": "审计日志是否保存到数据库",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  }
 ]

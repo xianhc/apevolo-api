@@ -48,4 +48,10 @@ public class RoleDto : BaseEntityDto<long>
     /// </summary>
     [JsonProperty(PropertyName = "depts")]
     public List<DepartmentDto> DepartmentList { get; set; }
+
+    /// <summary>
+    /// 菜单列表
+    /// </summary>
+    [JsonProperty(PropertyName = "apis")]
+    public List<Apis> Apis { get; set; }
 }

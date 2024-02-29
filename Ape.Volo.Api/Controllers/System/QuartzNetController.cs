@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -19,8 +18,8 @@ namespace Ape.Volo.Api.Controllers.System;
 /// <summary>
 /// 作业调度管理
 /// </summary>
-[Area("系统管理")]
-[Route("/api/tasks")]
+[Area("作业调度管理")]
+[Route("/api/tasks", Order = 9)]
 public class QuartzNetController : BaseApiController
 {
     #region 字段
@@ -194,10 +193,14 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Description("执行")]
-    [Route("execute/{id}")]
-    [ApeVoloAuthorize(new[] { "admin" })]
+    [Route("execute")]
     public async Task<ActionResult<object>> Execute(long id)
     {
+        if (id.IsNullOrEmpty())
+        {
+            return Error("id cannot be empty");
+        }
+
         var quartzNet = await _quartzNetService.TableWhere(x => x.Id == id).FirstAsync();
         if (quartzNet.IsNull())
         {
@@ -233,10 +236,14 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Description("暂停")]
-    [Route("pause/{id}")]
-    [ApeVoloAuthorize(new[] { "admin" })]
+    [Route("pause")]
     public async Task<ActionResult<object>> Pause(long id)
     {
+        if (id.IsNullOrEmpty())
+        {
+            return Error("id cannot be empty");
+        }
+
         var quartzNet = await _quartzNetService.TableWhere(x => x.Id == id).FirstAsync();
         if (quartzNet.IsNull())
         {
@@ -264,10 +271,14 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpPut]
     [Description("恢复作业")]
-    [Route("resume/{id}")]
-    [ApeVoloAuthorize(new[] { "admin" })]
+    [Route("resume")]
     public async Task<ActionResult<object>> Resume(long id)
     {
+        if (id.IsNullOrEmpty())
+        {
+            return Error("id cannot be empty");
+        }
+
         var quartzNet = await _quartzNetService.TableWhere(x => x.Id == id).FirstAsync();
         if (quartzNet.IsNull())
         {
@@ -296,9 +307,8 @@ public class QuartzNetController : BaseApiController
     /// <param name="pagination"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("logs/query/{id}")]
+    [Route("logs/query")]
     [Description("执行日志")]
-    [ApeVoloAuthorize(new[] { "admin" })]
     public async Task<ActionResult<object>> QueryLog(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria,
         Pagination pagination)
     {
@@ -318,8 +328,7 @@ public class QuartzNetController : BaseApiController
     /// <returns></returns>
     [HttpGet]
     [Description("导出")]
-    [Route("logs/download/{id}")]
-    [ApeVoloAuthorize(new[] { "admin" })]
+    [Route("logs/download")]
     public async Task<ActionResult<object>> Download(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria)
     {
         var quartzNetLogExports = await _quartzNetLogService.DownloadAsync(quartzNetLogQueryCriteria);

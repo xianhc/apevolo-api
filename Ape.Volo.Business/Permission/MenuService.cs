@@ -69,11 +69,6 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
         if (createUpdateMenuDto.Type != (int)MenuType.Catalog)
         {
-            if (createUpdateMenuDto.LinkUrl.IsNullOrEmpty())
-            {
-                throw new BadRequestException("菜单URL为必填");
-            }
-
             if (createUpdateMenuDto.Permission.IsNullOrEmpty())
             {
                 throw new BadRequestException("权限标识为必填");
@@ -242,7 +237,6 @@ public class MenuService : BaseServices<Menu>, IMenuService
         roleExports.AddRange(menus.Select(x => new MenuExport()
         {
             Title = x.Title,
-            LinkUrl = x.LinkUrl,
             Path = x.Path,
             Permission = x.Permission,
             IsFrame = x.IFrame ? BoolState.True : BoolState.False,
@@ -299,7 +293,6 @@ public class MenuService : BaseServices<Menu>, IMenuService
             }, (m, rm) => new MenuDto
             {
                 Title = m.Title,
-                LinkUrl = m.LinkUrl,
                 Path = m.Path,
                 Permission = m.Permission,
                 IFrame = m.IFrame,
@@ -318,7 +311,6 @@ public class MenuService : BaseServices<Menu>, IMenuService
             , (m, rm) => new
             {
                 m.Title,
-                m.LinkUrl,
                 m.Path,
                 m.Permission,
                 m.IFrame,

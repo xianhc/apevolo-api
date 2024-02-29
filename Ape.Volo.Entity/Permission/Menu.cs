@@ -18,12 +18,6 @@ namespace Ape.Volo.Entity.Permission
         public string Title { get; set; }
 
         /// <summary>
-        /// api地址
-        /// </summary>
-        [SugarColumn(IsNullable = true)]
-        public string LinkUrl { get; set; }
-
-        /// <summary>
         /// 组件路径
         /// </summary>
         [SugarColumn(IsNullable = true)]

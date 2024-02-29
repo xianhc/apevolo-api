@@ -74,7 +74,7 @@ public class LoginUserInfo
     public DateTime LoginTime { get; set; }
 
     /// <summary>
-    /// 当前权限信息
+    /// 是否系统管理员
     /// </summary>
-    public CurrentPermission CurrentPermission { get; set; }
+    public bool IsAdmin { get; set; }
 }

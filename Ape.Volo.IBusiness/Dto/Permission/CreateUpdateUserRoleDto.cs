@@ -5,20 +5,20 @@ using Ape.Volo.IBusiness.Base;
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
 /// <summary>
-/// 用户岗位Dto
+/// 用户角色Dto
 /// </summary>
-[AutoMapping(typeof(UserJobs), typeof(CreateUpdateUserJobsDto))]
-public class CreateUpdateUserJobsDto : BaseEntityDto<long>
+[AutoMapping(typeof(UserRole), typeof(CreateUpdateUserRoleDto))]
+public class CreateUpdateUserRoleDto : BaseEntityDto<long>
 {
     /// <summary>
     /// 
     /// </summary>
     /// <param name="userId"></param>
-    /// <param name="jobId"></param>
-    public CreateUpdateUserJobsDto(long userId, long jobId)
+    /// <param name="roleId"></param>
+    public CreateUpdateUserRoleDto(long userId, long roleId)
     {
         UserId = userId;
-        JobId = jobId;
+        RoleId = roleId;
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class CreateUpdateUserJobsDto : BaseEntityDto<long>
     public long UserId { get; set; }
 
     /// <summary>
-    /// 岗位ID
+    /// 角色ID
     /// </summary>
-    public long JobId { get; set; }
+    public long RoleId { get; set; }
 }

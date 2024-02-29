@@ -102,14 +102,14 @@ namespace Ape.Volo.Entity.Permission
         /// 角色集合
         /// </summary>
         [SugarColumn(IsIgnore = true)]
-        [Navigate(typeof(UserRoles), nameof(UserRoles.UserId), nameof(UserRoles.RoleId))]
+        [Navigate(typeof(UserRole), nameof(UserRole.UserId), nameof(UserRole.RoleId))]
         public List<Role> Roles { get; set; }
 
         /// <summary>
         /// 岗位集合
         /// </summary>
         [SugarColumn(IsIgnore = true)]
-        [Navigate(typeof(UserJobs), nameof(UserJobs.UserId), nameof(UserJobs.JobId))]
+        [Navigate(typeof(UserJob), nameof(UserJob.UserId), nameof(UserJob.JobId))]
         public List<Job> Jobs { get; set; }
 
         #endregion

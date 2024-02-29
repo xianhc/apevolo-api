@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Global;
@@ -12,7 +10,6 @@ using Ape.Volo.IBusiness.Interface.System;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Ape.Volo.Api.Authentication.Jwt;
@@ -57,12 +54,13 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
         PermissionRequirement requirement)
     {
         var isMatchRole = false;
-        LoginUserInfo loginUserInfo = null;
         var httpContext = _httpContextAccessor?.HttpContext;
         //请求Url
         if (httpContext != null)
         {
-            var questUrl = httpContext.Request.Path.Value?.ToLower();
+            var requestPath = httpContext.Request.Path.Value?.ToLower();
+            var requestMethod = httpContext.Request.Method.ToLower();
+
             //判断请求是否停止
             var handlers = httpContext.RequestServices.GetRequiredService<IAuthenticationHandlerProvider>();
             foreach (var scheme in await Schemes.GetRequestHandlerSchemesAsync())
@@ -105,7 +103,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 
                     #region 用户缓存信息是否已过期
 
-                    loginUserInfo = await _apeContext.Cache.GetAsync<LoginUserInfo>(
+                    var loginUserInfo = await _apeContext.Cache.GetAsync<LoginUserInfo>(
                         GlobalConstants.CacheKey.OnlineKey +
                         _apeContext.HttpUser.JwtToken.ToMd5String16());
                     if (loginUserInfo == null)
@@ -114,7 +112,23 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                         return;
                     }
 
-                    #region 判断IP是否变化
+                    #endregion
+
+                    #region 系统管理免接口鉴权
+
+                    var setting = await _settingService.FindSettingByName("IsAdminNotAuthentication");
+                    if (setting != null && setting.Value.ToBool())
+                    {
+                        if (loginUserInfo.IsAdmin)
+                        {
+                            context.Succeed(requirement);
+                            return;
+                        }
+                    }
+
+                    #endregion
+
+                    #region 验证IP是否发生变化
 
                     var ipClaim =
                         httpContext.User.Claims.FirstOrDefault(s => s.Type == AuthConstants.JwtClaimTypes.Ip);
@@ -129,10 +143,9 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 
                     #endregion
 
-                    #endregion
+                    #region 验证在线标识符 舍弃 你也可以保留
 
-                    #region ApeVoloOnlineAttribute属性直接放行
-
+                    /*
                     try
                     {
                         //在线特性，接口拥有ApeVoloOnlineAttribute 直接放行
@@ -159,41 +172,33 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                     {
                         // ignored
                     }
+*/
 
                     #endregion
 
                     #region 验证用户权限
 
-                    //验证权限 需要保持用户最新权限信息可以刷新在线用户OnlineUser.CurrentPermission
-                    if ((await _settingService.FindSettingByName("IsRealTimeAuthentication")).Value.ToBool())
+                    var permissionVos = await _permissionService.GetPermissionVoAsync(_apeContext.HttpUser.Id);
+
+                    if (permissionVos.Count != 0 && !requestPath.IsNullOrEmpty())
                     {
-                        //重新查询用户权限 自行修改判断
-                        var permissionList =
-                            await _permissionService.QueryUserPermissionAsync(_apeContext.HttpUser.Id);
+                        isMatchRole = permissionVos.Any(x =>
+                            x.Url.Equals(requestPath, StringComparison.CurrentCultureIgnoreCase) &&
+                            x.Method.Equals(requestMethod, StringComparison.CurrentCultureIgnoreCase));
                     }
 
-                    //验证url
-                    foreach (var url in loginUserInfo.CurrentPermission.Urls)
-                    {
-                        try
-                        {
-                            if (Regex.Match(questUrl ?? string.Empty, url.ToLower()).Value == questUrl)
-                            {
-                                isMatchRole = true;
-                                break;
-                            }
-                        }
-                        catch
-                        {
-                            // ignored
-                        }
-                    }
+                    #endregion
 
+                    #region 验证权限标识符 舍弃 你也可以保留
+
+                    /*
                     //权限url验证失败，再验证权接口是否有权限标识符
                     if (!isMatchRole)
                     {
                         try
                         {
+                            var permissionRoles =
+                                await _permissionService.GetPermissionRolesAsync(_apeContext.HttpUser.Id);
                             if (context.Resource.IsNotNull())
                             {
                                 var endpointFeature = (IEndpointFeature)((DefaultHttpContext)context.Resource)
@@ -201,17 +206,14 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                                         x.Key.FullName == typeof(IEndpointFeature).FullName).Value;
                                 var apeVoloAuthorize =
                                     endpointFeature.Endpoint?.Metadata.FirstOrDefault(x =>
-                                            x.GetType() == typeof(ApeVoloAuthorizeAttribute)) as
-                                        ApeVoloAuthorizeAttribute;
-                                // .net core 3.1获取的方式 
+                                        x.GetType() == typeof(ApeVoloAuthorizeAttribute)) as ApeVoloAuthorizeAttribute;
+                                // .net core 3.1获取的方式
                                 //ApeVoloAuthorizeAttribute apeVoloAuthorize = ((Endpoint)context.Resource).Metadata.FirstOrDefault(x => x.GetType() == typeof(ApeVoloAuthorizeAttribute)) as ApeVoloAuthorizeAttribute;
-                                if (apeVoloAuthorize.IsNotNull())
+
+                                if (apeVoloAuthorize != null && apeVoloAuthorize.Roles.Any(role =>
+                                        permissionRoles.Contains(role)))
                                 {
-                                    if (apeVoloAuthorize != null && apeVoloAuthorize.Roles.Any(role =>
-                                            loginUserInfo.CurrentPermission.Roles.Contains(role)))
-                                    {
-                                        isMatchRole = true;
-                                    }
+                                    isMatchRole = true;
                                 }
                             }
                         }
@@ -220,6 +222,9 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                             // ignored
                         }
                     }
+*/
+
+                    #endregion
 
                     if (!isMatchRole)
                     {
@@ -227,7 +232,6 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                         return;
                     }
 
-                    #endregion
 
                     context.Succeed(requirement);
                     return;
@@ -235,8 +239,8 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
             }
 
             //判断没有登录时，是否访问登录的url,并且是Post请求，并且是form表单提交类型，否则为失败
-            if (questUrl != null &&
-                !questUrl.Equals(_jwtOptions.LoginPath.ToLower(), StringComparison.Ordinal) &&
+            if (requestPath != null &&
+                !requestPath.Equals(_jwtOptions.LoginPath.ToLower(), StringComparison.Ordinal) &&
                 (!httpContext.Request.Method.Equals("POST") || !httpContext.Request.HasFormContentType))
             {
                 context.Fail();

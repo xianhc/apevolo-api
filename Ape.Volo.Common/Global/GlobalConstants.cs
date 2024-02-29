@@ -32,7 +32,8 @@ public static class GlobalConstants
 
         public const string UserBuildMenuById = "user:build:menu:id:";
 
-        public const string UserPermissionById = "user:permission:id:";
+        public const string UserPermissionRoles = "user:permissionRole:id:";
+        public const string UserPermissionUrls = "user:permissionUrl:id:";
 
         public const string LoadMenusByPId = "menu:pid:";
 

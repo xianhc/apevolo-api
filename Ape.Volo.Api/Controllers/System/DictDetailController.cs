@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Model;
 using Ape.Volo.IBusiness.Dto.System;
@@ -14,8 +13,8 @@ namespace Ape.Volo.Api.Controllers.System;
 /// <summary>
 /// 字典详情管理
 /// </summary>
-[Area("系统管理")]
-[Route("/api/dictDetail")]
+[Area("字典详情管理")]
+[Route("/api/dictDetail", Order = 8)]
 public class DictDetailController : BaseApiController
 {
     #region 字段
@@ -43,10 +42,15 @@ public class DictDetailController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    [ApeVoloAuthorize(new[] { "admin", "dict_add" })]
     public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateDictDetailDto createUpdateDictDto)
     {
+        if (!ModelState.IsValid)
+        {
+            var actionError = ModelState.GetErrors();
+            return Error(actionError);
+        }
+
         await _dictDetailService.CreateAsync(createUpdateDictDto);
         return Success();
     }
@@ -60,10 +64,15 @@ public class DictDetailController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    [ApeVoloAuthorize(new[] { "admin", "dict_edit" })]
     public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateDictDetailDto createUpdateDictDetailDto)
     {
+        if (!ModelState.IsValid)
+        {
+            var actionError = ModelState.GetErrors();
+            return Error(actionError);
+        }
+
         await _dictDetailService.UpdateAsync(createUpdateDictDetailDto);
         return NoContent();
     }
@@ -76,7 +85,6 @@ public class DictDetailController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    [ApeVoloAuthorize(new[] { "admin", "dict_del" })]
     public async Task<ActionResult<object>> Delete(string id)
     {
         if (id.IsNullOrEmpty())
@@ -97,7 +105,6 @@ public class DictDetailController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    [ApeVoloAuthorize(new[] { "admin", "dict_list" })]
     public async Task<ActionResult<object>> Query(DictDetailQueryCriteria dictDetailQueryCriteria,
         Pagination pagination)
     {

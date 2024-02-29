@@ -56,4 +56,16 @@ public static class GlobalData
 
         return Assembly.LoadFrom(dllFile);
     }
+
+    public static Assembly GetApiAssembly()
+    {
+        var basePath = AppContext.BaseDirectory;
+        var dllFile = Path.Combine(basePath, "Ape.Volo.Api.dll");
+        if (!File.Exists(dllFile))
+        {
+            throw new System.Exception("Ape.Volo.Api.dll文件未生成,编译项目成功后重试！");
+        }
+
+        return Assembly.LoadFrom(dllFile);
+    }
 }

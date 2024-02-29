@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -18,8 +17,8 @@ namespace Ape.Volo.Api.Controllers.Permission;
 /// <summary>
 /// 菜单管理
 /// </summary>
-[Area("权限管理")]
-[Route("/api/menu")]
+[Area("菜单管理")]
+[Route("/api/menu", Order = 4)]
 public class MenusController : BaseApiController
 {
     #region 字段
@@ -49,7 +48,7 @@ public class MenusController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> CreateMenu(
+    public async Task<ActionResult<object>> Create(
         [FromBody] CreateUpdateMenuDto createUpdateMenuDto)
     {
         if (!ModelState.IsValid)
@@ -70,7 +69,7 @@ public class MenusController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> UpdateDept(
+    public async Task<ActionResult<object>> Update(
         [FromBody] CreateUpdateMenuDto createUpdateMenuDto)
     {
         if (!ModelState.IsValid)
@@ -110,8 +109,6 @@ public class MenusController : BaseApiController
     [HttpGet]
     [Description("构建菜单")]
     [Route("build")]
-    //[ApeVoloAuthorize(new[] { "admin", "menu_list", "guest" })]
-    [ApeVoloOnline]
     public async Task<ActionResult<object>> Build()
     {
         var menuVos = await _menuService.BuildTreeAsync(_httpUser.Id);
@@ -126,12 +123,11 @@ public class MenusController : BaseApiController
     [HttpGet]
     [Description("子菜单")]
     [Route("lazy")]
-    [ApeVoloAuthorize(new[] { "admin", "menu_list", "guest" })]
     public async Task<ActionResult<object>> GetMenuLazy(long pid)
     {
         if (pid.IsNullOrEmpty())
         {
-            return Error("pid is null");
+            return Error("pid cannot be empty");
         }
 
         var menulist = await _menuService.FindByPIdAsync(pid);
@@ -180,7 +176,6 @@ public class MenusController : BaseApiController
     [HttpPost]
     [Description("获取同级、父级菜单")]
     [Route("superior")]
-    [ApeVoloAuthorize(new[] { "admin", "menu_list" })]
     public async Task<ActionResult<object>> GetSuperior([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
@@ -196,7 +191,6 @@ public class MenusController : BaseApiController
     [HttpGet]
     [Description("获取所有子级菜单ID")]
     [Route("child")]
-    [ApeVoloAuthorize(new[] { "admin", "menu_list" })]
     public async Task<ActionResult<object>> GetChild(long id)
     {
         if (id.IsNullOrEmpty())

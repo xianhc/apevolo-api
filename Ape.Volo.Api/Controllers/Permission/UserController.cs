@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -18,8 +17,8 @@ namespace Ape.Volo.Api.Controllers.Permission;
 /// <summary>
 /// 用户管理
 /// </summary>
-[Area("权限管理")]
-[Route("/api/user")]
+[Area("用户管理")]
+[Route("/api/user", Order = 1)]
 public class UserController : BaseApiController
 {
     #region 字段
@@ -70,6 +69,12 @@ public class UserController : BaseApiController
     [Route("edit")]
     public async Task<ActionResult<object>> Update([FromBody] CreateUpdateUserDto createUpdateUserDto)
     {
+        if (!ModelState.IsValid)
+        {
+            var actionError = ModelState.GetErrors();
+            return Error(actionError);
+        }
+
         await _userService.UpdateAsync(createUpdateUserDto);
         return NoContent();
     }
@@ -95,9 +100,8 @@ public class UserController : BaseApiController
     }
 
     [HttpPut]
-    [Route("center")]
+    [Route("update/center")]
     [Description("更新个人信息")]
-    [ApeVoloOnline]
     public async Task<ActionResult<object>> UpdateCenterAsync([FromBody] UpdateUserCenterDto updateUserCenterDto)
     {
         if (!ModelState.IsValid)
@@ -113,7 +117,6 @@ public class UserController : BaseApiController
     [HttpPost]
     [Route("update/password")]
     [Description("更新密码")]
-    [ApeVoloOnline]
     public async Task<ActionResult<object>> UpdatePasswordAsync([FromBody] UpdateUserPassDto updateUserPassDto)
     {
         if (!ModelState.IsValid)
@@ -129,7 +132,6 @@ public class UserController : BaseApiController
     [HttpPost]
     [Route("update/email")]
     [Description("更新邮箱")]
-    [ApeVoloOnline]
     public async Task<ActionResult<object>> UpdateEmail([FromBody] UpdateUserEmailDto updateUserEmailDto)
     {
         if (!ModelState.IsValid)
@@ -142,10 +144,9 @@ public class UserController : BaseApiController
         return Success();
     }
 
-    [HttpOptions, HttpPost]
+    [HttpPost, HttpOptions]
     [Route("update/avatar")]
     [Description("更新头像")]
-    [ApeVoloOnline]
     public async Task<ActionResult<object>> UpdateAvatar([FromForm] IFormFile avatar) //多文件使用  IFormFileCollection
     {
         if (avatar == null)

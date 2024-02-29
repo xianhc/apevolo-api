@@ -5,7 +5,7 @@ namespace Ape.Volo.Entity.Permission
     /// <summary>
     /// 角色菜单关联
     /// </summary>
-    [SugarTable("sys_roles_menus")]
+    [SugarTable("sys_role_menu")]
     public class RoleMenu
     {
         /// <summary>

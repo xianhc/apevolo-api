@@ -12,10 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Ape.Volo.Api.Controllers.Queued;
 
 /// <summary>
-/// 邮箱账户
+/// 邮件队列管理
 /// </summary>
-[Area("队列管理")]
-[Route("/api/queued/email")]
+[Area("邮件队列管理")]
+[Route("/api/queued/email", Order = 19)]
 public class QueuedEmailController : BaseApiController
 {
     private readonly IQueuedEmailService _queuedEmailService;
