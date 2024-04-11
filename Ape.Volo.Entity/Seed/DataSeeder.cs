@@ -81,7 +81,7 @@ public class DataSeeder
                     throw new Exception($"类{entityInfo.EntityName}缺少SugarTable表名");
                 }
 
-                if (!masterTables.Any(x => x.Name.Contains(entityInfo.DbTableName)))
+                if (!masterTables.Any(x => x.Name.Equals(entityInfo.DbTableName, StringComparison.OrdinalIgnoreCase)))
                 {
                     if (entity.GetCustomAttribute<SplitTableAttribute>() != null)
                     {
@@ -462,7 +462,7 @@ public class DataSeeder
                 int lastUnderscoreIndex = entityInfo.DbTableName.LastIndexOf('_');
                 var tableName = entityInfo.DbTableName.Substring(0, lastUnderscoreIndex);
 
-                if (!logTables.Any(x => x.Name.Contains(tableName)))
+                if (!logTables.Any(x => x.Name.Equals(tableName, StringComparison.OrdinalIgnoreCase)))
                 {
                     if (entity.GetCustomAttribute<SplitTableAttribute>() != null)
                     {

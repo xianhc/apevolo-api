@@ -33,12 +33,12 @@ public class CreateUpdateEmailAccountDto : BaseEntityDto<long>
     /// <summary>
     /// 电子邮件端口
     /// </summary>
+    [Required]
     public int Port { get; set; }
 
     /// <summary>
     /// 电子邮件用户名
     /// </summary>
-    [Display]
     [Required]
     public string Username { get; set; }
 

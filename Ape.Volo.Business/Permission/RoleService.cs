@@ -135,14 +135,10 @@ public class RoleService : BaseServices<Role>, IRoleService
     public async Task<List<RoleDto>> QueryAsync(RoleQueryCriteria roleQueryCriteria, Pagination pagination)
     {
         var whereExpression = GetWhereExpression(roleQueryCriteria);
-        Expression<Func<Role, List<Menu>>> navigationUserMenus = role => role.MenuList;
-        Expression<Func<Role, List<Department>>> navigationUserDepts = role => role.DepartmentList;
-        Expression<Func<Role, List<Apis>>> navigationRoleApis = role => role.Apis;
-
         var roleList =
             await SugarRepository.QueryPageListAsync<Role, Menu, Department, Apis>(whereExpression, pagination,
-                null, null, navigationUserMenus,
-                navigationUserDepts, navigationRoleApis);
+                null, null, x => x.MenuList,
+                x => x.DepartmentList, x => x.Apis);
 
         return ApeContext.Mapper.Map<List<RoleDto>>(roleList);
     }

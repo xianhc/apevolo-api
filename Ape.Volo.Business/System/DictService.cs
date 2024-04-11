@@ -84,7 +84,8 @@ public class DictService : BaseServices<Dict>, IDictService
     public async Task<List<ExportBase>> DownloadAsync(DictQueryCriteria dictQueryCriteria)
     {
         var whereExpression = GetWhereExpression(dictQueryCriteria);
-        var dicts = await TableWhere(whereExpression).ToListAsync();
+        var dicts = await Table.Includes(x => x.DictDetails).WhereIF(whereExpression != null, whereExpression)
+            .ToListAsync();
         List<ExportBase> dictExports = new List<ExportBase>();
 
         dicts.ForEach(x =>

@@ -7,7 +7,7 @@ namespace Ape.Volo.Entity.Queued
 {
     /// <summary>
     /// 邮件队列
-    /// </summary>=
+    /// </summary>
     [SugarTable("queued_email")]
     public class QueuedEmail : BaseEntity, ISoftDeletedEntity
     {

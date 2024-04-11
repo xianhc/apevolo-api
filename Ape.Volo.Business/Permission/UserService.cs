@@ -191,14 +191,10 @@ public class UserService : BaseServices<User>, IUserService
     public async Task<List<UserDto>> QueryAsync(UserQueryCriteria userQueryCriteria, Pagination pagination)
     {
         var whereExpression = await GetWhereExpression(userQueryCriteria);
-        Expression<Func<User, Department>> navigationExpression =
-            user => user.Dept;
-        Expression<Func<User, List<Role>>> navigationUserRoles = user => user.Roles;
-        Expression<Func<User, List<Job>>> navigationUserJobs = user => user.Jobs;
         var users = await SugarRepository.QueryPageListAsync(whereExpression,
             pagination, null,
-            navigationExpression,
-            navigationUserJobs, navigationUserRoles);
+            x => x.Dept,
+            x => x.Jobs, x => x.Roles);
 
         return ApeContext.Mapper.Map<List<UserDto>>(users);
     }
@@ -206,15 +202,9 @@ public class UserService : BaseServices<User>, IUserService
 
     public async Task<List<ExportBase>> DownloadAsync(UserQueryCriteria userQueryCriteria)
     {
-        //var users = await QueryAsync(userQueryCriteria, new Pagination { PageSize = 9999 });
-
         var whereExpression = await GetWhereExpression(userQueryCriteria);
-        Expression<Func<User, Department>> navigationExpression =
-            user => user.Dept;
-        Expression<Func<User, List<Role>>> navigationUserRoles = user => user.Roles;
-        Expression<Func<User, List<Job>>> navigationUserJobs = user => user.Jobs;
-        var users = await Table.Includes(navigationExpression).Includes(navigationUserJobs)
-            .Includes(navigationUserRoles).WhereIF(whereExpression != null, whereExpression).ToListAsync();
+        var users = await Table.Includes(x => x.Dept).Includes(x => x.Roles)
+            .Includes(x => x.Jobs).WhereIF(whereExpression != null, whereExpression).ToListAsync();
         List<ExportBase> userExports = new List<ExportBase>();
         userExports.AddRange(users.Select(x => new UserExport()
         {

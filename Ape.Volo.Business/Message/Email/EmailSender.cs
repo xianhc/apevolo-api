@@ -83,7 +83,7 @@ public class EmailSender : IEmailSender
     /// <param name="attachedDownloadId">Attachment download ID (another attachment)</param>
     /// <param name="headers">Headers</param>
     /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task SendEmailAsync(EmailAccount emailAccount, string subject, string body,
+    public virtual async Task<bool> SendEmailAsync(EmailAccount emailAccount, string subject, string body,
         string fromAddress, string fromName, string toAddress, string toName,
         string replyToAddress = null, string replyToName = null,
         IEnumerable<string> bcc = null, IEnumerable<string> cc = null,
@@ -136,8 +136,9 @@ public class EmailSender : IEmailSender
 
         //send email
         using var smtpClient = await _smtpBuilder.BuildAsync(emailAccount);
-        await smtpClient.SendAsync(message);
+        var result = await smtpClient.SendAsync(message);
         await smtpClient.DisconnectAsync(true);
+        return result != null && result.Contains("OK", StringComparison.CurrentCultureIgnoreCase);
     }
 
     #endregion

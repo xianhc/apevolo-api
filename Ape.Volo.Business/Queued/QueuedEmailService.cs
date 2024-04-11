@@ -15,6 +15,7 @@ using Ape.Volo.IBusiness.Dto.Queued;
 using Ape.Volo.IBusiness.Interface.Message.Email;
 using Ape.Volo.IBusiness.Interface.Queued;
 using Ape.Volo.IBusiness.QueryModel;
+using Microsoft.Extensions.Logging;
 
 namespace Ape.Volo.Business.Queued;
 
@@ -27,16 +28,21 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
 
     private readonly IEmailMessageTemplateService _emailMessageTemplateService;
     private readonly IEmailAccountService _emailAccountService;
+    private readonly IEmailSender _emailSender;
+    private readonly ILogger<QueuedEmailService> _logger;
 
     #endregion
 
     #region 构造函数
 
     public QueuedEmailService(IEmailMessageTemplateService emailMessageTemplateService,
-        IEmailAccountService emailAccountService, ApeContext apeContext) : base(apeContext)
+        IEmailAccountService emailAccountService, IEmailSender emailSender, ILogger<QueuedEmailService> logger,
+        ApeContext apeContext) : base(apeContext)
     {
         _emailMessageTemplateService = emailMessageTemplateService;
         _emailAccountService = emailAccountService;
+        _emailSender = emailSender;
+        _logger = logger;
     }
 
     #endregion
@@ -116,10 +122,10 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
     /// <summary>
     /// 变更邮箱验证码
     /// </summary>
-    /// <param name="emailAddres"></param>
+    /// <param name="emailAddress"></param>
     /// <param name="messageTemplateName"></param>
     /// <returns></returns>
-    public async Task<bool> ResetEmail(string emailAddres, string messageTemplateName)
+    public async Task<bool> ResetEmail(string emailAddress, string messageTemplateName)
     {
         var emailMessageTemplate =
             await _emailMessageTemplateService.TableWhere(x => x.Name == messageTemplateName).FirstAsync();
@@ -134,25 +140,63 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
         QueuedEmail queuedEmail = new QueuedEmail();
         queuedEmail.From = emailAccount.Email;
         queuedEmail.FromName = emailAccount.DisplayName;
-        queuedEmail.To = emailAddres;
+        queuedEmail.To = emailAddress;
         queuedEmail.Priority = (int)QueuedEmailPriority.High;
         queuedEmail.Bcc = emailMessageTemplate.BccEmailAddresses;
         queuedEmail.Subject = emailMessageTemplate.Subject;
         queuedEmail.Body = emailMessageTemplate.Body.Replace("%captcha%", captcha);
-        queuedEmail.SentTries = 0;
+        queuedEmail.SentTries = 1;
         queuedEmail.EmailAccountId = emailAccount.Id;
 
-        bool isTrue = await SugarRepository.AddReturnBoolAsync(queuedEmail);
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.EmailCaptchaKey +
+                                           queuedEmail.To.ToMd5String());
+        var isTrue = await ApeContext.Cache.SetAsync(
+            GlobalConstants.CacheKey.EmailCaptchaKey + queuedEmail.To.ToMd5String(), captcha,
+            TimeSpan.FromMinutes(5), null);
+
         if (isTrue)
         {
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.EmailCaptchaKey +
-                                               queuedEmail.To.ToMd5String());
-            await ApeContext.Cache.SetAsync(
-                GlobalConstants.CacheKey.EmailCaptchaKey + queuedEmail.To.ToMd5String(), captcha,
-                TimeSpan.FromMinutes(5), null);
-            //进redis队列执行发送
-            await ApeContext.Cache.GetDatabase()
-                .ListLeftPushAsync(MqTopicNameKey.MailboxQueue, queuedEmail.Id.ToString());
+            var bcc = string.IsNullOrWhiteSpace(queuedEmail.Bcc)
+                ? null
+                : queuedEmail.Bcc.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            var cc = string.IsNullOrWhiteSpace(queuedEmail.Cc)
+                ? null
+                : queuedEmail.Cc.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                isTrue = await _emailSender.SendEmailAsync(
+                    await _emailAccountService.TableWhere(x => x.Id == queuedEmail.EmailAccountId).FirstAsync(),
+                    queuedEmail.Subject,
+                    queuedEmail.Body,
+                    queuedEmail.From,
+                    queuedEmail.FromName,
+                    queuedEmail.To,
+                    queuedEmail.ToName,
+                    queuedEmail.ReplyTo,
+                    queuedEmail.ReplyToName,
+                    bcc,
+                    cc);
+                queuedEmail.SendTime = DateTime.Now;
+                // 如果开启redis并且开启消息队列功能 可以使用下面方式
+                // await ApeContext.Cache.GetDatabase()
+                //     .ListLeftPushAsync(MqTopicNameKey.MailboxQueue, queuedEmail.Id.ToString());
+            }
+            catch (Exception exc)
+            {
+                _logger.LogError($"Error sending e-mail. {exc.Message}");
+                isTrue = false;
+            }
+            finally
+            {
+                try
+                {
+                    await AddEntityAsync(queuedEmail);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
         }
 
         return isTrue;
@@ -166,7 +210,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
         QueuedEmailQueryCriteria queuedEmailQueryCriteria)
     {
         Expression<Func<QueuedEmail, bool>> whereExpression = x => true;
-        if (!queuedEmailQueryCriteria.Id.IsNullOrEmpty())
+        if (queuedEmailQueryCriteria.Id > 0)
         {
             whereExpression = whereExpression.AndAlso(x => x.Id == queuedEmailQueryCriteria.Id);
         }

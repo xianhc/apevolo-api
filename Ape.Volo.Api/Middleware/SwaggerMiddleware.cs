@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extention;
@@ -6,6 +7,7 @@ using Ape.Volo.Common.Helper.Serilog;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
 namespace Ape.Volo.Api.Middleware;
@@ -24,19 +26,19 @@ public static class SwaggerMiddleware
         var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
         if (configs.Swagger.Enabled)
         {
-            app.UseSwagger();
-            // app.UseSwagger(c =>
-            // {
-            //     c.PreSerializeFilters.Add((doc, item) =>
-            //     {
-            //         //根据代理服务器提供的协议、地址和路由，生成api文档服务地址
-            //         doc.Servers = new List<OpenApiServer>
-            //         {
-            //             new OpenApiServer
-            //                 { Url = $"{item.Scheme}://{item.Host.Value}" }
-            //         };
-            //     });
-            // });
+            //app.UseSwagger();
+            app.UseSwagger(c =>
+            {
+                c.PreSerializeFilters.Add((doc, item) =>
+                {
+                    //根据代理服务器提供的协议、地址和路由，生成api文档服务地址
+                    doc.Servers = new List<OpenApiServer>
+                    {
+                        new OpenApiServer
+                            { Url = $"{item.Scheme}://{item.Host.Value}" }
+                    };
+                });
+            });
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint($"/swagger/{configs.Swagger.Name}/swagger.json", configs.Swagger.Version);

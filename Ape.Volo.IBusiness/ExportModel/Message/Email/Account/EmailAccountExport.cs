@@ -18,7 +18,7 @@ public class EmailAccountExport : ExportBase
     /// <summary>
     /// 电子邮件显示名称
     /// </summary>
-    [Display(Name = "电子邮件")]
+    [Display(Name = "显示名称")]
     public string DisplayName { get; set; }
 
     /// <summary>

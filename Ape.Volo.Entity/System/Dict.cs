@@ -24,15 +24,21 @@ namespace Ape.Volo.Entity.System
         [SugarColumn(IsNullable = false)]
         public string Description { get; set; }
 
-        /// <summary>
-        /// 字典详情
-        /// </summary>
-        [SugarColumn(IsIgnore = true)]
-        public List<DictDetail> DictDetails { get; set; }
 
         /// <summary>
         /// 是否已删除
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        #region 扩展属性
+
+        /// <summary>
+        /// 字典详情
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        [Navigate(NavigateType.OneToMany, nameof(DictDetail.DictId))]
+        public List<DictDetail> DictDetails { get; set; }
+
+        #endregion
     }
 }
