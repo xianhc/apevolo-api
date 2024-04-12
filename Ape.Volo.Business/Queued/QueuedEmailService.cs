@@ -220,11 +220,10 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
             whereExpression = whereExpression.AndAlso(x => x.SentTries < queuedEmailQueryCriteria.MaxTries);
         }
 
-        if (!queuedEmailQueryCriteria.Form.IsNullOrEmpty())
+        if (queuedEmailQueryCriteria.EmailAccountId > 0)
         {
             whereExpression = whereExpression.AndAlso(x =>
-                x.From.Contains(queuedEmailQueryCriteria.Form) ||
-                x.FromName.Contains(queuedEmailQueryCriteria.Form));
+                x.EmailAccountId == queuedEmailQueryCriteria.EmailAccountId);
         }
 
         if (!queuedEmailQueryCriteria.To.IsNullOrEmpty())

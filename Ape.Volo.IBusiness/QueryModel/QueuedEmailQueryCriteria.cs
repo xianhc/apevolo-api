@@ -21,7 +21,7 @@ public class QueuedEmailQueryCriteria : DateRange
     /// <summary>
     /// 发送方
     /// </summary>
-    public string Form { get; set; }
+    public long EmailAccountId { get; set; }
 
     /// <summary>
     /// 接收方
