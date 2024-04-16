@@ -24,7 +24,7 @@ public class TokenService : ITokenService
         _jwtOptions = (configs?.CurrentValue ?? new Configs()).JwtAuthOptions;
     }
 
-    public async Task<Token> IssueTokenAsync(LoginUserInfo loginUserInfo)
+    public async Task<Token> IssueTokenAsync(LoginUserInfo loginUserInfo, bool refresh = false)
     {
         if (loginUserInfo == null)
             throw new ArgumentNullException(nameof(loginUserInfo));
@@ -49,20 +49,29 @@ public class TokenService : ITokenService
             audience: _jwtOptions.Audience,
             claims: cls,
             notBefore: nowTime,
-            expires: nowTime.AddSeconds(_jwtOptions.Expires),
+            expires: nowTime.AddHours(_jwtOptions.Expires),
             signingCredentials: signinCredentials
         );
 
 
         var token = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+        if (refresh)
+        {
+            return await Task.FromResult(new Token()
+            {
+                Expires = _jwtOptions.Expires * 3600,
+                TokenType = AuthConstants.JwtTokenType,
+                RefreshToken = token,
+            });
+        }
 
         return await Task.FromResult(new Token()
         {
             AccessToken = token,
-            Expires = _jwtOptions.Expires,
+            Expires = _jwtOptions.Expires * 3600,
             TokenType = AuthConstants.JwtTokenType,
             RefreshToken = "",
-            RefreshTokenExpires = _jwtOptions.RefreshTokenExpires
+            RefreshTokenExpires = _jwtOptions.RefreshTokenExpires * 3600
         });
     }
 

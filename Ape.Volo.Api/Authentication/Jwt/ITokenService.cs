@@ -10,8 +10,9 @@ public interface ITokenService
     /// Issue token
     /// </summary>
     /// <param name="loginUserInfo"></param>
+    /// <param name="refresh"></param>
     /// <returns></returns>
-    Task<Token> IssueTokenAsync(LoginUserInfo loginUserInfo);
+    Task<Token> IssueTokenAsync(LoginUserInfo loginUserInfo, bool refresh = false);
 
     Task<JwtSecurityToken> ReadJwtToken(string token);
 }

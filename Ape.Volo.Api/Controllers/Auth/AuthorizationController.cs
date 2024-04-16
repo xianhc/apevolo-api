@@ -15,6 +15,7 @@ using Ape.Volo.Common.WebApp;
 using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.Interface.Queued;
+using Ape.Volo.IBusiness.Interface.System;
 using Ape.Volo.IBusiness.RequestModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,6 +39,7 @@ public class AuthorizationController : BaseApiController
     private readonly IQueuedEmailService _queuedEmailService;
     private readonly ApeContext _apeContext;
     private readonly ITokenService _tokenService;
+    private readonly ITokenBlacklistService _tokenBlacklistService;
 
     #endregion
 
@@ -45,7 +47,7 @@ public class AuthorizationController : BaseApiController
 
     public AuthorizationController(IUserService userService, IPermissionService permissionService,
         IOnlineUserService onlineUserService, IQueuedEmailService queuedEmailService, ApeContext apeContext,
-        ITokenService tokenService)
+        ITokenService tokenService, ITokenBlacklistService tokenBlacklistService)
     {
         _userService = userService;
         _permissionService = permissionService;
@@ -53,6 +55,7 @@ public class AuthorizationController : BaseApiController
         _queuedEmailService = queuedEmailService;
         _apeContext = apeContext;
         _tokenService = tokenService;
+        _tokenBlacklistService = tokenBlacklistService;
     }
 
     #endregion
@@ -117,27 +120,32 @@ public class AuthorizationController : BaseApiController
     {
         if (token.IsNullOrEmpty())
         {
-            return Error("token已丢弃，请重新登录！");
+            return Error("token已丢失，请重新登录！");
         }
 
-        var jwtSecurityToken = await _tokenService.ReadJwtToken(token);
-        if (jwtSecurityToken != null)
+        var tokenMd5 = token.ToMd5String16();
+        var tokenBlacklist = await _tokenBlacklistService.TableWhere(x => x.AccessToken == tokenMd5).FirstAsync();
+        if (tokenBlacklist.IsNull())
         {
-            var userId = Convert.ToInt64(jwtSecurityToken.Claims
-                .FirstOrDefault(s => s.Type == AuthConstants.JwtClaimTypes.Jti)?.Value);
-            var loginTime = Convert.ToInt64(jwtSecurityToken.Claims
-                .FirstOrDefault(s => s.Type == AuthConstants.JwtClaimTypes.Iat)?.Value).TicksToDateTime();
-            var nowTime = DateTime.Now.ToLocalTime();
-            var refreshTime = loginTime.AddSeconds(_apeContext.Configs.JwtAuthOptions.RefreshTokenExpires);
-            // 允许token刷新时间内
-            if (nowTime <= refreshTime)
+            var jwtSecurityToken = await _tokenService.ReadJwtToken(token);
+            if (jwtSecurityToken != null)
             {
-                var netUser = await _userService.QueryByIdAsync(userId);
-                if (netUser.IsNotNull())
+                var userId = Convert.ToInt64(jwtSecurityToken.Claims
+                    .FirstOrDefault(s => s.Type == AuthConstants.JwtClaimTypes.Jti)?.Value);
+                var loginTime = Convert.ToInt64(jwtSecurityToken.Claims
+                    .FirstOrDefault(s => s.Type == AuthConstants.JwtClaimTypes.Iat)?.Value).TicksToDateTime();
+                var nowTime = DateTime.Now.ToLocalTime();
+                var refreshTime = loginTime.AddHours(_apeContext.Configs.JwtAuthOptions.RefreshTokenExpires);
+                // 允许token刷新时间内
+                if (nowTime <= refreshTime)
                 {
-                    if (netUser.UpdateTime == null || netUser.UpdateTime < loginTime)
+                    var netUser = await _userService.QueryByIdAsync(userId);
+                    if (netUser.IsNotNull())
                     {
-                        return await LoginResult(netUser, "refresh");
+                        if (netUser.UpdateTime == null || netUser.UpdateTime < loginTime)
+                        {
+                            return await LoginResult(netUser, "refresh");
+                        }
                     }
                 }
             }
@@ -229,14 +237,20 @@ public class AuthorizationController : BaseApiController
     /// <returns></returns>
     private async Task<string> LoginResult(UserDto userDto, string type)
     {
-        var permissionRoles = await _permissionService.GetPermissionRolesAsync(userDto.Id);
-        permissionRoles.AddRange(userDto.Roles.Select(r => r.Permission));
+        var permissionRoles = new List<string>();
+        bool refresh = true;
+        if (type.Equals("login"))
+        {
+            refresh = false;
+            permissionRoles = await _permissionService.GetPermissionRolesAsync(userDto.Id);
+            permissionRoles.AddRange(userDto.Roles.Select(r => r.Permission));
+        }
 
         var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
         var jwtUserVo = await _onlineUserService.CreateJwtUserAsync(userDto, permissionRoles);
         var loginUserInfo = await _onlineUserService.SaveLoginUserAsync(jwtUserVo, remoteIp);
-        var token = await _tokenService.IssueTokenAsync(loginUserInfo);
-        loginUserInfo.AccessToken = token.AccessToken;
+        var token = await _tokenService.IssueTokenAsync(loginUserInfo, refresh);
+        loginUserInfo.AccessToken = refresh ? token.RefreshToken : token.AccessToken;
         var onlineKey = loginUserInfo.AccessToken.ToMd5String16();
         await _apeContext.Cache.SetAsync(
             GlobalConstants.CacheKey.OnlineKey + onlineKey,

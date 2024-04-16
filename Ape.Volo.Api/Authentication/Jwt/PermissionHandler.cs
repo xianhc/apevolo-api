@@ -7,10 +7,12 @@ using Ape.Volo.Common.Global;
 using Ape.Volo.Common.WebApp;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.Interface.System;
+using IP2Region.Net.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Shyjus.BrowserDetection;
 
 namespace Ape.Volo.Api.Authentication.Jwt;
 
@@ -26,27 +28,39 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 
     private readonly IPermissionService _permissionService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserService _userService;
     private readonly ISettingService _settingService;
-    private readonly JwtAuthOption _jwtOptions;
     private readonly ApeContext _apeContext;
+    private readonly IBrowserDetector _browserDetector;
+    private readonly ISearcher _ipSearcher;
+    private readonly ITokenBlacklistService _tokenBlacklistService;
 
     /// <summary>
-    /// 构造函数注入
+    /// 构造函数
     /// </summary>
     /// <param name="schemes"></param>
     /// <param name="httpContextAccessor"></param>
     /// <param name="permissionService"></param>
-    /// <param name="apeContext"></param>
+    /// <param name="userService"></param>
     /// <param name="settingService"></param>
+    /// <param name="apeContext"></param>
+    /// <param name="browserDetector"></param>
+    /// <param name="searcher"></param>
+    /// <param name="tokenBlacklistService"></param>
     public PermissionHandler(IAuthenticationSchemeProvider schemes, IHttpContextAccessor httpContextAccessor,
-        IPermissionService permissionService, ISettingService settingService, ApeContext apeContext)
+        IPermissionService permissionService, IUserService userService, ISettingService settingService,
+        ApeContext apeContext, IBrowserDetector browserDetector, ISearcher searcher,
+        ITokenBlacklistService tokenBlacklistService)
     {
         _httpContextAccessor = httpContextAccessor;
         Schemes = schemes;
         _permissionService = permissionService;
         _settingService = settingService;
         _apeContext = apeContext;
-        _jwtOptions = apeContext.Configs.JwtAuthOptions;
+        _userService = userService;
+        _browserDetector = browserDetector;
+        _ipSearcher = searcher;
+        _tokenBlacklistService = tokenBlacklistService;
     }
 
     // 重写异步处理程序
@@ -94,6 +108,8 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                         var nowTime = DateTime.Now.ToLocalTime();
                         if (expTime < nowTime)
                         {
+                            await _apeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey +
+                                                                _apeContext.HttpUser.JwtToken.ToMd5String16());
                             context.Fail();
                             return;
                         }
@@ -108,8 +124,49 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                         _apeContext.HttpUser.JwtToken.ToMd5String16());
                     if (loginUserInfo == null)
                     {
-                        context.Fail();
-                        return;
+                        var tokenMd5 = _apeContext.HttpUser.JwtToken.ToMd5String16();
+                        var tokenBlacklist = await _tokenBlacklistService.TableWhere(x => x.AccessToken == tokenMd5)
+                            .FirstAsync();
+                        if (tokenBlacklist.IsNotNull())
+                        {
+                            context.Fail();
+                            return;
+                        }
+
+                        var netUser = await _userService.QueryByIdAsync(_apeContext.HttpUser.Id);
+                        if (netUser.IsNull())
+                        {
+                            context.Fail();
+                            return;
+                        }
+
+                        var remoteIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
+                        var onlineUser = new LoginUserInfo
+                        {
+                            UserId = netUser.Id,
+                            Account = netUser.Username,
+                            NickName = netUser.NickName,
+                            DeptId = netUser.DeptId,
+                            DeptName = netUser.Dept.Name,
+                            Ip = remoteIp,
+                            Address = _ipSearcher.Search(remoteIp),
+                            OperatingSystem = _browserDetector.Browser?.OS,
+                            DeviceType = _browserDetector.Browser?.DeviceType,
+                            BrowserName = _browserDetector.Browser?.Name,
+                            Version = _browserDetector.Browser?.Version,
+                            LoginTime = DateTime.Now,
+                            IsAdmin = netUser.IsAdmin,
+                            AccessToken = _apeContext.HttpUser.JwtToken
+                        };
+                        var onlineKey = onlineUser.AccessToken.ToMd5String16();
+                        var isTrue = await _apeContext.Cache.SetAsync(
+                            GlobalConstants.CacheKey.OnlineKey + onlineKey, onlineUser, TimeSpan.FromHours(2),
+                            null);
+                        if (!isTrue)
+                        {
+                            context.Fail();
+                            return;
+                        }
                     }
 
                     #endregion
@@ -119,7 +176,12 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                     var setting = await _settingService.FindSettingByName("IsAdminNotAuthentication");
                     if (setting != null && setting.Value.ToBool())
                     {
-                        if (loginUserInfo.IsAdmin)
+                        // loginUserInfo = await _apeContext.Cache.GetAsync<LoginUserInfo>(
+                        //     GlobalConstants.CacheKey.OnlineKey +
+                        //     _apeContext.HttpUser.JwtToken.ToMd5String16());
+                        //if (loginUserInfo.IsAdmin) //不想查数据库就使用登录信息
+                        var netUser = await _userService.QueryByIdAsync(_apeContext.HttpUser.Id);
+                        if (netUser.IsAdmin)
                         {
                             context.Succeed(requirement);
                             return;
@@ -238,14 +300,8 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                 }
             }
 
-            //判断没有登录时，是否访问登录的url,并且是Post请求，并且是form表单提交类型，否则为失败
-            if (requestPath != null &&
-                !requestPath.Equals(_jwtOptions.LoginPath.ToLower(), StringComparison.Ordinal) &&
-                (!httpContext.Request.Method.Equals("POST") || !httpContext.Request.HasFormContentType))
-            {
-                context.Fail();
-                return;
-            }
+            context.Fail();
+            return;
         }
 
         context.Fail();

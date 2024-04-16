@@ -6,18 +6,22 @@ using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.WebApp;
+using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.ExportModel.Monitor;
 using Ape.Volo.IBusiness.Interface.Monitor;
+using Ape.Volo.IBusiness.Interface.System;
 
 namespace Ape.Volo.Business.Monitor;
 
 public class OnlineUserService : IOnlineUserService
 {
     private readonly ICache _cache;
+    private readonly ITokenBlacklistService _tokenBlacklistService;
 
-    public OnlineUserService(ICache cache)
+    public OnlineUserService(ICache cache, ITokenBlacklistService tokenBlacklistService)
     {
         _cache = cache;
+        _tokenBlacklistService = tokenBlacklistService;
     }
 
     public async Task<List<LoginUserInfo>> QueryAsync(Pagination pagination)
@@ -49,9 +53,14 @@ public class OnlineUserService : IOnlineUserService
 
     public async Task DropOutAsync(HashSet<string> ids)
     {
-        foreach (var item in ids)
+        var list = new List<TokenBlacklist>();
+        list.AddRange(ids.Select(x => new TokenBlacklist() { AccessToken = x }));
+        if (await _tokenBlacklistService.AddEntityListAsync(list))
         {
-            await _cache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey + item);
+            foreach (var item in ids)
+            {
+                await _cache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey + item);
+            }
         }
     }
 
