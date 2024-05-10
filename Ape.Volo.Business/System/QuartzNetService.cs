@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extention;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
@@ -47,12 +48,36 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
 
     public async Task<QuartzNet> CreateAsync(CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
+        if (await TableWhere(q =>
+                q.AssemblyName == createUpdateQuartzNetDto.AssemblyName &&
+                q.ClassName == createUpdateQuartzNetDto.ClassName).AnyAsync())
+        {
+            throw new BadRequestException(
+                $"作业执行目录=>{createUpdateQuartzNetDto.AssemblyName + "_" + createUpdateQuartzNetDto.ClassName}=>已存在!");
+        }
+
         var quartzNet = ApeContext.Mapper.Map<QuartzNet>(createUpdateQuartzNetDto);
         return await SugarRepository.AddReturnEntityAsync(quartzNet);
     }
 
     public async Task<bool> UpdateAsync(CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
+        var oldQuartzNet =
+            await TableWhere(x => x.Id == createUpdateQuartzNetDto.Id).FirstAsync();
+        if (oldQuartzNet.IsNull())
+        {
+            throw new BadRequestException("数据不存在！");
+        }
+
+        if ((oldQuartzNet.AssemblyName != createUpdateQuartzNetDto.AssemblyName ||
+             oldQuartzNet.ClassName != createUpdateQuartzNetDto.ClassName) && await TableWhere(q =>
+                q.AssemblyName == createUpdateQuartzNetDto.AssemblyName &&
+                q.ClassName == createUpdateQuartzNetDto.ClassName).AnyAsync())
+        {
+            throw new BadRequestException(
+                $"作业执行目录=>{createUpdateQuartzNetDto.AssemblyName + "_" + createUpdateQuartzNetDto.ClassName}=>已存在!");
+        }
+
         var quartzNet = ApeContext.Mapper.Map<QuartzNet>(createUpdateQuartzNetDto);
         return await UpdateEntityAsync(quartzNet);
     }

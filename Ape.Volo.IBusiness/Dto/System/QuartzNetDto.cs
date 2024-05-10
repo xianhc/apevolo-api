@@ -100,9 +100,4 @@ public class QuartzNetDto : BaseEntityDto<long>
     /// 触发器状态
     /// </summary>
     public string TriggerStatus { get; set; }
-
-    /// <summary>
-    /// 触发器模式
-    /// </summary>
-    public string TriggerTypeStr => TriggerType == 1 ? "cron" : "simple";
 }

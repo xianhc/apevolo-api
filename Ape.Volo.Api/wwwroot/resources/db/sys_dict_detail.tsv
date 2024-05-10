@@ -79,7 +79,7 @@
     "DictSort": "1",
     "CreateBy": "apevolo",
     "CreateTime": "/Date(1609430400000+0800)/",
-    "UpdateBy": "admin",
+    "UpdateBy": "",
     "UpdateTime": null,
     "IsDeleted": false
   },
@@ -103,7 +103,7 @@
     "DictSort": "1",
     "CreateBy": "apevolo",
     "CreateTime": "/Date(1609430400000+0800)/",
-    "UpdateBy": "admin",
+    "UpdateBy": "",
     "UpdateTime": null,
     "IsDeleted": false
   },
@@ -112,6 +112,30 @@
     "DictId": "1425449857383927808",
     "Label": "禁用",
     "Value": "false",
+    "DictSort": "2",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1787853921478250496",
+    "DictId": "1787853620566298624",
+    "Label": "cron",
+    "Value": "1",
+    "DictSort": "1",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": "",
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1787853979401588736",
+    "DictId": "1787853620566298624",
+    "Label": "simple",
+    "Value": "0",
     "DictSort": "2",
     "CreateBy": "apevolo",
     "CreateTime": "/Date(1609430400000+0800)/",

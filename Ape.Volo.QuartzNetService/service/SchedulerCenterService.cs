@@ -2,7 +2,7 @@
 using System.Collections.Specialized;
 using System.Reflection;
 using System.Threading.Tasks;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper.Serilog;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
@@ -43,69 +43,57 @@ public class SchedulerCenterService : ISchedulerCenterService
     }
 
     /// <summary>
-    /// 开启任务调度
+    /// 开启任务
     /// </summary>
     /// <returns></returns>
     public async Task<bool> StartScheduleAsync()
     {
-        var isTrue = true;
         try
         {
             _scheduler.Result.JobFactory = _iocjobFactory;
             if (!_scheduler.Result.IsStarted)
             {
-                //等待任务运行完成
                 await _scheduler.Result.Start();
-                return isTrue;
+                return true;
             }
-
-            isTrue = false;
         }
         catch (Exception ex)
         {
             Logger.Error(ex.Message + "\n" + ex.StackTrace);
-            isTrue = false;
         }
 
-        return isTrue;
+        return false;
     }
 
     /// <summary>
-    /// 停止任务调度
+    /// 停止任务
     /// </summary>
     /// <returns></returns>
-    public async Task<bool> StopScheduleAsync()
+    public async Task<bool> ShutdownScheduleAsync()
     {
-        var isTrue = true;
         try
         {
             if (!_scheduler.Result.IsShutdown)
             {
-                //等待任务运行完成
                 await _scheduler.Result.Shutdown();
-                return isTrue;
+                return true;
             }
-
-            isTrue = false;
         }
         catch (Exception ex)
         {
             Logger.Error(ex.Message + "\n" + ex.StackTrace);
-            isTrue = false;
         }
 
-        return isTrue;
+        return false;
     }
 
     /// <summary>
-    /// 添加一个计划任务
+    /// 添加任务
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <param name="taskQuartz"></param>
     /// <returns></returns>
     public async Task<bool> AddScheduleJobAsync(QuartzNet taskQuartz)
     {
-        var isTrue = true;
         if (taskQuartz != null)
         {
             try
@@ -113,25 +101,9 @@ public class SchedulerCenterService : ISchedulerCenterService
                 JobKey jobKey = new JobKey(taskQuartz.Id.ToString(), taskQuartz.TaskGroup);
                 if (await _scheduler.Result.CheckExists(jobKey))
                 {
-                    return isTrue;
+                    return true;
                 }
 
-                #region 设置作业时间
-
-                if (taskQuartz.StartTime == null)
-                {
-                    taskQuartz.StartTime = DateTime.Now;
-                }
-
-                DateTimeOffset starRunTime = DateBuilder.NextGivenSecondDate(taskQuartz.StartTime, 1); //设置开始时间
-                if (taskQuartz.EndTime == null)
-                {
-                    taskQuartz.EndTime = DateTime.MaxValue.AddDays(-1);
-                }
-
-                DateTimeOffset endRunTime = DateBuilder.NextGivenSecondDate(taskQuartz.EndTime, 1); //设置暂停时间
-
-                #endregion
 
                 #region 通过反射获取程序集类型和类
 
@@ -147,132 +119,129 @@ public class SchedulerCenterService : ISchedulerCenterService
                 }
 
                 //传入反射出来的执行程序集
-                IJobDetail job = new JobDetailImpl(taskQuartz.Id.ToString(), taskQuartz.TaskGroup, jobType);
-                job.JobDataMap.Add("JobParam", taskQuartz.RunParams);
-                ITrigger trigger;
-
-
-                if (!taskQuartz.Cron.IsNullOrEmpty() && CronExpression.IsValidExpression(taskQuartz.Cron))
+                if (jobType != null)
                 {
-                    trigger = CreateCronTrigger(taskQuartz);
+                    IJobDetail job = new JobDetailImpl(taskQuartz.Id.ToString(), taskQuartz.TaskGroup, jobType);
+                    job.JobDataMap.Add("JobParam", taskQuartz.RunParams);
+                    ITrigger trigger;
 
-                    ((CronTriggerImpl)trigger).MisfireInstruction = MisfireInstruction.CronTrigger.DoNothing;
-                }
-                else
-                {
-                    trigger = CreateSimpleTrigger(taskQuartz);
-                }
 
-                // 开启作业
-                await _scheduler.Result.ScheduleJob(job, trigger);
-                return isTrue;
+                    if (taskQuartz.TriggerType == (int)TriggerMode.Cron)
+                    {
+                        trigger = CreateCronTrigger(taskQuartz);
+
+                        ((CronTriggerImpl)trigger).MisfireInstruction = MisfireInstruction.CronTrigger.DoNothing;
+                    }
+                    else
+                    {
+                        trigger = CreateSimpleTrigger(taskQuartz);
+                    }
+
+                    // 开启作业
+                    await _scheduler.Result.ScheduleJob(job, trigger);
+
+                    return true;
+                }
             }
             catch (Exception ex)
             {
                 Logger.Error(ex.Message + "\n" + ex.StackTrace);
-                isTrue = false;
             }
         }
-        else
-        {
-            isTrue = false;
-        }
 
-        return isTrue;
+        return false;
     }
 
     /// <summary>
-    /// 任务是否存在?
+    /// 删除任务
     /// </summary>
     /// <returns></returns>
-    public async Task<bool> IsExistScheduleJobAsync(QuartzNet taskQuartz)
+    public async Task<bool> DeleteScheduleJobAsync(QuartzNet taskQuartz)
     {
-        JobKey jobKey = new JobKey(taskQuartz.Id.ToString(), taskQuartz.TaskGroup);
-        return await _scheduler.Result.CheckExists(jobKey) ? true : false;
-    }
-
-    /// <summary>
-    /// 暂停一个指定的计划任务
-    /// </summary>
-    /// <returns></returns>
-    public async Task<bool> StopScheduleJobAsync(QuartzNet taskQuartz)
-    {
-        var isTrue = true;
         try
         {
             JobKey jobKey = new JobKey(taskQuartz.Id.ToString(), taskQuartz.TaskGroup);
             if (await _scheduler.Result.CheckExists(jobKey))
             {
                 await _scheduler.Result.DeleteJob(jobKey);
-                return isTrue;
             }
         }
         catch (Exception ex)
         {
             Logger.Error(ex.Message + "\n" + ex.StackTrace);
-            isTrue = false;
+            return false;
         }
 
-        return isTrue;
+        return true;
     }
 
     /// <summary>
-    /// 恢复指定的计划任务
+    /// 恢复任务
     /// </summary>
     /// <param name="taskQuartz"></param>
     /// <returns></returns>
     public async Task<bool> ResumeJob(QuartzNet taskQuartz)
     {
-        var isTrue = true;
         try
         {
             JobKey jobKey = new JobKey(taskQuartz.Id.ToString(), taskQuartz.TaskGroup);
             if (await _scheduler.Result.CheckExists(jobKey))
             {
                 await _scheduler.Result.ResumeJob(jobKey);
-                return isTrue;
+                return true;
             }
         }
         catch (Exception ex)
         {
             Logger.Error(ex.Message + "\n" + ex.StackTrace);
-            isTrue = false;
         }
 
-        return isTrue;
+        return false;
     }
 
     /// <summary>
-    /// 暂停指定的计划任务
+    /// 暂停任务
     /// </summary>
     /// <param name="taskQuartz"></param>
     /// <returns></returns>
     public async Task<bool> PauseJob(QuartzNet taskQuartz)
     {
-        var isTrue = true;
         try
         {
             JobKey jobKey = new JobKey(taskQuartz.Id.ToString(), taskQuartz.TaskGroup);
             if (await _scheduler.Result.CheckExists(jobKey))
             {
                 await _scheduler.Result.PauseJob(jobKey);
-                return isTrue;
+                return true;
             }
         }
         catch (Exception ex)
         {
             Logger.Error(ex.Message + "\n" + ex.StackTrace);
-            isTrue = false;
         }
 
-        return isTrue;
+        return false;
     }
 
-    #region Quartz状态
+    /// <summary>
+    /// 检测任务是否存在
+    /// </summary>
+    /// <returns></returns>
+    public async Task<bool> IsExistScheduleJobAsync(QuartzNet taskQuartz)
+    {
+        JobKey jobKey = new JobKey(taskQuartz.Id.ToString(), taskQuartz.TaskGroup);
+        return await _scheduler.Result.CheckExists(jobKey);
+    }
 
+
+    /// <summary>
+    /// 获取任务触发器状态
+    /// </summary>
+    /// <param name="taskQuartzDto"></param>
+    /// <returns></returns>
     public async Task<string> GetTriggerStatus(QuartzNetDto taskQuartzDto)
     {
-        string triggerStatus = "不存在";
+        string triggerStatus = "未执行";
         JobKey jobKey = new JobKey(taskQuartzDto.Id.ToString(), taskQuartzDto.TaskGroup);
         IJobDetail job = await _scheduler.Result.GetJobDetail(jobKey);
         if (job == null)
@@ -281,7 +250,7 @@ public class SchedulerCenterService : ISchedulerCenterService
         }
 
         var triggers = await _scheduler.Result.GetTriggersOfJob(jobKey);
-        if (triggers == null || triggers.Count == 0)
+        if (triggers.Count == 0)
         {
             return triggerStatus;
         }
@@ -290,68 +259,23 @@ public class SchedulerCenterService : ISchedulerCenterService
         {
             if (((JobDetailImpl)job).Name == ((AbstractTrigger)trigger).Name)
             {
-                var tStatus = await _scheduler.Result.GetTriggerState(trigger.Key);
-                triggerStatus = GetTriggerState(tStatus.ToString());
-                break;
+                var state = await _scheduler.Result.GetTriggerState(trigger.Key);
+                triggerStatus = state switch
+                {
+                    TriggerState.Blocked => "阻塞",
+                    TriggerState.Complete => "完成",
+                    TriggerState.Error => "错误",
+                    TriggerState.None => "阻塞",
+                    TriggerState.Normal => "运行中",
+                    TriggerState.Paused => "暂停",
+                    _ => triggerStatus
+                };
             }
         }
 
         return triggerStatus;
     }
 
-    #endregion
-
-    #region GetTriggerState
-
-    public string GetTriggerState(string key)
-    {
-        string state = null;
-        if (key != null)
-            key = key.ToUpper();
-        switch (key)
-        {
-            case "1":
-                state = "暂停";
-                break;
-            case "2":
-                state = "完成";
-                break;
-            case "3":
-                state = "出错";
-                break;
-            case "4":
-                state = "阻塞";
-                break;
-            case "0":
-                state = "正常";
-                break;
-            case "-1":
-                state = "不存在";
-                break;
-            case "BLOCKED":
-                state = "阻塞";
-                break;
-            case "COMPLETE":
-                state = "完成";
-                break;
-            case "ERROR":
-                state = "出错";
-                break;
-            case "NONE":
-                state = "不存在";
-                break;
-            case "NORMAL":
-                state = "正常";
-                break;
-            case "PAUSED":
-                state = "暂停";
-                break;
-        }
-
-        return state;
-    }
-
-    #endregion
 
     #region 创建触发器
 
@@ -362,15 +286,19 @@ public class SchedulerCenterService : ISchedulerCenterService
     /// <returns></returns>
     private ITrigger CreateSimpleTrigger(QuartzNet taskQuartz)
     {
+        taskQuartz.StartTime ??= DateTime.Now;
+        var startAt = DateBuilder.NextGivenSecondDate(taskQuartz.StartTime, 1); //设置开始时间
+        taskQuartz.EndTime ??= DateTime.MaxValue.AddDays(-1);
+        var endAt = DateBuilder.NextGivenSecondDate(taskQuartz.EndTime, 1); //设置暂停时间
         if (taskQuartz.CycleRunTimes > 0)
         {
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity(taskQuartz.Id.ToString(), taskQuartz.TaskGroup)
-                .StartAt(taskQuartz.StartTime.Value)
+                .StartAt(startAt)
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(taskQuartz.IntervalSecond)
                     .WithRepeatCount(taskQuartz.CycleRunTimes - 1))
-                .EndAt(taskQuartz.EndTime)
+                .EndAt(endAt)
                 .Build();
             return trigger;
         }
@@ -378,12 +306,12 @@ public class SchedulerCenterService : ISchedulerCenterService
         {
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity(taskQuartz.Id.ToString(), taskQuartz.TaskGroup)
-                .StartAt(taskQuartz.StartTime.Value)
+                .StartAt(startAt)
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(taskQuartz.IntervalSecond)
                     .RepeatForever()
                 )
-                .EndAt(taskQuartz.EndTime)
+                .EndAt(endAt)
                 .Build();
             return trigger;
         }
@@ -396,13 +324,18 @@ public class SchedulerCenterService : ISchedulerCenterService
     /// <returns></returns>
     private ITrigger CreateCronTrigger(QuartzNet taskQuartz)
     {
-        // 作业触发器
+        taskQuartz.StartTime ??= DateTime.Now;
+        var startAt = DateBuilder.NextGivenSecondDate(taskQuartz.StartTime, 1); //设置开始时间
+        taskQuartz.EndTime ??= DateTime.MaxValue.AddDays(-1);
+        var endAt = DateBuilder.NextGivenSecondDate(taskQuartz.EndTime, 1); //设置暂停时间
+
+
         return TriggerBuilder.Create()
             .WithIdentity(taskQuartz.Id.ToString(), taskQuartz.TaskGroup)
-            .StartAt(taskQuartz.StartTime.Value) //开始时间
-            .EndAt(taskQuartz.EndTime.Value) //结束数据
-            .WithCronSchedule(taskQuartz.Cron) //指定cron表达式
-            .ForJob(taskQuartz.Id.ToString(), taskQuartz.TaskGroup) //作业名称
+            .StartAt(startAt)
+            .EndAt(endAt)
+            .WithCronSchedule(taskQuartz.Cron)
+            .ForJob(taskQuartz.Id.ToString(), taskQuartz.TaskGroup)
             .Build();
     }
 

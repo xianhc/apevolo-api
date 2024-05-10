@@ -48,5 +48,15 @@
     "UpdateBy": null,
     "UpdateTime": null,
     "IsDeleted": false
+  },
+  {
+    "Id": "1787853620566298624",
+    "Name": "task_trigger_type",
+    "Description": "作业触发器类型",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
   }
 ]

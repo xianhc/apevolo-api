@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
 using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.System;
@@ -12,6 +13,7 @@ using Ape.Volo.IBusiness.RequestModel;
 using Ape.Volo.QuartzNetService.service;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Quartz;
 
 namespace Ape.Volo.Api.Controllers.System;
 
@@ -63,6 +65,26 @@ public class QuartzNetController : BaseApiController
             return Error(actionError);
         }
 
+        if (createUpdateQuartzNetDto.TriggerType == (int)TriggerMode.Cron)
+        {
+            if (createUpdateQuartzNetDto.Cron.IsNullOrEmpty())
+            {
+                return Error("cron模式下请设置作业执行cron表达式");
+            }
+
+            if (!CronExpression.IsValidExpression(createUpdateQuartzNetDto.Cron))
+            {
+                return Error("cron模式下请设置正确得cron表达式");
+            }
+        }
+        else if (createUpdateQuartzNetDto.TriggerType == (int)TriggerMode.Simple)
+        {
+            if (createUpdateQuartzNetDto.IntervalSecond <= 5)
+            {
+                return Error("simple模式下请设置作业间隔执行秒数");
+            }
+        }
+
         var quartzNet = await _quartzNetService.CreateAsync(createUpdateQuartzNetDto);
         if (quartzNet.IsNotNull())
         {
@@ -95,20 +117,45 @@ public class QuartzNetController : BaseApiController
             return Error(actionError);
         }
 
+        if (createUpdateQuartzNetDto.TriggerType == (int)TriggerMode.Cron)
+        {
+            if (createUpdateQuartzNetDto.Cron.IsNullOrEmpty())
+            {
+                return Error("cron模式下请设置作业执行cron表达式");
+            }
+
+            if (!CronExpression.IsValidExpression(createUpdateQuartzNetDto.Cron))
+            {
+                return Error("cron模式下请设置正确得cron表达式");
+            }
+        }
+        else if (createUpdateQuartzNetDto.TriggerType == (int)TriggerMode.Simple)
+        {
+            if (createUpdateQuartzNetDto.IntervalSecond <= 5)
+            {
+                return Error("simple模式下请设置作业间隔执行秒数");
+            }
+        }
+
+
         if (await _quartzNetService.UpdateAsync(createUpdateQuartzNetDto))
         {
             var quartzNet = _mapper.Map<QuartzNet>(createUpdateQuartzNetDto);
-            if (quartzNet.IsEnable)
+            var flag = await _schedulerCenterService.DeleteScheduleJobAsync(quartzNet);
+            if (flag)
             {
-                await _schedulerCenterService.StopScheduleJobAsync(quartzNet);
-                await _schedulerCenterService.AddScheduleJobAsync(quartzNet);
+                if (quartzNet.IsEnable)
+                {
+                    if (await _schedulerCenterService.AddScheduleJobAsync(quartzNet))
+                    {
+                        return NoContent();
+                    }
+                }
+                else
+                {
+                    return NoContent();
+                }
             }
-            else
-            {
-                await _schedulerCenterService.StopScheduleJobAsync(quartzNet);
-            }
-
-            return NoContent();
         }
 
         return Error();
@@ -135,7 +182,7 @@ public class QuartzNetController : BaseApiController
         {
             foreach (var item in quartzList)
             {
-                await _schedulerCenterService.StopScheduleJobAsync(item);
+                await _schedulerCenterService.DeleteScheduleJobAsync(item);
             }
 
             return Success();
@@ -251,7 +298,7 @@ public class QuartzNetController : BaseApiController
         }
 
         var triggerStatus = await _schedulerCenterService.GetTriggerStatus(_mapper.Map<QuartzNetDto>(quartzNet));
-        if (triggerStatus == "正常")
+        if (triggerStatus == "运行中")
         {
             //检查任务在内存状态
             var isTrue = await _schedulerCenterService.IsExistScheduleJobAsync(quartzNet);

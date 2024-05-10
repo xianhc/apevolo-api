@@ -28,7 +28,6 @@ public class CreateUpdateQuartzNetDto : BaseEntityDto<long>
     /// <summary>
     /// cron 表达式
     /// </summary>
-    [Required]
     public string Cron { get; set; }
 
     /// <summary>
@@ -81,7 +80,7 @@ public class CreateUpdateQuartzNetDto : BaseEntityDto<long>
     /// <summary>
     /// 触发器类型（0、simple 1、cron）
     /// </summary>
-    public int TriggerType => Cron.IsNullOrEmpty() ? 0 : 1;
+    public int TriggerType { get; set; }
 
     /// <summary>
     /// 执行间隔时间, 秒为单位
