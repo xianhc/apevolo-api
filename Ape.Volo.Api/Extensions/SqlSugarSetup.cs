@@ -30,7 +30,7 @@ public static class SqlSugarSetup
         if (services.IsNull())
             throw new ArgumentNullException(nameof(services));
         var dataConnection = configs.DataConnection;
-        if (!dataConnection.ConnectionItem.Any())
+        if (dataConnection.ConnectionItem.Count == 0)
         {
             throw new Exception("请确保配置数据库配置DataConnection无误;");
         }
@@ -39,18 +39,24 @@ public static class SqlSugarSetup
         //     dataConnection.ConnectionItem.Where(x => x.ConnId == configs.DefaultDataBase && x.Enabled).ToList();
         var allConnectionItem =
             dataConnection.ConnectionItem.Where(x => x.Enabled).ToList();
-        if (!allConnectionItem.Any() || allConnectionItem.All(x => x.ConnId != configs.DefaultDataBase))
+        if (allConnectionItem.Count == 0 || allConnectionItem.All(x => x.ConnId != configs.DefaultDataBase))
         {
             throw new Exception($"请确保主库ID:{configs.DefaultDataBase}的Enabled为true;");
         }
 
-        if (!allConnectionItem.Any() || allConnectionItem.All(x => x.ConnId != configs.DefaultDataBase))
+        if (allConnectionItem.All(x => x.ConnId != configs.LogDataBase))
         {
             throw new Exception($"请确保日志库ID:{configs.LogDataBase}的Enabled为true;");
         }
 
+        if (allConnectionItem.FirstOrDefault(x => x.ConnId == configs.DefaultDataBase)?.DbType !=
+            allConnectionItem.FirstOrDefault(x => x.ConnId == configs.LogDataBase)?.DbType)
+        {
+            throw new Exception($"请确保主库与日志库得DbType相同;");
+        }
+
+
         List<ConnectionConfig> allConnectionConfig = new List<ConnectionConfig>();
-        ConnectionConfig masterDb = null; //主库
         List<SlaveConnectionConfig> slaveDbs = null; //从库列表
 
         foreach (var connectionItem in allConnectionItem)
@@ -86,7 +92,7 @@ public static class SqlSugarSetup
                 });
             }
 
-            masterDb = new ConnectionConfig
+            var masterDb = new ConnectionConfig
             {
                 ConfigId = connectionItem.ConnId,
                 ConnectionString = connectionItem.ConnectionString,
@@ -128,7 +134,7 @@ public static class SqlSugarSetup
                 },
                 // 从库
                 SlaveConnectionConfigs = slaveDbs
-            };
+            }; //主库
             allConnectionConfig.Add(masterDb);
         }
 
