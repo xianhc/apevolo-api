@@ -53,7 +53,7 @@ public class ExceptionLog : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 请求参数
     /// </summary>
-    [SugarColumn(Length = 4000, IsNullable = true)]
+    [SugarColumn(ColumnDataType = "longtext,text,clob", IsNullable = true)]
     public string RequestParameters { get; set; }
 
     /// <summary>
@@ -65,13 +65,13 @@ public class ExceptionLog : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 异常完整信息
     /// </summary>
-    [SugarColumn(IsNullable = true)]
+    [SugarColumn(ColumnDataType = "longtext,text,clob", IsNullable = true)]
     public string ExceptionMessageFull { get; set; }
 
     /// <summary>
     /// 异常堆栈信息
     /// </summary>
-    [SugarColumn(Length = 500, IsNullable = true)]
+    [SugarColumn(ColumnDataType = "longtext,text,clob", IsNullable = true)]
     public string ExceptionStack { get; set; }
 
     /// <summary>

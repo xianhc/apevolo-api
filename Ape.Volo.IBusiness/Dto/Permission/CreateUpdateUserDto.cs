@@ -46,25 +46,24 @@ public class CreateUpdateUserDto : BaseEntityDto<long>
     /// <summary>
     /// 性别
     /// </summary>
-    [Display(Name = "User.Gender")]
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Gender { get; set; }
 
     /// <summary>
     /// 部门
     /// </summary>
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public UserDeptDto Dept { get; set; }
 
     /// <summary>
     /// 角色
     /// </summary>
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public List<UserRoleDto> Roles { get; set; }
 
     /// <summary>
     /// 岗位
     /// </summary>
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public List<UserJobDto> Jobs { get; set; }
 }

@@ -49,7 +49,8 @@ public class DataSeeder
             }
             else
             {
-                throw new Exception("sqlsugar官方表示Oracle不支持代码建库，请先建库再启动项目");
+                //已有库得情况下 把抛异常代码注释掉
+                throw new Exception("sqlSugar不支持Oracle使用代码建库,请先建库后注释该代码重新启动！");
             }
 
             ConsoleHelper.WriteLine("初始化主库成功。", ConsoleColor.Green);
@@ -441,7 +442,16 @@ public class DataSeeder
             ConsoleHelper.WriteLine($"Log Db ConnectString: {logDb.CurrentConnectionConfig.ConnectionString}");
             ConsoleHelper.WriteLine("初始化日志库成功。", ConsoleColor.Green);
             ConsoleHelper.WriteLine("初始化日志库数据表....");
-            logDb.DbMaintenance.CreateDatabase();
+            if (logDb.CurrentConnectionConfig.DbType != DbType.Oracle)
+            {
+                logDb.DbMaintenance.CreateDatabase();
+            }
+            else
+            {
+                //已有库得情况下 把抛异常代码注释掉
+                throw new Exception("sqlSugar不支持Oracle使用代码建库,请先建库后注释该代码重新启动！");
+            }
+
             var logEntityList = GlobalData.GetEntityAssembly().GetTypes()
                 .Where(x => x.IsClass && x != typeof(SerilogBase) && x.Namespace != null &&
                             x.Namespace.StartsWith("Ape.Volo.Entity.Monitor")).ToList();

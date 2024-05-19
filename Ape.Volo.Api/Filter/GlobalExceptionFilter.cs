@@ -89,11 +89,23 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             MiniProfiler.Current.CustomTiming("Errors：", throwMsg);
         }
 
-        //记录日志
-        _logger.LogError(WriteLog(context.HttpContext, remoteIp, ipAddress, context.Exception,
-            _httpUser.Account,
-            _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
-            _browserDetector.Browser?.Version), context.Exception);
+        try
+        {
+            //记录日志
+            _logger.LogError(WriteLog(context.HttpContext, remoteIp, ipAddress, context.Exception,
+                _httpUser.Account,
+                _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
+                _browserDetector.Browser?.Version));
+        }
+        catch (Exception e)
+        {
+            //_logger.LogCritical("LogError出错:" + e.ToString());
+            FileHelper.WriteLog(WriteLog(context.HttpContext, remoteIp, ipAddress, e,
+                _httpUser.Account,
+                _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
+                _browserDetector.Browser?.Version));
+        }
+
         var settingDto = await _settingService.FindSettingByName("IsExceptionLogSaveDB");
         if (settingDto != null && settingDto.Value.ToBool() && exceptionType != typeof(DemoRequestException))
         {

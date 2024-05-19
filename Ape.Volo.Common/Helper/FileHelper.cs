@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Global;
 
 namespace Ape.Volo.Common.Helper;
 
@@ -167,12 +168,11 @@ public static class FileHelper
     /// 输出日志到指定文件
     /// </summary>
     /// <param name="msg">日志消息</param>
-    /// <param name="path">日志文件位置（默认为D:\测试\a.log）</param>
-    public static void WriteLog(string msg, string path = @"Log.txt")
+    public static void WriteLog(string msg)
     {
-        string content = $"{DateTime.Now.ToCstTime().ToString("yyyy-MM-dd HH:mm:ss")}:{msg}";
-
-        WriteTxt(content, $"{GetCurrentDir()}{content}");
+        string content = $"/Logs/{DateTime.Now.ToCstTime():yyyy-MM-dd}.log";
+        msg = "【当前时间】 : " + DateTime.Now.ToCstTime().ToString("yyyy-MM-dd HH:mm:ss") + msg;
+        WriteText(msg, $"{AppSettings.ContentRootPath}{content}", Encoding.UTF8);
     }
 
 

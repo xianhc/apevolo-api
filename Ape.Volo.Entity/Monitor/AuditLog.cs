@@ -53,13 +53,13 @@ public class AuditLog : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 请求参数
     /// </summary>
-    [SugarColumn(Length = 4000, IsNullable = true)]
+    [SugarColumn(ColumnDataType = "longtext,text,clob", IsNullable = true)]
     public string RequestParameters { get; set; }
 
     /// <summary>
     /// 响应数据
     /// </summary>
-    [SugarColumn(Length = 4000, IsNullable = true)]
+    [SugarColumn(ColumnDataType = "longtext,text,clob", IsNullable = true)]
     public string ResponseData { get; set; }
 
     /// <summary>
