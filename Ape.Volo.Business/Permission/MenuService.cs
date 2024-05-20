@@ -305,26 +305,12 @@ public class MenuService : BaseServices<Menu>, IMenuService
                 IsDeleted = m.IsDeleted,
                 Id = m.Id,
                 CreateTime = m.CreateTime,
-                CreateBy = m.CreateBy
+                CreateBy = m.CreateBy,
+                Cache = m.Cache,
+                Hidden = m.Hidden
             },
             (m, rm) => roleIds.Contains(rm.RoleId) && m.Type != (int)MenuType.Button
-            , (m, rm) => new
-            {
-                m.Title,
-                m.Path,
-                m.Permission,
-                m.IFrame,
-                m.Component,
-                m.ComponentName,
-                PId = m.ParentId,
-                MenuSort = m.Sort,
-                m.Icon,
-                m.Type,
-                m.IsDeleted,
-                m.Id,
-                m.CreateBy,
-                m.CreateTime
-            },
+            , null,
             "sort asc");
         var menuListChild = TreeHelper<MenuDto>.ListToTrees(menuList, "Id", "ParentId", 0);
         return await BuildAsync(menuListChild);
