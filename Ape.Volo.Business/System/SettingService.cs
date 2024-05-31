@@ -56,7 +56,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
             throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在!");
         }
 
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadSettingByName +
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadSettingByName +
                                            oldSetting.Name.ToMd5String16());
         var setting = ApeContext.Mapper.Map<Setting>(createUpdateSettingDto);
         return await UpdateEntityAsync(setting);
@@ -67,7 +67,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
         var settings = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
         foreach (var setting in settings)
         {
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadSettingByName +
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadSettingByName +
                                                setting.Name.ToMd5String16());
         }
 
@@ -97,7 +97,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
         return settingExports;
     }
 
-    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.LoadSettingByName)]
+    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CachePrefix.LoadSettingByName)]
     public async Task<SettingDto> FindSettingByName(string settingName)
     {
         if (settingName.IsNullOrEmpty())

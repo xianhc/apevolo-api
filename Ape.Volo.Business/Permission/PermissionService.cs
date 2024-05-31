@@ -21,7 +21,7 @@ public class PermissionService : BaseServices<Role>, IPermissionService
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.UserPermissionRoles)]
+    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CachePrefix.UserPermissionRoles)]
     public async Task<List<string>> GetPermissionRolesAsync(long userId)
     {
         var permissionRoles =
@@ -44,7 +44,7 @@ public class PermissionService : BaseServices<Role>, IPermissionService
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    [UseCache(Expiration = 60, KeyPrefix = GlobalConstants.CacheKey.UserPermissionUrls)]
+    [UseCache(Expiration = 60, KeyPrefix = GlobalConstants.CachePrefix.UserPermissionUrls)]
     public async Task<List<PermissionVo>> GetPermissionVoAsync(long userId)
     {
         var permissionVos =

@@ -181,7 +181,7 @@ public class AuthorizationController : BaseApiController
     {
         var (imgBytes, code) = SixLaborsImageHelper.BuildVerifyCode();
         var imgUrl = ImgHelper.ToBase64StringUrl(imgBytes);
-        var captchaId = GlobalConstants.CacheKey.CaptchaId + GuidHelper.GenerateKey();
+        var captchaId = GlobalConstants.CachePrefix.CaptchaId + GuidHelper.GenerateKey();
         await _apeContext.Cache.SetAsync(captchaId, code, TimeSpan.FromMinutes(2), null);
         var dic = new Dictionary<string, string> { { "img", imgUrl }, { "captchaId", captchaId } };
         return dic.ToJson();
@@ -215,12 +215,14 @@ public class AuthorizationController : BaseApiController
     {
         //清理缓存
         if (!_apeContext.HttpUser.IsNotNull()) return Success();
-        await _apeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey +
+        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.OnlineKey +
                                             _apeContext.HttpUser.JwtToken.ToMd5String16());
-        await _apeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
+        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
                                             _apeContext.HttpUser.Id.ToString().ToMd5String16());
-        await _apeContext.Cache.RemoveAsync(
-            GlobalConstants.CacheKey.UserInfoByName + _apeContext.HttpUser.Account.ToMd5String16());
+
+        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
+                                            _apeContext.HttpUser.Id.ToString().ToMd5String16());
+
 
         return Success();
     }
@@ -253,7 +255,7 @@ public class AuthorizationController : BaseApiController
         loginUserInfo.AccessToken = refresh ? token.RefreshToken : token.AccessToken;
         var onlineKey = loginUserInfo.AccessToken.ToMd5String16();
         await _apeContext.Cache.SetAsync(
-            GlobalConstants.CacheKey.OnlineKey + onlineKey,
+            GlobalConstants.CachePrefix.OnlineKey + onlineKey,
             loginUserInfo, TimeSpan.FromHours(2), CacheExpireType.Absolute);
 
         switch (type)

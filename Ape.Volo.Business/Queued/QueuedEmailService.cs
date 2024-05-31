@@ -148,10 +148,10 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
         queuedEmail.SentTries = 1;
         queuedEmail.EmailAccountId = emailAccount.Id;
 
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.EmailCaptchaKey +
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.EmailCaptcha +
                                            queuedEmail.To.ToMd5String());
         var isTrue = await ApeContext.Cache.SetAsync(
-            GlobalConstants.CacheKey.EmailCaptchaKey + queuedEmail.To.ToMd5String(), captcha,
+            GlobalConstants.CachePrefix.EmailCaptcha + queuedEmail.To.ToMd5String(), captcha,
             TimeSpan.FromMinutes(5), null);
 
         if (isTrue)

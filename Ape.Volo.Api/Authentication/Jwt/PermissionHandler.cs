@@ -108,7 +108,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                         var nowTime = DateTime.Now.ToLocalTime();
                         if (expTime < nowTime)
                         {
-                            await _apeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey +
+                            await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.OnlineKey +
                                                                 _apeContext.HttpUser.JwtToken.ToMd5String16());
                             context.Fail();
                             return;
@@ -120,7 +120,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                     #region 用户缓存信息是否已过期
 
                     var loginUserInfo = await _apeContext.Cache.GetAsync<LoginUserInfo>(
-                        GlobalConstants.CacheKey.OnlineKey +
+                        GlobalConstants.CachePrefix.OnlineKey +
                         _apeContext.HttpUser.JwtToken.ToMd5String16());
                     if (loginUserInfo == null)
                     {
@@ -160,7 +160,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                         };
                         var onlineKey = onlineUser.AccessToken.ToMd5String16();
                         var isTrue = await _apeContext.Cache.SetAsync(
-                            GlobalConstants.CacheKey.OnlineKey + onlineKey, onlineUser, TimeSpan.FromHours(2),
+                            GlobalConstants.CachePrefix.OnlineKey + onlineKey, onlineUser, TimeSpan.FromHours(2),
                             null);
                         if (!isTrue)
                         {

@@ -44,7 +44,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
     protected override async Task HandleForbiddenAsync(AuthenticationProperties properties)
     {
         var loginUserInfo = await _apeContext.Cache.GetAsync<LoginUserInfo>(
-            GlobalConstants.CacheKey.OnlineKey +
+            GlobalConstants.CachePrefix.OnlineKey +
             _apeContext.HttpUser.JwtToken.ToMd5String16());
         if (loginUserInfo.IsNull())
         {

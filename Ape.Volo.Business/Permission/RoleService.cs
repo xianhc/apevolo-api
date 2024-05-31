@@ -239,7 +239,9 @@ public class RoleService : BaseServices<Role>, IRoleService
         //删除用户缓存
         foreach (var user in role.Users)
         {
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserPermissionRoles +
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionRoles +
+                                               user.Id.ToString().ToMd5String16());
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
                                                user.Id.ToString().ToMd5String16());
         }
 
@@ -270,7 +272,9 @@ public class RoleService : BaseServices<Role>, IRoleService
             //删除用户缓存
             foreach (var user in role.Users)
             {
-                await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserPermissionUrls +
+                await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionUrls +
+                                                   user.Id.ToString().ToMd5String16());
+                await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
                                                    user.Id.ToString().ToMd5String16());
             }
         }

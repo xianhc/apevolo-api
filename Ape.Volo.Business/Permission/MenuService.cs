@@ -92,7 +92,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
         if (menu.ParentId > 0)
         {
             //清理缓存
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusByPId +
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadMenusByPId +
                                                menu.ParentId.ToString().ToMd5String16());
             var tempMenu = await TableWhere(x => x.Id == menu.ParentId).FirstAsync();
             if (tempMenu.IsNotNull())
@@ -103,6 +103,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
             }
         }
 
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadAllMenu);
         return true;
     }
 
@@ -152,11 +153,11 @@ public class MenuService : BaseServices<Menu>, IMenuService
         var createUpdateMenu = ApeContext.Mapper.Map<Menu>(createUpdateMenuDto);
         await UpdateEntityAsync(createUpdateMenu);
         //清理缓存
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusById +
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadMenusById +
                                            createUpdateMenu.Id.ToString().ToMd5String16());
         if (createUpdateMenu.ParentId > 0)
         {
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusByPId +
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadMenusByPId +
                                                createUpdateMenu.ParentId.ToString().ToMd5String16());
         }
 
@@ -186,6 +187,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
             }
         }
 
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadAllMenu);
         return true;
     }
 
@@ -209,13 +211,14 @@ public class MenuService : BaseServices<Menu>, IMenuService
             //清除缓存
             foreach (var id in idList)
             {
-                await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusById +
+                await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadMenusById +
                                                    id.ToString().ToMd5String16());
-                await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.LoadMenusByPId +
+                await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadMenusByPId +
                                                    id.ToString().ToMd5String16());
             }
         }
 
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadAllMenu);
         return isTrue;
     }
 
@@ -261,15 +264,16 @@ public class MenuService : BaseServices<Menu>, IMenuService
     public async Task<List<MenuDto>> QueryAllAsync()
     {
         var menuDtos = await ApeContext.Cache.GetAsync<List<MenuDto>>("menus:LoadAllMenu");
-        if (menuDtos.IsNotNull())
+        if (menuDtos.Any())
         {
             return menuDtos;
         }
 
         menuDtos = ApeContext.Mapper.Map<List<MenuDto>>(await Table.ToListAsync());
-        if (menuDtos.IsNotNull())
+        if (menuDtos.Any())
         {
-            await ApeContext.Cache.SetAsync("menus:LoadAllMenu", menuDtos, TimeSpan.FromSeconds(120), null);
+            await ApeContext.Cache.SetAsync(GlobalConstants.CachePrefix.LoadAllMenu, menuDtos,
+                TimeSpan.FromSeconds(120), null);
         }
 
         return menuDtos;
@@ -280,7 +284,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
     /// </summary>
     /// <param name="userId">用户ID</param>
     /// <returns></returns>
-    [UseCache(KeyPrefix = GlobalConstants.CacheKey.UserBuildMenuById)]
+    [UseCache(Expiration = 120, KeyPrefix = GlobalConstants.CachePrefix.UserMenuById)]
     public async Task<List<MenuTreeVo>> BuildTreeAsync(long userId)
     {
         var user = await _userService.QueryByIdAsync(userId);
@@ -317,7 +321,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
     }
 
 
-    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.LoadMenusById)]
+    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CachePrefix.LoadMenusById)]
     public async Task<List<MenuDto>> FindSuperiorAsync(long id)
     {
         Expression<Func<Menu, bool>> whereLambda = m => true;
@@ -428,7 +432,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
         return menuVos;
     }
 
-    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.LoadMenusByPId)]
+    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CachePrefix.LoadMenusByPId)]
     public async Task<List<MenuDto>> FindByPIdAsync(long pid = 0)
     {
         List<MenuDto> menuDtos = ApeContext.Mapper.Map<List<MenuDto>>(await TableWhere(x => x.ParentId == pid,

@@ -57,7 +57,7 @@ public class ApeContext
                 //     RedisCache.GetAsync<LoginUserInfo>(
                 //         GlobalConstants.CacheKey.OnlineKey + HttpUser.JwtToken.ToMd5String16()));
                 var loginUserInfo = Cache.Get<LoginUserInfo>(
-                    GlobalConstants.CacheKey.OnlineKey + HttpUser.JwtToken.ToMd5String16());
+                    GlobalConstants.CachePrefix.OnlineKey + HttpUser.JwtToken.ToMd5String16());
                 return loginUserInfo;
             }
 

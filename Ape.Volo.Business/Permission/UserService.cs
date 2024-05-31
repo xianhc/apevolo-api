@@ -160,7 +160,7 @@ public class UserService : BaseServices<User>, IUserService
         await SugarClient.Insertable(userJobs).ExecuteCommandAsync();
 
         //清理缓存
-        await ClearUserCache(user);
+        await ClearUserCache(user.Id);
         return true;
     }
 
@@ -176,7 +176,7 @@ public class UserService : BaseServices<User>, IUserService
         var users = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
         foreach (var user in users)
         {
-            await ClearUserCache(user);
+            await ClearUserCache(user.Id);
         }
 
         return await LogicDelete<User>(x => ids.Contains(x.Id)) > 0;
@@ -227,7 +227,7 @@ public class UserService : BaseServices<User>, IUserService
 
     #region 扩展方法
 
-    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.UserInfoById)]
+    [UseCache(Expiration = 60, KeyPrefix = GlobalConstants.CachePrefix.UserInfoById)]
     public async Task<UserDto> QueryByIdAsync(long userId)
     {
         var user = await TableWhere(x => x.Id == userId).Includes(x => x.Dept).Includes(x => x.Roles)
@@ -241,7 +241,6 @@ public class UserService : BaseServices<User>, IUserService
     /// </summary>
     /// <param name="userName">邮箱 or 用户名</param>
     /// <returns></returns>
-    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CacheKey.UserInfoByName)]
     public async Task<UserDto> QueryByNameAsync(string userName)
     {
         User user;
@@ -326,13 +325,11 @@ public class UserService : BaseServices<User>, IUserService
         if (isTrue)
         {
             //清理缓存
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
                                                curUser.Id.ToString().ToMd5String16());
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoByName +
-                                               curUser.Username.ToMd5String16());
 
             //退出当前用户
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey +
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.OnlineKey +
                                                ApeContext.HttpUser.JwtToken.ToMd5String16());
         }
 
@@ -357,7 +354,7 @@ public class UserService : BaseServices<User>, IUserService
         }
 
         var code = await ApeContext.Cache.GetAsync<string>(
-            GlobalConstants.CacheKey.EmailCaptchaKey + updateUserEmailDto.Email.ToMd5String16());
+            GlobalConstants.CachePrefix.EmailCaptcha + updateUserEmailDto.Email.ToMd5String16());
         if (code.IsNullOrEmpty() || !code.Equals(updateUserEmailDto.Code))
         {
             throw new BadRequestException("验证码错误");
@@ -393,7 +390,7 @@ public class UserService : BaseServices<User>, IUserService
         string relativePath = Path.GetRelativePath(prefix, avatarPath);
         relativePath = "/" + relativePath.Replace("\\", "/");
         curUser.AvatarPath = relativePath;
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
                                            curUser.Id.ToString().ToMd5String16());
         return await UpdateEntityAsync(curUser);
     }
@@ -402,23 +399,17 @@ public class UserService : BaseServices<User>, IUserService
 
     #region 用户缓存
 
-    private async Task ClearUserCache(User user)
+    private async Task ClearUserCache(long userId)
     {
         //清理缓存
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoById +
-                                           user.Id.ToString().ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserInfoByName +
-                                           user.Username.ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserRolesById +
-                                           user.Id.ToString().ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserJobsById +
-                                           user.Id.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
+                                           userId.ToString().ToMd5String16());
         await ApeContext.Cache.RemoveAsync(
-            GlobalConstants.CacheKey.UserPermissionUrls + user.Id.ToString().ToMd5String16());
+            GlobalConstants.CachePrefix.UserPermissionUrls + userId.ToString().ToMd5String16());
         await ApeContext.Cache.RemoveAsync(
-            GlobalConstants.CacheKey.UserPermissionRoles + user.Id.ToString().ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CacheKey.UserBuildMenuById +
-                                           user.Id.ToString().ToMd5String16());
+            GlobalConstants.CachePrefix.UserPermissionRoles + userId.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
+                                           userId.ToString().ToMd5String16());
     }
 
     #endregion

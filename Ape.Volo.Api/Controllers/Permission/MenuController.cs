@@ -130,8 +130,8 @@ public class MenusController : BaseApiController
             return Error("pid cannot be empty");
         }
 
-        var menulist = await _menuService.FindByPIdAsync(pid);
-        return menulist.ToJsonByIgnore();
+        var menuList = await _menuService.FindByPIdAsync(pid);
+        return menuList.ToJsonByIgnore();
     }
 
     /// <summary>

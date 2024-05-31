@@ -27,7 +27,7 @@ public class OnlineUserService : IOnlineUserService
     public async Task<List<LoginUserInfo>> QueryAsync(Pagination pagination)
     {
         List<LoginUserInfo> loginUserInfos = new List<LoginUserInfo>();
-        var arrayList = await _cache.ScriptEvaluateKeys(GlobalConstants.CacheKey.OnlineKey);
+        var arrayList = await _cache.ScriptEvaluateKeys(GlobalConstants.CachePrefix.OnlineKey);
         if (arrayList.Length > 0)
         {
             foreach (var item in arrayList)
@@ -59,7 +59,7 @@ public class OnlineUserService : IOnlineUserService
         {
             foreach (var item in ids)
             {
-                await _cache.RemoveAsync(GlobalConstants.CacheKey.OnlineKey + item);
+                await _cache.RemoveAsync(GlobalConstants.CachePrefix.OnlineKey + item);
             }
         }
     }
@@ -67,7 +67,7 @@ public class OnlineUserService : IOnlineUserService
     public async Task<List<ExportBase>> DownloadAsync()
     {
         List<ExportBase> onlineUserExports = new List<ExportBase>();
-        var arrayList = await _cache.ScriptEvaluateKeys(GlobalConstants.CacheKey.OnlineKey);
+        var arrayList = await _cache.ScriptEvaluateKeys(GlobalConstants.CachePrefix.OnlineKey);
         if (arrayList.Length > 0)
         {
             foreach (var item in arrayList)
