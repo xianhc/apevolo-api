@@ -263,14 +263,14 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
     public async Task<List<MenuDto>> QueryAllAsync()
     {
-        var menuDtos = await ApeContext.Cache.GetAsync<List<MenuDto>>("menus:LoadAllMenu");
-        if (menuDtos.Any())
+        var menuDtos = await ApeContext.Cache.GetAsync<List<MenuDto>>(GlobalConstants.CachePrefix.LoadAllMenu);
+        if (menuDtos != null && menuDtos.Count != 0)
         {
             return menuDtos;
         }
 
         menuDtos = ApeContext.Mapper.Map<List<MenuDto>>(await Table.ToListAsync());
-        if (menuDtos.Any())
+        if (menuDtos.Count != 0)
         {
             await ApeContext.Cache.SetAsync(GlobalConstants.CachePrefix.LoadAllMenu, menuDtos,
                 TimeSpan.FromSeconds(120), null);
