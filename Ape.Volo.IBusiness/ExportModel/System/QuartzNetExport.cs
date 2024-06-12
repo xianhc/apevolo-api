@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
 
@@ -86,7 +87,7 @@ public class QuartzNetExport : ExportBase
     /// 触发器类型（0、simple 1、cron）
     /// </summary>
     [Display(Name = "任务类型")]
-    public int TriggerType { get; set; }
+    public TriggerType TriggerType { get; set; }
 
     /// <summary>
     /// 执行间隔时间, 秒为单位

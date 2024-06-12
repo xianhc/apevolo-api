@@ -124,20 +124,18 @@ public class AuthConstants
         /// </summary>
         public const string Typ = "typ";
 
-        /// <summary>
-        /// </summary>
+
         public const string UniqueName = "unique_name";
 
-        /// <summary>
-        /// </summary>
+
         public const string Website = "website";
 
-
         public const string Name = "name";
-
 
         public const string Role = "role";
 
         public const string Ip = "ip";
+
+        public const string TenantId = "tenant_id";
     }
 }

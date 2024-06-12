@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Exception;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.SnowflakeIdHelper;
@@ -23,7 +23,7 @@ using Microsoft.Extensions.Options;
 using Shyjus.BrowserDetection;
 using StackExchange.Profiling;
 using static Ape.Volo.Api.Filter.ExceptionLogFormat;
-using LogLevel = Ape.Volo.Common.Global.LogLevel;
+using LogLevel = Ape.Volo.Common.Enums.LogLevel;
 using MiniProfiler = StackExchange.Profiling.MiniProfiler;
 
 namespace Ape.Volo.Api.Filter;
@@ -162,7 +162,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 ExceptionStack = context.Exception.StackTrace,
                 RequestIp = remoteIp,
                 IpAddress = _ipSearcher.Search(remoteIp),
-                LogLevel = (int)LogLevel.Debug,
+                LogLevel = LogLevel.Error,
                 OperatingSystem = _browserDetector.Browser?.OS,
                 DeviceType = _browserDetector.Browser?.DeviceType,
                 BrowserName = _browserDetector.Browser?.Name,

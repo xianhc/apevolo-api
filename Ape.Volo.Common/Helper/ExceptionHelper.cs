@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 
 namespace Ape.Volo.Common.Helper;
 

@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Ape.Volo.Common.ConfigOptions;
-using Ape.Volo.Common.Global;
+using Ape.Volo.Common.Enums;
 
 namespace Ape.Volo.Common.Helper;
 

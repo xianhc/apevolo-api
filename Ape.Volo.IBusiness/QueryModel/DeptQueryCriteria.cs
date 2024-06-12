@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Ape.Volo.IBusiness.QueryModel;
+﻿namespace Ape.Volo.IBusiness.QueryModel;
 
 /// <summary>
 /// 部门查询参数

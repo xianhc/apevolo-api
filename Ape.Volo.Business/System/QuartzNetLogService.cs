@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.WebApp;

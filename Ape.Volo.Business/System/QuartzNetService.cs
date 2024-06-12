@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
 using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Exception;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.WebApp;
@@ -130,7 +130,7 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
             IsEnable = x.IsEnable ? BoolState.True : BoolState.False,
             RunParams = x.RunParams,
             TriggerStatus = x.TriggerStatus,
-            TriggerTypeStr = x.TriggerType == 1 ? "cron" : "simple",
+            TriggerTypeStr = x.TriggerType.GetDisplayName(),
             CreateTime = x.CreateTime
         }));
         return quartzExports;

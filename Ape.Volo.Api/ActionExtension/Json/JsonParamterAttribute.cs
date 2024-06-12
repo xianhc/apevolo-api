@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Microsoft.AspNetCore.Mvc.Filters;
 

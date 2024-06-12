@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 
@@ -62,7 +63,7 @@ public class CreateUpdateMenuDto : BaseEntityDto<long>
     /// 类型
     /// </summary>
     [Range(1, 3)]
-    public int Type { get; set; }
+    public MenuType Type { get; set; }
 
     /// <summary>
     /// 缓存

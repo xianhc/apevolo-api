@@ -6,7 +6,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
 using NPOI.HSSF.Util;

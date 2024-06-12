@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
 using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Exception;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -16,7 +16,6 @@ using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.ExportModel.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
-using SqlSugar;
 
 namespace Ape.Volo.Business.Permission;
 
@@ -119,14 +118,14 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     public async Task<bool> DeleteAsync(List<long> ids)
     {
         var allIds = await GetChildIds(ids, null);
-        var departmentList = await TableWhere(x => allIds.Contains(x.Id)).Includes(x => x.User).Includes(x => x.Roles)
+        var departmentList = await TableWhere(x => allIds.Contains(x.Id)).Includes(x => x.Users).Includes(x => x.Roles)
             .ToListAsync();
         if (departmentList.Count < 1)
         {
             throw new BadRequestException("数据不存在！");
         }
 
-        if (departmentList.Any(dept => dept.User != null))
+        if (departmentList.Any(dept => dept.Users != null && dept.Users.Count != 0))
         {
             throw new BadRequestException("存在用户关联，请解除后再试！");
         }

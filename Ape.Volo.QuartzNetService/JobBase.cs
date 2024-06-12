@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Interface.System;
 using Ape.Volo.QuartzNetService.service;

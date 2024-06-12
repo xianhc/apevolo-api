@@ -8,7 +8,7 @@ using Ape.Volo.Api.Controllers.Base;
 using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Caches;
 using Ape.Volo.Common.Exception;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.WebApp;

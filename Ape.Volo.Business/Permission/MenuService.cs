@@ -5,8 +5,9 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Exception;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -54,7 +55,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
             throw new BadRequestException($"菜单标题=>{createUpdateMenuDto.Title}=>已存在!");
         }
 
-        if (createUpdateMenuDto.Type != (int)MenuType.Catalog &&
+        if (createUpdateMenuDto.Type != MenuType.Catalog &&
             await TableWhere(x => x.Permission == createUpdateMenuDto.Permission)
                 .AnyAsync())
         {
@@ -67,7 +68,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
             throw new BadRequestException($"组件名称=>{createUpdateMenuDto.ComponentName}=>已存在!");
         }
 
-        if (createUpdateMenuDto.Type != (int)MenuType.Catalog)
+        if (createUpdateMenuDto.Type != MenuType.Catalog)
         {
             if (createUpdateMenuDto.Permission.IsNullOrEmpty())
             {
@@ -123,7 +124,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
             throw new BadRequestException($"菜单标题名称=>{createUpdateMenuDto.Title}=>已存在!");
         }
 
-        if (createUpdateMenuDto.Type != (int)MenuType.Catalog && oldMenu.Permission != createUpdateMenuDto.Permission &&
+        if (createUpdateMenuDto.Type != MenuType.Catalog && oldMenu.Permission != createUpdateMenuDto.Permission &&
             await TableWhere(x => x.Permission == createUpdateMenuDto.Permission).AnyAsync())
         {
             throw new BadRequestException($"权限标识=>{createUpdateMenuDto.Permission}=>已存在!");
@@ -248,7 +249,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
             PId = 0,
             Sort = x.Sort,
             Icon = x.Icon,
-            MenuType = GetMenuTypeName(x.Type),
+            MenuType = x.Type,
             IsCache = x.Cache ? BoolState.True : BoolState.False,
             IsHidden = x.Hidden ? BoolState.True : BoolState.False,
             SubCount = x.SubCount,
@@ -313,7 +314,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
                 Cache = m.Cache,
                 Hidden = m.Hidden
             },
-            (m, rm) => roleIds.Contains(rm.RoleId) && m.Type != (int)MenuType.Button
+            (m, rm) => roleIds.Contains(rm.RoleId) && m.Type != MenuType.Button
             , null,
             "sort asc");
         var menuListChild = TreeHelper<MenuDto>.ListToTrees(menuList, "Id", "ParentId", 0);
@@ -509,23 +510,6 @@ public class MenuService : BaseServices<Menu>, IMenuService
         }
 
         return new List<long>();
-    }
-
-    #endregion
-
-    #region 私有方法
-
-    private static string GetMenuTypeName(int type)
-    {
-        var name = type switch
-        {
-            1 => "目录",
-            2 => "菜单",
-            3 => "按钮",
-            _ => "未知"
-        };
-
-        return name;
     }
 
     #endregion

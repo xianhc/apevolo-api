@@ -1,5 +1,5 @@
 ﻿using System;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Profiling;
 

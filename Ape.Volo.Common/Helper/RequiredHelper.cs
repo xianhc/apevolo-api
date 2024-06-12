@@ -1,6 +1,6 @@
 using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Exception;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 
 namespace Ape.Volo.Common.Helper;
 

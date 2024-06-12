@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.Base;
+using Ape.Volo.Entity.System;
 using SqlSugar;
 
 namespace Ape.Volo.Entity.Permission
@@ -75,18 +76,17 @@ namespace Ape.Volo.Entity.Permission
         /// <summary>
         /// 性别
         /// </summary>
-        [SugarColumn(IsNullable = true)]
-        public bool Sex { get; set; }
-
-        /// <summary>
-        /// 性别
-        /// </summary>
         public string Gender { get; set; }
 
         /// <summary>
         /// 是否已删除
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        /// <summary>
+        /// 租户ID
+        /// </summary>
+        public int TenantId { get; set; }
 
 
         #region 扩展属性
@@ -111,6 +111,14 @@ namespace Ape.Volo.Entity.Permission
         [SugarColumn(IsIgnore = true)]
         [Navigate(typeof(UserJob), nameof(UserJob.UserId), nameof(UserJob.JobId))]
         public List<Job> Jobs { get; set; }
+
+
+        /// <summary>
+        /// 租户
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        [Navigate(NavigateType.OneToOne, nameof(TenantId))]
+        public Tenant Tenant { get; set; }
 
         #endregion
     }

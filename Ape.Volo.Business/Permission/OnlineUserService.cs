@@ -55,7 +55,8 @@ public class OnlineUserService : IOnlineUserService
             BrowserName = _browserDetector.Browser?.Name,
             Version = _browserDetector.Browser?.Version,
             LoginTime = DateTime.Now,
-            IsAdmin = jwtUserVo.User.IsAdmin
+            IsAdmin = jwtUserVo.User.IsAdmin,
+            TenantId = jwtUserVo.User.TenantId
         };
         return await Task.FromResult(onlineUser);
     }

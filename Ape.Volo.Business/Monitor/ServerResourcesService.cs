@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.IBusiness.Interface.Monitor;
 using Ape.Volo.IBusiness.Vo.ServerResources;
@@ -79,13 +79,13 @@ public class ServerResourcesService : IServerResourcesService
         if (os.SwapTotal > 0)
         {
             osInfo.Swap.Total =
-                Math.Round(Convert.ToDecimal(os.SwapTotal / Gb), 2).ToString("0.00") + " GiB";
-            osInfo.Swap.Used = Math.Round(Convert.ToDecimal((os.SwapTotal - os.SwapFree) / Gb), 2)
+                Math.Round(Convert.ToDecimal((int)(os.SwapTotal / Gb)), 2).ToString("0.00") + " GiB";
+            osInfo.Swap.Used = Math.Round(Convert.ToDecimal((int)((os.SwapTotal - os.SwapFree) / Gb)), 2)
                 .ToString("0.00") + " GiB";
             osInfo.Swap.Available =
-                Math.Round(Convert.ToDecimal(os.SwapFree / Gb), 2).ToString("0.00") + " GiB";
+                Math.Round(Convert.ToDecimal((int)(os.SwapFree / Gb)), 2).ToString("0.00") + " GiB";
             osInfo.Swap.UsageRate =
-                Math.Round(Convert.ToDecimal(100 / os.SwapTotal * (os.SwapTotal - os.SwapFree)), 2)
+                Math.Round(Convert.ToDecimal((int)(100 / os.SwapTotal * (os.SwapTotal - os.SwapFree))), 2)
                     .ToString("0.00");
         }
 

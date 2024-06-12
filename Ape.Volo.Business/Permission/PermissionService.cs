@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
 using Ape.Volo.Common.AttributeExt;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;

@@ -11,13 +11,13 @@
     "Phone": "13699797575",
     "AvatarPath": "/uploads/file/avatar/20231010143458_1711631391147429888.png",
     "PasswordResetTime": null,
-    "Sex": 0,
     "Gender": "男",
     "CreateBy": "apevolo",
     "CreateTime": "/Date(1609430400000+0800)/",
     "UpdateBy": null,
     "UpdateTime": null,
-    "IsDeleted": false
+    "IsDeleted": false,
+    "TenantId" : null
   },
   {
     "Id": "1306054134645919751",
@@ -31,12 +31,12 @@
     "Phone": "13699797575",
     "AvatarPath": "/uploads/file/avatar/20231010143458_1711631391147429888.png",
     "PasswordResetTime": null,
-    "Sex": 0,
     "Gender": "男",
     "CreateBy": "apevolo",
     "CreateTime": "/Date(1609430400000+0800)/",
     "UpdateBy": null,
     "UpdateTime": null,
-    "IsDeleted": false
+    "IsDeleted": false,
+    "TenantId" : null
   }
 ]

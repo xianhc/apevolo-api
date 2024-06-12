@@ -4,9 +4,14 @@ using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.DI;
 using Ape.Volo.Common.Exception;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
+using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
+using Ape.Volo.Common.WebApp;
+using Ape.Volo.Entity.System;
 using Ape.Volo.Repository.UnitOfWork;
 using SqlSugar;
 
@@ -22,13 +27,36 @@ public class SugarRepository<TEntity> : ISugarRepository<TEntity> where TEntity 
     {
         var sqlSugarScope = unitOfWork.GetDbClient();
         var tenantAttribute = typeof(TEntity).GetCustomAttribute<TenantAttribute>();
-        if (tenantAttribute == null)
+        if (tenantAttribute != null)
         {
-            SugarClient = sqlSugarScope;
+            SugarClient = sqlSugarScope.GetConnectionScope(tenantAttribute.configId.ToString());
             return;
         }
 
-        SugarClient = sqlSugarScope.GetConnectionScope(tenantAttribute.configId.ToString());
+        var multiDbTenantAttribute = typeof(TEntity).GetCustomAttribute<MultiDbTenantAttribute>();
+        if (multiDbTenantAttribute != null)
+        {
+            var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
+            if (httpUser.IsNotNull() && httpUser.TenantId > 0)
+            {
+                var tenant = sqlSugarScope.Queryable<Tenant>().First(x => x.TenantId == httpUser.TenantId);
+                if (tenant != null)
+                {
+                    var iTenant = sqlSugarScope.AsTenant();
+                    if (!iTenant.IsAnyConnection(tenant.ConfigId))
+                    {
+                        iTenant.AddConnection(TenantHelper.GetConnectionConfig(tenant.ConfigId, tenant.DbType,
+                            tenant.ConnectionString));
+                    }
+
+                    SugarClient = iTenant.GetConnectionScope(tenant.ConfigId);
+                    return;
+                }
+            }
+        }
+
+
+        SugarClient = sqlSugarScope;
     }
 
     public ISqlSugarClient SugarClient { get; }

@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ape.Volo.Common\Ape.Volo.Common.csproj" />
+    <ProjectReference Include="..\Ape.Volo.Common\Ape.Volo.Common.csproj"/>
+    <ProjectReference Include="..\Ape.Volo.Entity\Ape.Volo.Entity.csproj"/>
   </ItemGroup>
 
 </Project>

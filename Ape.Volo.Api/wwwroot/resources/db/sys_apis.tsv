@@ -211,7 +211,7 @@
     },
     {
         "group":"角色管理",
-        "url":"/api/role/all",
+        "url":"/api/role/queryAll",
         "description":"查询全部",
         "method":"GET",
         "isDeleted":false,
@@ -1068,5 +1068,65 @@
         "createBy":"apevolo",
         "CreateTime":"\/Date(1609430400000+0800)\/",
         "id":"1763017911204581376"
+    },
+    {
+        "group":"租户管理",
+        "url":"/api/tenant/query",
+        "description":"查询",
+        "method":"GET",
+        "isDeleted":false,
+        "createBy":"apevolo",
+        "CreateTime":"\/Date(1609430400000+0800)\/",
+        "id":"1763017911204581377"
+    },
+    {
+        "group":"租户管理",
+        "url":"/api/tenant/create",
+        "description":"创建",
+        "method":"POST",
+        "isDeleted":false,
+        "createBy":"apevolo",
+        "CreateTime":"\/Date(1609430400000+0800)\/",
+        "id":"1763017911204581378"
+    },
+    {
+        "group":"租户管理",
+        "url":"/api/tenant/edit",
+        "description":"编辑",
+        "method":"PUT",
+        "isDeleted":false,
+        "createBy":"apevolo",
+        "CreateTime":"\/Date(1609430400000+0800)\/",
+        "id":"1763017911204581379"
+    },
+    {
+        "group":"租户管理",
+        "url":"/api/tenant/delete",
+        "description":"删除",
+        "method":"DELETE",
+        "isDeleted":false,
+        "createBy":"apevolo",
+        "CreateTime":"\/Date(1609430400000+0800)\/",
+        "id":"1763017911204581310"
+    },
+    {
+        "group":"租户管理",
+        "url":"/api/tenant/download",
+        "description":"导出",
+        "method":"GET",
+        "isDeleted":false,
+        "createBy":"apevolo",
+        "CreateTime":"\/Date(1609430400000+0800)\/",
+        "id":"1763017911204581311"
+    },
+    {
+        "group":"租户管理",
+        "url":"/api/tenant/queryAll",
+        "description":"查询全部",
+        "method":"GET",
+        "isDeleted":false,
+        "createBy":"apevolo",
+        "CreateTime":"\/Date(1609430400000+0800)\/",
+        "id":"1763017911204581312"
     }
 ]

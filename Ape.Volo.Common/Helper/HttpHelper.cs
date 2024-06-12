@@ -7,7 +7,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 

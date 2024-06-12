@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Authentication.Jwt;
 using Ape.Volo.Common.ConfigOptions;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.WebApp;
 using Microsoft.AspNetCore.Authentication;

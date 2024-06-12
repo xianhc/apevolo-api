@@ -1,5 +1,5 @@
 ﻿using System;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Entity.Seed;
 using Microsoft.Extensions.DependencyInjection;
 

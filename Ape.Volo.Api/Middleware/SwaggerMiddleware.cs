@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Ape.Volo.Common.ConfigOptions;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper.Serilog;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;

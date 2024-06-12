@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Ape.Volo.Common.Caches.Redis.Abstractions;
 using Ape.Volo.Common.Caches.Redis.Attributes;
 using Ape.Volo.Common.Caches.Redis.Models;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Ape.Volo.Common.Caches.Redis.MessageQueue;

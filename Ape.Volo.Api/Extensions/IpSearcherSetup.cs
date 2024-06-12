@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using IP2Region.Net.Abstractions;
 using IP2Region.Net.XDB;

@@ -5,7 +5,7 @@ using System.Linq;
 using Ape.Volo.Api.Serilog;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.DI;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -49,19 +49,13 @@ public static class SqlSugarSetup
             throw new Exception($"请确保日志库ID:{configs.LogDataBase}的Enabled为true;");
         }
 
-        if (allConnectionItem.FirstOrDefault(x => x.ConnId == configs.DefaultDataBase)?.DbType !=
-            allConnectionItem.FirstOrDefault(x => x.ConnId == configs.LogDataBase)?.DbType)
-        {
-            throw new Exception($"请确保主库与日志库得DbType相同;");
-        }
-
 
         List<ConnectionConfig> allConnectionConfig = new List<ConnectionConfig>();
         List<SlaveConnectionConfig> slaveDbs = null; //从库列表
 
         foreach (var connectionItem in allConnectionItem)
         {
-            if (connectionItem.DbType == (int)DataBaseType.Sqlite)
+            if (connectionItem.DbType == DbType.Sqlite)
             {
                 connectionItem.ConnectionString = "DataSource=" + Path.Combine(AppSettings.ContentRootPath,
                     connectionItem.ConnectionString ?? string.Empty);
@@ -96,7 +90,7 @@ public static class SqlSugarSetup
             {
                 ConfigId = connectionItem.ConnId,
                 ConnectionString = connectionItem.ConnectionString,
-                DbType = (DbType)connectionItem.DbType,
+                DbType = connectionItem.DbType,
                 LanguageType = LanguageType.Chinese,
                 IsAutoCloseConnection = true,
                 //IsShardSameThread = false,
@@ -110,7 +104,7 @@ public static class SqlSugarSetup
                     EntityService = (c, p) =>
                     {
                         p.DbColumnName = UtilMethods.ToUnderLine(p.DbColumnName); //字段使用驼峰转下划线，不需要请注释
-                        if ((DbType)connectionItem.DbType == DbType.MySql && p.DataType == "varchar(max)")
+                        if (connectionItem.DbType == DbType.MySql && p.DataType == "varchar(max)")
                         {
                             p.DataType = "longtext";
                         }
@@ -146,9 +140,13 @@ public static class SqlSugarSetup
                     {
                         var sugarScopeProvider = db.GetConnectionScope((string)config.ConfigId);
 
-                        #region 接口过滤器
+                        #region 配置过滤器
 
-                        sugarScopeProvider.QueryFilter.AddTableFilter<ISoftDeletedEntity>(x => x.IsDeleted == false);
+                        //软删除
+                        sugarScopeProvider.ConfiguringSoftDeletedFilter();
+
+                        //租户
+                        sugarScopeProvider.ConfiguringTenantFilter();
 
                         #endregion
 
@@ -210,23 +208,29 @@ public static class SqlSugarSetup
             }
 
             var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
-            if (httpUser.IsNotNull())
+            if (httpUser.IsNull()) return;
+            switch (entityInfo.OperationType)
             {
-                switch (entityInfo.OperationType)
+                case DataFilterType.InsertByObject:
                 {
-                    case DataFilterType.InsertByObject:
+                    if (baseEntity.CreateBy.IsNullOrEmpty())
                     {
-                        if (baseEntity.CreateBy.IsNullOrEmpty())
-                        {
-                            baseEntity.CreateBy = httpUser.Account;
-                        }
-
-                        break;
+                        baseEntity.CreateBy = httpUser.Account;
                     }
-                    case DataFilterType.UpdateByObject:
-                        baseEntity.UpdateBy = httpUser.Account;
-                        break;
+
+                    if (baseEntity is ITenantEntity tenant && httpUser.TenantId > 0)
+                    {
+                        if (tenant.TenantId == 0)
+                        {
+                            tenant.TenantId = httpUser.TenantId;
+                        }
+                    }
+
+                    break;
                 }
+                case DataFilterType.UpdateByObject:
+                    baseEntity.UpdateBy = httpUser.Account;
+                    break;
             }
         }
     }
@@ -309,4 +313,26 @@ public static class SqlSugarSetup
     }
 
     #endregion
+
+
+    /// <summary>
+    /// 配置软删除过滤器
+    /// </summary>
+    private static void ConfiguringSoftDeletedFilter(this SqlSugarScopeProvider db)
+    {
+        db.QueryFilter.AddTableFilter<ISoftDeletedEntity>(it => it.IsDeleted == false);
+    }
+
+    /// <summary>
+    /// 配置多租户过滤器
+    /// </summary>
+    private static void ConfiguringTenantFilter(this SqlSugarScopeProvider db)
+    {
+        var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
+
+        if (httpUser.IsNotNull() && httpUser.TenantId > 0)
+        {
+            db.QueryFilter.AddTableFilter<ITenantEntity>(it => it.TenantId == httpUser.TenantId);
+        }
+    }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Helper.Serilog;
 using Ape.Volo.Entity.Seed;
 using Microsoft.AspNetCore.Builder;
@@ -18,8 +20,12 @@ public static class DataSeederMiddleware
         {
             if (dataContext.Configs.IsInitTable)
             {
-                DataSeeder.InitSystemDataAsync(dataContext, dataContext.Configs.IsInitData,
+                DataSeeder.InitMasterDataAsync(dataContext, dataContext.Configs.IsInitData,
                     dataContext.Configs.IsQuickDebug).Wait();
+                Thread.Sleep(500); //保证顺序输出
+                DataSeeder.InitLogData(dataContext);
+                Thread.Sleep(500);
+                DataSeeder.InitTenantDataAsync(dataContext).Wait();
             }
         }
         catch (Exception e)

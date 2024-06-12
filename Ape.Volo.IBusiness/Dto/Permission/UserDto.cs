@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
-using Newtonsoft.Json;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
@@ -71,11 +70,6 @@ public class UserDto : BaseEntityDto<long>
     /// <summary>
     /// 性别
     /// </summary>
-    public bool Sex { get; set; }
-
-    /// <summary>
-    /// 性别
-    /// </summary>
     public string Gender { get; set; }
 
     /// <summary>
@@ -97,4 +91,9 @@ public class UserDto : BaseEntityDto<long>
     /// 岗位列表
     /// </summary>
     public List<JobSmallDto> Jobs { get; set; }
+
+    /// <summary>
+    /// 租户ID
+    /// </summary>
+    public int TenantId { get; set; }
 }

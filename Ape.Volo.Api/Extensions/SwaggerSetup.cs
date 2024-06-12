@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using Ape.Volo.Common.ConfigOptions;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper.Serilog;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;

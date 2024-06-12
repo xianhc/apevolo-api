@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
 

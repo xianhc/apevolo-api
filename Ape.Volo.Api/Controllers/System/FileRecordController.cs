@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.ActionExtension.Parameter;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.IBusiness.Dto.System;

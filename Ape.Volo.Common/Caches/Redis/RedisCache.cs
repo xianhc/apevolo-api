@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Ape.Volo.Common.ConfigOptions;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 

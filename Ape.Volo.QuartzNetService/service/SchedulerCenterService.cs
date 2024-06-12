@@ -2,7 +2,7 @@
 using System.Collections.Specialized;
 using System.Reflection;
 using System.Threading.Tasks;
-using Ape.Volo.Common.Global;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Helper.Serilog;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
@@ -126,7 +126,7 @@ public class SchedulerCenterService : ISchedulerCenterService
                     ITrigger trigger;
 
 
-                    if (taskQuartz.TriggerType == (int)TriggerMode.Cron)
+                    if (taskQuartz.TriggerType == TriggerType.Cron)
                     {
                         trigger = CreateCronTrigger(taskQuartz);
 

@@ -5,7 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Enums;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Entity.Base;
@@ -24,25 +26,25 @@ namespace Ape.Volo.Entity.Seed;
 public class DataSeeder
 {
     /// <summary>
-    /// 异步添加种子数据
+    /// 初始化系统主库
     /// </summary>
     /// <param name="dataContext"></param>
     /// <param name="isInitData"></param>
     /// <param name="isQuickDebug"></param>
     /// <returns></returns>
-    public static async Task InitSystemDataAsync(DataContext dataContext, bool isInitData, bool isQuickDebug)
+    public static async Task InitMasterDataAsync(DataContext dataContext, bool isInitData, bool isQuickDebug)
     {
         try
         {
             ConsoleHelper.WriteLine($"程序正在启动....", ConsoleColor.Green);
-            ConsoleHelper.WriteLine($"是否开发环境: {isQuickDebug}");
+            ConsoleHelper.WriteLine($"是否开发环境: {isQuickDebug}", ConsoleColor.Green);
             ConsoleHelper.WriteLine($"ContentRootPath: {AppSettings.ContentRootPath}");
             ConsoleHelper.WriteLine($"WebRootPath: {AppSettings.WebRootPath}");
             ConsoleHelper.WriteLine($"Master Db Id: {dataContext.Db.CurrentConnectionConfig.ConfigId}");
             ConsoleHelper.WriteLine($"Master Db Type: {dataContext.Db.CurrentConnectionConfig.DbType}");
             ConsoleHelper.WriteLine(
                 $"Master Db ConnectString: {dataContext.Db.CurrentConnectionConfig.ConnectionString}");
-            ConsoleHelper.WriteLine("初始化主库....");
+            ConsoleHelper.WriteLine("初始化主库....", ConsoleColor.Green);
             if (dataContext.DbType != DbType.Oracle)
             {
                 dataContext.Db.DbMaintenance.CreateDatabase();
@@ -64,6 +66,7 @@ public class DataSeeder
             var entityList = GlobalData.GetEntityAssembly().GetTypes()
                 .Where(x => (x.BaseType == typeof(BaseEntity) || x.BaseType == typeof(RootKey<long>)) &&
                             x != typeof(BaseEntity) && x.Namespace != null &&
+                            x.GetCustomAttribute<MultiDbTenantAttribute>() == null &&
                             !x.Namespace.StartsWith("Ape.Volo.Entity.Monitor")).ToList();
             entityList.Add(typeof(UserRole));
             entityList.Add(typeof(UserJob));
@@ -424,27 +427,135 @@ public class DataSeeder
 
                 #endregion
 
-                ConsoleHelper.WriteLine("初始化数据完成！", ConsoleColor.Green);
+                #region 租户
+
+                if (!await dataContext.Db.Queryable<Tenant>().AnyAsync())
+                {
+                    var attr = typeof(Tenant).GetCustomAttribute<SugarTable>();
+                    if (attr != null)
+                    {
+                        await dataContext.GetEntityDb<Tenant>().InsertRangeAsync(
+                            JsonConvert.DeserializeObject<List<Tenant>>(
+                                FileHelper.ReadFile(string.Format(seedDataFolder, attr.TableName), Encoding.UTF8),
+                                setting));
+                        ConsoleHelper.WriteLine(
+                            $"Entity:{nameof(Tenant)}-->Table:{attr.TableName}-->Desc:{attr.TableDescription}-->初始数据成功！",
+                            ConsoleColor.Green);
+                    }
+                }
+
+                #endregion
+
+                ConsoleHelper.WriteLine("初始化主库数据完成！", ConsoleColor.Green);
+                ConsoleHelper.WriteLine();
             }
 
             #endregion
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
 
-            #region 初始化日志库
 
-            if (!dataContext.Db.IsAnyConnection(SqlSugarConfig.LogId))
+    /// <summary>
+    /// 初始化日志库
+    /// </summary>
+    /// <param name="dataContext"></param>
+    /// <exception cref="Exception"></exception>
+    public static void InitLogData(DataContext dataContext)
+    {
+        if (!dataContext.Db.IsAnyConnection(SqlSugarConfig.LogId))
+        {
+            throw new ApplicationException("未配置日志数据库，请在appsettings.json中DataConnection节点中配置");
+        }
+
+        ConsoleHelper.WriteLine("初始化日志数据库....！", ConsoleColor.Green);
+
+        var logDb = dataContext.Db.GetConnectionScope(SqlSugarConfig.LogId);
+        ConsoleHelper.WriteLine($"Log Db Id: {logDb.CurrentConnectionConfig.ConfigId}");
+        ConsoleHelper.WriteLine($"Log Db Type: {logDb.CurrentConnectionConfig.DbType}");
+        ConsoleHelper.WriteLine($"Log Db ConnectString: {logDb.CurrentConnectionConfig.ConnectionString}");
+        if (logDb.CurrentConnectionConfig.DbType != DbType.Oracle)
+        {
+            logDb.DbMaintenance.CreateDatabase();
+        }
+        else
+        {
+            //已有库得情况下 把抛异常代码注释掉
+            throw new Exception("sqlSugar不支持Oracle使用代码建库,请先建库后注释该代码重新启动！");
+        }
+
+        ConsoleHelper.WriteLine("初始化日志库成功。", ConsoleColor.Green);
+        ConsoleHelper.WriteLine("初始化日志库数据表....");
+
+        var logEntityList = GlobalData.GetEntityAssembly().GetTypes()
+            .Where(x => x.IsClass && x != typeof(SerilogBase) && x.Namespace != null &&
+                        x.Namespace.StartsWith("Ape.Volo.Entity.Monitor")).ToList();
+
+
+        var logTables = logDb.DbMaintenance.GetTableInfoList();
+
+        logEntityList.ForEach(entity =>
+        {
+            var entityInfo = dataContext.Db.EntityMaintenance.GetEntityInfo(entity);
+            // var attr = entity.GetCustomAttribute<SugarTable>();
+            // var tableName = attr == null ? entity.Name : attr.TableName;
+            if (entityInfo.DbTableName.IsNullOrEmpty())
             {
-                throw new ApplicationException("未配置日志数据库，请在appsettings.json中DataConnection节点中配置");
+                throw new Exception($"类{entityInfo.EntityName}缺少SugarTable表名");
             }
 
-            var logDb = dataContext.Db.GetConnectionScope(SqlSugarConfig.LogId);
-            ConsoleHelper.WriteLine($"Log Db Id: {logDb.CurrentConnectionConfig.ConfigId}");
-            ConsoleHelper.WriteLine($"Log Db Type: {logDb.CurrentConnectionConfig.DbType}");
-            ConsoleHelper.WriteLine($"Log Db ConnectString: {logDb.CurrentConnectionConfig.ConnectionString}");
-            ConsoleHelper.WriteLine("初始化日志库成功。", ConsoleColor.Green);
-            ConsoleHelper.WriteLine("初始化日志库数据表....");
-            if (logDb.CurrentConnectionConfig.DbType != DbType.Oracle)
+            int lastUnderscoreIndex = entityInfo.DbTableName.LastIndexOf('_');
+            var tableName = entityInfo.DbTableName.Substring(0, lastUnderscoreIndex);
+
+            if (!logTables.Any(x => x.Name.Equals(tableName, StringComparison.OrdinalIgnoreCase)))
             {
-                logDb.DbMaintenance.CreateDatabase();
+                if (entity.GetCustomAttribute<SplitTableAttribute>() != null)
+                {
+                    logDb.CodeFirst.SplitTables().InitTables(entity);
+                    ConsoleHelper.WriteLine(
+                        $"Entity:{entity.Name}-->Table:{entityInfo.DbTableName}-->Desc:{entityInfo.TableDescription}-->创建完成！");
+                }
+                else
+                {
+                    logDb.CodeFirst.InitTables(entity);
+                    ConsoleHelper.WriteLine(
+                        $"Entity:{entity.Name}-->Table:{entityInfo.DbTableName}-->Desc:{entityInfo.TableDescription}-->创建完成！");
+                }
+            }
+        });
+        ConsoleHelper.WriteLine("初始化日志库数据表成功！", ConsoleColor.Green);
+        ConsoleHelper.WriteLine();
+    }
+
+
+    /// <summary>
+    /// 初始化租户库
+    /// </summary>
+    /// <param name="dataContext"></param>
+    /// <exception cref="Exception"></exception>
+    public static async Task InitTenantDataAsync(DataContext dataContext)
+    {
+        var tenants = await dataContext.Db.Queryable<Tenant>().Where(s => s.TenantType == TenantType.Db)
+            .ToListAsync();
+        if (tenants.Count == 0)
+        {
+            return;
+        }
+
+        ConsoleHelper.WriteLine("初始化租户数据库....！", ConsoleColor.Green);
+        foreach (var tenant in tenants)
+        {
+            var iTenant = dataContext.Db.AsTenant();
+            iTenant.RemoveConnection(tenant.ConfigId);
+            iTenant.AddConnection(TenantHelper.GetConnectionConfig(tenant.ConfigId, tenant.DbType,
+                tenant.ConnectionString));
+            var db = iTenant.GetConnectionScope(tenant.ConfigId);
+            if (db.CurrentConnectionConfig.DbType != DbType.Oracle)
+            {
+                db.DbMaintenance.CreateDatabase();
             }
             else
             {
@@ -452,52 +563,50 @@ public class DataSeeder
                 throw new Exception("sqlSugar不支持Oracle使用代码建库,请先建库后注释该代码重新启动！");
             }
 
-            var logEntityList = GlobalData.GetEntityAssembly().GetTypes()
-                .Where(x => x.IsClass && x != typeof(SerilogBase) && x.Namespace != null &&
-                            x.Namespace.StartsWith("Ape.Volo.Entity.Monitor")).ToList();
+            ConsoleHelper.WriteLine($"Tenant Db Id: {tenant.ConfigId}");
+            ConsoleHelper.WriteLine($"Tenant Db Type: {tenant.DbType}");
+            ConsoleHelper.WriteLine($"Tenant Db ConnectString: {tenant.ConnectionString}");
+            ConsoleHelper.WriteLine($"初始化租户{tenant.Name}库成功。", ConsoleColor.Green);
+            ConsoleHelper.WriteLine($"初始化租户{tenant.Name}数据表....");
 
-
-            var logTables = logDb.DbMaintenance.GetTableInfoList();
-
-            logEntityList.ForEach(entity =>
+            var entityList = GlobalData.GetEntityAssembly().GetTypes()
+                .Where(x => (x.BaseType == typeof(BaseEntity) || x.BaseType == typeof(RootKey<long>)) &&
+                            x != typeof(BaseEntity) && x.Namespace != null &&
+                            x.GetCustomAttribute<MultiDbTenantAttribute>() != null &&
+                            !x.Namespace.StartsWith("Ape.Volo.Entity.Monitor")).ToList();
+            if (entityList.Any())
             {
-                var entityInfo = dataContext.Db.EntityMaintenance.GetEntityInfo(entity);
-                // var attr = entity.GetCustomAttribute<SugarTable>();
-                // var tableName = attr == null ? entity.Name : attr.TableName;
-                if (entityInfo.DbTableName.IsNullOrEmpty())
+                var masterTables = db.DbMaintenance.GetTableInfoList();
+                entityList.ForEach(entity =>
                 {
-                    throw new Exception($"类{entityInfo.EntityName}缺少SugarTable表名");
-                }
-
-                int lastUnderscoreIndex = entityInfo.DbTableName.LastIndexOf('_');
-                var tableName = entityInfo.DbTableName.Substring(0, lastUnderscoreIndex);
-
-                if (!logTables.Any(x => x.Name.Equals(tableName, StringComparison.OrdinalIgnoreCase)))
-                {
-                    if (entity.GetCustomAttribute<SplitTableAttribute>() != null)
+                    var entityInfo = db.EntityMaintenance.GetEntityInfo(entity);
+                    // var attr = entity.GetCustomAttribute<SugarTable>();
+                    // var tableName = attr == null ? entity.Name : attr.TableName;
+                    if (entityInfo.DbTableName.IsNullOrEmpty())
                     {
-                        logDb.CodeFirst.SplitTables().InitTables(entity);
-                        ConsoleHelper.WriteLine(
-                            $"Entity:{entity.Name}-->Table:{entityInfo.DbTableName}-->Desc:{entityInfo.TableDescription}-->创建完成！");
+                        throw new Exception($"类{entityInfo.EntityName}缺少SugarTable表名");
                     }
-                    else
+
+                    if (!masterTables.Any(x =>
+                            x.Name.Equals(entityInfo.DbTableName, StringComparison.OrdinalIgnoreCase)))
                     {
-                        logDb.CodeFirst.InitTables(entity);
-                        ConsoleHelper.WriteLine(
-                            $"Entity:{entity.Name}-->Table:{entityInfo.DbTableName}-->Desc:{entityInfo.TableDescription}-->创建完成！");
+                        if (entity.GetCustomAttribute<SplitTableAttribute>() != null)
+                        {
+                            db.CodeFirst.SplitTables().InitTables(entity);
+                            ConsoleHelper.WriteLine(
+                                $"Entity:{entity.Name}-->Table:{entityInfo.DbTableName}-->Desc:{entityInfo.TableDescription}-->创建完成！");
+                        }
+                        else
+                        {
+                            db.CodeFirst.InitTables(entity);
+                            ConsoleHelper.WriteLine(
+                                $"Entity:{entity.Name}-->Table:{entityInfo.DbTableName}-->Desc:{entityInfo.TableDescription}-->创建完成！");
+                        }
                     }
-                }
-            });
-            ConsoleHelper.WriteLine("初始化日志库数据表成功！", ConsoleColor.Green);
-            ConsoleHelper.WriteLine();
-
-            #endregion
-
-            ConsoleHelper.WriteLine("初始化完成，程序已启动....！", ConsoleColor.Green);
+                });
+            }
         }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+
+        ConsoleHelper.WriteLine("初始化租户库完成！", ConsoleColor.Green);
     }
 }

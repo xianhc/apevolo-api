@@ -1,6 +1,6 @@
 using System;
 using Ape.Volo.Api.AutoMapper;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Ape.Volo.Api.Extensions;

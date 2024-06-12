@@ -1,4 +1,6 @@
 using System;
+using Ape.Volo.Common.Enums;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.Base;
 using SqlSugar;
@@ -81,7 +83,7 @@ namespace Ape.Volo.Entity.System
         /// <summary>
         /// 触发器类型（0、simple 1、cron）
         /// </summary>
-        public int TriggerType { get; set; }
+        public TriggerType TriggerType { get; set; }
 
         /// <summary>
         /// 执行间隔时间, 秒为单位
@@ -114,7 +116,7 @@ namespace Ape.Volo.Entity.System
         /// 触发器模式
         /// </summary>
         [SugarColumn(IsIgnore = true)]
-        public string TriggerTypeStr => TriggerType == 1 ? "cron" : "simple";
+        public string TriggerTypeStr => TriggerType.GetDisplayName();
 
         /// <summary>
         /// 是否已删除

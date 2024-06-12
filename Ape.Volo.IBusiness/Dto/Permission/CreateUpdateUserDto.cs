@@ -66,4 +66,9 @@ public class CreateUpdateUserDto : BaseEntityDto<long>
     /// </summary>
     [Required]
     public List<UserJobDto> Jobs { get; set; }
+
+    /// <summary>
+    /// 租户ID
+    /// </summary>
+    public int? TenantId { get; set; }
 }

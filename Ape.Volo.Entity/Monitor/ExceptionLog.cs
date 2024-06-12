@@ -1,4 +1,5 @@
 using System;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.Base;
@@ -78,7 +79,7 @@ public class ExceptionLog : BaseEntity, ISoftDeletedEntity
     /// 等级
     /// </summary>
     [SugarColumn(IsNullable = true)]
-    public int LogLevel { get; set; }
+    public LogLevel LogLevel { get; set; }
 
     /// <summary>
     /// 请求ip

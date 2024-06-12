@@ -1,6 +1,10 @@
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.ActionExtension.Sign;
 using Ape.Volo.Api.Controllers.Base;
+using Ape.Volo.Common.Model;
+using Ape.Volo.Common.SnowflakeIdHelper;
+using Ape.Volo.Entity.Test;
 using Ape.Volo.IBusiness.Interface.Test;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,24 +14,23 @@ namespace Ape.Volo.Api.Controllers.Test;
 /// <summary>
 /// 测试
 /// </summary>
-[Area("Test Manager")]
-[Route("api/[controller]/[action]")]
-//[ApiController]
+[Area("测试")]
+[Route("/api/test", Order = 999)]
 public class TestController : BaseApiController
 {
     // private readonly IEmailScheduleTask _emailScheduleTask;
     //
     // //private readonly IEventBus _eventBus;
     // private readonly IRedisCacheService _redisCacheService;
-    readonly ITestApeVoloService _testApeVoloService;
+    private readonly ITestOrderService _testOrderService;
 
     // private readonly IUserService _userService;
     // private readonly IRoleService _roleService;
     // private readonly IBrowserDetector _browserDetector;
 
-    public TestController(ITestApeVoloService testApeVoloService)
+    public TestController(ITestOrderService testOrderService)
     {
-        _testApeVoloService = testApeVoloService;
+        _testOrderService = testOrderService;
         //_eventBus = eventBus;
     }
 
@@ -121,4 +124,26 @@ public class TestController : BaseApiController
 
         return Success();
     }*/
+
+    [HttpGet]
+    [Route("SearchOrder")]
+    [Description("查询")]
+    public async Task<ActionResult<object>> SearchOrder()
+    {
+        await _testOrderService.AddEntityAsync(new TestOrder()
+        {
+            Id = IdHelper.GetLongId(),
+            OrderNo = "1001",
+            GoodsName = "iphone 16",
+            Qty = 1,
+            Price = 5000
+        });
+
+        var list = await _testOrderService.Table.ToListAsync();
+        return JsonContent(new ActionResultVm<TestOrder>
+        {
+            Content = list,
+            TotalElements = list.Count
+        });
+    }
 }

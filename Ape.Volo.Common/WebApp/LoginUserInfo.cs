@@ -77,4 +77,9 @@ public class LoginUserInfo
     /// 是否系统管理员
     /// </summary>
     public bool IsAdmin { get; set; }
+
+    /// <summary>
+    /// 租户Id
+    /// </summary>
+    public int TenantId { get; set; }
 }

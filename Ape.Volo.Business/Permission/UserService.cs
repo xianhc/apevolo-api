@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
 using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Common.Exception;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -19,7 +19,6 @@ using Ape.Volo.IBusiness.ExportModel.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Http;
-using SqlSugar;
 
 namespace Ape.Volo.Business.Permission;
 
@@ -275,17 +274,14 @@ public class UserService : BaseServices<User>, IUserService
     /// <exception cref="BadRequestException"></exception>
     public async Task<bool> UpdateCenterAsync(UpdateUserCenterDto updateUserCenterDto)
     {
-        if (updateUserCenterDto.Id != ApeContext.LoginUserInfo.UserId)
-            throw new BadRequestException("禁止操作他人数据");
-
-        var user = await TableWhere(x => x.Id == updateUserCenterDto.Id).FirstAsync();
+        var user = await TableWhere(x => x.Id == ApeContext.LoginUserInfo.UserId).FirstAsync();
         if (user.IsNull())
             throw new BadRequestException("数据不存在！");
         if (!updateUserCenterDto.Phone.IsPhone())
             throw new BadRequestException("电话格式错误");
 
         var checkUser = await SugarRepository.QueryFirstAsync(x =>
-            x.Phone == updateUserCenterDto.Phone && x.Id != updateUserCenterDto.Id);
+            x.Phone == updateUserCenterDto.Phone && x.Id != ApeContext.LoginUserInfo.UserId);
         if (checkUser.IsNotNull())
             throw new BadRequestException($"电话=>{checkUser.Phone}=>已存在!");
 

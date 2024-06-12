@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
 
@@ -67,7 +68,7 @@ public class MenuExport : ExportBase
     /// 菜单类型
     /// </summary>
     [Display(Name = "菜单类型")]
-    public string MenuType { get; set; }
+    public MenuType MenuType { get; set; }
 
     /// <summary>
     /// 是否缓存

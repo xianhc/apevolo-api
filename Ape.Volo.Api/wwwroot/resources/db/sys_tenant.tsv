@@ -1,0 +1,32 @@
+[
+  {
+    "Id":"1797088619249274880",
+    "TenantId": 1001,
+    "ConfigId": "apevolo_tenant_1001",
+    "Name" : "测试租户1",
+    "Description": "测试租户1",
+    "TenantType": 2,
+    "DbType":2,
+    "ConnectionString":"apevolo_tenant_1001.db",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1797088619249274881",
+    "TenantId": 1002,
+    "ConfigId": "apevolo_tenant_1002",
+    "Name" : "测试租户2",
+    "Description": "测试租户2",
+    "TenantType": 2,
+    "DbType":2,
+    "ConnectionString":"apevolo_tenant_1002.db",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  }
+]

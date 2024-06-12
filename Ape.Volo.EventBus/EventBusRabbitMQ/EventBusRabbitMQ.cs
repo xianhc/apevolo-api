@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Text;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper.Serilog;
 using Ape.Volo.EventBus.Abstractions;
 using Ape.Volo.EventBus.Events;

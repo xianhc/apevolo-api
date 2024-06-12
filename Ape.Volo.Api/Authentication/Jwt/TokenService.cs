@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Ape.Volo.Common.ConfigOptions;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.WebApp;
 using Microsoft.Extensions.Options;
@@ -37,6 +37,7 @@ public class TokenService : ITokenService
         {
             new(AuthConstants.JwtClaimTypes.Jti, loginUserInfo.UserId.ToString()),
             new(AuthConstants.JwtClaimTypes.Name, loginUserInfo.Account),
+            new(AuthConstants.JwtClaimTypes.TenantId, loginUserInfo.TenantId.ToString()),
             new(AuthConstants.JwtClaimTypes.Iat, nowTime.ToUnixTimeStampSecond().ToString()),
             new(AuthConstants.JwtClaimTypes.Ip, loginUserInfo.Ip)
         };

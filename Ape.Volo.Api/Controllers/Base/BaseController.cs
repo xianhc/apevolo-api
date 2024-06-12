@@ -1,6 +1,6 @@
 using System;
 using Ape.Volo.Api.ActionExtension.Json;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.Base;
 using SqlSugar;
@@ -66,11 +67,10 @@ namespace Ape.Volo.Entity.Permission
         public string Icon { get; set; }
 
         /// <summary>
-        /// 类型
-        /// 1.目录 2.菜单 3.按钮
+        /// 菜单类型
         /// </summary>
         [SugarColumn(IsNullable = false)]
-        public int Type { get; set; }
+        public MenuType Type { get; set; }
 
         /// <summary>
         /// 是否缓存

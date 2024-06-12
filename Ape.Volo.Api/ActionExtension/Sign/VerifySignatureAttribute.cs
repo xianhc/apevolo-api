@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Ape.Volo.Common.Caches;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.IBusiness.Interface.System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;

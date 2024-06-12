@@ -8,12 +8,6 @@ namespace Ape.Volo.IBusiness.Dto.Permission;
 public class UpdateUserCenterDto
 {
     /// <summary>
-    /// ID
-    /// </summary>
-    [RegularExpression(@"^\+?[1-9]\d*$")]
-    public long Id { get; set; }
-
-    /// <summary>
     /// 昵称
     /// </summary>
     [Required]

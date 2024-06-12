@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Ape.Volo.Common.ConfigOptions;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Microsoft.Extensions.Options;
 using SqlSugar;
 

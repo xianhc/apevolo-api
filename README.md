@@ -2,7 +2,7 @@
 
 - 基于 .Net 8 、SqlSugar、Vue、RBAC、前后端分离的开箱则用的企业级中后台**权限管理系统**
 - 无业务逻辑代码入侵，适用于任何 .NET/C# 应用程序。
-- 预览体验：  [https://www.apevolo.com](https://www.apevolo.com)
+- 预览体验：  [https://www.apevolo.com](https://apevolo.com)
 - 开发文档：  [http://doc.apevolo.com](http://doc.apevolo.com)
 - 账号密码： `apevolo / 123456`
 
@@ -36,13 +36,15 @@ Ape.Volo.QuartzNetService -- 任务调度
 - CodeFirst(优先模式),项目启动后自动建库建表并初始化基础数据
 - 数据字典，方便地对一些状态进行管理
 - 全局设置，方便处理一些功能开关
+- 全局配置，方便使用配置文件信息
 - 接口限流，避免恶意请求
 - 接口权限、数据权限
 - 自定义实体注解校验
 - 服务器性能监控
 - 雪花ID，友好的切换各种数据库以及分库分表
-- 支持数据库读写分离
+- 数据库读写分离、分表
 - 语言本地化
+- 多租户(ID隔离、库隔离)
 
 ## 组件依赖
 - JWT 自定义策略授权 

@@ -1,6 +1,6 @@
 ﻿using System;
 using Ape.Volo.Common.ConfigOptions;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper.Serilog;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Builder;

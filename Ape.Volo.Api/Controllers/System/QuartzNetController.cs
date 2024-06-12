@@ -1,8 +1,8 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.Extention;
-using Ape.Volo.Common.Global;
+using Ape.Volo.Common.Enums;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.System;
@@ -65,7 +65,7 @@ public class QuartzNetController : BaseApiController
             return Error(actionError);
         }
 
-        if (createUpdateQuartzNetDto.TriggerType == (int)TriggerMode.Cron)
+        if (createUpdateQuartzNetDto.TriggerType == (int)TriggerType.Cron)
         {
             if (createUpdateQuartzNetDto.Cron.IsNullOrEmpty())
             {
@@ -77,7 +77,7 @@ public class QuartzNetController : BaseApiController
                 return Error("cron模式下请设置正确得cron表达式");
             }
         }
-        else if (createUpdateQuartzNetDto.TriggerType == (int)TriggerMode.Simple)
+        else if (createUpdateQuartzNetDto.TriggerType == (int)TriggerType.Simple)
         {
             if (createUpdateQuartzNetDto.IntervalSecond <= 5)
             {
@@ -117,7 +117,7 @@ public class QuartzNetController : BaseApiController
             return Error(actionError);
         }
 
-        if (createUpdateQuartzNetDto.TriggerType == (int)TriggerMode.Cron)
+        if (createUpdateQuartzNetDto.TriggerType == (int)TriggerType.Cron)
         {
             if (createUpdateQuartzNetDto.Cron.IsNullOrEmpty())
             {
@@ -129,7 +129,7 @@ public class QuartzNetController : BaseApiController
                 return Error("cron模式下请设置正确得cron表达式");
             }
         }
-        else if (createUpdateQuartzNetDto.TriggerType == (int)TriggerMode.Simple)
+        else if (createUpdateQuartzNetDto.TriggerType == (int)TriggerType.Simple)
         {
             if (createUpdateQuartzNetDto.IntervalSecond <= 5)
             {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ape.Volo.Common.DI;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.SnowflakeIdHelper;
 using Ape.Volo.Entity.Monitor;

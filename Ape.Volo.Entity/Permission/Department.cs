@@ -47,11 +47,11 @@ namespace Ape.Volo.Entity.Permission
         public bool IsDeleted { get; set; }
 
         /// <summary>
-        /// 用户
+        /// 用户列表
         /// </summary>
         [SugarColumn(IsIgnore = true)]
-        [Navigate(NavigateType.OneToOne, nameof(Id), nameof(User.DeptId))]
-        public User User { get; set; }
+        [Navigate(NavigateType.OneToMany, nameof(User.DeptId), nameof(Id))]
+        public List<User> Users { get; set; }
 
         /// <summary>
         /// 用户集合

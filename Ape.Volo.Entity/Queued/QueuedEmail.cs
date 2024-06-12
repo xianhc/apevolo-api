@@ -1,4 +1,5 @@
 using System;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.Base;
 using SqlSugar;
@@ -51,7 +52,7 @@ namespace Ape.Volo.Entity.Queued
         /// 优先级
         /// </summary>
         [SugarColumn(IsNullable = false)]
-        public int Priority { get; set; }
+        public QueuedEmailPriority Priority { get; set; }
 
         /// <summary>
         /// 抄送

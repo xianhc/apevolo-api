@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Monitor;

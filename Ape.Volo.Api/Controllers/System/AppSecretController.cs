@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.IBusiness.Dto.System;
@@ -37,7 +37,7 @@ public class AppSecretController : BaseApiController
     #region 内部接口
 
     /// <summary>
-    /// 新增设置
+    /// 新增应用密钥
     /// </summary>
     /// <param name="createUpdateAppSecretDto"></param>
     /// <returns></returns>
@@ -58,7 +58,7 @@ public class AppSecretController : BaseApiController
     }
 
     /// <summary>
-    /// 更新设置
+    /// 更新应用密钥
     /// </summary>
     /// <param name="createUpdateAppSecretDto"></param>
     /// <returns></returns>
@@ -79,7 +79,7 @@ public class AppSecretController : BaseApiController
     }
 
     /// <summary>
-    /// 删除设置
+    /// 删除应用密钥
     /// </summary>
     /// <param name="idCollection"></param>
     /// <returns></returns>
@@ -99,7 +99,7 @@ public class AppSecretController : BaseApiController
     }
 
     /// <summary>
-    /// 获取设置列表
+    /// 获取应用密钥列表
     /// </summary>
     /// <param name="appsecretQueryCriteria"></param>
     /// <param name="pagination"></param>
@@ -121,7 +121,7 @@ public class AppSecretController : BaseApiController
 
 
     /// <summary>
-    /// 导出设置
+    /// 导出应用密钥
     /// </summary>
     /// <param name="appsecretQueryCriteria"></param>
     /// <returns></returns>

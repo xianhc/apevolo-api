@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 
@@ -59,7 +60,7 @@ public class MenuDto : BaseEntityDto<long>
     /// <summary>
     /// 类型
     /// </summary>
-    public int Type { get; set; }
+    public MenuType Type { get; set; }
 
     /// <summary>
     /// 缓存

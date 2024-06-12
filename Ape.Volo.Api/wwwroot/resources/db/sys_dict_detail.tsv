@@ -142,5 +142,77 @@
     "UpdateBy": null,
     "UpdateTime": null,
     "IsDeleted": false
+  },
+  {
+    "Id": "1799832728862986240",
+    "DictId": "1799832537057464320",
+    "Label": "ID隔离",
+    "Value": "1",
+    "DictSort": "1",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": "",
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1799832829773746176",
+    "DictId": "1799832537057464320",
+    "Label": "库隔离",
+    "Value": "2",
+    "DictSort": "2",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1799833008363016192",
+    "DictId": "1799832924720205824",
+    "Label": "MySql",
+    "Value": "0",
+    "DictSort": "1",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": "",
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1799833049534304256",
+    "DictId": "1799832924720205824",
+    "Label": "SqlServer",
+    "Value": "1",
+    "DictSort": "2",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1799833076109414400",
+    "DictId": "1799832924720205824",
+    "Label": "Sqlite",
+    "Value": "2",
+    "DictSort": "3",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": "",
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1799833116232126464",
+    "DictId": "1799832924720205824",
+    "Label": "Oracle",
+    "Value": "3",
+    "DictSort": "4",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
   }
 ]

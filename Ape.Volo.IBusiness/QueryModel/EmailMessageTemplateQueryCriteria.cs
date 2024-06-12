@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Ape.Volo.IBusiness.QueryModel;
+﻿namespace Ape.Volo.IBusiness.QueryModel;
 
 /// <summary>
 /// 邮箱模板查询参数

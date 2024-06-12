@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.IBusiness.Dto.Permission;
@@ -168,9 +168,9 @@ public class RoleController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Route("all")]
+    [Route("queryAll")]
     [Description("查询全部")]
-    public async Task<ActionResult<object>> GetAllRoles()
+    public async Task<ActionResult<object>> QueryAll()
     {
         var allRoles = await _roleService.QueryAllAsync();
 

@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Ape.Volo.Common.Extention;
+using Ape.Volo.Common.Extensions;
 using Ape.Volo.Entity.Message.Email;
 using Ape.Volo.IBusiness.Interface.Message.Email;
 using Ape.Volo.IBusiness.Interface.System;
