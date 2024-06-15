@@ -36,10 +36,11 @@ public class SugarRepository<TEntity> : ISugarRepository<TEntity> where TEntity 
         var multiDbTenantAttribute = typeof(TEntity).GetCustomAttribute<MultiDbTenantAttribute>();
         if (multiDbTenantAttribute != null)
         {
-            var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
+            var httpUser = AutofacHelper.GetService<IHttpUser>();
             if (httpUser.IsNotNull() && httpUser.TenantId > 0)
             {
-                var tenant = sqlSugarScope.Queryable<Tenant>().First(x => x.TenantId == httpUser.TenantId);
+                var tenant = sqlSugarScope.Queryable<Tenant>().WithCache(86400)
+                    .First(x => x.TenantId == httpUser.TenantId);
                 if (tenant != null)
                 {
                     var iTenant = sqlSugarScope.AsTenant();

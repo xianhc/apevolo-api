@@ -2,6 +2,8 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.ActionExtension.Sign;
 using Ape.Volo.Api.Controllers.Base;
+using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Caches;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.SnowflakeIdHelper;
 using Ape.Volo.Entity.Test;
@@ -23,14 +25,16 @@ public class TestController : BaseApiController
     // //private readonly IEventBus _eventBus;
     // private readonly IRedisCacheService _redisCacheService;
     private readonly ITestOrderService _testOrderService;
+    private ICache _cache;
 
     // private readonly IUserService _userService;
     // private readonly IRoleService _roleService;
     // private readonly IBrowserDetector _browserDetector;
 
-    public TestController(ITestOrderService testOrderService)
+    public TestController(ITestOrderService testOrderService, ICache cache)
     {
         _testOrderService = testOrderService;
+        _cache = cache;
         //_eventBus = eventBus;
     }
 
@@ -128,17 +132,17 @@ public class TestController : BaseApiController
     [HttpGet]
     [Route("SearchOrder")]
     [Description("查询")]
+    [NotAudit]
     public async Task<ActionResult<object>> SearchOrder()
     {
-        await _testOrderService.AddEntityAsync(new TestOrder()
-        {
-            Id = IdHelper.GetLongId(),
-            OrderNo = "1001",
-            GoodsName = "iphone 16",
-            Qty = 1,
-            Price = 5000
-        });
-
+        // await _testOrderService.AddEntityAsync(new TestOrder()
+        // {
+        //     Id = IdHelper.GetLongId(),
+        //     OrderNo = "1001",
+        //     GoodsName = "iphone 16",
+        //     Qty = 1,
+        //     Price = 5000
+        // });
         var list = await _testOrderService.Table.ToListAsync();
         return JsonContent(new ActionResultVm<TestOrder>
         {

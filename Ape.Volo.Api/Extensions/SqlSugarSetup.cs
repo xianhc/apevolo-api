@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Ape.Volo.Api.Serilog;
+using Ape.Volo.Common.Caches.SqlSugar;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.DI;
 using Ape.Volo.Common.Extensions;
@@ -101,6 +102,9 @@ public static class SqlSugarSetup
                 },
                 ConfigureExternalServices = new ConfigureExternalServices
                 {
+                    DataInfoCacheService = configs.CacheOption.RedisCacheSwitch.Enabled
+                        ? new SqlSugarRedisCache()
+                        : new SqlSugarDistributedCache(),
                     EntityService = (c, p) =>
                     {
                         p.DbColumnName = UtilMethods.ToUnderLine(p.DbColumnName); //字段使用驼峰转下划线，不需要请注释
@@ -207,7 +211,7 @@ public static class SqlSugarSetup
                     break;
             }
 
-            var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
+            var httpUser = AutofacHelper.GetService<IHttpUser>();
             if (httpUser.IsNull()) return;
             switch (entityInfo.OperationType)
             {
@@ -257,7 +261,7 @@ public static class SqlSugarSetup
 
             if (configs.SqlLog.ToDb.Enabled || configs.SqlLog.ToFile.Enabled || configs.SqlLog.ToConsole.Enabled)
             {
-                var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
+                var httpUser = AutofacHelper.GetService<IHttpUser>();
                 using (LoggerPropertyConfiguration.Create.AddAopSqlProperty(sqlSugar, configs.SqlLog))
                 {
                     Log.Information(
@@ -328,7 +332,7 @@ public static class SqlSugarSetup
     /// </summary>
     private static void ConfiguringTenantFilter(this SqlSugarScopeProvider db)
     {
-        var httpUser = AutofacHelper.GetScopeService<IHttpUser>();
+        var httpUser = AutofacHelper.GetService<IHttpUser>();
 
         if (httpUser.IsNotNull() && httpUser.TenantId > 0)
         {
