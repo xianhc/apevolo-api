@@ -40,8 +40,13 @@ public class QuartzNetLogService : BaseServices<QuartzNetLog>, IQuartzNetLogServ
         Pagination pagination)
     {
         var whereExpression = GetWhereExpression(quartzNetLogQueryCriteria);
+        var queryOptions = new QueryOptions<QuartzNetLog>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+        };
         return ApeContext.Mapper.Map<List<QuartzNetLogDto>>(
-            await SugarRepository.QueryPageListAsync(whereExpression, pagination));
+            await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
     public async Task<List<ExportBase>> DownloadAsync(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria)

@@ -165,7 +165,12 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         List<Department> deptList;
         if (deptQueryCriteria.ParentId.IsNull())
         {
-            deptList = await SugarRepository.QueryPageListAsync(whereExpression, pagination);
+            var queryOptions = new QueryOptions<Department>
+            {
+                Pagination = pagination,
+                WhereLambda = whereExpression
+            };
+            deptList = await SugarRepository.QueryPageListAsync(queryOptions);
         }
         else
         {

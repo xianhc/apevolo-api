@@ -48,7 +48,13 @@ public class ExceptionLogService : BaseServices<ExceptionLog>, IExceptionLogServ
                 l.CreateTime >= logQueryCriteria.CreateTime[0] && l.CreateTime <= logQueryCriteria.CreateTime[1]);
         }
 
-        var logs = await SugarRepository.QueryPageListAsync(whereLambda, pagination, null, true);
+        var queryOptions = new QueryOptions<ExceptionLog>
+        {
+            Pagination = pagination,
+            WhereLambda = whereLambda,
+            IsSplitTable = true
+        };
+        var logs = await SugarRepository.QueryPageListAsync(queryOptions);
         return ApeContext.Mapper.Map<List<ExceptionLogDto>>(logs);
     }
 

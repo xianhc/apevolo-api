@@ -49,7 +49,14 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
                 l.CreateTime >= logQueryCriteria.CreateTime[0] && l.CreateTime <= logQueryCriteria.CreateTime[1]);
         }
 
-        var auditInfos = await SugarRepository.QueryPageListAsync(whereLambda, pagination, null, true);
+        var queryOptions = new QueryOptions<AuditLog>
+        {
+            Pagination = pagination,
+            WhereLambda = whereLambda,
+            IsSplitTable = true
+        };
+
+        var auditInfos = await SugarRepository.QueryPageListAsync(queryOptions);
         return ApeContext.Mapper.Map<List<AuditLogDto>>(auditInfos);
     }
 
@@ -62,14 +69,20 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
         }
 
 
-        Expression<Func<AuditLog, AuditLog>> expression = x => new AuditLog
+        Expression<Func<AuditLog, AuditLog>> selectExpression = x => new AuditLog
         {
             Id = x.Id, Description = x.Description, RequestIp = x.RequestIp, IpAddress = x.IpAddress,
             OperatingSystem = x.OperatingSystem, DeviceType = x.DeviceType, BrowserName = x.BrowserName,
             Version = x.Version, ExecutionDuration = x.ExecutionDuration, CreateTime = x.CreateTime
         };
-
-        var auditInfos = await SugarRepository.QueryPageListAsync(whereLambda, pagination, expression, true);
+        var queryOptions = new QueryOptions<AuditLog>
+        {
+            Pagination = pagination,
+            WhereLambda = whereLambda,
+            SelectExpression = selectExpression,
+            IsSplitTable = true
+        };
+        var auditInfos = await SugarRepository.QueryPageListAsync(queryOptions);
         return ApeContext.Mapper.Map<List<AuditLogDto>>(auditInfos);
     }
 

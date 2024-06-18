@@ -111,8 +111,13 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
         Pagination pagination)
     {
         var whereExpression = GetWhereExpression(queuedEmailQueryCriteria);
+        var queryOptions = new QueryOptions<QueuedEmail>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+        };
         return ApeContext.Mapper.Map<List<QueuedEmailDto>>(
-            await SugarRepository.QueryPageListAsync(whereExpression, pagination));
+            await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
     #endregion

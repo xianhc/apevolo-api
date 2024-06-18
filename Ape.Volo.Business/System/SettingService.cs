@@ -77,8 +77,13 @@ public class SettingService : BaseServices<Setting>, ISettingService
     public async Task<List<SettingDto>> QueryAsync(SettingQueryCriteria settingQueryCriteria, Pagination pagination)
     {
         var whereExpression = GetWhereExpression(settingQueryCriteria);
+        var queryOptions = new QueryOptions<Setting>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+        };
         return ApeContext.Mapper.Map<List<SettingDto>>(
-            await SugarRepository.QueryPageListAsync(whereExpression, pagination));
+            await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
     public async Task<List<ExportBase>> DownloadAsync(SettingQueryCriteria settingQueryCriteria)

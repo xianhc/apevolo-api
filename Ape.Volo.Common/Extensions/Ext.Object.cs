@@ -67,24 +67,6 @@ public static partial class ExtObject
     }
 
     /// <summary>
-    /// 将对象序列化成Json字符串
-    /// </summary>
-    /// <param name="obj">需要序列化的对象</param>
-    /// <returns></returns>
-    public static string ToRedisJson(this object obj)
-    {
-        var serializerSettings = new JsonSerializerSettings
-        {
-            // 设置为驼峰命名
-            //ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            ContractResolver = new CustomContractResolver(),
-            DateFormatString = "yyyy-MM-dd HH:mm:ss",
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-        };
-        return JsonConvert.SerializeObject(obj, Formatting.None, serializerSettings);
-    }
-
-    /// <summary>
     /// 将对象序列化成Json字符串,同时忽略null字段
     /// </summary>
     /// <param name="obj">需要序列化的对象</param>

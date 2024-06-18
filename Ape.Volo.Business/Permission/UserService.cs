@@ -19,6 +19,8 @@ using Ape.Volo.IBusiness.ExportModel.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Http;
+using NodaTime.TimeZones;
+using SqlSugar;
 
 namespace Ape.Volo.Business.Permission;
 
@@ -190,10 +192,14 @@ public class UserService : BaseServices<User>, IUserService
     public async Task<List<UserDto>> QueryAsync(UserQueryCriteria userQueryCriteria, Pagination pagination)
     {
         var whereExpression = await GetWhereExpression(userQueryCriteria);
-        var users = await SugarRepository.QueryPageListAsync(whereExpression,
-            pagination, null,
-            x => x.Dept,
-            x => x.Jobs, x => x.Roles);
+
+        var queryOptions = new QueryOptions<User>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+            IsIncludes = true
+        };
+        var users = await SugarRepository.QueryPageListAsync(queryOptions);
 
         return ApeContext.Mapper.Map<List<UserDto>>(users);
     }

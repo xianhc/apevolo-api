@@ -92,8 +92,13 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
         Pagination pagination)
     {
         var whereExpression = GetWhereExpression(emailAccountQueryCriteria);
+        var queryOptions = new QueryOptions<EmailAccount>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+        };
         return ApeContext.Mapper.Map<List<EmailAccountDto>>(
-            await SugarRepository.QueryPageListAsync(whereExpression, pagination));
+            await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
     public async Task<List<ExportBase>> DownloadAsync(EmailAccountQueryCriteria emailAccountQueryCriteria)

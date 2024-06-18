@@ -101,8 +101,13 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
         Pagination pagination)
     {
         var whereExpression = GetWhereExpression(quartzNetQueryCriteria);
+        var queryOptions = new QueryOptions<QuartzNet>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+        };
         return ApeContext.Mapper.Map<List<QuartzNetDto>>(
-            await SugarRepository.QueryPageListAsync(whereExpression, pagination));
+            await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
     public async Task<List<ExportBase>> DownloadAsync(QuartzNetQueryCriteria quartzNetQueryCriteria)

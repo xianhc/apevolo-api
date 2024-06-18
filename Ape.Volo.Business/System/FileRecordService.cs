@@ -112,8 +112,13 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
         Pagination pagination)
     {
         var whereExpression = GetWhereExpression(fileRecordQueryCriteria);
+        var queryOptions = new QueryOptions<FileRecord>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+        };
         return ApeContext.Mapper.Map<List<FileRecordDto>>(
-            await SugarRepository.QueryPageListAsync(whereExpression, pagination));
+            await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
     public async Task<List<ExportBase>> DownloadAsync(FileRecordQueryCriteria fileRecordQueryCriteria)

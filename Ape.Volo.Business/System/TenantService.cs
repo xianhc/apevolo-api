@@ -121,8 +121,13 @@ public class TenantService : BaseServices<Tenant>, ITenantService
     public async Task<List<TenantDto>> QueryAsync(TenantQueryCriteria tenantQueryCriteria, Pagination pagination)
     {
         var whereExpression = GetWhereExpression(tenantQueryCriteria);
+        var queryOptions = new QueryOptions<Tenant>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+        };
         return ApeContext.Mapper.Map<List<TenantDto>>(
-            await SugarRepository.QueryPageListAsync(whereExpression, pagination));
+            await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
     public async Task<List<TenantDto>> QueryAllAsync()

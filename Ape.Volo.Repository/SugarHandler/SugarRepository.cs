@@ -575,131 +575,33 @@ public class SugarRepository<TEntity> : ISugarRepository<TEntity> where TEntity 
     /// <summary>
     /// 实体列表 分页查询
     /// </summary>
-    /// <param name="whereLambda">条件表达式</param>
-    /// <param name="pagination">分页对象</param>
-    /// <param name="selectExpression"></param>
-    /// <param name="isSplitTable">分表查询</param>
+    /// <param name="queryOptions">查询对象</param>
     /// <returns></returns>
-    public async Task<List<TEntity>> QueryPageListAsync(Expression<Func<TEntity, bool>> whereLambda,
-        Pagination pagination, Expression<Func<TEntity, TEntity>> selectExpression = null, bool isSplitTable = false)
+    public async Task<List<TEntity>> QueryPageListAsync(QueryOptions<TEntity> queryOptions)
     {
         RefAsync<int> totalCount = 0;
         var query = SugarClient.Queryable<TEntity>();
-        query = query.WhereIF(whereLambda != null, whereLambda);
-        if (selectExpression != null)
+        if (queryOptions.IsIncludes)
         {
-            query = query.Select(selectExpression);
+            query = query.IncludesAllFirstLayer(queryOptions.IgnorePropertyNameList);
         }
 
-        if (isSplitTable)
+        query = query.WhereIF(queryOptions.WhereLambda != null, queryOptions.WhereLambda);
+        if (queryOptions.SelectExpression != null)
+        {
+            query = query.Select(queryOptions.SelectExpression);
+        }
+
+        if (queryOptions.IsSplitTable)
         {
             query = query.SplitTable();
         }
 
-        query = query.OrderByIF(pagination.SortFields.Count > 0, string.Join(",", pagination.SortFields));
-        var list = await query.ToPageListAsync(pagination.PageIndex, pagination.PageSize, totalCount);
-        pagination.TotalElements = totalCount;
-        return list;
-    }
-
-    /// <summary>
-    /// 实体列表 分页查询
-    /// </summary>
-    /// <param name="whereLambda">条件表达式</param>
-    /// <param name="pagination">分页对象</param>
-    /// <param name="selectExpression"></param>
-    /// <param name="navigationExpression"></param>
-    /// <param name="navigationExpression2"></param>
-    /// <param name="navigationExpression3"></param>
-    /// <returns></returns>
-    public async Task<List<TEntity>> QueryPageListAsync<T, T2, T3>(Expression<Func<TEntity, bool>> whereLambda,
-        Pagination pagination, Expression<Func<TEntity, TEntity>> selectExpression = null,
-        Expression<Func<TEntity, T>> navigationExpression = null,
-        Expression<Func<TEntity, List<T2>>> navigationExpression2 = null,
-        Expression<Func<TEntity, List<T3>>> navigationExpression3 = null)
-    {
-        RefAsync<int> totalCount = 0;
-        var query = SugarClient.Queryable<TEntity>();
-
-        if (navigationExpression != null)
-        {
-            query = query.Includes(navigationExpression);
-        }
-
-        if (navigationExpression2 != null)
-        {
-            query = query.Includes(navigationExpression2);
-        }
-
-        if (navigationExpression3 != null)
-        {
-            query = query.Includes(navigationExpression3);
-        }
-
-
-        query = query.WhereIF(whereLambda != null, whereLambda);
-        if (selectExpression != null)
-        {
-            query = query.Select(selectExpression);
-        }
-
-        query = query.OrderByIF(pagination.SortFields.Count > 0, string.Join(",", pagination.SortFields));
-        var list = await query.ToPageListAsync(pagination.PageIndex, pagination.PageSize, totalCount);
-        pagination.TotalElements = totalCount;
-        return list;
-    }
-
-
-    /// <summary>
-    /// 实体列表 分页查询
-    /// </summary>
-    /// <param name="whereLambda">条件表达式</param>
-    /// <param name="pagination">分页对象</param>
-    /// <param name="selectExpression"></param>
-    /// <param name="navigationExpression"></param>
-    /// <param name="navigationExpression2"></param>
-    /// <param name="navigationExpression3"></param>
-    /// <param name="navigationExpression4"></param>
-    /// <returns></returns>
-    public async Task<List<TEntity>> QueryPageListAsync<T, T2, T3, T4>(Expression<Func<TEntity, bool>> whereLambda,
-        Pagination pagination, Expression<Func<TEntity, TEntity>> selectExpression = null,
-        Expression<Func<TEntity, T>> navigationExpression = null,
-        Expression<Func<TEntity, List<T2>>> navigationExpression2 = null,
-        Expression<Func<TEntity, List<T3>>> navigationExpression3 = null,
-        Expression<Func<TEntity, List<T4>>> navigationExpression4 = null)
-    {
-        RefAsync<int> totalCount = 0;
-        var query = SugarClient.Queryable<TEntity>();
-
-        if (navigationExpression != null)
-        {
-            query = query.Includes(navigationExpression);
-        }
-
-        if (navigationExpression2 != null)
-        {
-            query = query.Includes(navigationExpression2);
-        }
-
-        if (navigationExpression3 != null)
-        {
-            query = query.Includes(navigationExpression3);
-        }
-
-        if (navigationExpression4 != null)
-        {
-            query = query.Includes(navigationExpression4);
-        }
-
-        query = query.WhereIF(whereLambda != null, whereLambda);
-        if (selectExpression != null)
-        {
-            query = query.Select(selectExpression);
-        }
-
-        query = query.OrderByIF(pagination.SortFields.Count > 0, string.Join(",", pagination.SortFields));
-        var list = await query.ToPageListAsync(pagination.PageIndex, pagination.PageSize, totalCount);
-        pagination.TotalElements = totalCount;
+        query = query.OrderByIF(queryOptions.Pagination.SortFields.Count > 0,
+            string.Join(",", queryOptions.Pagination.SortFields));
+        var list = await query.ToPageListAsync(queryOptions.Pagination.PageIndex, queryOptions.Pagination.PageSize,
+            totalCount);
+        queryOptions.Pagination.TotalElements = totalCount;
         return list;
     }
 
@@ -832,7 +734,7 @@ public class SugarRepository<TEntity> : ISugarRepository<TEntity> where TEntity 
         }
 
         return await query.WhereIF(!whereLambda.IsNullOrEmpty(), whereLambda)
-            .Select(selectExpression)
+            .Select(selectExpression).Distinct()
             .ToListAsync();
     }
 
@@ -849,7 +751,7 @@ public class SugarRepository<TEntity> : ISugarRepository<TEntity> where TEntity 
         }
 
         return await query.WhereIF(!whereLambda.IsNullOrEmpty(), whereLambda)
-            .Select(selectExpression)
+            .Select(selectExpression).Distinct()
             .ToListAsync();
     }
 

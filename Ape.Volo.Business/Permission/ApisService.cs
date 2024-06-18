@@ -79,7 +79,12 @@ public class ApisService : BaseServices<Apis>, IApisService
             whereExpression = whereExpression.AndAlso(x => x.Method == apisQueryCriteria.Method);
         }
 
-        return await SugarRepository.QueryPageListAsync(whereExpression, pagination);
+        var queryOptions = new QueryOptions<Apis>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+        };
+        return await SugarRepository.QueryPageListAsync(queryOptions);
     }
 
     public async Task<List<Apis>> QueryAllAsync()

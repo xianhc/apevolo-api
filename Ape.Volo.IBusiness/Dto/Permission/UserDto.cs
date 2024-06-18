@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Ape.Volo.Common.AttributeExt;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
+using Ape.Volo.IBusiness.Dto.System;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
 
@@ -96,4 +97,9 @@ public class UserDto : BaseEntityDto<long>
     /// 租户ID
     /// </summary>
     public int TenantId { get; set; }
+
+    /// <summary>
+    /// 租户
+    /// </summary>
+    public TenantDto Tenant { get; set; }
 }

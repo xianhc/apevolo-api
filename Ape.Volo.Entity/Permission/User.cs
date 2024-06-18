@@ -117,7 +117,7 @@ namespace Ape.Volo.Entity.Permission
         /// 租户
         /// </summary>
         [SugarColumn(IsIgnore = true)]
-        [Navigate(NavigateType.OneToOne, nameof(TenantId))]
+        [Navigate(NavigateType.OneToOne, nameof(Tenant.TenantId), nameof(TenantId))]
         public Tenant Tenant { get; set; }
 
         #endregion

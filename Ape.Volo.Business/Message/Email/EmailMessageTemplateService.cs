@@ -89,9 +89,13 @@ public class EmailMessageTemplateService : BaseServices<EmailMessageTemplate>, I
         EmailMessageTemplateQueryCriteria messageTemplateQueryCriteria, Pagination pagination)
     {
         var whereExpression = GetWhereExpression(messageTemplateQueryCriteria);
-
+        var queryOptions = new QueryOptions<EmailMessageTemplate>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+        };
         return ApeContext.Mapper.Map<List<EmailMessageTemplateDto>>(
-            await SugarRepository.QueryPageListAsync(whereExpression, pagination));
+            await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
     #endregion

@@ -78,8 +78,13 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
         Pagination pagination)
     {
         var whereExpression = GetWhereExpression(appsecretQueryCriteria);
+        var queryOptions = new QueryOptions<AppSecret>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+        };
         return ApeContext.Mapper.Map<List<AppSecretDto>>(
-            await SugarRepository.QueryPageListAsync(whereExpression, pagination));
+            await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
     public async Task<List<ExportBase>> DownloadAsync(AppsecretQueryCriteria appsecretQueryCriteria)

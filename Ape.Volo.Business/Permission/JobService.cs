@@ -80,8 +80,13 @@ public class JobService : BaseServices<Job>, IJobService
     public async Task<List<JobDto>> QueryAsync(JobQueryCriteria jobQueryCriteria, Pagination pagination)
     {
         var whereExpression = GetWhereExpression(jobQueryCriteria);
+        var queryOptions = new QueryOptions<Job>
+        {
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+        };
         return ApeContext.Mapper.Map<List<JobDto>>(
-            await SugarRepository.QueryPageListAsync(whereExpression, pagination));
+            await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
     public async Task<List<ExportBase>> DownloadAsync(JobQueryCriteria jobQueryCriteria)

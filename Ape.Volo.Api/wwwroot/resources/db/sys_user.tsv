@@ -17,7 +17,7 @@
     "UpdateBy": null,
     "UpdateTime": null,
     "IsDeleted": false,
-    "TenantId" : null
+    "TenantId" : 0
   },
   {
     "Id": "1306054134645919751",
@@ -37,6 +37,6 @@
     "UpdateBy": null,
     "UpdateTime": null,
     "IsDeleted": false,
-    "TenantId" : null
+    "TenantId" : 1001
   }
 ]
