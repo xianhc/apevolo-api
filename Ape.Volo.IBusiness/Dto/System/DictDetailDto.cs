@@ -31,10 +31,5 @@ public class DictDetailDto : BaseEntityDto<long>
     /// <summary>
     /// 排序
     /// </summary>
-    public string DictSort { get; set; }
-
-    /// <summary>
-    /// 字典
-    /// </summary>
-    public DictDto2 Dict { get; set; }
+    public int DictSort { get; set; }
 }

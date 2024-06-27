@@ -172,8 +172,8 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 
                     #region 系统管理免接口鉴权
 
-                    var setting = await _settingService.FindSettingByName("IsAdminNotAuthentication");
-                    if (setting != null && setting.Value.ToBool())
+                    var value = await _settingService.GetSettingValue<bool>("IsAdminNotAuthentication");
+                    if (value)
                     {
                         // loginUserInfo = await _apeContext.Cache.GetAsync<LoginUserInfo>(
                         //     GlobalConstants.CacheKey.OnlineKey +

@@ -51,7 +51,7 @@ public class DictService : BaseServices<Dict>, IDictService
         }
 
         if (oldDict.Name != createUpdateDictDto.Name &&
-            await TableWhere(j => j.Id == createUpdateDictDto.Id).AnyAsync())
+            await TableWhere(j => j.Name == createUpdateDictDto.Name).AnyAsync())
         {
             throw new BadRequestException($"名称=>{createUpdateDictDto.Name}=>已存在!");
         }
@@ -70,13 +70,18 @@ public class DictService : BaseServices<Dict>, IDictService
     public async Task<List<DictDto>> QueryAsync(DictQueryCriteria dictQueryCriteria, Pagination pagination)
     {
         var whereExpression = GetWhereExpression(dictQueryCriteria);
-        var list = await SugarRepository.QueryMapperPageListAsync(it => it.DictDetails,
-            it => it.DictDetails.FirstOrDefault().DictId, whereExpression, pagination);
-        var dicts = ApeContext.Mapper.Map<List<DictDto>>(list);
-        foreach (var item in dicts)
+        var queryOptions = new QueryOptions<Dict>
         {
-            item.DictDetails.ForEach(d => d.Dict = new DictDto2 { Id = d.DictId });
-        }
+            Pagination = pagination,
+            WhereLambda = whereExpression,
+            //IsIncludes = true
+        };
+        var list = await SugarRepository.QueryPageListAsync(queryOptions);
+        var dicts = ApeContext.Mapper.Map<List<DictDto>>(list);
+        // foreach (var item in dicts)
+        // {
+        //     item.DictDetails.ForEach(d => d.Dict = new DictDto2 { Id = d.DictId });
+        // }
 
         return dicts;
     }
@@ -92,6 +97,7 @@ public class DictService : BaseServices<Dict>, IDictService
         {
             dictExports.AddRange(x.DictDetails.Select(d => new DictExport()
             {
+                DictType = x.DictType,
                 Name = x.Name,
                 Description = x.Description,
                 Lable = d.Label,
@@ -114,6 +120,12 @@ public class DictService : BaseServices<Dict>, IDictService
         {
             whereExpression = whereExpression.AndAlso(d =>
                 d.Name.Contains(dictQueryCriteria.KeyWords) || d.Description.Contains(dictQueryCriteria.KeyWords));
+        }
+
+        if (dictQueryCriteria.DictType.IsNotNull())
+        {
+            whereExpression = whereExpression.AndAlso(d =>
+                d.DictType == dictQueryCriteria.DictType);
         }
 
         return whereExpression;

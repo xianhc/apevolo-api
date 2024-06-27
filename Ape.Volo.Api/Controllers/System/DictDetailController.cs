@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
 using Ape.Volo.Common.Extensions;
@@ -20,14 +21,16 @@ public class DictDetailController : BaseApiController
     #region 字段
 
     private readonly IDictDetailService _dictDetailService;
+    private readonly IDictService _dictService;
 
     #endregion
 
     #region 构造函数
 
-    public DictDetailController(IDictDetailService dictDetailService)
+    public DictDetailController(IDictDetailService dictDetailService, IDictService dictService)
     {
         _dictDetailService = dictDetailService;
+        _dictService = dictService;
     }
 
     #endregion
@@ -85,11 +88,11 @@ public class DictDetailController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete(string id)
+    public async Task<ActionResult<object>> Delete(long id)
     {
         if (id.IsNullOrEmpty())
         {
-            return Error("id is null");
+            return Error("id cannot be empty");
         }
 
         await _dictDetailService.DeleteAsync(id);
@@ -99,20 +102,18 @@ public class DictDetailController : BaseApiController
     /// <summary>
     /// 查看字典详情列表
     /// </summary>
-    /// <param name="dictDetailQueryCriteria"></param>
-    /// <param name="pagination"></param>
+    /// <param name="dictName"></param>
     /// <returns></returns>
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(DictDetailQueryCriteria dictDetailQueryCriteria,
-        Pagination pagination)
+    public async Task<ActionResult<object>> Query(string dictName)
     {
-        var list = await _dictDetailService.QueryAsync(dictDetailQueryCriteria, pagination);
+        var list = await _dictDetailService.QueryAsync(dictName);
         return JsonContent(new ActionResultVm<DictDetailDto>
         {
             Content = list,
-            TotalElements = pagination.TotalElements
+            TotalElements = list.Count
         });
     }
 

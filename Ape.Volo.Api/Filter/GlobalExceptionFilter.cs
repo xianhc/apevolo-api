@@ -106,8 +106,8 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 _browserDetector.Browser?.Version));
         }
 
-        var settingDto = await _settingService.FindSettingByName("IsExceptionLogSaveDB");
-        if (settingDto != null && settingDto.Value.ToBool() && exceptionType != typeof(DemoRequestException))
+        var saveDb = await _settingService.GetSettingValue<bool>("IsExceptionLogSaveDB");
+        if (saveDb && exceptionType != typeof(DemoRequestException))
         {
             //记录日志到数据库
             try

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -39,8 +40,8 @@ public class SugarRepository<TEntity> : ISugarRepository<TEntity> where TEntity 
             var httpUser = AutofacHelper.GetService<IHttpUser>();
             if (httpUser.IsNotNull() && httpUser.TenantId > 0)
             {
-                var tenant = sqlSugarScope.Queryable<Tenant>().WithCache(86400)
-                    .First(x => x.TenantId == httpUser.TenantId);
+                var tenants = sqlSugarScope.Queryable<Tenant>().WithCache(86400).ToList();
+                var tenant = tenants.FirstOrDefault(x => x.TenantId == httpUser.TenantId);
                 if (tenant != null)
                 {
                     var iTenant = sqlSugarScope.AsTenant();

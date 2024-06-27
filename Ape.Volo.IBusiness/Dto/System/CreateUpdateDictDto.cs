@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Base;
 
@@ -15,7 +16,13 @@ public class CreateUpdateDictDto : BaseEntityDto<long>
     /// <summary>
     /// 名称
     /// </summary>
+    public DictType DictType { get; set; } = DictType.System;
+
+    /// <summary>
+    /// 名称
+    /// </summary>
     [Required]
+
     public string Name { get; set; }
 
     /// <summary>

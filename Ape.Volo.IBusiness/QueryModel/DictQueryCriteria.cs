@@ -1,3 +1,5 @@
+using Ape.Volo.Common.Enums;
+
 namespace Ape.Volo.IBusiness.QueryModel;
 
 /// <summary>
@@ -9,4 +11,9 @@ public class DictQueryCriteria
     /// 关键字
     /// </summary>
     public string KeyWords { get; set; }
+
+    /// <summary>
+    /// 类型
+    /// </summary>
+    public DictType? DictType { get; set; }
 }

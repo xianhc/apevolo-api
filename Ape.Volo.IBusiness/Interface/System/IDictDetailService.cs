@@ -34,16 +34,14 @@ public interface IDictDetailService : IBaseServices<DictDetail>
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<bool> DeleteAsync(string id);
+    Task<bool> DeleteAsync(long id);
 
     /// <summary>
     /// 查询
     /// </summary>
-    /// <param name="dictDetailQueryCriteria"></param>
-    /// <param name="pagination"></param>
+    /// <param name="dictName"></param>
     /// <returns></returns>
-    Task<List<DictDetailDto>> QueryAsync(DictDetailQueryCriteria dictDetailQueryCriteria,
-        Pagination pagination);
+    Task<List<DictDetailDto>> QueryAsync(string dictName);
 
     #endregion
 }

@@ -31,8 +31,8 @@ namespace Ape.Volo.Entity.System
         /// <summary>
         /// 排序
         /// </summary>
-        [SugarColumn(IsNullable = false)]
-        public string DictSort { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public int DictSort { get; set; }
 
         /// <summary>
         /// 是否已删除

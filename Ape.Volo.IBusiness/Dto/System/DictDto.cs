@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Base;
 
@@ -11,6 +12,12 @@ namespace Ape.Volo.IBusiness.Dto.System;
 [AutoMapping(typeof(Dict), typeof(DictDto))]
 public class DictDto : BaseEntityDto<long>
 {
+    /// <summary>
+    /// 字典类型
+    /// </summary>
+    /// <returns></returns>
+    public DictType DictType { get; set; }
+
     /// <summary>
     /// 名称
     /// </summary>

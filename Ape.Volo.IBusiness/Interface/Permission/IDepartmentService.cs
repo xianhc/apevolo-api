@@ -75,7 +75,7 @@ public interface IDepartmentService : IBaseServices<Department>
     /// </summary>
     /// <param name="ids"></param>
     /// <returns></returns>
-    Task<List<DepartmentDto>> QuerySuperiorDeptAsync(HashSet<long> ids);
+    Task<List<DepartmentDto>> QuerySuperiorDeptAsync(long id);
 
     /// <summary>
     /// 获取所选部门及全部下级部门ID

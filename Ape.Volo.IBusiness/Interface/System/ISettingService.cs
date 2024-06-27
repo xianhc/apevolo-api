@@ -56,7 +56,7 @@ public interface ISettingService : IBaseServices<Setting>
     /// </summary>
     /// <param name="settingName"></param>
     /// <returns></returns>
-    Task<SettingDto> FindSettingByName(string settingName);
+    Task<T> GetSettingValue<T>(string settingName);
 
     #endregion
 }

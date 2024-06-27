@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
 using Ape.Volo.Common.AttributeExt;
@@ -15,6 +17,8 @@ using Ape.Volo.IBusiness.Dto.System;
 using Ape.Volo.IBusiness.ExportModel.System;
 using Ape.Volo.IBusiness.Interface.System;
 using Ape.Volo.IBusiness.QueryModel;
+using Microsoft.Extensions.Logging;
+using static Ape.Volo.Common.Helper.ExceptionHelper;
 
 namespace Ape.Volo.Business.System;
 
@@ -22,8 +26,11 @@ public class SettingService : BaseServices<Setting>, ISettingService
 {
     #region 构造函数
 
-    public SettingService(ApeContext apeContext) : base(apeContext)
+    private readonly ILogger<SettingService> _logger;
+
+    public SettingService(ApeContext apeContext, ILogger<SettingService> logger) : base(apeContext)
     {
+        _logger = logger;
     }
 
     #endregion
@@ -102,22 +109,41 @@ public class SettingService : BaseServices<Setting>, ISettingService
         return settingExports;
     }
 
-    [UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CachePrefix.LoadSettingByName)]
-    public async Task<SettingDto> FindSettingByName(string settingName)
+    //[UseCache(Expiration = 30, KeyPrefix = GlobalConstants.CachePrefix.LoadSettingByName)]
+    public async Task<T> GetSettingValue<T>(string settingName)
     {
-        if (settingName.IsNullOrEmpty())
+        var settingList = await Table.WithCache(86400).ToListAsync();
+
+        var setting = settingList.FirstOrDefault(x => x.Name == settingName.Trim());
+        if (setting == null) return default;
+
+        try
         {
-            throw new BadRequestException("设置键不能为空");
+            return (T)ConvertValue(typeof(T), setting.Value);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(GetExceptionAllMsg(e));
+            return default;
         }
 
-        SettingDto settingDto = null;
-        var setting = await TableWhere(x => x.Name == settingName).FirstAsync();
-        if (setting != null)
+        return default;
+    }
+
+    private static object ConvertValue(Type type, string value)
+    {
+        if (type == typeof(object))
         {
-            settingDto = ApeContext.Mapper.Map<SettingDto>(setting);
+            return value;
         }
 
-        return settingDto;
+        if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+        {
+            return string.IsNullOrEmpty(value) ? value : ConvertValue(Nullable.GetUnderlyingType(type), value);
+        }
+
+        var converter = TypeDescriptor.GetConverter(type);
+        return converter.CanConvertFrom(typeof(string)) ? converter.ConvertFromInvariantString(value) : null;
     }
 
     #endregion

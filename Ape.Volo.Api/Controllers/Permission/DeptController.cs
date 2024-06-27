@@ -143,20 +143,19 @@ public class DeptController : BaseApiController
     /// <summary>
     /// 获取同级与父级部门
     /// </summary>
-    /// <param name="idCollection"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
-    [HttpPost]
+    [HttpGet]
     [Route("superior")]
     [Description("获取同级、父级部门")]
-    public async Task<ActionResult<object>> GetSuperior([FromBody] IdCollection idCollection)
+    public async Task<ActionResult<object>> GetSuperior(long id)
     {
-        if (!ModelState.IsValid)
+        if (id.IsNullOrEmpty())
         {
-            var actionError = ModelState.GetErrors();
-            return Error(actionError);
+            return Error("id cannot be empty");
         }
 
-        var deptList = await _departmentService.QuerySuperiorDeptAsync(idCollection.IdArray);
+        var deptList = await _departmentService.QuerySuperiorDeptAsync(id);
 
         return JsonContent(new ActionResultVm<DepartmentDto>
         {

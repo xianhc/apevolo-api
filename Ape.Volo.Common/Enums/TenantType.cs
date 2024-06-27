@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ape.Volo.Common.Enums;
 
@@ -10,12 +11,12 @@ public enum TenantType
     /// <summary>
     /// Id隔离
     /// </summary>
-    [Description("Id隔离")]
+    [Display(Name = "Id隔离")]
     Id = 1,
 
     /// <summary>
     /// 库隔离
     /// </summary>
-    [Description("库隔离")]
+    [Display(Name = "库隔离")]
     Db = 2
 }

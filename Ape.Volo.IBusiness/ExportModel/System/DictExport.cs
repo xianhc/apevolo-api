@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Model;
 
 namespace Ape.Volo.IBusiness.ExportModel.System;
@@ -8,6 +9,12 @@ namespace Ape.Volo.IBusiness.ExportModel.System;
 /// </summary>
 public class DictExport : ExportBase
 {
+    /// <summary>
+    /// 字典类型
+    /// </summary>
+    [Display(Name = "字典类型")]
+    public DictType DictType { get; set; }
+
     /// <summary>
     /// 字典名称
     /// </summary>

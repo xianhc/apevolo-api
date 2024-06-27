@@ -171,20 +171,19 @@ public class MenusController : BaseApiController
     /// <summary>
     /// 获取同级与上级菜单
     /// </summary>
-    /// <param name="idCollection"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
-    [HttpPost]
+    [HttpGet]
     [Description("获取同级、父级菜单")]
     [Route("superior")]
-    public async Task<ActionResult<object>> GetSuperior([FromBody] IdCollection idCollection)
+    public async Task<ActionResult<object>> GetSuperior(long id)
     {
-        if (!ModelState.IsValid)
+        if (id.IsNullOrEmpty())
         {
-            var actionError = ModelState.GetErrors();
-            return Error(actionError);
+            return Error("id cannot be empty");
         }
 
-        var menuVos = await _menuService.FindSuperiorAsync(idCollection.IdArray.FirstOrDefault());
+        var menuVos = await _menuService.FindSuperiorAsync(id);
         return menuVos.ToJsonByIgnore();
     }
 

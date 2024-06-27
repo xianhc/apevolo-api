@@ -72,7 +72,8 @@ public class AuditingFilter : IAsyncActionFilter
             //执行结果
             //var action = context.ActionDescriptor as ControllerActionDescriptor;
             //var isTrue = action.MethodInfo.IsDefined(typeof(DescriptionAttribute), false);
-            if ((await _settingService.FindSettingByName("IsAuditLogSaveDB")).Value.ToBool())
+            var saveDb = await _settingService.GetSettingValue<bool>("IsAuditLogSaveDB");
+            if (saveDb)
             {
                 var result = resultContext.Result;
                 if (context.HttpContext.IsNotNull() && result.IsNotNull())

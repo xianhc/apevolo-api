@@ -14,7 +14,8 @@ public class CreateUpdateDictDetailDto : BaseEntityDto<long>
     /// <summary>
     /// 字典ID
     /// </summary>
-    public string DictId { get; set; }
+    [Required]
+    public long DictId { get; set; }
 
     /// <summary>
     /// 标签
@@ -31,10 +32,5 @@ public class CreateUpdateDictDetailDto : BaseEntityDto<long>
     /// <summary>
     /// 排序
     /// </summary>
-    public string DictSort { get; set; }
-
-    /// <summary>
-    /// 字典
-    /// </summary>
-    public DictDto2 Dict { get; set; }
+    public int DictSort { get; set; }
 }

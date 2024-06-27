@@ -205,16 +205,13 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
 
     #region 扩展方法
 
-    public async Task<List<DepartmentDto>> QuerySuperiorDeptAsync(HashSet<long> ids)
+    public async Task<List<DepartmentDto>> QuerySuperiorDeptAsync(long id)
     {
         var departmentList = new List<DepartmentDto>();
-        foreach (var id in ids)
-        {
-            var dept = await TableWhere(x => x.Id == id).FirstAsync();
-            var deptDto = ApeContext.Mapper.Map<DepartmentDto>(dept);
-            var departmentDtoList = await FindSuperiorAsync(deptDto, new List<DepartmentDto>());
-            departmentList.AddRange(departmentDtoList);
-        }
+        var dept = await TableWhere(x => x.Id == id).FirstAsync();
+        var deptDto = ApeContext.Mapper.Map<DepartmentDto>(dept);
+        var departmentDtoList = await FindSuperiorAsync(deptDto, new List<DepartmentDto>());
+        departmentList.AddRange(departmentDtoList);
 
         departmentList = TreeHelper<DepartmentDto>.ListToTrees(departmentList, "Id", "ParentId", 0);
 

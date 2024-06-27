@@ -1,6 +1,18 @@
 [
   {
+    "Id": "1306054134645919763",
+    "DictType": 1,
+    "Name": "dict_type",
+    "Description": "字典类型(系统or业务)",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
     "Id": "1306054134645919764",
+    "DictType": 2,
     "Name": "job_status",
     "Description": "岗位状态",
     "CreateBy": "apevolo",
@@ -11,6 +23,7 @@
   },
   {
     "Id": "1306054134645919765",
+    "DictType": 2,
     "Name": "dept_status",
     "Description": "部门状态",
     "CreateBy": "apevolo",
@@ -21,6 +34,7 @@
   },
   {
     "Id": "1306054134645919766",
+    "DictType": 2,
     "Name": "user_status",
     "Description": "用户状态",
     "CreateBy": "apevolo",
@@ -31,6 +45,7 @@
   },
   {
     "Id": "1380547002701451264",
+    "DictType": 2,
     "Name": "email_message_template_status",
     "Description": "邮件消息模板状态",
     "CreateBy": "apevolo",
@@ -41,6 +56,7 @@
   },
   {
     "Id": "1425449857383927808",
+    "DictType": 2,
     "Name": "setting_status",
     "Description": "全局设置状态",
     "CreateBy": "apevolo",
@@ -51,6 +67,7 @@
   },
   {
     "Id": "1787853620566298624",
+    "DictType": 1,
     "Name": "task_trigger_type",
     "Description": "作业触发器类型",
     "CreateBy": "apevolo",
@@ -61,6 +78,7 @@
   },
   {
     "Id": "1799832537057464320",
+    "DictType": 1,
     "Name": "tenant_type",
     "Description": "租户类型",
     "CreateBy": "apevolo",
@@ -71,6 +89,7 @@
   },
   {
     "Id": "1799832924720205824",
+    "DictType": 1,
     "Name": "db_type",
     "Description": "数据库类型",
     "CreateBy": "apevolo",

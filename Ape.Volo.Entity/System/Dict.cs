@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.Base;
 using SqlSugar;
@@ -12,16 +13,21 @@ namespace Ape.Volo.Entity.System
     public class Dict : BaseEntity, ISoftDeletedEntity
     {
         /// <summary>
+        /// 字典类型
+        /// </summary>
+        /// <returns></returns>
+        public DictType DictType { get; set; }
+
+        /// <summary>
         /// 字典名称
         /// </summary>
         /// <returns></returns>
-        [SugarColumn(IsNullable = false)]
         public string Name { get; set; }
 
         /// <summary>
         /// 描述
         /// </summary>
-        [SugarColumn(IsNullable = false)]
+        [SugarColumn(IsNullable = true)]
         public string Description { get; set; }
 
 

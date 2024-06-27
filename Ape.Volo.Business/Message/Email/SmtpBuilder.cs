@@ -49,8 +49,8 @@ public class SmtpBuilder : ISmtpBuilder
         if (emailAccount is null)
         {
             //var defaultEmailAccountId = AppSettings.GetValue("DefaultEmailAccountId");//系统默认发送邮箱ID
-            var settingDto = await _settingService.FindSettingByName("DefaultEmailAccountId");
-            var defaultEmailAccountId = settingDto?.Value.ToLong();
+            var value = await _settingService.GetSettingValue<long>("DefaultEmailAccountId");
+            var defaultEmailAccountId = value;
             emailAccount =
                 await _emailAccountService.TableWhere(x => x.Id == defaultEmailAccountId).FirstAsync()
                 ?? throw new Exception("Email account could not be loaded");
