@@ -288,14 +288,12 @@ public class MenuService : BaseServices<Menu>, IMenuService
     [UseCache(Expiration = 120, KeyPrefix = GlobalConstants.CachePrefix.UserMenuById)]
     public async Task<List<MenuTreeVo>> BuildTreeAsync(long userId)
     {
-        var user = await _userService.QueryByIdAsync(userId);
-        var roleIds = new List<long>();
-        roleIds.AddRange(user.Roles.Select(r => r.Id));
-        var menuList = await SugarRepository.QueryMuchAsync<Menu, RoleMenu, MenuDto>(
-            (m, rm) => new object[]
-            {
-                JoinType.Left, m.Id == rm.MenuId
-            }, (m, rm) => new MenuDto
+        var menuList = await SugarClient
+            .Queryable<UserRole, RoleMenu, Menu>((ur, rm, m) => ur.RoleId == rm.RoleId && rm.MenuId == m.Id)
+            .Where((ur, rm, m) => ur.UserId == userId && m.Type != MenuType.Button)
+            .OrderBy((ur, rm, m) => m.Sort)
+            .ClearFilter<ICreateByEntity>()
+            .Select((ur, rm, m) => new MenuDto
             {
                 Title = m.Title,
                 Path = m.Path,
@@ -313,10 +311,7 @@ public class MenuService : BaseServices<Menu>, IMenuService
                 CreateBy = m.CreateBy,
                 Cache = m.Cache,
                 Hidden = m.Hidden
-            },
-            (m, rm) => roleIds.Contains(rm.RoleId) && m.Type != MenuType.Button
-            , null,
-            "sort asc");
+            }).Distinct().ToListAsync();
         var menuListChild = TreeHelper<MenuDto>.ListToTrees(menuList, "Id", "ParentId", 0);
         return await BuildAsync(menuListChild);
     }

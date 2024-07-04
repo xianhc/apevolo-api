@@ -57,11 +57,32 @@ public class HttpUser : IHttpUser
 
     #endregion
 
+    #region 部门ID
+
+    /// <summary>
+    /// 部门ID
+    /// </summary>
+    public long DeptId
+    {
+        get
+        {
+            if (IsAuthenticated)
+            {
+                var claim = _httpContext?.User.Claims.FirstOrDefault(
+                    s => s.Type == AuthConstants.JwtClaimTypes.DeptId);
+                return Convert.ToInt64(claim?.Value);
+            }
+
+            return default;
+        }
+    }
+
+    #endregion
 
     #region 租户ID
 
     /// <summary>
-    /// 登录ID
+    /// 租户ID
     /// </summary>
     public int TenantId
     {
@@ -79,7 +100,6 @@ public class HttpUser : IHttpUser
     }
 
     #endregion
-
 
     #region jwt token
 

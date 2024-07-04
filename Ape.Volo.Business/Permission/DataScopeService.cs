@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Enums;
+using Ape.Volo.Common.Extensions;
+using Ape.Volo.Common.Global;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using SqlSugar;
@@ -30,64 +34,74 @@ public class DataScopeService : IDataScopeService
     /// 获取用户所有角色关联的部门ID
     /// </summary>
     /// <param name="userId"></param>
-    /// <param name="deptId"></param>
     /// <returns></returns>
-    public async Task<List<long>> GetDataScopeDeptList(long userId, long deptId)
+    [UseCache(Expiration = 60, KeyPrefix = GlobalConstants.CachePrefix.UserDataScopeById)]
+    public async Task<List<string>> GetDataScopeAccountsAsync(long userId)
     {
-        List<long> deptIds = new List<long>();
-        //var user = await _userService.QueryByIdAsync(userId);
-        var user = await _db.Queryable<User>().Where(x => x.Id == userId).Includes(x => x.Roles)
-            .FirstAsync();
-        if (user == null || user.Roles.Count == 0)
+        List<string> accountList = new List<string>();
+        var user = await _db.Queryable<User>().Includes(x => x.Roles).FirstAsync(x => x.Id == userId);
+        if (user.IsNull())
         {
-            return deptIds;
+            return accountList;
         }
 
-        //存在一个"全部"数据权限 直接返回空
-        var isAll = user.Roles.Where(x => x.DataScope == "全部").Any();
+        var isAll = user.Roles.Any(x => x.DataScopeType == DataScopeType.All);
 
         if (isAll)
         {
-            return deptIds;
+            accountList.Add("All");
+            return accountList;
         }
 
         foreach (var role in user.Roles)
         {
-            switch (role.DataScope)
-            {
-                case "本级":
-                    deptIds.AddRange(await GetChildIds([deptId], null));
-                    break;
-                case "自定义":
-                    var roleTmp = await _db.Queryable<Role>().Where(x => x.Id == role.Id)
-                        .Includes(x => x.DepartmentList)
-                        .FirstAsync();
-                    if (roleTmp.DepartmentList.Count != 0)
-                    {
-                        List<long> ids = new List<long>();
-                        ids.AddRange(roleTmp.DepartmentList.Select(x => x.Id));
-                        deptIds.AddRange(await GetChildIds(ids, null));
-                    }
-
-                    break;
-            }
+            accountList.AddRange(await GetAccounts(role.DataScopeType, role.Id, user.DeptId, user.Username));
         }
 
-        if (!deptIds.Any())
-        {
-            deptIds.Add(0); //预防空数据
-        }
-
-        return deptIds.Distinct().ToList();
+        return accountList.Distinct().ToList();
     }
 
 
-    /// <summary>
-    /// 获取所选部门及全部下级部门ID
-    /// </summary>
-    /// <param name="ids"></param>
-    /// <param name="allIds"></param>
-    /// <returns></returns>
+    private async Task<List<string>> GetAccounts(DataScopeType dataScopeType, long roleId, long deptId,
+        string account)
+    {
+        List<string> accountList = new List<string>();
+        switch (dataScopeType)
+        {
+            case DataScopeType.MySelf:
+                accountList.Add(account);
+                break;
+            case DataScopeType.MyDept:
+            {
+                var userList = await _db.Queryable<User>().Where(x => x.DeptId == deptId).ToListAsync();
+                accountList.AddRange(userList.Select(x => x.Username));
+                break;
+            }
+            case DataScopeType.MyDeptAndBelow:
+            {
+                var deptIds = await GetChildIds([deptId], null);
+                var userList = await _db.Queryable<User>().Where(x => deptIds.Contains(x.DeptId)).ToListAsync();
+                accountList.AddRange(userList.Select(x => x.Username));
+                break;
+            }
+            case DataScopeType.Customize:
+            {
+                var role = await _db.Queryable<Role>().Includes(x => x.DepartmentList).Where(x => x.Id == roleId)
+                    .FirstAsync();
+                if (role.IsNotNull())
+                {
+                    var deptIds = role.DepartmentList.Select(x => x.Id).ToList();
+                    var userList = await _db.Queryable<User>().Where(x => deptIds.Contains(x.DeptId)).ToListAsync();
+                    accountList.AddRange(userList.Select(x => x.Username));
+                }
+
+                break;
+            }
+        }
+
+        return accountList;
+    }
+
     private async Task<List<long>> GetChildIds(List<long> ids, List<long> allIds)
     {
         allIds ??= new List<long>();

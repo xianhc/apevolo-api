@@ -51,30 +51,6 @@ public class PermissionsController : BaseApiController
     public async Task<ActionResult<object>> QueryAllMenus()
     {
         var menus = await _menuService.QueryAllAsync();
-        foreach (var item in menus)
-        {
-            if (item.Children.Count == 0)
-            {
-                item.Children = null;
-            }
-            else
-            {
-                foreach (var item2 in item.Children)
-                {
-                    if (item2.Children.Count == 0)
-                    {
-                        item2.Children = null;
-                    }
-                    else
-                    {
-                        foreach (var item3 in item2.Children.Where(item3 => item3.Children.Count == 0))
-                        {
-                            item3.Children = null;
-                        }
-                    }
-                }
-            }
-        }
 
         var menuTree = TreeHelper<MenuDto>.ListToTrees(menus, "Id", "ParentId", 0);
         return menuTree.ToJson();

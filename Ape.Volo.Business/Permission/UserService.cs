@@ -19,8 +19,6 @@ using Ape.Volo.IBusiness.ExportModel.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
 using Microsoft.AspNetCore.Http;
-using NodaTime.TimeZones;
-using SqlSugar;
 
 namespace Ape.Volo.Business.Permission;
 
@@ -33,18 +31,16 @@ public class UserService : BaseServices<User>, IUserService
 
     private readonly IDepartmentService _departmentService;
     private readonly IRoleService _roleService;
-    private readonly IDataScopeService _dataScopeService;
 
     #endregion
 
     #region 构造函数
 
     public UserService(IDepartmentService departmentService, ApeContext apeContext,
-        IRoleService roleService, IDataScopeService dataScopeService) : base(apeContext)
+        IRoleService roleService) : base(apeContext)
     {
         _departmentService = departmentService;
         _roleService = roleService;
-        _dataScopeService = dataScopeService;
     }
 
     #endregion
@@ -235,7 +231,7 @@ public class UserService : BaseServices<User>, IUserService
     [UseCache(Expiration = 60, KeyPrefix = GlobalConstants.CachePrefix.UserInfoById)]
     public async Task<UserDto> QueryByIdAsync(long userId)
     {
-        var user = await TableWhere(x => x.Id == userId).Includes(x => x.Dept).Includes(x => x.Roles)
+        var user = await TableWhere(x => x.Id == userId, null, null, true).Includes(x => x.Dept).Includes(x => x.Roles)
             .Includes(x => x.Jobs).FirstAsync();
 
         return ApeContext.Mapper.Map<UserDto>(user);
@@ -251,11 +247,11 @@ public class UserService : BaseServices<User>, IUserService
         User user;
         if (userName.IsEmail())
         {
-            user = await TableWhere(s => s.Email == userName).FirstAsync();
+            user = await TableWhere(s => s.Email == userName, null, null, true).FirstAsync();
         }
         else
         {
-            user = await TableWhere(s => s.Username == userName).FirstAsync();
+            user = await TableWhere(s => s.Username == userName, null, null, true).FirstAsync();
         }
 
         return ApeContext.Mapper.Map<UserDto>(user);
@@ -412,6 +408,8 @@ public class UserService : BaseServices<User>, IUserService
             GlobalConstants.CachePrefix.UserPermissionRoles + userId.ToString().ToMd5String16());
         await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
                                            userId.ToString().ToMd5String16());
+        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserDataScopeById +
+                                           userId.ToString().ToMd5String16());
     }
 
     #endregion
@@ -450,18 +448,6 @@ public class UserService : BaseServices<User>, IUserService
         {
             whereExpression = whereExpression.AndAlso(u =>
                 u.CreateTime >= userQueryCriteria.CreateTime[0] && u.CreateTime <= userQueryCriteria.CreateTime[1]);
-        }
-
-        //数据权限 
-        if (ApeContext.LoginUserInfo.IsNotNull())
-        {
-            List<long> deptIds =
-                await _dataScopeService.GetDataScopeDeptList(ApeContext.LoginUserInfo.UserId,
-                    ApeContext.LoginUserInfo.DeptId);
-            if (deptIds.Any())
-            {
-                whereExpression = whereExpression.AndAlso(u => deptIds.Contains(u.DeptId));
-            }
         }
 
         return whereExpression;

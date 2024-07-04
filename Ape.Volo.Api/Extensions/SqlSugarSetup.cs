@@ -9,10 +9,12 @@ using Ape.Volo.Common.DI;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
+using Ape.Volo.Common.Helper.Serilog;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.SnowflakeIdHelper;
 using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Base;
+using Ape.Volo.IBusiness.Interface.Permission;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using SqlSugar;
@@ -26,6 +28,8 @@ namespace Ape.Volo.Api.Extensions;
 /// </summary>
 public static class SqlSugarSetup
 {
+    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(SqlSugarSetup));
+
     public static void AddSqlSugarSetup(this IServiceCollection services, Configs configs)
     {
         if (services.IsNull())
@@ -98,7 +102,7 @@ public static class SqlSugarSetup
                 MoreSettings = new ConnMoreSettings
                 {
                     IsAutoRemoveDataCache = true,
-                    SqlServerCodeFirstNvarchar = true, //sqlserver默认使用nvarchar
+                    SqlServerCodeFirstNvarchar = true //sqlserver默认使用nvarchar
                 },
                 ConfigureExternalServices = new ConfigureExternalServices
                 {
@@ -152,6 +156,9 @@ public static class SqlSugarSetup
                         //租户
                         sugarScopeProvider.ConfiguringTenantFilter();
 
+                        //数据权限  这个要放在最后
+                        sugarScopeProvider.ConfiguringUserDataScopeFilter();
+
                         #endregion
 
                         #region 读写事件
@@ -193,6 +200,8 @@ public static class SqlSugarSetup
             rootEntity.Id = IdHelper.GetLongId();
         }
 
+        #region BaseEntity
+
         if (entityInfo.EntityValue is BaseEntity baseEntity)
         {
             switch (entityInfo.OperationType)
@@ -212,31 +221,88 @@ public static class SqlSugarSetup
             }
 
             var httpUser = AutofacHelper.GetService<IHttpUser>();
-            if (httpUser.IsNull()) return;
+            if (httpUser.IsNotNull() && !httpUser.Account.IsNullOrEmpty())
+            {
+                switch (entityInfo.OperationType)
+                {
+                    case DataFilterType.InsertByObject:
+                    {
+                        if (baseEntity.CreateBy.IsNullOrEmpty())
+                        {
+                            baseEntity.CreateBy = httpUser.Account;
+                        }
+
+                        var tenant = baseEntity as ITenantEntity;
+                        if (tenant != null && httpUser.TenantId > 0)
+                        {
+                            if (tenant.TenantId == 0)
+                            {
+                                tenant.TenantId = httpUser.TenantId;
+                            }
+                        }
+
+                        break;
+                    }
+                    case DataFilterType.UpdateByObject:
+                        baseEntity.UpdateBy = httpUser.Account;
+                        break;
+                }
+            }
+        }
+
+        #endregion
+
+        #region BaseEntityNoDataScope
+
+        if (entityInfo.EntityValue is BaseEntityNoDataScope baseEntityNoDataScope)
+        {
             switch (entityInfo.OperationType)
             {
                 case DataFilterType.InsertByObject:
                 {
-                    if (baseEntity.CreateBy.IsNullOrEmpty())
+                    if (baseEntityNoDataScope.CreateTime == DateTime.MinValue)
                     {
-                        baseEntity.CreateBy = httpUser.Account;
-                    }
-
-                    if (baseEntity is ITenantEntity tenant && httpUser.TenantId > 0)
-                    {
-                        if (tenant.TenantId == 0)
-                        {
-                            tenant.TenantId = httpUser.TenantId;
-                        }
+                        baseEntityNoDataScope.CreateTime = DateTime.Now;
                     }
 
                     break;
                 }
                 case DataFilterType.UpdateByObject:
-                    baseEntity.UpdateBy = httpUser.Account;
+                    baseEntityNoDataScope.UpdateTime = DateTime.Now;
                     break;
             }
+
+            var httpUser = AutofacHelper.GetService<IHttpUser>();
+            if (httpUser.IsNotNull() && !httpUser.Account.IsNullOrEmpty())
+            {
+                switch (entityInfo.OperationType)
+                {
+                    case DataFilterType.InsertByObject:
+                    {
+                        if (baseEntityNoDataScope.CreateBy.IsNullOrEmpty())
+                        {
+                            baseEntityNoDataScope.CreateBy = httpUser.Account;
+                        }
+
+                        var tenant = baseEntityNoDataScope as ITenantEntity;
+                        if (tenant != null && httpUser.TenantId > 0)
+                        {
+                            if (tenant.TenantId == 0)
+                            {
+                                tenant.TenantId = httpUser.TenantId;
+                            }
+                        }
+
+                        break;
+                    }
+                    case DataFilterType.UpdateByObject:
+                        baseEntityNoDataScope.UpdateBy = httpUser.Account;
+                        break;
+                }
+            }
         }
+
+        #endregion
     }
 
     #endregion
@@ -337,6 +403,47 @@ public static class SqlSugarSetup
         if (httpUser.IsNotNull() && httpUser.TenantId > 0)
         {
             db.QueryFilter.AddTableFilter<ITenantEntity>(it => it.TenantId == httpUser.TenantId);
+        }
+    }
+
+    /// <summary>
+    /// 配置用户数据权限
+    /// </summary>
+    /// <param name="db"></param>
+    private static void ConfiguringUserDataScopeFilter(this SqlSugarScopeProvider db)
+    {
+        var httpUser = AutofacHelper.GetService<IHttpUser>();
+        if (httpUser.IsNull() || httpUser.Account.IsNullOrEmpty()) return;
+        var dataScopeService = AutofacHelper.GetService<IDataScopeService>();
+        if (dataScopeService == null) return;
+
+        try
+        {
+            var accounts = AsyncHelper.RunSync(() =>
+                dataScopeService.GetDataScopeAccountsAsync(httpUser.Id));
+            if (accounts.Count > 0)
+            {
+                if (accounts.Count == 1)
+                {
+                    if (!accounts[0].Equals("All"))
+                    {
+                        db.QueryFilter.AddTableFilter<ICreateByEntity>(it => it.CreateBy == accounts[0]);
+                    }
+                }
+                else
+                {
+                    db.QueryFilter.AddTableFilter<ICreateByEntity>(it => accounts.Contains(it.CreateBy));
+                }
+            }
+            else
+            {
+                db.QueryFilter.AddTableFilter<ICreateByEntity>(it => it.CreateBy == httpUser.Account);
+            }
+        }
+        catch (Exception e)
+        {
+            Logger.Fatal("配置用户数据权限错误：\r\n" + ExceptionHelper.GetExceptionAllMsg(e));
+            db.QueryFilter.AddTableFilter<ICreateByEntity>(it => it.CreateBy == httpUser.Account);
         }
     }
 }

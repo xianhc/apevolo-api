@@ -8,15 +8,10 @@ namespace Ape.Volo.Entity.System;
 /// Token黑名单
 /// </summary>
 [SugarTable("sys_token_blacklist")]
-public class TokenBlacklist : BaseEntity, ISoftDeletedEntity
+public class TokenBlacklist : BaseEntity
 {
     /// <summary>
     /// 令牌 登录token的MD5值
     /// </summary>
     public string AccessToken { get; set; }
-
-    /// <summary>
-    /// 是否删除
-    /// </summary>
-    public bool IsDeleted { get; set; }
 }

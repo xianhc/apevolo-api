@@ -177,11 +177,18 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
             deptList = await SugarRepository.QueryListAsync(whereExpression);
         }
 
-        var deptDatalist = ApeContext.Mapper.Map<List<DepartmentDto>>(deptList);
+        var deptDataList = ApeContext.Mapper.Map<List<DepartmentDto>>(deptList);
 
-        pagination.TotalElements = deptDatalist.Count;
-        return deptDatalist;
+        pagination.TotalElements = deptDataList.Count;
+        return deptDataList;
     }
+
+    public async Task<List<DepartmentDto>> QueryAllAsync()
+    {
+        var deptList = ApeContext.Mapper.Map<List<DepartmentDto>>(await Table.ToListAsync());
+        return deptList;
+    }
+
 
     public async Task<List<ExportBase>> DownloadAsync(DeptQueryCriteria deptQueryCriteria)
     {

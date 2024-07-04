@@ -97,5 +97,16 @@
     "UpdateBy": null,
     "UpdateTime": null,
     "IsDeleted": false
+  },
+  {
+    "Id": "1799832924720205825",
+    "DictType": 2,
+    "Name": "data_scope_type",
+    "Description": "数据权限",
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
   }
 ]

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Model;
 
 namespace Ape.Volo.IBusiness.ExportModel.Permission;
@@ -29,8 +30,8 @@ public class RoleExport : ExportBase
     /// <summary>
     /// 数据范围
     /// </summary>
-    [Display(Name = "数据范围")]
-    public string DataScope { get; set; }
+    [Display(Name = "数据权限")]
+    public DataScopeType DataScopeType { get; set; }
 
     /// <summary>
     /// 数据部门

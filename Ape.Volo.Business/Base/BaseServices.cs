@@ -90,13 +90,28 @@ namespace Ape.Volo.Business.Base
 
         public ISugarQueryable<TEntity> Table => SugarClient.Queryable<TEntity>();
 
+        /// <summary>
+        /// Table
+        /// </summary>
+        /// <param name="whereExpression">条件</param>
+        /// <param name="orderExpression">排序表达式</param>
+        /// <param name="orderByType">排序方式</param>
+        /// <param name="isClearCreateByFilter">清除创建人过滤器</param>
+        /// <returns></returns>
         public ISugarQueryable<TEntity> TableWhere(Expression<Func<TEntity, bool>> whereExpression = null,
-            Expression<Func<TEntity, object>> orderExpression = null, OrderByType orderByType = OrderByType.Desc)
+            Expression<Func<TEntity, object>> orderExpression = null, OrderByType? orderByType = null,
+            bool isClearCreateByFilter = false)
         {
-            return Table.WhereIF(whereExpression != null, whereExpression)
-                .OrderByIF(orderExpression != null, orderExpression, orderByType);
-        }
+            orderByType ??= OrderByType.Asc;
+            if (isClearCreateByFilter)
+            {
+                return Table.ClearFilter<ICreateByEntity>().WhereIF(whereExpression != null, whereExpression)
+                    .OrderByIF(orderExpression != null, orderExpression, (OrderByType)orderByType);
+            }
 
+            return Table.WhereIF(whereExpression != null, whereExpression)
+                .OrderByIF(orderExpression != null, orderExpression, (OrderByType)orderByType);
+        }
         #endregion
     }
 }

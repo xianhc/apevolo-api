@@ -61,5 +61,10 @@ public static class GlobalConstants
         /// 加载设置信息
         /// </summary>
         public const string LoadSettingByName = "setting:name:";
+
+        /// <summary>
+        /// 用户数据权限
+        /// </summary>
+        public const string UserDataScopeById = "user:dataScope:id:";
     }
 }

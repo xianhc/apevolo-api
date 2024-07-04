@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 
@@ -31,7 +32,7 @@ public class CreateUpdateRoleDto : BaseEntityDto<long>
     /// <summary>
     /// 数据权限
     /// </summary>
-    public string DataScope { get; set; }
+    public DataScopeType DataScopeType { get; set; }
 
     /// <summary>
     /// 标识

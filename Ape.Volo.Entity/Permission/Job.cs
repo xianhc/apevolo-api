@@ -9,7 +9,7 @@ namespace Ape.Volo.Entity.Permission;
 /// 岗位
 /// </summary>
 [SugarTable("sys_job")]
-public class Job : BaseEntity, ISoftDeletedEntity
+public class Job : BaseEntity
 {
     /// <summary>
     /// 名称
@@ -28,12 +28,6 @@ public class Job : BaseEntity, ISoftDeletedEntity
     /// </summary>
     [SugarColumn(IsNullable = false)]
     public bool Enabled { get; set; }
-
-    /// <summary>
-    /// 是否已删除
-    /// </summary>
-    public bool IsDeleted { get; set; }
-
 
     /// <summary>
     /// 用户列表

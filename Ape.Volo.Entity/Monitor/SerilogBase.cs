@@ -26,19 +26,19 @@ public class SerilogBase : BaseEntity, ISoftDeletedEntity
     /// <summary>
     /// 
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDataType = "longtext,text,clob")]
+    [SugarColumn(IsNullable = true, ColumnDataType = "varcharmax,longtext,text,clob")]
     public string Message { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDataType = "longtext,text,clob")]
+    [SugarColumn(IsNullable = true, ColumnDataType = "varcharmax,longtext,text,clob")]
     public string MessageTemplate { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [SugarColumn(IsNullable = true, ColumnDataType = "longtext,text,clob")]
+    [SugarColumn(IsNullable = true, ColumnDataType = "varcharmax,longtext,text,clob")]
     public string Properties { get; set; }
 
     /// <summary>

@@ -9,6 +9,7 @@ using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
 using Ape.Volo.IBusiness.RequestModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ape.Volo.Api.Controllers.Permission;
@@ -123,6 +124,19 @@ public class DeptController : BaseApiController
             TotalElements = pagination.TotalElements
         });
     }
+
+
+    [HttpGet]
+    [Route("queryTree")]
+    [Description("树形部门数据")]
+    public async Task<ActionResult<object>> QueryTree()
+    {
+        var deptList = await _departmentService.QueryAllAsync();
+
+        var menuTree = TreeHelper<DepartmentDto>.ListToTrees(deptList, "Id", "ParentId", 0);
+        return menuTree.ToJson();
+    }
+
 
     /// <summary>
     /// 导出部门

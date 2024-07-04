@@ -12,7 +12,7 @@ namespace Ape.Volo.Entity.Test;
 /// </summary>
 [MultiDbTenant]
 [SugarTable("test_order")]
-public class TestOrder : BaseEntity, ISoftDeletedEntity //, ITenantEntity
+public class TestOrder : BaseEntity //, ITenantEntity
 {
     /// <summary>
     /// 订单号
@@ -34,10 +34,6 @@ public class TestOrder : BaseEntity, ISoftDeletedEntity //, ITenantEntity
     /// </summary>
     public decimal Price { get; set; }
 
-    /// <summary>
-    /// 是否删除
-    /// </summary>
-    public bool IsDeleted { get; set; }
 
     /// <summary>
     /// 

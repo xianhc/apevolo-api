@@ -12,7 +12,6 @@ public interface IDataScopeService
     /// 获取用户所有角色关联的部门ID
     /// </summary>
     /// <param name="userId"></param>
-    /// <param name="deptId"></param>
     /// <returns></returns>
-    Task<List<long>> GetDataScopeDeptList(long userId, long deptId);
+    Task<List<string>> GetDataScopeAccountsAsync(long userId);
 }

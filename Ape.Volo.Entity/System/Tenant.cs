@@ -11,7 +11,7 @@ namespace Ape.Volo.Entity.System;
 /// 租户
 /// </summary>
 [SugarTable("sys_tenant")]
-public class Tenant : BaseEntity, ISoftDeletedEntity
+public class Tenant : BaseEntity
 {
     /// <summary>
     /// 租户Id
@@ -52,10 +52,6 @@ public class Tenant : BaseEntity, ISoftDeletedEntity
     [SugarColumn(IsNullable = true)]
     public string ConnectionString { get; set; }
 
-    /// <summary>
-    /// 是否删除
-    /// </summary>
-    public bool IsDeleted { get; set; }
 
     #region 扩展属性
 

@@ -124,7 +124,8 @@ public class AuthorizationController : BaseApiController
         }
 
         var tokenMd5 = token.ToMd5String16();
-        var tokenBlacklist = await _tokenBlacklistService.TableWhere(x => x.AccessToken == tokenMd5).FirstAsync();
+        var tokenBlacklist = await _tokenBlacklistService.TableWhere(x => x.AccessToken == tokenMd5, null, null, true)
+            .FirstAsync();
         if (tokenBlacklist.IsNull())
         {
             var jwtSecurityToken = await _tokenService.ReadJwtToken(token);
@@ -219,8 +220,13 @@ public class AuthorizationController : BaseApiController
                                             _apeContext.HttpUser.JwtToken.ToMd5String16());
         await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
                                             _apeContext.HttpUser.Id.ToString().ToMd5String16());
-
         await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
+                                            _apeContext.HttpUser.Id.ToString().ToMd5String16());
+        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionRoles +
+                                            _apeContext.HttpUser.Id.ToString().ToMd5String16());
+        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionUrls +
+                                            _apeContext.HttpUser.Id.ToString().ToMd5String16());
+        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserDataScopeById +
                                             _apeContext.HttpUser.Id.ToString().ToMd5String16());
 
 

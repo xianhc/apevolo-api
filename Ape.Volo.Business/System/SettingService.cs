@@ -126,8 +126,6 @@ public class SettingService : BaseServices<Setting>, ISettingService
             _logger.LogError(GetExceptionAllMsg(e));
             return default;
         }
-
-        return default;
     }
 
     private static object ConvertValue(Type type, string value)

@@ -238,5 +238,65 @@
     "UpdateBy": null,
     "UpdateTime": null,
     "IsDeleted": false
-  }
+  },
+  {
+    "Id": "1799833116232126581",
+    "DictId": "1799832924720205825",
+    "Label": "全部",
+    "Value": "1",
+    "DictSort": 1,
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1799833116232126582",
+    "DictId": "1799832924720205825",
+    "Label": "本人",
+    "Value": "2",
+    "DictSort": 2,
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1799833116232126583",
+    "DictId": "1799832924720205825",
+    "Label": "本部门",
+    "Value": "3",
+    "DictSort": 3,
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1799833116232126584",
+    "DictId": "1799832924720205825",
+    "Label": "本部门及以下",
+    "Value": "4",
+    "DictSort": 4,
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  },
+  {
+    "Id": "1799833116232126585",
+    "DictId": "1799832924720205825",
+    "Label": "自定义",
+    "Value": "5",
+    "DictSort": 5,
+    "CreateBy": "apevolo",
+    "CreateTime": "/Date(1609430400000+0800)/",
+    "UpdateBy": null,
+    "UpdateTime": null,
+    "IsDeleted": false
+  }  
 ]

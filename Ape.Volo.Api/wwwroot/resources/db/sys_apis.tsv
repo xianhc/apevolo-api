@@ -12,7 +12,7 @@
     {
         "group":"授权管理",
         "url":"/auth/refreshtoken",
-        "description":"刷新Token",
+        "description":"刷新Token(必需)",
         "method":"POST",
         "isDeleted":false,
         "createBy":"apevolo",
@@ -22,7 +22,7 @@
     {
         "group":"授权管理",
         "url":"/auth/info",
-        "description":"个人信息",
+        "description":"个人信息(必需)",
         "method":"GET",
         "isDeleted":false,
         "createBy":"apevolo",
@@ -322,7 +322,7 @@
     {
         "group":"菜单管理",
         "url":"/api/menu/build",
-        "description":"构建菜单",
+        "description":"构建菜单(必需)",
         "method":"GET",
         "isDeleted":false,
         "createBy":"apevolo",
@@ -1128,5 +1128,15 @@
         "createBy":"apevolo",
         "CreateTime":"\/Date(1609430400000+0800)\/",
         "id":"1763017911204581312"
-    }
+    },
+    {
+        "group":"部门管理",
+        "url":"/api/dept/queryTree",
+        "description":"获取部门树形数据",
+        "method":"GET",
+        "isDeleted":false,
+        "createBy":"apevolo",
+        "CreateTime":"\/Date(1609430400000+0800)\/",
+        "id":"1763017911204581313"
+    },
 ]

@@ -1,4 +1,5 @@
 ﻿using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Entity.Permission;
 
 namespace Ape.Volo.IBusiness.Dto.Permission;
@@ -32,5 +33,5 @@ public class RoleSmallDto
     /// <summary>
     /// 数据权限
     /// </summary>
-    public string DataScope { get; set; }
+    public DataScopeType DataScopeType { get; set; }
 }

@@ -12,7 +12,7 @@ namespace Ape.Volo.Entity.Monitor;
 [Tenant(SqlSugarConfig.LogId)]
 [SplitTable(SplitType.Month)]
 [SugarTable($@"{"log_audit"}_{{year}}{{month}}{{day}}")]
-public class AuditLog : BaseEntity, ISoftDeletedEntity
+public class AuditLog : BaseEntity
 {
     /// <summary>
     /// 区域
@@ -111,9 +111,4 @@ public class AuditLog : BaseEntity, ISoftDeletedEntity
     [SplitField]
     [SugarColumn(IsNullable = true)]
     public new DateTime CreateTime { get; set; }
-
-    /// <summary>
-    /// 是否已删除
-    /// </summary>
-    public bool IsDeleted { get; set; }
 }

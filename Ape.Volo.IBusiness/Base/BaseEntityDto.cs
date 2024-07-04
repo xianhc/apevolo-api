@@ -38,6 +38,6 @@ namespace Ape.Volo.IBusiness.Base
         /// 是否删除
         /// </summary>
         [JsonIgnore]
-        public bool IsDeleted { get; set; } = false;
+        public bool IsDeleted { get; set; }
     }
 }

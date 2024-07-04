@@ -64,8 +64,9 @@ public class DataSeeder
             //一些没有继承的需手动维护添加
             //例如，用户与岗位(UserJobs)
             var entityList = GlobalData.GetEntityAssembly().GetTypes()
-                .Where(x => (x.BaseType == typeof(BaseEntity) || x.BaseType == typeof(RootKey<long>)) &&
-                            x != typeof(BaseEntity) && x.Namespace != null &&
+                .Where(x => (x.BaseType == typeof(BaseEntity) || x.BaseType == typeof(BaseEntityNoDataScope) ||
+                             x.BaseType == typeof(RootKey<long>)) &&
+                            x != typeof(BaseEntity) && x != typeof(BaseEntityNoDataScope) && x.Namespace != null &&
                             x.GetCustomAttribute<MultiDbTenantAttribute>() == null &&
                             !x.Namespace.StartsWith("Ape.Volo.Entity.Monitor")).ToList();
             entityList.Add(typeof(UserRole));

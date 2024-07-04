@@ -1,15 +1,15 @@
-using System;
+﻿using System;
 using Ape.Volo.Common.Model;
 using SqlSugar;
 
 namespace Ape.Volo.Entity.Base;
 
 /// <summary>
-/// 实体基类
+/// 实体基类 无数据权限检查
 /// </summary>
 [SugarIndex("index_{table}_CreateBy", nameof(CreateBy), OrderByType.Asc)]
 [SugarIndex("index_{table}_IsDeleted", nameof(IsDeleted), OrderByType.Asc)]
-public class BaseEntity : RootKey<long>, ICreateByEntity, ISoftDeletedEntity
+public class BaseEntityNoDataScope : RootKey<long>, ISoftDeletedEntity
 {
     /// <summary>
     /// 创建者名称

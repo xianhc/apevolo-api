@@ -1,18 +1,17 @@
 using System;
 using SqlSugar;
 
-namespace Ape.Volo.Entity.Base
+namespace Ape.Volo.Entity.Base;
+
+/// <summary>
+/// 泛型主键
+/// </summary>
+/// <typeparam name="TKey"></typeparam>
+public class RootKey<TKey> where TKey : IEquatable<TKey>
 {
     /// <summary>
-    /// 泛型主键
+    /// 主键
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class RootKey<T> where T : IEquatable<T>
-    {
-        /// <summary>
-        /// 主键
-        /// </summary>
-        [SugarColumn(IsPrimaryKey = true)]
-        public T Id { get; set; }
-    }
+    [SugarColumn(IsPrimaryKey = true)]
+    public TKey Id { get; set; }
 }

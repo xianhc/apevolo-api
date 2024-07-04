@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ public class RoleDto : BaseEntityDto<long>
     /// <summary>
     /// 数据权限
     /// </summary>
-    public string DataScope { get; set; }
+    public DataScopeType DataScopeType { get; set; }
 
     /// <summary>
     /// 权限标识

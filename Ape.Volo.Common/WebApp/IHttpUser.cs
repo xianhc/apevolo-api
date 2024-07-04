@@ -16,6 +16,11 @@ public interface IHttpUser
     string Account { get; }
 
     /// <summary>
+    /// 部门ID
+    /// </summary>
+    long DeptId { get; }
+
+    /// <summary>
     /// 租户ID
     /// </summary>
     int TenantId { get; }

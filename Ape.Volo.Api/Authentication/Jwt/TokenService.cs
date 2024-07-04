@@ -38,6 +38,7 @@ public class TokenService : ITokenService
             new(AuthConstants.JwtClaimTypes.Jti, loginUserInfo.UserId.ToString()),
             new(AuthConstants.JwtClaimTypes.Name, loginUserInfo.Account),
             new(AuthConstants.JwtClaimTypes.TenantId, loginUserInfo.TenantId.ToString()),
+            new(AuthConstants.JwtClaimTypes.DeptId, loginUserInfo.DeptId.ToString()),
             new(AuthConstants.JwtClaimTypes.Iat, nowTime.ToUnixTimeStampSecond().ToString()),
             new(AuthConstants.JwtClaimTypes.Ip, loginUserInfo.Ip)
         };

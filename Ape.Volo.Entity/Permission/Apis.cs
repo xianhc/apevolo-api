@@ -8,7 +8,7 @@ namespace Ape.Volo.Entity.Permission;
 /// 
 /// </summary>
 [SugarTable("sys_apis")]
-public class Apis : BaseEntity, ISoftDeletedEntity
+public class Apis : BaseEntity
 {
     /// <summary>
     /// 组
@@ -34,9 +34,4 @@ public class Apis : BaseEntity, ISoftDeletedEntity
     /// </summary>
     [SugarColumn(IsNullable = false)]
     public string Method { get; set; }
-
-    /// <summary>
-    /// 是否已删除
-    /// </summary>
-    public bool IsDeleted { get; set; }
 }

@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
 using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
@@ -52,10 +53,15 @@ public class RoleService : BaseServices<Role>, IRoleService
             throw new BadRequestException($"权限标识=>{createUpdateRoleDto.Permission}=>已存在!");
         }
 
+        if (createUpdateRoleDto.DataScopeType == DataScopeType.Customize && createUpdateRoleDto.Depts.Count == 0)
+        {
+            throw new BadRequestException("数据权限为自定义,请至少选择一个部门!");
+        }
+
         var role = ApeContext.Mapper.Map<Role>(createUpdateRoleDto);
         await AddEntityAsync(role);
 
-        if (!createUpdateRoleDto.Depts.IsNullOrEmpty() && createUpdateRoleDto.Depts.Count > 0)
+        if (createUpdateRoleDto.DataScopeType == DataScopeType.Customize && createUpdateRoleDto.Depts.Count != 0)
         {
             var roleDepts = new List<RoleDepartment>();
             roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RoleDepartment
@@ -70,7 +76,7 @@ public class RoleService : BaseServices<Role>, IRoleService
     public async Task<bool> UpdateAsync(CreateUpdateRoleDto createUpdateRoleDto)
     {
         //取出待更新数据
-        var oldRole = await TableWhere(x => x.Id == createUpdateRoleDto.Id).FirstAsync();
+        var oldRole = await TableWhere(x => x.Id == createUpdateRoleDto.Id).Includes(x => x.Users).FirstAsync();
         if (oldRole.IsNull())
         {
             throw new BadRequestException("数据不存在！");
@@ -100,6 +106,12 @@ public class RoleService : BaseServices<Role>, IRoleService
             roleDepts.AddRange(createUpdateRoleDto.Depts.Select(rd => new RoleDepartment
                 { RoleId = role.Id, DeptId = rd.Id }));
             await SugarClient.Insertable(roleDepts).ExecuteCommandAsync();
+        }
+
+        foreach (var user in oldRole.Users)
+        {
+            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserDataScopeById +
+                                               user.Id.ToString().ToMd5String16());
         }
 
         return true;
@@ -164,7 +176,7 @@ public class RoleService : BaseServices<Role>, IRoleService
             Name = x.Name,
             Level = x.Level,
             Description = x.Description,
-            DataScope = x.DataScope,
+            DataScopeType = x.DataScopeType,
             DataDept = string.Join(",", x.DepartmentList.Select(d => d.Name).ToArray()),
             Permission = x.Permission,
             CreateTime = x.CreateTime
@@ -226,7 +238,7 @@ public class RoleService : BaseServices<Role>, IRoleService
     [UseTran]
     public async Task<bool> UpdateRolesMenusAsync(CreateUpdateRoleDto createUpdateRoleDto)
     {
-        var role = await TableWhere(x => x.Id == createUpdateRoleDto.Id).Includes(x => x.Users).SingleAsync();
+        var role = await TableWhere(x => x.Id == createUpdateRoleDto.Id).Includes(x => x.Users).FirstAsync();
         await VerificationUserRoleLevelAsync(role.Level);
 
 
@@ -257,7 +269,7 @@ public class RoleService : BaseServices<Role>, IRoleService
     [UseTran]
     public async Task<bool> UpdateRolesApisAsync(CreateUpdateRoleDto createUpdateRoleDto)
     {
-        var role = await TableWhere(x => x.Id == createUpdateRoleDto.Id).Includes(x => x.Users).SingleAsync();
+        var role = await TableWhere(x => x.Id == createUpdateRoleDto.Id).Includes(x => x.Users).FirstAsync();
         await VerificationUserRoleLevelAsync(role.Level);
 
 

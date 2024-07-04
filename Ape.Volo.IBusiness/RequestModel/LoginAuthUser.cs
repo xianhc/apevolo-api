@@ -10,24 +10,24 @@ public class LoginAuthUser
     /// <summary>
     /// 用户名
     /// </summary>
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Username { get; set; }
 
     /// <summary>
     /// 密码
     /// </summary>
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Password { get; set; }
 
     /// <summary>
     /// 验证码
     /// </summary>
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string Captcha { get; set; }
 
     /// <summary>
     /// 唯一ID
     /// </summary>
-    [Required(ErrorMessage = "{0}required")]
+    [Required]
     public string CaptchaId { get; set; }
 }

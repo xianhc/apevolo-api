@@ -45,6 +45,12 @@ public interface IDepartmentService : IBaseServices<Department>
     Task<List<DepartmentDto>> QueryAsync(DeptQueryCriteria deptQueryCriteria, Pagination pagination);
 
     /// <summary>
+    /// 查询全部
+    /// </summary>
+    /// <returns></returns>
+    Task<List<DepartmentDto>> QueryAllAsync();
+
+    /// <summary>
     /// 下载
     /// </summary>
     /// <param name="deptQueryCriteria"></param>
@@ -73,7 +79,7 @@ public interface IDepartmentService : IBaseServices<Department>
     /// <summary>
     /// 获取子级所有部门
     /// </summary>
-    /// <param name="ids"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     Task<List<DepartmentDto>> QuerySuperiorDeptAsync(long id);
 
