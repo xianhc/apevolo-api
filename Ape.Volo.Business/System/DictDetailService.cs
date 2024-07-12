@@ -1,16 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
-using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
 using Ape.Volo.IBusiness.Interface.System;
-using SqlSugar;
 
 namespace Ape.Volo.Business.System;
 
@@ -21,7 +18,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
 {
     #region 构造函数
 
-    public DictDetailService(ApeContext apeContext) : base(apeContext)
+    public DictDetailService()
     {
     }
 
@@ -40,7 +37,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
                 $"字典详情标签或值=>({createUpdateDictDetailDto.Label},{createUpdateDictDetailDto.Value})=>已存在!");
         }
 
-        var dictDetail = ApeContext.Mapper.Map<DictDetail>(createUpdateDictDetailDto);
+        var dictDetail = App.Mapper.MapTo<DictDetail>(createUpdateDictDetailDto);
         //dictDetail.DictId = createUpdateDictDetailDto.Dict.Id;
         dictDetail.DictId = createUpdateDictDetailDto.DictId;
         return await AddEntityAsync(dictDetail);
@@ -67,7 +64,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
         }
 
 
-        var dictDetail = ApeContext.Mapper.Map<DictDetail>(createUpdateDictDetailDto);
+        var dictDetail = App.Mapper.MapTo<DictDetail>(createUpdateDictDetailDto);
         dictDetail.DictId = createUpdateDictDetailDto.DictId;
         return await UpdateEntityAsync(dictDetail);
     }
@@ -97,7 +94,7 @@ public class DictDetailService : BaseServices<DictDetail>, IDictDetailService
         if (dictModel != null)
         {
             var dictDetailDtos =
-                ApeContext.Mapper.Map<List<DictDetailDto>>(dictDetailList.Where(x => x.DictId == dictModel.Id)
+                App.Mapper.MapTo<List<DictDetailDto>>(dictDetailList.Where(x => x.DictId == dictModel.Id)
                     .ToList());
 
             //dictDetailDtos.ForEach(dd => dd.Dict = new DictDto2 { Id = dd.DictId });

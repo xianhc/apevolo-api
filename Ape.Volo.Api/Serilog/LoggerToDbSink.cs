@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Ape.Volo.Common.DI;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.SnowflakeIdHelper;
@@ -17,7 +17,7 @@ public class LoggerToDbSink : IBatchedLogEventSink
 {
     public async Task EmitBatchAsync(IEnumerable<LogEvent> batch)
     {
-        var sugar = AutofacHelper.GetService<ISqlSugarClient>();
+        var sugar = App.GetService<ISqlSugarClient>();
 
         var logEvents = batch.ToList();
         await RecordSql(sugar, logEvents.RecordSql());

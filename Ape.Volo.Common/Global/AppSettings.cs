@@ -2,9 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 
 namespace Ape.Volo.Common.Global;
 
@@ -13,25 +11,10 @@ namespace Ape.Volo.Common.Global;
 /// </summary>
 public class AppSettings
 {
-    /// <summary>
-    /// 网站根路径
-    /// </summary>
-    public static string ContentRootPath { get; set; }
-
-    /// <summary>
-    /// 网站根路径(wwwroot)
-    /// </summary>
-    public static string WebRootPath { get; set; }
-
-    public static bool IsDevelopment { get; set; }
-
     public static IConfiguration Configuration { get; set; }
 
-    public AppSettings(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+    public AppSettings(IConfiguration configuration)
     {
-        ContentRootPath = webHostEnvironment.ContentRootPath;
-        WebRootPath = webHostEnvironment.WebRootPath;
-        IsDevelopment = webHostEnvironment.IsDevelopment();
         Configuration = configuration;
     }
 

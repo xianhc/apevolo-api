@@ -1,11 +1,10 @@
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
@@ -24,16 +23,14 @@ public class MenusController : BaseApiController
     #region 字段
 
     private readonly IMenuService _menuService;
-    private readonly IHttpUser _httpUser;
 
     #endregion
 
     #region 构造函数
 
-    public MenusController(IMenuService menuService, IHttpUser httpUser)
+    public MenusController(IMenuService menuService)
     {
         _menuService = menuService;
-        _httpUser = httpUser;
     }
 
     #endregion
@@ -111,7 +108,7 @@ public class MenusController : BaseApiController
     [Route("build")]
     public async Task<ActionResult<object>> Build()
     {
-        var menuVos = await _menuService.BuildTreeAsync(_httpUser.Id);
+        var menuVos = await _menuService.BuildTreeAsync(App.HttpUser.Id);
         return menuVos.ToJsonByIgnore();
     }
 

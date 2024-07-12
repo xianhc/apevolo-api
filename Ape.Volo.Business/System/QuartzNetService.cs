@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
 using Ape.Volo.IBusiness.ExportModel.System;
@@ -31,7 +31,7 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
 
     #region 构造函数
 
-    public QuartzNetService(IQuartzNetLogService quartzNetLogService, ApeContext apeContext) : base(apeContext)
+    public QuartzNetService(IQuartzNetLogService quartzNetLogService)
     {
         _quartzNetLogService = quartzNetLogService;
     }
@@ -56,7 +56,7 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
                 $"作业执行目录=>{createUpdateQuartzNetDto.AssemblyName + "_" + createUpdateQuartzNetDto.ClassName}=>已存在!");
         }
 
-        var quartzNet = ApeContext.Mapper.Map<QuartzNet>(createUpdateQuartzNetDto);
+        var quartzNet = App.Mapper.MapTo<QuartzNet>(createUpdateQuartzNetDto);
         return await SugarRepository.AddReturnEntityAsync(quartzNet);
     }
 
@@ -78,7 +78,7 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
                 $"作业执行目录=>{createUpdateQuartzNetDto.AssemblyName + "_" + createUpdateQuartzNetDto.ClassName}=>已存在!");
         }
 
-        var quartzNet = ApeContext.Mapper.Map<QuartzNet>(createUpdateQuartzNetDto);
+        var quartzNet = App.Mapper.MapTo<QuartzNet>(createUpdateQuartzNetDto);
         return await UpdateEntityAsync(quartzNet);
     }
 
@@ -106,7 +106,7 @@ public class QuartzNetService : BaseServices<QuartzNet>, IQuartzNetService
             Pagination = pagination,
             WhereLambda = whereExpression,
         };
-        return ApeContext.Mapper.Map<List<QuartzNetDto>>(
+        return App.Mapper.MapTo<List<QuartzNetDto>>(
             await SugarRepository.QueryPageListAsync(queryOptions));
     }
 

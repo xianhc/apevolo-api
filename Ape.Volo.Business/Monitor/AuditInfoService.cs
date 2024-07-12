@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Monitor;
 using Ape.Volo.IBusiness.Dto.Monitor;
 using Ape.Volo.IBusiness.Interface.Monitor;
@@ -20,7 +20,7 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
 {
     #region 构造函数
 
-    public AuditInfoService(ApeContext apeContext) : base(apeContext)
+    public AuditInfoService()
     {
     }
 
@@ -28,11 +28,19 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
 
     #region 基础方法
 
-    public async Task<bool> CreateAsync(AuditLog auditInfo)
+    public async Task<bool> CreateAsync(AuditLog auditLog)
     {
         //return await SugarRepository.AddReturnBoolAsync(auditInfo);
-        return await SugarRepository.SugarClient.Insertable(auditInfo).SplitTable().ExecuteCommandAsync() > 0;
+        return await SugarRepository.SugarClient.Insertable(auditLog).SplitTable().ExecuteCommandAsync() > 0;
     }
+
+
+    public async Task<bool> CreateListAsync(List<AuditLog> auditLogs)
+    {
+        //return await SugarRepository.AddReturnBoolAsync(auditInfo);
+        return await SugarRepository.SugarClient.Insertable(auditLogs).SplitTable().ExecuteCommandAsync() > 0;
+    }
+
 
     public async Task<List<AuditLogDto>> QueryAsync(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
@@ -57,16 +65,12 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
         };
 
         var auditInfos = await SugarRepository.QueryPageListAsync(queryOptions);
-        return ApeContext.Mapper.Map<List<AuditLogDto>>(auditInfos);
+        return App.Mapper.MapTo<List<AuditLogDto>>(auditInfos);
     }
 
-    public async Task<List<AuditLogDto>> QueryByCurrentAsync(string userName, Pagination pagination)
+    public async Task<List<AuditLogDto>> QueryByCurrentAsync(Pagination pagination)
     {
-        Expression<Func<AuditLog, bool>> whereLambda = x => true;
-        if (!userName.IsNullOrEmpty())
-        {
-            whereLambda = whereLambda.AndAlso(x => x.CreateBy == userName);
-        }
+        Expression<Func<AuditLog, bool>> whereLambda = x => x.CreateBy == App.HttpUser.Account;
 
 
         Expression<Func<AuditLog, AuditLog>> selectExpression = x => new AuditLog
@@ -83,7 +87,7 @@ public class AuditInfoService : BaseServices<AuditLog>, IAuditLogService
             IsSplitTable = true
         };
         var auditInfos = await SugarRepository.QueryPageListAsync(queryOptions);
-        return ApeContext.Mapper.Map<List<AuditLogDto>>(auditInfos);
+        return App.Mapper.MapTo<List<AuditLogDto>>(auditInfos);
     }
 
     #endregion

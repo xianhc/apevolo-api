@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,16 +12,17 @@ namespace Ape.Volo.Api.Extensions;
 /// </summary>
 public static class CorsSetup
 {
-    public static void AddCorsSetup(this IServiceCollection services, Configs configs)
+    public static void AddCorsSetup(this IServiceCollection services)
     {
         if (services.IsNull()) throw new ArgumentNullException(nameof(services));
 
+        var options = App.GetOptions<CorsOptions>();
         services.AddCors(c =>
         {
-            if (configs.Cors.EnableAll)
+            if (options.EnableAll)
             {
                 //允许任意跨域请求
-                c.AddPolicy(configs.Cors.Name,
+                c.AddPolicy(options.Name,
                     policy =>
                     {
                         policy
@@ -32,11 +34,11 @@ public static class CorsSetup
             }
             else
             {
-                c.AddPolicy(configs.Cors.Name,
+                c.AddPolicy(options.Name,
                     policy =>
                     {
                         policy
-                            .WithOrigins(configs.Cors.Policy.Select(x => x.Domain).ToArray())
+                            .WithOrigins(options.Policy.Select(x => x.Domain).ToArray())
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });

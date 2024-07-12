@@ -1,6 +1,7 @@
 using System;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
@@ -14,13 +15,10 @@ namespace Ape.Volo.Api.Authentication.Jwt;
 
 public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    private readonly ApeContext _apeContext;
-
     public ApiResponseHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger,
-        UrlEncoder encoder, ApeContext apeContext) :
+        UrlEncoder encoder) :
         base(options, logger, encoder)
     {
-        _apeContext = apeContext;
     }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -37,15 +35,15 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
             Status = StatusCodes.Status401Unauthorized,
             ActionError = new ActionError(),
             Message = "抱歉，您无权访问该接口",
-            Path = _apeContext.HttpContext.Request.Path.Value?.ToLower()
+            Path = App.HttpContext?.Request.Path.Value?.ToLower()
         }.ToJson());
     }
 
     protected override async Task HandleForbiddenAsync(AuthenticationProperties properties)
     {
-        var loginUserInfo = await _apeContext.Cache.GetAsync<LoginUserInfo>(
+        var loginUserInfo = await App.Cache.GetAsync<LoginUserInfo>(
             GlobalConstants.CachePrefix.OnlineKey +
-            _apeContext.HttpUser.JwtToken.ToMd5String16());
+            App.HttpUser.JwtToken.ToMd5String16());
         if (loginUserInfo.IsNull())
         {
             Response.ContentType = "application/json";
@@ -55,7 +53,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
                 Status = StatusCodes.Status401Unauthorized,
                 ActionError = new ActionError(),
                 Message = "抱歉，您无权访问该接口",
-                Path = _apeContext.HttpContext.Request.Path.Value?.ToLower()
+                Path = App.HttpContext?.Request.Path.Value?.ToLower()
             }.ToJson());
         }
         else
@@ -67,7 +65,7 @@ public class ApiResponseHandler : AuthenticationHandler<AuthenticationSchemeOpti
                 Status = StatusCodes.Status403Forbidden,
                 ActionError = new ActionError(),
                 Message = "抱歉，您访问权限等级不够",
-                Path = _apeContext.HttpContext.Request.Path.Value?.ToLower()
+                Path = App.HttpContext?.Request.Path.Value?.ToLower()
             }.ToJson());
         }
     }

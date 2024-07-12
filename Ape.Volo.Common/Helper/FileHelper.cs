@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Ape.Volo.Common.Extensions;
-using Ape.Volo.Common.Global;
 
 namespace Ape.Volo.Common.Helper;
 
@@ -172,7 +171,7 @@ public static class FileHelper
     {
         string content = $"/Logs/{DateTime.Now.ToCstTime():yyyy-MM-dd}.log";
         msg = "【当前时间】 : " + DateTime.Now.ToCstTime().ToString("yyyy-MM-dd HH:mm:ss") + msg;
-        WriteText(msg, $"{AppSettings.ContentRootPath}{content}", Encoding.UTF8);
+        WriteText(msg, $"{App.WebHostEnvironment.ContentRootPath}{content}", Encoding.UTF8);
     }
 
 

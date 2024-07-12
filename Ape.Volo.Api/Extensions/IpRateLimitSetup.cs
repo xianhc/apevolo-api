@@ -1,7 +1,7 @@
 ﻿using System;
+using Ape.Volo.Common;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Ape.Volo.Api.Extensions;
@@ -11,17 +11,19 @@ namespace Ape.Volo.Api.Extensions;
 /// </summary>
 public static class IpRateLimitSetup
 {
-    public static void AddIpStrategyRateLimitSetup(this IServiceCollection services, IConfiguration configuration)
+    public static void AddIpStrategyRateLimitSetup(this IServiceCollection services)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
         // 將速限計數器資料儲存在 Memory 中
         services.AddMemoryCache();
 
         // 從 appsettings.json 讀取 IpRateLimiting 設定 
-        services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
+        //services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
+        services.Configure<IpRateLimitOptions>(App.Configuration.GetSection("IpRateLimiting"));
 
         // 從 appsettings.json 讀取 Ip Rule 設定
-        services.Configure<IpRateLimitPolicies>(configuration.GetSection("IpRateLimitPolicies"));
+        //services.Configure<IpRateLimitPolicies>(configuration.GetSection("IpRateLimitPolicies"));
+        services.Configure<IpRateLimitPolicies>(App.Configuration.GetSection("IpRateLimitPolicies"));
 
         // 注入 counter and IP Rules 
         services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();

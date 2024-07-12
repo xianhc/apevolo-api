@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper.Serilog;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -23,8 +22,8 @@ public static class SwaggerMiddleware
     {
         if (app.IsNull())
             throw new ArgumentNullException(nameof(app));
-        var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
-        if (configs.Swagger.Enabled)
+        var swaggerOptions = App.GetOptions<SwaggerOptions>();
+        if (swaggerOptions.Enabled)
         {
             //app.UseSwagger();
             app.UseSwagger(c =>
@@ -41,7 +40,8 @@ public static class SwaggerMiddleware
             });
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint($"/swagger/{configs.Swagger.Name}/swagger.json", configs.Swagger.Version);
+                c.SwaggerEndpoint($"/swagger/{swaggerOptions.Name}/swagger.json",
+                    swaggerOptions.Version);
                 c.RoutePrefix = "";
 
                 var stream = streamHtml?.Invoke();

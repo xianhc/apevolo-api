@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -10,7 +11,6 @@ using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
 using Ape.Volo.IBusiness.RequestModel;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ape.Volo.Api.Controllers.Permission;
@@ -25,7 +25,6 @@ public class RoleController : BaseApiController
     #region 字段
 
     private readonly IRoleService _roleService;
-    private readonly IMapper _mapper;
 
     #endregion
 
@@ -35,11 +34,9 @@ public class RoleController : BaseApiController
     /// 
     /// </summary>
     /// <param name="roleService"></param>
-    /// <param name="mapper"></param>
-    public RoleController(IRoleService roleService, IMapper mapper)
+    public RoleController(IRoleService roleService)
     {
         _roleService = roleService;
-        _mapper = mapper;
     }
 
     #endregion
@@ -124,7 +121,7 @@ public class RoleController : BaseApiController
         var newId = Convert.ToInt64(id);
         var role = await _roleService.TableWhere(x => x.Id == newId).Includes(x => x.MenuList).Includes(x => x.Apis)
             .Includes(x => x.DepartmentList).SingleAsync();
-        return _mapper.Map<RoleDto>(role).ToJson();
+        return App.Mapper.MapTo<RoleDto>(role).ToJson();
     }
 
     /// <summary>

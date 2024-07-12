@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using SqlSugar;
 
 namespace Ape.Volo.IBusiness.Base;
@@ -18,11 +17,6 @@ public interface IBaseServices<TEntity> where TEntity : class
     /// sqlSugarClient
     /// </summary>
     ISqlSugarClient SugarClient { get; }
-
-    /// <summary>
-    /// 自定义全局上下文
-    /// </summary>
-    ApeContext ApeContext { get; }
 
 
     #region 新增
@@ -94,5 +88,6 @@ public interface IBaseServices<TEntity> where TEntity : class
     ISugarQueryable<TEntity> TableWhere(Expression<Func<TEntity, bool>> whereExpression = null,
         Expression<Func<TEntity, object>> orderExpression = null, OrderByType? orderByType = null,
         bool isClearCreateByFilter = false);
+
     #endregion
 }

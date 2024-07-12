@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Message.Email;
 using Ape.Volo.IBusiness.Dto.Message.Email;
 using Ape.Volo.IBusiness.Interface.Message.Email;
@@ -21,7 +21,7 @@ public class EmailMessageTemplateService : BaseServices<EmailMessageTemplate>, I
 {
     #region 构造函数
 
-    public EmailMessageTemplateService(ApeContext apeContext) : base(apeContext)
+    public EmailMessageTemplateService()
     {
     }
 
@@ -40,7 +40,7 @@ public class EmailMessageTemplateService : BaseServices<EmailMessageTemplate>, I
         if (messageTemplate.IsNotNull())
             throw new BadRequestException($"模板名称=>{createUpdateEmailMessageTemplateDto.Name}=>已存在!");
 
-        return await AddEntityAsync(ApeContext.Mapper.Map<EmailMessageTemplate>(createUpdateEmailMessageTemplateDto));
+        return await AddEntityAsync(App.Mapper.MapTo<EmailMessageTemplate>(createUpdateEmailMessageTemplateDto));
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class EmailMessageTemplateService : BaseServices<EmailMessageTemplate>, I
         }
 
         return await UpdateEntityAsync(
-            ApeContext.Mapper.Map<EmailMessageTemplate>(createUpdateEmailMessageTemplateDto));
+            App.Mapper.MapTo<EmailMessageTemplate>(createUpdateEmailMessageTemplateDto));
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public class EmailMessageTemplateService : BaseServices<EmailMessageTemplate>, I
             Pagination = pagination,
             WhereLambda = whereExpression,
         };
-        return ApeContext.Mapper.Map<List<EmailMessageTemplateDto>>(
+        return App.Mapper.MapTo<List<EmailMessageTemplateDto>>(
             await SugarRepository.QueryPageListAsync(queryOptions));
     }
 

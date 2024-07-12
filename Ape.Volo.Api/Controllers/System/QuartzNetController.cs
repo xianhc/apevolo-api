@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
@@ -11,7 +12,6 @@ using Ape.Volo.IBusiness.Interface.System;
 using Ape.Volo.IBusiness.QueryModel;
 using Ape.Volo.IBusiness.RequestModel;
 using Ape.Volo.QuartzNetService.service;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Quartz;
 
@@ -29,19 +29,17 @@ public class QuartzNetController : BaseApiController
     private readonly IQuartzNetService _quartzNetService;
     private readonly IQuartzNetLogService _quartzNetLogService;
     private readonly ISchedulerCenterService _schedulerCenterService;
-    private readonly IMapper _mapper;
 
     #endregion
 
     #region 构造函数
 
     public QuartzNetController(IQuartzNetService quartzNetService, IQuartzNetLogService quartzNetLogService,
-        ISchedulerCenterService schedulerCenterService, IMapper mapper)
+        ISchedulerCenterService schedulerCenterService)
     {
         _quartzNetService = quartzNetService;
         _quartzNetLogService = quartzNetLogService;
         _schedulerCenterService = schedulerCenterService;
-        _mapper = mapper;
     }
 
     #endregion
@@ -140,7 +138,7 @@ public class QuartzNetController : BaseApiController
 
         if (await _quartzNetService.UpdateAsync(createUpdateQuartzNetDto))
         {
-            var quartzNet = _mapper.Map<QuartzNet>(createUpdateQuartzNetDto);
+            var quartzNet = App.Mapper.MapTo<QuartzNet>(createUpdateQuartzNetDto);
             var flag = await _schedulerCenterService.DeleteScheduleJobAsync(quartzNet);
             if (flag)
             {
@@ -297,7 +295,7 @@ public class QuartzNetController : BaseApiController
             return Error("作业调度不存在");
         }
 
-        var triggerStatus = await _schedulerCenterService.GetTriggerStatus(_mapper.Map<QuartzNetDto>(quartzNet));
+        var triggerStatus = await _schedulerCenterService.GetTriggerStatus(App.Mapper.MapTo<QuartzNetDto>(quartzNet));
         if (triggerStatus == "运行中")
         {
             //检查任务在内存状态
@@ -332,7 +330,7 @@ public class QuartzNetController : BaseApiController
             return Error("作业调度不存在");
         }
 
-        var triggerStatus = await _schedulerCenterService.GetTriggerStatus(_mapper.Map<QuartzNetDto>(quartzNet));
+        var triggerStatus = await _schedulerCenterService.GetTriggerStatus(App.Mapper.MapTo<QuartzNetDto>(quartzNet));
         if (triggerStatus == "暂停")
         {
             //检查任务在内存状态

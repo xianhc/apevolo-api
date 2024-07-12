@@ -4,11 +4,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.WebApp;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
@@ -16,21 +16,22 @@ namespace Ape.Volo.Api.Authentication.Jwt;
 
 public class TokenService : ITokenService
 {
-    private readonly JwtAuthOption _jwtOptions;
-
-
-    public TokenService(IOptionsMonitor<Configs> configs)
-    {
-        _jwtOptions = (configs?.CurrentValue ?? new Configs()).JwtAuthOptions;
-    }
+    // private readonly JwtAuthOptions _jwtOptionses;
+    //
+    //
+    // public TokenService(JwtAuthOptions jwtAuthOptions)
+    // {
+    //     _jwtOptionses = jwtAuthOptions;
+    // }
 
     public async Task<Token> IssueTokenAsync(LoginUserInfo loginUserInfo, bool refresh = false)
     {
         if (loginUserInfo == null)
             throw new ArgumentNullException(nameof(loginUserInfo));
 
+        var jwtAuthOptions = App.GetOptions<JwtAuthOptions>();
         var signinCredentials =
-            new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecurityKey)),
+            new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.SecurityKey)),
                 SecurityAlgorithms.HmacSha256);
         var nowTime = DateTime.Now;
         var cls = new List<Claim>
@@ -47,11 +48,11 @@ public class TokenService : ITokenService
 
 
         var tokeOptions = new JwtSecurityToken(
-            issuer: _jwtOptions.Issuer,
-            audience: _jwtOptions.Audience,
+            issuer: jwtAuthOptions.Issuer,
+            audience: jwtAuthOptions.Audience,
             claims: cls,
             notBefore: nowTime,
-            expires: nowTime.AddHours(_jwtOptions.Expires),
+            expires: nowTime.AddHours(jwtAuthOptions.Expires),
             signingCredentials: signinCredentials
         );
 
@@ -61,7 +62,7 @@ public class TokenService : ITokenService
         {
             return await Task.FromResult(new Token()
             {
-                Expires = _jwtOptions.Expires * 3600,
+                Expires = jwtAuthOptions.Expires * 3600,
                 TokenType = AuthConstants.JwtTokenType,
                 RefreshToken = token,
             });
@@ -70,10 +71,10 @@ public class TokenService : ITokenService
         return await Task.FromResult(new Token()
         {
             AccessToken = token,
-            Expires = _jwtOptions.Expires * 3600,
+            Expires = jwtAuthOptions.Expires * 3600,
             TokenType = AuthConstants.JwtTokenType,
             RefreshToken = "",
-            RefreshTokenExpires = _jwtOptions.RefreshTokenExpires * 3600
+            RefreshTokenExpires = jwtAuthOptions.RefreshTokenExpires * 3600
         });
     }
 
@@ -84,8 +85,9 @@ public class TokenService : ITokenService
         var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         if (jwtSecurityTokenHandler.CanReadToken(token))
         {
+            var jwtAuthOptions = App.GetOptions<JwtAuthOptions>();
             var signinCredentials =
-                new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecurityKey)),
+                new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.SecurityKey)),
                     SecurityAlgorithms.HmacSha256);
             JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(token);
             var rawSignature = JwtTokenUtilities.CreateEncodedSignature(

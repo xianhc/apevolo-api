@@ -4,11 +4,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
+using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.SnowflakeIdHelper;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
 using Ape.Volo.IBusiness.ExportModel.System;
@@ -24,7 +25,7 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
 {
     #region 构造函数
 
-    public AppSecretService(ApeContext apeContext) : base(apeContext)
+    public AppSecretService()
     {
     }
 
@@ -42,8 +43,8 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
         var id = IdHelper.GetId();
         createUpdateAppSecretDto.AppId = DateTime.Now.ToString("yyyyMMdd") + id[..8];
         createUpdateAppSecretDto.AppSecretKey =
-            (createUpdateAppSecretDto.AppId + id).ToHmacsha256String(ApeContext.Configs.HmacSecret);
-        var appSecret = ApeContext.Mapper.Map<AppSecret>(createUpdateAppSecretDto);
+            (createUpdateAppSecretDto.AppId + id).ToHmacsha256String(App.GetOptions<SettingsOptions>().HmacSecret);
+        var appSecret = App.Mapper.MapTo<AppSecret>(createUpdateAppSecretDto);
         return await AddEntityAsync(appSecret);
     }
 
@@ -62,7 +63,7 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
             throw new BadRequestException($"应用名称=>{createUpdateAppSecretDto.AppName}=>已存在!");
         }
 
-        var appSecret = ApeContext.Mapper.Map<AppSecret>(createUpdateAppSecretDto);
+        var appSecret = App.Mapper.MapTo<AppSecret>(createUpdateAppSecretDto);
         return await UpdateEntityAsync(appSecret);
     }
 
@@ -83,7 +84,7 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
             Pagination = pagination,
             WhereLambda = whereExpression,
         };
-        return ApeContext.Mapper.Map<List<AppSecretDto>>(
+        return App.Mapper.MapTo<List<AppSecretDto>>(
             await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
@@ -104,7 +105,6 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
     }
 
     #endregion
-
 
     #region 条件表达式
 

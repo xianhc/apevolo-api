@@ -1,13 +1,13 @@
 ﻿using System;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
+using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Helper.Serilog;
-using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Interface.System;
 using Ape.Volo.QuartzNetService.service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace Ape.Volo.Api.Middleware;
@@ -19,23 +19,23 @@ public static class QuartzNetJobMiddleware
 {
     private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(QuartzNetJobMiddleware));
 
-    public static void UseQuartzNetJobMiddleware(this IApplicationBuilder app, IQuartzNetService taskQuartzService,
-        ISchedulerCenterService schedulerCenter)
+    public static void UseQuartzNetJobMiddleware(this IApplicationBuilder app)
     {
         if (app.IsNull())
             throw new ArgumentNullException(nameof(app));
 
         try
         {
-            var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
-            if (configs.Middleware.QuartzNetJob.Enabled)
+            if (App.GetOptions<MiddlewareOptions>().QuartzNetJob.Enabled)
             {
-                //var allTaskQuartzList = taskQuartzService.QueryAllAsync().Result;
-                var allTaskQuartzList = taskQuartzService.SugarClient.Queryable<QuartzNet>().ToList();
+                var quartzNetService = app.ApplicationServices.GetRequiredService<IQuartzNetService>();
+                var schedulerCenter = app.ApplicationServices.GetRequiredService<ISchedulerCenterService>();
+                var allTaskQuartzList = AsyncHelper.RunSync(() => quartzNetService.QueryAllAsync());
+                //var allTaskQuartzList = quartzNetService.SugarClient.Queryable<QuartzNet>().ToList();
                 foreach (var item in allTaskQuartzList)
                 {
                     if (!item.IsEnable) continue;
-                    var results = schedulerCenter.AddScheduleJobAsync(item).Result;
+                    var results = AsyncHelper.RunSync(() => schedulerCenter.AddScheduleJobAsync(item));
                     Logger.Information(results ? $"作业=>{item.TaskName}=>启动成功！" : $"作业=>{item.TaskName}=>启动失败！");
                 }
             }

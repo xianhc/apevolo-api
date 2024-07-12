@@ -4,10 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
 using Ape.Volo.IBusiness.ExportModel.System;
@@ -23,7 +23,7 @@ public class DictService : BaseServices<Dict>, IDictService
 {
     #region 构造函数
 
-    public DictService(ApeContext apeContext) : base(apeContext)
+    public DictService()
     {
     }
 
@@ -38,7 +38,7 @@ public class DictService : BaseServices<Dict>, IDictService
             throw new BadRequestException($"名称=>{createUpdateDictDto.Name}=>已存在!");
         }
 
-        return await AddEntityAsync(ApeContext.Mapper.Map<Dict>(createUpdateDictDto));
+        return await AddEntityAsync(App.Mapper.MapTo<Dict>(createUpdateDictDto));
     }
 
     public async Task<bool> UpdateAsync(CreateUpdateDictDto createUpdateDictDto)
@@ -56,7 +56,7 @@ public class DictService : BaseServices<Dict>, IDictService
             throw new BadRequestException($"名称=>{createUpdateDictDto.Name}=>已存在!");
         }
 
-        return await UpdateEntityAsync(ApeContext.Mapper.Map<Dict>(createUpdateDictDto));
+        return await UpdateEntityAsync(App.Mapper.MapTo<Dict>(createUpdateDictDto));
     }
 
     public async Task<bool> DeleteAsync(HashSet<long> ids)
@@ -77,7 +77,7 @@ public class DictService : BaseServices<Dict>, IDictService
             //IsIncludes = true
         };
         var list = await SugarRepository.QueryPageListAsync(queryOptions);
-        var dicts = ApeContext.Mapper.Map<List<DictDto>>(list);
+        var dicts = App.Mapper.MapTo<List<DictDto>>(list);
         // foreach (var item in dicts)
         // {
         //     item.DictDetails.ForEach(d => d.Dict = new DictDto2 { Id = d.DictId });

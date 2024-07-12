@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Queued;
 using Ape.Volo.IBusiness.Dto.Queued;
 using Ape.Volo.IBusiness.Interface.Message.Email;
@@ -36,8 +36,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
     #region 构造函数
 
     public QueuedEmailService(IEmailMessageTemplateService emailMessageTemplateService,
-        IEmailAccountService emailAccountService, IEmailSender emailSender, ILogger<QueuedEmailService> logger,
-        ApeContext apeContext) : base(apeContext)
+        IEmailAccountService emailAccountService, IEmailSender emailSender, ILogger<QueuedEmailService> logger)
     {
         _emailMessageTemplateService = emailMessageTemplateService;
         _emailAccountService = emailAccountService;
@@ -56,7 +55,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
     /// <returns></returns>
     public async Task<bool> CreateAsync(CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto)
     {
-        var queuedEmail = ApeContext.Mapper.Map<QueuedEmail>(createUpdateQueuedEmailDto);
+        var queuedEmail = App.Mapper.MapTo<QueuedEmail>(createUpdateQueuedEmailDto);
         return await AddEntityAsync(queuedEmail);
     }
 
@@ -67,7 +66,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
     /// <returns></returns>
     public async Task<bool> UpdateTriesAsync(QueuedEmailDto queuedEmailDto)
     {
-        var queuedEmail = ApeContext.Mapper.Map<QueuedEmail>(queuedEmailDto);
+        var queuedEmail = App.Mapper.MapTo<QueuedEmail>(queuedEmailDto);
         return await SugarRepository.UpdateAsync(queuedEmail) > 0;
     }
 
@@ -83,7 +82,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
             throw new BadRequestException("数据不存在！");
         }
 
-        var queuedEmail = ApeContext.Mapper.Map<QueuedEmail>(createUpdateQueuedEmailDto);
+        var queuedEmail = App.Mapper.MapTo<QueuedEmail>(createUpdateQueuedEmailDto);
         return await UpdateEntityAsync(queuedEmail);
     }
 
@@ -116,7 +115,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
             Pagination = pagination,
             WhereLambda = whereExpression,
         };
-        return ApeContext.Mapper.Map<List<QueuedEmailDto>>(
+        return App.Mapper.MapTo<List<QueuedEmailDto>>(
             await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
@@ -153,9 +152,9 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
         queuedEmail.SentTries = 1;
         queuedEmail.EmailAccountId = emailAccount.Id;
 
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.EmailCaptcha +
-                                           queuedEmail.To.ToMd5String());
-        var isTrue = await ApeContext.Cache.SetAsync(
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.EmailCaptcha +
+                                    queuedEmail.To.ToMd5String());
+        var isTrue = await App.Cache.SetAsync(
             GlobalConstants.CachePrefix.EmailCaptcha + queuedEmail.To.ToMd5String(), captcha,
             TimeSpan.FromMinutes(5), null);
 
@@ -183,7 +182,7 @@ public class QueuedEmailService : BaseServices<QueuedEmail>, IQueuedEmailService
                     cc);
                 queuedEmail.SendTime = DateTime.Now;
                 // 如果开启redis并且开启消息队列功能 可以使用下面方式
-                // await ApeContext.Cache.GetDatabase()
+                // await App.Cache.GetDatabase()
                 //     .ListLeftPushAsync(MqTopicNameKey.MailboxQueue, queuedEmail.Id.ToString());
             }
             catch (Exception exc)

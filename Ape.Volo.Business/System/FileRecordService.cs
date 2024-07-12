@@ -5,13 +5,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
-using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.SnowflakeIdHelper;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
 using Ape.Volo.IBusiness.ExportModel.System;
@@ -25,7 +24,7 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
 {
     #region 构造函数
 
-    public FileRecordService(ApeContext apeContext) : base(apeContext)
+    public FileRecordService()
     {
     }
 
@@ -47,7 +46,7 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
         string fileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "_" + IdHelper.GetId() +
                           file.FileName.Substring(Math.Max(file.FileName.LastIndexOf('.'), 0));
 
-        var prefix = AppSettings.WebRootPath;
+        var prefix = App.WebHostEnvironment.WebRootPath;
         string filePath = Path.Combine(prefix, "uploads", "file", fileTypeNameEn);
         if (!Directory.Exists(filePath))
         {
@@ -92,7 +91,7 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
             throw new BadRequestException($"文件描述=>{createUpdateFileRecordDto.Description}=>已存在!");
         }
 
-        var fileRecord = ApeContext.Mapper.Map<FileRecord>(createUpdateFileRecordDto);
+        var fileRecord = App.Mapper.MapTo<FileRecord>(createUpdateFileRecordDto);
         return await UpdateEntityAsync(fileRecord);
     }
 
@@ -117,7 +116,7 @@ public class FileRecordService : BaseServices<FileRecord>, IFileRecordService
             Pagination = pagination,
             WhereLambda = whereExpression,
         };
-        return ApeContext.Mapper.Map<List<FileRecordDto>>(
+        return App.Mapper.MapTo<List<FileRecordDto>>(
             await SugarRepository.QueryPageListAsync(queryOptions));
     }
 

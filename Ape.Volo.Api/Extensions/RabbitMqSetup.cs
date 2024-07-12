@@ -1,4 +1,5 @@
 ﻿using System;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.EventBus.EventBusRabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,22 +12,23 @@ namespace Ape.Volo.Api.Extensions;
 /// </summary>
 public static class RabbitMqSetup
 {
-    public static void AddRabbitMqSetup(this IServiceCollection services, Configs configs)
+    public static void AddRabbitMqSetup(this IServiceCollection services)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
 
-        if (configs.Middleware.RabbitMq.Enabled)
+        if (App.GetOptions<MiddlewareOptions>().RabbitMq.Enabled)
         {
+            var options = App.GetOptions<RabbitOptions>();
             services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
             {
                 var factory = new ConnectionFactory
                 {
-                    HostName = configs.Rabbit.Connection,
-                    UserName = configs.Rabbit.Username,
-                    Password = configs.Rabbit.Password,
+                    HostName = options.Connection,
+                    UserName = options.Username,
+                    Password = options.Password,
                     DispatchConsumersAsync = true
                 };
-                var retryCount = configs.Rabbit.RetryCount;
+                var retryCount = options.RetryCount;
                 return new RabbitMQPersistentConnection(factory, retryCount);
             });
         }

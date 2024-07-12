@@ -1,9 +1,8 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.IBusiness.Dto.Monitor;
 using Ape.Volo.IBusiness.Interface.Monitor;
 using Ape.Volo.IBusiness.QueryModel;
@@ -21,16 +20,14 @@ public class AuditingController : BaseApiController
     #region 字段
 
     private readonly IAuditLogService _auditInfoService;
-    private readonly IHttpUser _httpUser;
 
     #endregion
 
     #region 构造函数
 
-    public AuditingController(IAuditLogService auditInfoService, IHttpUser httpUser)
+    public AuditingController(IAuditLogService auditInfoService)
     {
         _auditInfoService = auditInfoService;
-        _httpUser = httpUser;
     }
 
     #endregion
@@ -71,7 +68,7 @@ public class AuditingController : BaseApiController
     [NotAudit]
     public async Task<ActionResult<object>> FindListByCurrent(Pagination pagination)
     {
-        var auditInfos = await _auditInfoService.QueryByCurrentAsync(_httpUser.Account, pagination);
+        var auditInfos = await _auditInfoService.QueryByCurrentAsync(pagination);
 
         return JsonContent(new ActionResultVm<AuditLogDto>
         {

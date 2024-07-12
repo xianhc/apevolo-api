@@ -68,10 +68,10 @@ public class ExcelHelper
     {
         string fileName = nameof(ExportBase) + "_" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
         //文件夹目录
-        string filePath = $"{AppSettings.WebRootPath}//exportFile//TmpFile";
+        string filePath = $"{App.WebHostEnvironment.WebRootPath}//exportFile//TmpFile";
 
         //压缩包目录
-        string zipPath = $"{AppSettings.WebRootPath}//exportFile//TmpFile{fileName}.zip";
+        string zipPath = $"{App.WebHostEnvironment.WebRootPath}//exportFile//TmpFile{fileName}.zip";
 
         //打开文件夹
         DirectoryInfo fileFolder = new DirectoryInfo(filePath);

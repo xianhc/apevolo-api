@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
-using Microsoft.Extensions.Options;
 using SqlSugar;
 
 namespace Ape.Volo.Entity.Seed;
@@ -16,11 +16,9 @@ public class DataContext
     /// 
     /// </summary>
     /// <param name="sqlSugarClient"></param>
-    /// <param name="configs"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public DataContext(ISqlSugarClient sqlSugarClient, IOptionsMonitor<Configs> configs = null)
+    public DataContext(ISqlSugarClient sqlSugarClient)
     {
-        _configs = configs?.CurrentValue ?? new Configs();
         if (string.IsNullOrEmpty(ConnectionString))
             throw new ArgumentNullException(nameof(sqlSugarClient), "数据库连接字符串为空");
         _db = sqlSugarClient as SqlSugarScope;
@@ -53,15 +51,15 @@ public class DataContext
         private set => _db = value;
     }
 
-    /// <summary>
-    /// 数据连接对象 
-    /// </summary>
-    private Configs _configs;
-
-    public Configs Configs
-    {
-        get => _configs;
-    }
+    // /// <summary>
+    // /// 数据连接对象 
+    // /// </summary>
+    // private Configs _configs;
+    //
+    // public Configs Configs
+    // {
+    //     get => _configs;
+    // }
 
     /// <summary>
     /// 当前数据库
@@ -69,7 +67,8 @@ public class DataContext
     private ConnectionItem GetCurrentDataBase()
     {
         var defaultConnectionItem =
-            Configs.DataConnection.ConnectionItem.FirstOrDefault(x => x.ConnId == Configs.DefaultDataBase);
+            App.GetOptions<DataConnectionOptions>().ConnectionItem
+                .FirstOrDefault(x => x.ConnId == App.GetOptions<SettingsOptions>().DefaultDataBase);
         if (defaultConnectionItem.IsNull())
         {
             throw new Exception("数据库配置出错，请检查！");

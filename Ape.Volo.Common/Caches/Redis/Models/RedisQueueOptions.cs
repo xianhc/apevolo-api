@@ -21,6 +21,11 @@ public class RedisQueueOptions
     public int IntervalTime { get; set; }
 
     /// <summary>
+    /// 如果是批量消费 一次消费最大处理多少条
+    /// </summary>
+    public int MaxQueueConsumption { get; set; }
+
+    /// <summary>
     /// 是否显示日志
     /// </summary>
     public bool ShowLog { get; set; }

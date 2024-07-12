@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Ape.Volo.Common.Enums;
-using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.Base;
 using Ape.Volo.Entity.Permission;
 using SqlSugar;

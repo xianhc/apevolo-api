@@ -5,19 +5,21 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common;
+using Ape.Volo.Common.Attributes;
+using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.SnowflakeIdHelper;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.ExportModel.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 
 namespace Ape.Volo.Business.Permission;
@@ -36,8 +38,7 @@ public class UserService : BaseServices<User>, IUserService
 
     #region 构造函数
 
-    public UserService(IDepartmentService departmentService, ApeContext apeContext,
-        IRoleService roleService) : base(apeContext)
+    public UserService(IDepartmentService departmentService, IRoleService roleService)
     {
         _departmentService = departmentService;
         _roleService = roleService;
@@ -65,7 +66,7 @@ public class UserService : BaseServices<User>, IUserService
             throw new BadRequestException($"电话=>{createUpdateUserDto.Phone}=>已存在!");
         }
 
-        var user = ApeContext.Mapper.Map<User>(createUpdateUserDto);
+        var user = App.Mapper.MapTo<User>(createUpdateUserDto);
 
         //设置用户密码
         user.Password = BCryptHelper.Hash("123456");
@@ -130,7 +131,7 @@ public class UserService : BaseServices<User>, IUserService
         //验证角色等级
         var levels = oldUser.Roles.Select(x => x.Level);
         await _roleService.VerificationUserRoleLevelAsync(levels.Min());
-        var user = ApeContext.Mapper.Map<User>(createUpdateUserDto);
+        var user = App.Mapper.MapTo<User>(createUpdateUserDto);
         user.DeptId = user.Dept.Id;
         //更新用户
         await UpdateEntityAsync(user, new List<string> { "password", "salt_key", "avatar_name", "avatar_path" });
@@ -165,7 +166,7 @@ public class UserService : BaseServices<User>, IUserService
     {
         //验证角色等级
         await _roleService.VerificationUserRoleLevelAsync(await _roleService.QueryUserRoleLevelAsync(ids));
-        if (ids.Contains(ApeContext.LoginUserInfo.UserId))
+        if (ids.Contains(App.HttpUser.Id))
         {
             throw new BadRequestException("禁止删除自己");
         }
@@ -197,7 +198,7 @@ public class UserService : BaseServices<User>, IUserService
         };
         var users = await SugarRepository.QueryPageListAsync(queryOptions);
 
-        return ApeContext.Mapper.Map<List<UserDto>>(users);
+        return App.Mapper.MapTo<List<UserDto>>(users);
     }
 
 
@@ -228,13 +229,13 @@ public class UserService : BaseServices<User>, IUserService
 
     #region 扩展方法
 
-    [UseCache(Expiration = 60, KeyPrefix = GlobalConstants.CachePrefix.UserInfoById)]
+    //[UseCache(Expiration = 60, KeyPrefix = GlobalConstants.CachePrefix.UserInfoById)]
     public async Task<UserDto> QueryByIdAsync(long userId)
     {
         var user = await TableWhere(x => x.Id == userId, null, null, true).Includes(x => x.Dept).Includes(x => x.Roles)
             .Includes(x => x.Jobs).FirstAsync();
 
-        return ApeContext.Mapper.Map<UserDto>(user);
+        return App.Mapper.MapTo<UserDto>(user);
     }
 
     /// <summary>
@@ -254,7 +255,7 @@ public class UserService : BaseServices<User>, IUserService
             user = await TableWhere(s => s.Username == userName, null, null, true).FirstAsync();
         }
 
-        return ApeContext.Mapper.Map<UserDto>(user);
+        return App.Mapper.MapTo<UserDto>(user);
     }
 
     /// <summary>
@@ -264,7 +265,7 @@ public class UserService : BaseServices<User>, IUserService
     /// <returns></returns>
     public async Task<List<UserDto>> QueryByDeptIdsAsync(List<long> deptIds)
     {
-        return ApeContext.Mapper.Map<List<UserDto>>(
+        return App.Mapper.MapTo<List<UserDto>>(
             await SugarRepository.QueryListAsync(u => deptIds.Contains(u.DeptId)));
     }
 
@@ -276,14 +277,14 @@ public class UserService : BaseServices<User>, IUserService
     /// <exception cref="BadRequestException"></exception>
     public async Task<bool> UpdateCenterAsync(UpdateUserCenterDto updateUserCenterDto)
     {
-        var user = await TableWhere(x => x.Id == ApeContext.LoginUserInfo.UserId).FirstAsync();
+        var user = await TableWhere(x => x.Id == App.HttpUser.Id).FirstAsync();
         if (user.IsNull())
             throw new BadRequestException("数据不存在！");
         if (!updateUserCenterDto.Phone.IsPhone())
             throw new BadRequestException("电话格式错误");
 
         var checkUser = await SugarRepository.QueryFirstAsync(x =>
-            x.Phone == updateUserCenterDto.Phone && x.Id != ApeContext.LoginUserInfo.UserId);
+            x.Phone == updateUserCenterDto.Phone && x.Id != App.HttpUser.Id);
         if (checkUser.IsNotNull())
             throw new BadRequestException($"电话=>{checkUser.Phone}=>已存在!");
 
@@ -295,7 +296,7 @@ public class UserService : BaseServices<User>, IUserService
 
     public async Task<bool> UpdatePasswordAsync(UpdateUserPassDto userPassDto)
     {
-        var rsaHelper = new RsaHelper(ApeContext.Configs.Rsa);
+        var rsaHelper = new RsaHelper(App.GetOptions<RsaOptions>());
         string oldPassword = rsaHelper.Decrypt(userPassDto.OldPassword);
         string newPassword = rsaHelper.Decrypt(userPassDto.NewPassword);
         string confirmPassword = rsaHelper.Decrypt(userPassDto.ConfirmPassword);
@@ -308,7 +309,7 @@ public class UserService : BaseServices<User>, IUserService
             throw new BadRequestException("两次输入不匹配");
         }
 
-        var curUser = await TableWhere(x => x.Id == ApeContext.LoginUserInfo.UserId).FirstAsync();
+        var curUser = await TableWhere(x => x.Id == App.HttpUser.Id).FirstAsync();
         if (curUser.IsNull())
             throw new BadRequestException("数据不存在！");
         if (!BCryptHelper.Verify(oldPassword, curUser.Password))
@@ -323,12 +324,12 @@ public class UserService : BaseServices<User>, IUserService
         if (isTrue)
         {
             //清理缓存
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
-                                               curUser.Id.ToString().ToMd5String16());
+            await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
+                                        curUser.Id.ToString().ToMd5String16());
 
             //退出当前用户
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.OnlineKey +
-                                               ApeContext.HttpUser.JwtToken.ToMd5String16());
+            await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.OnlineKey +
+                                        App.HttpUser.JwtToken.ToMd5String16());
         }
 
         return true;
@@ -341,17 +342,17 @@ public class UserService : BaseServices<User>, IUserService
     /// <returns></returns>
     public async Task<bool> UpdateEmailAsync(UpdateUserEmailDto updateUserEmailDto)
     {
-        var curUser = await TableWhere(x => x.Id == ApeContext.LoginUserInfo.UserId).FirstAsync();
+        var curUser = await TableWhere(x => x.Id == App.HttpUser.Id).FirstAsync();
         if (curUser.IsNull())
             throw new BadRequestException("数据不存在！");
-        var rsaHelper = new RsaHelper(ApeContext.Configs.Rsa);
+        var rsaHelper = new RsaHelper(App.GetOptions<RsaOptions>());
         string password = rsaHelper.Decrypt(updateUserEmailDto.Password);
         if (!BCryptHelper.Verify(password, curUser.Password))
         {
             throw new BadRequestException("密码错误");
         }
 
-        var code = await ApeContext.Cache.GetAsync<string>(
+        var code = await App.Cache.GetAsync<string>(
             GlobalConstants.CachePrefix.EmailCaptcha + updateUserEmailDto.Email.ToMd5String16());
         if (code.IsNullOrEmpty() || !code.Equals(updateUserEmailDto.Code))
         {
@@ -364,11 +365,11 @@ public class UserService : BaseServices<User>, IUserService
 
     public async Task<bool> UpdateAvatarAsync(IFormFile file)
     {
-        var curUser = await TableWhere(x => x.Id == ApeContext.LoginUserInfo.UserId).FirstAsync();
+        var curUser = await TableWhere(x => x.Id == App.HttpUser.Id).FirstAsync();
         if (curUser.IsNull())
             throw new BadRequestException("数据不存在！");
 
-        var prefix = AppSettings.WebRootPath;
+        var prefix = App.WebHostEnvironment.WebRootPath;
         string avatarName = DateTime.Now.ToString("yyyyMMddHHmmss") + "_" + IdHelper.GetId() +
                             file.FileName.Substring(Math.Max(file.FileName.LastIndexOf('.'), 0));
         string avatarPath = Path.Combine(prefix, "uploads", "file", "avatar");
@@ -388,8 +389,8 @@ public class UserService : BaseServices<User>, IUserService
         string relativePath = Path.GetRelativePath(prefix, avatarPath);
         relativePath = "/" + relativePath.Replace("\\", "/");
         curUser.AvatarPath = relativePath;
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
-                                           curUser.Id.ToString().ToMd5String16());
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
+                                    curUser.Id.ToString().ToMd5String16());
         return await UpdateEntityAsync(curUser);
     }
 
@@ -400,16 +401,16 @@ public class UserService : BaseServices<User>, IUserService
     private async Task ClearUserCache(long userId)
     {
         //清理缓存
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
-                                           userId.ToString().ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
+                                    userId.ToString().ToMd5String16());
+        await App.Cache.RemoveAsync(
             GlobalConstants.CachePrefix.UserPermissionUrls + userId.ToString().ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(
+        await App.Cache.RemoveAsync(
             GlobalConstants.CachePrefix.UserPermissionRoles + userId.ToString().ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
-                                           userId.ToString().ToMd5String16());
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserDataScopeById +
-                                           userId.ToString().ToMd5String16());
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
+                                    userId.ToString().ToMd5String16());
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserDataScopeById +
+                                    userId.ToString().ToMd5String16());
     }
 
     #endregion
@@ -454,4 +455,12 @@ public class UserService : BaseServices<User>, IUserService
     }
 
     #endregion
+}
+
+public static class SourceClassExtensions
+{
+    public static UserDto AdaptToUserDto(this User self)
+    {
+        return self.Adapt<UserDto>();
+    }
 }

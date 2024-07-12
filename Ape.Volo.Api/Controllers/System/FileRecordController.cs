@@ -2,6 +2,8 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.ActionExtension.Parameter;
 using Ape.Volo.Api.Controllers.Base;
+using Ape.Volo.Common;
+using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
@@ -56,7 +58,7 @@ public class FileRecordController : BaseApiController
             return Error("请选择一个文件再尝试!");
         }
 
-        var fileLimitSize = _fileRecordService.ApeContext.Configs.FileLimitSize * 1024 * 1024;
+        var fileLimitSize = App.GetOptions<SettingsOptions>().FileLimitSize * 1024 * 1024;
         if (file.Length > fileLimitSize)
         {
             return Error($"文件过大，请选择文件小于等于{fileLimitSize}MB的重新进行尝试!");

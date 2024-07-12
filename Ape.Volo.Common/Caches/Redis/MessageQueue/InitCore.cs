@@ -3,102 +3,135 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Ape.Volo.Common.Caches.Redis.Abstractions;
-using Ape.Volo.Common.Caches.Redis.Attributes;
+using Ape.Volo.Common.Attributes.Redis;
 using Ape.Volo.Common.Caches.Redis.Models;
 using Ape.Volo.Common.Extensions;
+using Ape.Volo.Common.Helper;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using StackExchange.Redis;
 
 namespace Ape.Volo.Common.Caches.Redis.MessageQueue;
 
 public class InitCore
 {
+    /// <summary>
+    /// 立即消费
+    /// </summary>
+    /// <param name="executorDescriptorList"></param>
+    /// <param name="queueOptions"></param>
     private async Task Send(IEnumerable<ConsumerExecutorDescriptor> executorDescriptorList,
-        IServiceProvider serviceProvider, RedisQueueOptions queueOptions)
+        RedisQueueOptions queueOptions)
     {
-        List<Task> tasks = new List<Task>();
+        var tasks = new List<Task>();
+
         foreach (var consumerExecutorDescriptor in executorDescriptorList)
         {
-            //线程
-            tasks.Add(Task.Run(async () =>
-            {
-                using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                {
-                    var publish = consumerExecutorDescriptor.Attribute.Name;
-                    var provider = scope.ServiceProvider;
-                    var obj = ActivatorUtilities.GetServiceOrCreateInstance(provider,
-                        consumerExecutorDescriptor.ImplTypeInfo);
-                    ParameterInfo[] parameterInfos = consumerExecutorDescriptor.MethodInfo.GetParameters();
-                    //redis对象
-                    var redis = scope.ServiceProvider.GetService<ICache>();
-                    while (true)
-                    {
-                        try
-                        {
-                            if (queueOptions.ShowLog)
-                            {
-                                Console.WriteLine($"执行方法:{obj},key:{publish},执行时间{DateTime.Now}");
-                            }
-
-                            var count = await redis.GetDatabase().ListLengthAsync(publish);
-                            if (count > 0)
-                            {
-                                //从MQ里获取一条消息
-                                var res = await redis.GetDatabase().ListRightPopAsync(publish);
-                                if (string.IsNullOrEmpty(res)) continue;
-                                //堵塞
-                                await Task.Delay(queueOptions.IntervalTime);
-                                try
-                                {
-                                    await Task.Run(async () =>
-                                    {
-                                        if (parameterInfos.Length == 0)
-                                        {
-                                            consumerExecutorDescriptor.MethodInfo.Invoke(obj, null);
-                                        }
-                                        else
-                                        {
-                                            object[] parameters = { res };
-                                            consumerExecutorDescriptor.MethodInfo.Invoke(obj, parameters);
-                                        }
-                                    });
-                                }
-                                catch (System.Exception ex)
-                                {
-                                    Console.WriteLine(ex.Message);
-                                }
-                            }
-                            else
-                            {
-                                //线程挂起1s
-                                await Task.Delay(queueOptions.SuspendTime);
-                            }
-                        }
-                        catch (System.Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                    }
-                }
-            }));
+            tasks.Add(ProcessConsumer(consumerExecutorDescriptor, queueOptions));
         }
 
         await Task.WhenAll(tasks);
     }
 
+    private async Task ProcessConsumer(ConsumerExecutorDescriptor consumerExecutorDescriptor,
+        RedisQueueOptions queueOptions)
+    {
+        using (var scope = App.GetRequiredService<IServiceScopeFactory>().CreateScope())
+        {
+            var publish = consumerExecutorDescriptor.Attribute.Name;
+            var bulk = consumerExecutorDescriptor.Attribute.Bulk;
+            var obj = ActivatorUtilities.GetServiceOrCreateInstance(scope.ServiceProvider,
+                consumerExecutorDescriptor.ImplTypeInfo);
+            var redis = scope.ServiceProvider.GetService<ICache>();
+            var parameterInfos = consumerExecutorDescriptor.MethodInfo.GetParameters();
 
+            while (true)
+            {
+                try
+                {
+                    if (queueOptions.ShowLog)
+                    {
+                        Log.Information($"执行方法:{obj},key:{publish},执行时间{DateTime.Now}");
+                    }
+
+                    var count = await redis.GetDatabase().ListLengthAsync(publish);
+                    if (count > 0)
+                    {
+                        if (bulk)
+                        {
+                            List<RedisValue> redisValues = new List<RedisValue>();
+
+                            for (int i = 0; i < queueOptions.MaxQueueConsumption; i++)
+                            {
+                                var res = await redis.GetDatabase().ListRightPopAsync(publish);
+                                if (res.HasValue)
+                                {
+                                    redisValues.Add(res);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+
+                            object[] parameters = { redisValues };
+                            consumerExecutorDescriptor.MethodInfo.Invoke(obj, parameters);
+                            if (queueOptions.IntervalTime > 0)
+                            {
+                                await Task.Delay(queueOptions.IntervalTime);
+                            }
+                        }
+                        else
+                        {
+                            var res = await redis.GetDatabase().ListRightPopAsync(publish);
+                            if (string.IsNullOrEmpty(res)) continue;
+                            if (parameterInfos.Length == 0)
+                            {
+                                consumerExecutorDescriptor.MethodInfo.Invoke(obj, null);
+                            }
+                            else
+                            {
+                                object[] parameters = { res };
+                                consumerExecutorDescriptor.MethodInfo.Invoke(obj, parameters);
+                            }
+
+                            if (queueOptions.IntervalTime > 0)
+                            {
+                                await Task.Delay(queueOptions.IntervalTime);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        await Task.Delay(queueOptions.SuspendTime);
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Log.Fatal($"消费队列报错key:{publish}\n\r" + ExceptionHelper.GetExceptionAllMsg(ex));
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 延迟消费
+    /// </summary>
+    /// <param name="executorDescriptorList"></param>
+    /// <param name="queueOptions"></param>
     private async Task SendDelay(IEnumerable<ConsumerExecutorDescriptor> executorDescriptorList,
-        IServiceProvider serviceProvider, RedisQueueOptions queueOptions)
+        RedisQueueOptions queueOptions)
     {
         List<Task> tasks = new List<Task>();
         foreach (var consumerExecutorDescriptor in executorDescriptorList)
         {
             //线程
-            tasks.Add(Task.Run(async () =>
+            tasks.Add(Task.Run(() =>
             {
-                using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                using (var scope = App.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     var publish = $"queue:{consumerExecutorDescriptor.Attribute.Name}";
+                    var bulk = consumerExecutorDescriptor.Attribute.Bulk;
                     var provider = scope.ServiceProvider;
                     var obj = ActivatorUtilities.GetServiceOrCreateInstance(provider,
                         consumerExecutorDescriptor.ImplTypeInfo);
@@ -123,7 +156,7 @@ public class InitCore
                                     var arry = await redis.GetDatabase().SortedSetRangeByScoreAsync(
                                         consumerExecutorDescriptor.Attribute.Name, double.NegativeInfinity,
                                         stopTimeStamp);
-                                    if (arry != null && arry.Length > 0)
+                                    if (arry is { Length: > 0 })
                                     {
                                         foreach (var item in arry)
                                         {
@@ -137,13 +170,12 @@ public class InitCore
                                     }
                                     else
                                     {
-                                        //线程挂起1s
-                                        await Task.Delay(1000);
+                                        await Task.Delay(queueOptions.SuspendTime);
                                     }
                                 }
                                 catch (System.Exception ex)
                                 {
-                                    Console.WriteLine($"执行延迟队列报错:{ex.Message}");
+                                    Log.Fatal($"延迟消费队列报错key:{publish}\n\r" + ExceptionHelper.GetExceptionAllMsg(ex));
                                 }
                                 finally
                                 {
@@ -162,46 +194,64 @@ public class InitCore
                             {
                                 if (queueOptions.ShowLog)
                                 {
-                                    Console.WriteLine($"执行方法:{obj},key:{publish},执行时间{DateTime.Now}");
+                                    Log.Information($"执行方法:{obj},key:{publish},执行时间{DateTime.Now}");
                                 }
 
                                 var count = await redis.GetDatabase().ListLengthAsync(publish);
                                 if (count > 0)
                                 {
-                                    //从MQ里获取一条消息
-                                    var res = await redis.GetDatabase().ListRightPopAsync(publish);
-                                    if (string.IsNullOrEmpty(res)) continue;
-                                    //堵塞
-                                    await Task.Delay(queueOptions.IntervalTime);
-                                    try
+                                    if (bulk)
                                     {
-                                        await Task.Run(async () =>
+                                        List<RedisValue> redisValues = new List<RedisValue>();
+
+                                        for (int i = 0; i < queueOptions.MaxQueueConsumption; i++)
                                         {
-                                            if (parameterInfos.Length == 0)
+                                            var res = await redis.GetDatabase().ListRightPopAsync(publish);
+                                            if (res.HasValue)
                                             {
-                                                consumerExecutorDescriptor.MethodInfo.Invoke(obj, null);
+                                                redisValues.Add(res);
                                             }
                                             else
                                             {
-                                                object[] parameters = { res };
-                                                consumerExecutorDescriptor.MethodInfo.Invoke(obj, parameters);
+                                                break;
                                             }
-                                        });
+                                        }
+
+                                        object[] parameters = { redisValues };
+                                        consumerExecutorDescriptor.MethodInfo.Invoke(obj, parameters);
+                                        if (queueOptions.IntervalTime > 0)
+                                        {
+                                            await Task.Delay(queueOptions.IntervalTime);
+                                        }
                                     }
-                                    catch (System.Exception ex)
+                                    else
                                     {
-                                        Console.WriteLine(ex.Message);
+                                        var res = await redis.GetDatabase().ListRightPopAsync(publish);
+                                        if (string.IsNullOrEmpty(res)) continue;
+                                        if (parameterInfos.Length == 0)
+                                        {
+                                            consumerExecutorDescriptor.MethodInfo.Invoke(obj, null);
+                                        }
+                                        else
+                                        {
+                                            object[] parameters = { res };
+                                            consumerExecutorDescriptor.MethodInfo.Invoke(obj, parameters);
+                                        }
+
+                                        if (queueOptions.IntervalTime > 0)
+                                        {
+                                            await Task.Delay(queueOptions.IntervalTime);
+                                        }
                                     }
                                 }
                                 else
                                 {
-                                    //线程挂起1s
                                     await Task.Delay(queueOptions.SuspendTime);
                                 }
                             }
                             catch (System.Exception ex)
                             {
-                                Console.WriteLine(ex.Message);
+                                Log.Fatal($"消费队列报错key:{publish}\n\r" + ExceptionHelper.GetExceptionAllMsg(ex));
                             }
                         }
                     }));
@@ -212,39 +262,37 @@ public class InitCore
         await Task.WhenAll(tasks);
     }
 
-    public async Task FindInterfaceTypes(IServiceProvider provider, RedisQueueOptions queueOptions)
+    public async Task FindInterfaceTypes(RedisQueueOptions queueOptions)
     {
         var executorDescriptorList = new List<ConsumerExecutorDescriptor>();
-        using (var scoped = provider.CreateScope())
+        await using var scoped = App.RootServices.CreateAsyncScope();
+        var scopedProvider = scoped.ServiceProvider;
+        var listService = scopedProvider.GetService<Func<Type, IRedisSubscribe>>();
+        foreach (var item in queueOptions.ListSubscribe)
         {
-            var scopedProvider = scoped.ServiceProvider;
-            var listService = scopedProvider.GetService<Func<Type, IRedisSubscribe>>();
-            foreach (var item in queueOptions.ListSubscribe)
+            if (listService != null)
             {
-                if (listService != null)
+                var consumerServices = listService(item);
+                var typeInfo = consumerServices.GetType().GetTypeInfo();
+                if (!typeof(IRedisSubscribe).GetTypeInfo().IsAssignableFrom(typeInfo))
                 {
-                    var consumerServices = listService(item);
-                    var typeInfo = consumerServices.GetType().GetTypeInfo();
-                    if (!typeof(IRedisSubscribe).GetTypeInfo().IsAssignableFrom(typeInfo))
-                    {
-                        continue;
-                    }
-
-                    executorDescriptorList.AddRange(GetTopicAttributesDescription(typeInfo));
+                    continue;
                 }
+
+                executorDescriptorList.AddRange(GetTopicAttributesDescription(typeInfo));
             }
-
-            List<Task> tasks = new List<Task>();
-            //普通队列任务
-            tasks.Add(Send(executorDescriptorList.Where(m => m.Attribute.GetType().Name == "SubscribeAttribute"),
-                provider, queueOptions));
-
-            //延迟队列任务
-            tasks.Add(SendDelay(
-                executorDescriptorList.Where(m => m.Attribute.GetType().Name == "SubscribeDelayAttribute"),
-                provider, queueOptions));
-            await Task.WhenAll(tasks);
         }
+
+        List<Task> tasks = new List<Task>();
+        //普通队列任务
+        tasks.Add(Send(executorDescriptorList.Where(m => m.Attribute.GetType().Name == nameof(SubscribeAttribute)),
+            queueOptions));
+
+        //延迟队列任务
+        tasks.Add(SendDelay(
+            executorDescriptorList.Where(m => m.Attribute.GetType().Name == nameof(SubscribeDelayAttribute)),
+            queueOptions));
+        await Task.WhenAll(tasks);
     }
 
 

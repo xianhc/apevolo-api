@@ -137,9 +137,8 @@ public class ApisController : BaseApiController
     public async Task<ActionResult<object>> RefreshApis()
     {
         List<Apis> apis = new List<Apis>();
-        var assembly = GlobalData.GetApiAssembly();
         var allApis = await _apisService.QueryAllAsync();
-        var types = assembly.ExportedTypes.Where(x =>
+        var types = GlobalType.ApiTypes.Where(x =>
                 x.IsClass && typeof(Controller).IsAssignableFrom(x) && x.Name != "TestController" &&
                 x.Namespace != "Ape.Volo.Api.Controllers.Base")
             .OrderBy(x => x.GetCustomAttributes<RouteAttribute>().FirstOrDefault()?.Order).ToList();

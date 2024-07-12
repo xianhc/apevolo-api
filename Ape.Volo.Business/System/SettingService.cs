@@ -6,12 +6,11 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
 using Ape.Volo.IBusiness.ExportModel.System;
@@ -28,7 +27,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
 
     private readonly ILogger<SettingService> _logger;
 
-    public SettingService(ApeContext apeContext, ILogger<SettingService> logger) : base(apeContext)
+    public SettingService(ILogger<SettingService> logger)
     {
         _logger = logger;
     }
@@ -44,7 +43,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
             throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在!");
         }
 
-        var setting = ApeContext.Mapper.Map<Setting>(createUpdateSettingDto);
+        var setting = App.Mapper.MapTo<Setting>(createUpdateSettingDto);
         return await AddEntityAsync(setting);
     }
 
@@ -63,9 +62,9 @@ public class SettingService : BaseServices<Setting>, ISettingService
             throw new BadRequestException($"设置键=>{createUpdateSettingDto.Name}=>已存在!");
         }
 
-        await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadSettingByName +
-                                           oldSetting.Name.ToMd5String16());
-        var setting = ApeContext.Mapper.Map<Setting>(createUpdateSettingDto);
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadSettingByName +
+                                    oldSetting.Name.ToMd5String16());
+        var setting = App.Mapper.MapTo<Setting>(createUpdateSettingDto);
         return await UpdateEntityAsync(setting);
     }
 
@@ -74,8 +73,8 @@ public class SettingService : BaseServices<Setting>, ISettingService
         var settings = await TableWhere(x => ids.Contains(x.Id)).ToListAsync();
         foreach (var setting in settings)
         {
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadSettingByName +
-                                               setting.Name.ToMd5String16());
+            await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.LoadSettingByName +
+                                        setting.Name.ToMd5String16());
         }
 
         return await LogicDelete<Setting>(x => ids.Contains(x.Id)) > 0;
@@ -89,7 +88,7 @@ public class SettingService : BaseServices<Setting>, ISettingService
             Pagination = pagination,
             WhereLambda = whereExpression,
         };
-        return ApeContext.Mapper.Map<List<SettingDto>>(
+        return App.Mapper.MapTo<List<SettingDto>>(
             await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
@@ -145,7 +144,6 @@ public class SettingService : BaseServices<Setting>, ISettingService
     }
 
     #endregion
-
 
     #region 条件表达式
 

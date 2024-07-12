@@ -4,13 +4,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.ExportModel.Permission;
@@ -23,7 +23,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
 {
     #region 构造函数
 
-    public DepartmentService(ApeContext apeContext) : base(apeContext)
+    public DepartmentService()
     {
     }
 
@@ -40,7 +40,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         }
 
         Department dept =
-            ApeContext.Mapper.Map<Department>(createUpdateDepartmentDto);
+            App.Mapper.MapTo<Department>(createUpdateDepartmentDto);
         await AddEntityAsync(dept);
 
         //重新计算子节点个数
@@ -77,7 +77,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
         }
 
         Department dept =
-            ApeContext.Mapper.Map<Department>(createUpdateDepartmentDto);
+            App.Mapper.MapTo<Department>(createUpdateDepartmentDto);
         dept.SubCount = oldUseDepartment.SubCount;
         await UpdateEntityAsync(dept);
 
@@ -177,7 +177,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
             deptList = await SugarRepository.QueryListAsync(whereExpression);
         }
 
-        var deptDataList = ApeContext.Mapper.Map<List<DepartmentDto>>(deptList);
+        var deptDataList = App.Mapper.MapTo<List<DepartmentDto>>(deptList);
 
         pagination.TotalElements = deptDataList.Count;
         return deptDataList;
@@ -185,7 +185,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
 
     public async Task<List<DepartmentDto>> QueryAllAsync()
     {
-        var deptList = ApeContext.Mapper.Map<List<DepartmentDto>>(await Table.ToListAsync());
+        var deptList = App.Mapper.MapTo<List<DepartmentDto>>(await Table.ToListAsync());
         return deptList;
     }
 
@@ -216,7 +216,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     {
         var departmentList = new List<DepartmentDto>();
         var dept = await TableWhere(x => x.Id == id).FirstAsync();
-        var deptDto = ApeContext.Mapper.Map<DepartmentDto>(dept);
+        var deptDto = App.Mapper.MapTo<DepartmentDto>(dept);
         var departmentDtoList = await FindSuperiorAsync(deptDto, new List<DepartmentDto>());
         departmentList.AddRange(departmentDtoList);
 
@@ -227,13 +227,13 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
 
     public async Task<List<DepartmentDto>> QueryByPIdAsync(long id)
     {
-        return ApeContext.Mapper.Map<List<DepartmentDto>>(await SugarRepository.QueryListAsync(x =>
+        return App.Mapper.MapTo<List<DepartmentDto>>(await SugarRepository.QueryListAsync(x =>
             x.ParentId == id && x.Enabled));
     }
 
     public async Task<DepartmentSmallDto> QueryByIdAsync(long id)
     {
-        return ApeContext.Mapper.Map<DepartmentSmallDto>(await SugarRepository.QueryFirstAsync(x =>
+        return App.Mapper.MapTo<DepartmentSmallDto>(await SugarRepository.QueryFirstAsync(x =>
             x.Id == id && x.Enabled));
     }
 
@@ -247,7 +247,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
     /// <returns></returns>
     private async Task<List<DepartmentDto>> FindByPIdIsNullAsync()
     {
-        return ApeContext.Mapper.Map<List<DepartmentDto>>(
+        return App.Mapper.MapTo<List<DepartmentDto>>(
             await SugarRepository.QueryListAsync(x => x.ParentId == 0 && x.Enabled));
     }
 
@@ -270,7 +270,7 @@ public class DepartmentService : BaseServices<Department>, IDepartmentService
 
             departmentDtoList.AddRange(await QueryByPIdAsync(Convert.ToInt64(departmentDto.ParentId)));
             departmentDto =
-                ApeContext.Mapper.Map<DepartmentDto>(await TableWhere(x => x.Id == departmentDto.ParentId)
+                App.Mapper.MapTo<DepartmentDto>(await TableWhere(x => x.Id == departmentDto.ParentId)
                     .FirstAsync());
         }
     }

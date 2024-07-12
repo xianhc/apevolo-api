@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;

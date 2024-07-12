@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Ape.Volo.Common.Global;
+using Ape.Volo.Common;
 using Serilog;
 using Serilog.Events;
 using Serilog.Filters;
@@ -46,7 +46,7 @@ public static class LoggerOutExtensions
         //系统日志
         loggerConfiguration = loggerConfiguration.WriteTo.Logger(lg =>
             lg.Filter.ByIncludingOnly(p => p.Level == logEvent).RecordLog().WriteTo.Async(s =>
-                s.File(Path.Combine(AppSettings.ContentRootPath, "Logs", logEvent.ToString(), ".log"),
+                s.File(Path.Combine(App.WebHostEnvironment.ContentRootPath, "Logs", logEvent.ToString(), ".log"),
                     rollingInterval: RollingInterval.Day,
                     outputTemplate: LoggerProperty.MessageTemplate, retainedFileCountLimit: 31,
                     encoding: Encoding.UTF8)));
@@ -55,7 +55,7 @@ public static class LoggerOutExtensions
         loggerConfiguration = loggerConfiguration.WriteTo.Logger(lg =>
             lg.Filter.ByIncludingOnly(p => p.Level == logEvent).RecordSql(LoggerProperty.ToFile)
                 .WriteTo.Async(s =>
-                    s.File(Path.Combine(AppSettings.ContentRootPath, "Logs", "AopSql", ".log"),
+                    s.File(Path.Combine(App.WebHostEnvironment.ContentRootPath, "Logs", "AopSql", ".log"),
                         rollingInterval: RollingInterval.Day,
                         outputTemplate: LoggerProperty.MessageTemplate, retainedFileCountLimit: 31,
                         encoding: Encoding.UTF8)));

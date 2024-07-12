@@ -1,4 +1,5 @@
 using System;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Caches;
 using Ape.Volo.Common.Caches.Distributed;
 using Ape.Volo.Common.Caches.Redis;
@@ -13,17 +14,19 @@ namespace Ape.Volo.Api.Extensions;
 /// </summary>
 public static class CacheSetup
 {
-    public static void AddCacheSetup(this IServiceCollection services, Configs configs)
+    public static void AddCacheSetup(this IServiceCollection services)
     {
         if (services.IsNull())
             throw new ArgumentNullException(nameof(services));
         //也可以增加MemoryCache选项，但是MemoryCache不支持异步操作，需要自行实现
-        if (configs.CacheOption.RedisCacheSwitch.Enabled)
+
+        var options = App.GetOptions<CacheOptions>();
+        if (options.RedisCacheSwitch.Enabled)
         {
             //开启了redis就优先使用redis
             services.AddSingleton<ICache, RedisCache>();
         }
-        else if (configs.CacheOption.DistributedCacheSwitch.Enabled)
+        else if (options.DistributedCacheSwitch.Enabled)
         {
             services.AddDistributedMemoryCache();
             services.AddSingleton<ICache, DistributedCache>();

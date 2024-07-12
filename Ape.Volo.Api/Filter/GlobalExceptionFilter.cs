@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.SnowflakeIdHelper;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Monitor;
 using Ape.Volo.IBusiness.Interface.Monitor;
 using Ape.Volo.IBusiness.Interface.System;
@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Shyjus.BrowserDetection;
 using StackExchange.Profiling;
 using static Ape.Volo.Api.Filter.ExceptionLogFormat;
@@ -34,13 +33,10 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
     private readonly ISettingService _settingService;
     private readonly IBrowserDetector _browserDetector;
     private readonly ILogger<GlobalExceptionFilter> _logger;
-    private readonly IHttpUser _httpUser;
     private readonly ISearcher _ipSearcher;
-    private readonly bool _isMiniProfiler;
 
     public GlobalExceptionFilter(IExceptionLogService exceptionLogService, ISearcher searcher,
-        IOptionsMonitor<Configs> configs,
-        ISettingService settingService, IHttpUser httpUser, IBrowserDetector browserDetector,
+        ISettingService settingService, IBrowserDetector browserDetector,
         ILogger<GlobalExceptionFilter> logger)
     {
         _exceptionLogService = exceptionLogService;
@@ -48,8 +44,6 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         _browserDetector = browserDetector;
         _logger = logger;
         _ipSearcher = searcher;
-        _httpUser = httpUser;
-        _isMiniProfiler = (configs?.CurrentValue ?? new Configs()).Middleware.MiniProfiler.Enabled;
     }
 
     public async Task OnExceptionAsync(ExceptionContext context)
@@ -84,7 +78,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             ContentType = "application/json; charset=utf-8",
             StatusCode = statusCode
         };
-        if (_isMiniProfiler)
+        if (App.GetOptions<MiddlewareOptions>().MiniProfiler.Enabled)
         {
             MiniProfiler.Current.CustomTiming("Errors：", throwMsg);
         }
@@ -93,7 +87,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         {
             //记录日志
             _logger.LogError(WriteLog(context.HttpContext, remoteIp, ipAddress, context.Exception,
-                _httpUser.Account,
+                App.HttpUser.Account,
                 _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                 _browserDetector.Browser?.Version));
         }
@@ -101,7 +95,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         {
             //_logger.LogCritical("LogError出错:" + e.ToString());
             FileHelper.WriteLog(WriteLog(context.HttpContext, remoteIp, ipAddress, e,
-                _httpUser.Account,
+                App.HttpUser.Account,
                 _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                 _browserDetector.Browser?.Version));
         }
@@ -115,12 +109,13 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
                 var log = CreateLog(context);
                 if (log.IsNotNull())
                 {
-                    await _exceptionLogService.CreateAsync(log);
+                    await Task.Factory.StartNew(() => _exceptionLogService.CreateAsync(log))
+                        .ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(WriteLog(context.HttpContext, remoteIp, ipAddress, ex, _httpUser.Account,
+                _logger.LogCritical(WriteLog(context.HttpContext, remoteIp, ipAddress, ex, App.HttpUser.Account,
                     _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                     _browserDetector.Browser?.Version));
             }
@@ -148,7 +143,7 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
             log = new ExceptionLog
             {
                 Id = IdHelper.GetLongId(),
-                CreateBy = _httpUser.Account,
+                CreateBy = App.HttpUser.Account,
                 CreateTime = DateTime.Now,
                 Area = routeValues["area"],
                 Controller = routeValues["controller"],

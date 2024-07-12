@@ -5,13 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Authentication.Jwt;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Common.Caches;
+using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.Interface.Queued;
@@ -37,7 +38,6 @@ public class AuthorizationController : BaseApiController
     private readonly IPermissionService _permissionService;
     private readonly IOnlineUserService _onlineUserService;
     private readonly IQueuedEmailService _queuedEmailService;
-    private readonly ApeContext _apeContext;
     private readonly ITokenService _tokenService;
     private readonly ITokenBlacklistService _tokenBlacklistService;
 
@@ -46,14 +46,13 @@ public class AuthorizationController : BaseApiController
     #region 构造函数
 
     public AuthorizationController(IUserService userService, IPermissionService permissionService,
-        IOnlineUserService onlineUserService, IQueuedEmailService queuedEmailService, ApeContext apeContext,
+        IOnlineUserService onlineUserService, IQueuedEmailService queuedEmailService,
         ITokenService tokenService, ITokenBlacklistService tokenBlacklistService)
     {
         _userService = userService;
         _permissionService = permissionService;
         _onlineUserService = onlineUserService;
         _queuedEmailService = queuedEmailService;
-        _apeContext = apeContext;
         _tokenService = tokenService;
         _tokenBlacklistService = tokenBlacklistService;
     }
@@ -79,9 +78,9 @@ public class AuthorizationController : BaseApiController
             return Error(actionError);
         }
 
-        var code = await _apeContext.Cache.GetAsync<string>(authUser.CaptchaId);
-        await _apeContext.Cache.RemoveAsync(authUser.CaptchaId);
-        if (!_apeContext.Configs.IsQuickDebug)
+        var code = await App.Cache.GetAsync<string>(authUser.CaptchaId);
+        await App.Cache.RemoveAsync(authUser.CaptchaId);
+        if (!App.GetOptions<SettingsOptions>().IsQuickDebug)
         {
             if (code.IsNullOrEmpty()) return Error("验证码不存在或已过期");
 
@@ -90,7 +89,7 @@ public class AuthorizationController : BaseApiController
 
         var userDto = await _userService.QueryByNameAsync(authUser.Username);
         if (userDto == null) return Error("用户不存在");
-        var password = new RsaHelper(_apeContext.Configs.Rsa).Decrypt(authUser.Password);
+        var password = new RsaHelper(App.GetOptions<RsaOptions>()).Decrypt(authUser.Password);
         if (!BCryptHelper.Verify(password, userDto.Password))
             return Error("密码错误");
 
@@ -136,7 +135,7 @@ public class AuthorizationController : BaseApiController
                 var loginTime = Convert.ToInt64(jwtSecurityToken.Claims
                     .FirstOrDefault(s => s.Type == AuthConstants.JwtClaimTypes.Iat)?.Value).TicksToDateTime();
                 var nowTime = DateTime.Now.ToLocalTime();
-                var refreshTime = loginTime.AddHours(_apeContext.Configs.JwtAuthOptions.RefreshTokenExpires);
+                var refreshTime = loginTime.AddHours(App.GetOptions<JwtAuthOptions>().RefreshTokenExpires);
                 // 允许token刷新时间内
                 if (nowTime <= refreshTime)
                 {
@@ -162,7 +161,7 @@ public class AuthorizationController : BaseApiController
     [NotAudit]
     public async Task<ActionResult<object>> GetInfo()
     {
-        var netUser = await _userService.QueryByIdAsync(_apeContext.HttpUser.Id);
+        var netUser = await _userService.QueryByIdAsync(App.HttpUser.Id);
         var permissionRoles = await _permissionService.GetPermissionRolesAsync(netUser.Id);
         permissionRoles.AddRange(netUser.Roles.Select(r => r.Permission));
         var jwtUserVo = await _onlineUserService.CreateJwtUserAsync(netUser, permissionRoles);
@@ -183,7 +182,7 @@ public class AuthorizationController : BaseApiController
         var (imgBytes, code) = SixLaborsImageHelper.BuildVerifyCode();
         var imgUrl = ImgHelper.ToBase64StringUrl(imgBytes);
         var captchaId = GlobalConstants.CachePrefix.CaptchaId + GuidHelper.GenerateKey();
-        await _apeContext.Cache.SetAsync(captchaId, code, TimeSpan.FromMinutes(2), null);
+        await App.Cache.SetAsync(captchaId, code, TimeSpan.FromMinutes(2), null);
         var dic = new Dictionary<string, string> { { "img", imgUrl }, { "captchaId", captchaId } };
         return dic.ToJson();
     }
@@ -215,19 +214,19 @@ public class AuthorizationController : BaseApiController
     public async Task<ActionResult<object>> Logout()
     {
         //清理缓存
-        if (!_apeContext.HttpUser.IsNotNull()) return Success();
-        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.OnlineKey +
-                                            _apeContext.HttpUser.JwtToken.ToMd5String16());
-        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
-                                            _apeContext.HttpUser.Id.ToString().ToMd5String16());
-        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
-                                            _apeContext.HttpUser.Id.ToString().ToMd5String16());
-        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionRoles +
-                                            _apeContext.HttpUser.Id.ToString().ToMd5String16());
-        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionUrls +
-                                            _apeContext.HttpUser.Id.ToString().ToMd5String16());
-        await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserDataScopeById +
-                                            _apeContext.HttpUser.Id.ToString().ToMd5String16());
+        if (!App.HttpUser.IsNotNull()) return Success();
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.OnlineKey +
+                                    App.HttpUser.JwtToken.ToMd5String16());
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserInfoById +
+                                    App.HttpUser.Id.ToString().ToMd5String16());
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
+                                    App.HttpUser.Id.ToString().ToMd5String16());
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionRoles +
+                                    App.HttpUser.Id.ToString().ToMd5String16());
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionUrls +
+                                    App.HttpUser.Id.ToString().ToMd5String16());
+        await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserDataScopeById +
+                                    App.HttpUser.Id.ToString().ToMd5String16());
 
 
         return Success();
@@ -260,7 +259,7 @@ public class AuthorizationController : BaseApiController
         var token = await _tokenService.IssueTokenAsync(loginUserInfo, refresh);
         loginUserInfo.AccessToken = refresh ? token.RefreshToken : token.AccessToken;
         var onlineKey = loginUserInfo.AccessToken.ToMd5String16();
-        await _apeContext.Cache.SetAsync(
+        await App.Cache.SetAsync(
             GlobalConstants.CachePrefix.OnlineKey + onlineKey,
             loginUserInfo, TimeSpan.FromHours(2), CacheExpireType.Absolute);
 

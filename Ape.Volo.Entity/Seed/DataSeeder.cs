@@ -5,7 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
@@ -38,8 +39,8 @@ public class DataSeeder
         {
             ConsoleHelper.WriteLine($"程序正在启动....", ConsoleColor.Green);
             ConsoleHelper.WriteLine($"是否开发环境: {isQuickDebug}", ConsoleColor.Green);
-            ConsoleHelper.WriteLine($"ContentRootPath: {AppSettings.ContentRootPath}");
-            ConsoleHelper.WriteLine($"WebRootPath: {AppSettings.WebRootPath}");
+            ConsoleHelper.WriteLine($"ContentRootPath: {App.WebHostEnvironment.ContentRootPath}");
+            ConsoleHelper.WriteLine($"WebRootPath: {App.WebHostEnvironment.WebRootPath}");
             ConsoleHelper.WriteLine($"Master Db Id: {dataContext.Db.CurrentConnectionConfig.ConfigId}");
             ConsoleHelper.WriteLine($"Master Db Type: {dataContext.Db.CurrentConnectionConfig.DbType}");
             ConsoleHelper.WriteLine(
@@ -63,7 +64,7 @@ public class DataSeeder
             //继承自BaseEntity或者RootKey<>的类型
             //一些没有继承的需手动维护添加
             //例如，用户与岗位(UserJobs)
-            var entityList = GlobalData.GetEntityAssembly().GetTypes()
+            var entityList = GlobalType.EntityTypes
                 .Where(x => (x.BaseType == typeof(BaseEntity) || x.BaseType == typeof(BaseEntityNoDataScope) ||
                              x.BaseType == typeof(RootKey<long>)) &&
                             x != typeof(BaseEntity) && x != typeof(BaseEntityNoDataScope) && x.Namespace != null &&
@@ -122,7 +123,7 @@ public class DataSeeder
                     return setting;
                 };
                 string seedDataFolder = "resources/db/{0}.tsv";
-                seedDataFolder = Path.Combine(AppSettings.WebRootPath, seedDataFolder);
+                seedDataFolder = Path.Combine(App.WebHostEnvironment.WebRootPath, seedDataFolder);
 
                 #region 用户
 
@@ -491,7 +492,7 @@ public class DataSeeder
         ConsoleHelper.WriteLine("初始化日志库成功。", ConsoleColor.Green);
         ConsoleHelper.WriteLine("初始化日志库数据表....");
 
-        var logEntityList = GlobalData.GetEntityAssembly().GetTypes()
+        var logEntityList = GlobalType.EntityTypes
             .Where(x => x.IsClass && x != typeof(SerilogBase) && x.Namespace != null &&
                         x.Namespace.StartsWith("Ape.Volo.Entity.Monitor")).ToList();
 
@@ -570,7 +571,7 @@ public class DataSeeder
             ConsoleHelper.WriteLine($"初始化租户{tenant.Name}库成功。", ConsoleColor.Green);
             ConsoleHelper.WriteLine($"初始化租户{tenant.Name}数据表....");
 
-            var entityList = GlobalData.GetEntityAssembly().GetTypes()
+            var entityList = GlobalType.EntityTypes
                 .Where(x => (x.BaseType == typeof(BaseEntity) || x.BaseType == typeof(RootKey<long>)) &&
                             x != typeof(BaseEntity) && x.Namespace != null &&
                             x.GetCustomAttribute<MultiDbTenantAttribute>() != null &&

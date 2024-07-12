@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Base;
 using Ape.Volo.IBusiness.Dto.System;

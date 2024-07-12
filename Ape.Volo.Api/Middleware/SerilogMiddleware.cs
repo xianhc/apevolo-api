@@ -1,8 +1,7 @@
 ﻿using System;
 using Ape.Volo.Api.Serilog;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
-using Ape.Volo.Common.Global;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
@@ -14,9 +13,8 @@ namespace Ape.Volo.Api.Middleware;
 /// </summary>
 public static class SerilogMiddleware
 {
-    public static IHostBuilder UseSerilogMiddleware(this IHostBuilder builder, IConfiguration configuration)
+    public static IHostBuilder UseSerilogMiddleware(this IHostBuilder builder)
     {
-        var configs = configuration.Get<Configs>();
         return builder.UseSerilog((context, logger) => //注册Serilog
         {
             //如要想使用setting配置方式，打开下面行注释。注释后面代码即可
@@ -28,7 +26,9 @@ public static class SerilogMiddleware
             logger.MinimumLevel.Override("Default", LogEventLevel.Information);
             logger.MinimumLevel.Override("System", LogEventLevel.Information);
 
-            if (AppSettings.IsDevelopment)
+
+            var sqlLogOptions = App.GetOptions<SqlLogOptions>();
+            if (App.WebHostEnvironment.IsDevelopment() && sqlLogOptions.ToConsole.Enabled)
             {
                 //开发模式下才输出到控制台
                 logger.WriteToConsole();
@@ -39,12 +39,13 @@ public static class SerilogMiddleware
                 logger.WriteToFile(logEvent);
             }
 
-            if (configs.SqlLog.Enabled && configs.SqlLog.ToDb.Enabled)
+            if (sqlLogOptions.Enabled && sqlLogOptions.ToDb.Enabled)
             {
                 logger.WriteToDb();
             }
 
-            if (configs.Middleware.Elasticsearch.Enabled)
+            var middlewareOptions = App.GetOptions<MiddlewareOptions>();
+            if (middlewareOptions.Elasticsearch.Enabled)
             {
                 //需要配置elasticsearch环境使用
                 //docker run --name elasticsearch -d -e ES_JAVA_OPTS="-Xms512m -Xmx512m" -e "discovery.type=single-node" -p 9200:9200 -p 9300:9300 elasticsearch:7.5.0

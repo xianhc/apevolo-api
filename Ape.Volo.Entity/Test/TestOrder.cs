@@ -1,5 +1,4 @@
-﻿using Ape.Volo.Common.AttributeExt;
-using Ape.Volo.Common.Model;
+﻿using Ape.Volo.Common.Attributes;
 using Ape.Volo.Entity.Base;
 using SqlSugar;
 

@@ -1,5 +1,5 @@
 using System.Reflection;
-using Ape.Volo.Common.Caches.Redis.Abstractions;
+using Ape.Volo.Common.Attributes.Redis;
 
 namespace Ape.Volo.Common.Caches.Redis.Models;
 

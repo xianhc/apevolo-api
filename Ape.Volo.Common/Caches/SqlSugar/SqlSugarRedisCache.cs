@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SqlSugar;
 using StackExchange.Redis;

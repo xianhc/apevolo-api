@@ -3,11 +3,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common;
+using Ape.Volo.Common.Attributes;
+using Ape.Volo.Common.Caches;
+using Ape.Volo.Common.Caches.Redis.MessageQueue;
+using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.SnowflakeIdHelper;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Monitor;
 using Ape.Volo.IBusiness.Interface.Monitor;
 using Ape.Volo.IBusiness.Interface.System;
@@ -26,17 +29,16 @@ namespace Ape.Volo.Api.Filter;
 public class AuditingFilter : IAsyncActionFilter
 {
     private readonly IAuditLogService _auditInfoService;
-    private readonly IHttpUser _httpUser;
     private readonly ISettingService _settingService;
     private readonly IBrowserDetector _browserDetector;
     private readonly ILogger<AuditingFilter> _logger;
     private readonly ISearcher _ipSearcher;
 
-    public AuditingFilter(IAuditLogService auditInfoService, IHttpUser httpUser, ISearcher searcher,
-        ISettingService settingService, IBrowserDetector browserDetector, ILogger<AuditingFilter> logger)
+    public AuditingFilter(IAuditLogService auditInfoService, ISearcher searcher,
+        ISettingService settingService, IBrowserDetector browserDetector,
+        ILogger<AuditingFilter> logger)
     {
         _auditInfoService = auditInfoService;
-        _httpUser = httpUser;
         _settingService = settingService;
         _browserDetector = browserDetector;
         _logger = logger;
@@ -98,7 +100,24 @@ public class AuditingFilter : IAsyncActionFilter
 
                     //用时
                     auditInfo.ExecutionDuration = Convert.ToInt32(sw.ElapsedMilliseconds);
-                    await _auditInfoService.CreateAsync(auditInfo);
+
+                    if (App.GetOptions<CacheOptions>().RedisCacheSwitch.Enabled &&
+                        App.GetOptions<MiddlewareOptions>().RedisMq.Enabled)
+                    {
+                        // 实时队列
+                        // await App.GetService<ICache>().GetDatabase()
+                        //     .ListLeftPushAsync(MqTopicNameKey.AuditLogQueue, auditInfo.ToJson());
+
+                        //延迟队列
+                        var stopTimeStamp = DateTime.Now.AddSeconds(10).ToUnixTimeStampSecond();
+                        await App.GetService<ICache>().GetDatabase()
+                            .SortedSetAddAsync(MqTopicNameKey.AuditLogQueue, auditInfo.ToJson(), stopTimeStamp);
+                    }
+                    else
+                    {
+                        await Task.Factory.StartNew(() => _auditInfoService.CreateAsync(auditInfo))
+                            .ConfigureAwait(false);
+                    }
                 }
             }
         }
@@ -107,7 +126,7 @@ public class AuditingFilter : IAsyncActionFilter
             var remoteIp = context.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
             var ipAddress = _ipSearcher.Search(remoteIp);
             _logger.LogCritical(ExceptionLogFormat.WriteLog(context.HttpContext, remoteIp, ipAddress, ex,
-                _httpUser?.Account,
+                App.HttpUser?.Account,
                 _browserDetector.Browser?.OS, _browserDetector.Browser?.DeviceType, _browserDetector.Browser?.Name,
                 _browserDetector.Browser?.Version));
         }
@@ -132,7 +151,7 @@ public class AuditingFilter : IAsyncActionFilter
         var auditLog = new AuditLog
         {
             Id = IdHelper.GetLongId(),
-            CreateBy = _httpUser.Account,
+            CreateBy = App.HttpUser.Account,
             CreateTime = DateTime.Now,
             Area = routeValues["area"],
             Controller = routeValues["controller"],

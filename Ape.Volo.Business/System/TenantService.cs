@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
 using Ape.Volo.IBusiness.ExportModel.System;
@@ -24,7 +24,7 @@ public class TenantService : BaseServices<Tenant>, ITenantService
 {
     #region 构造函数
 
-    public TenantService(ApeContext apeContext) : base(apeContext)
+    public TenantService()
     {
     }
 
@@ -60,7 +60,7 @@ public class TenantService : BaseServices<Tenant>, ITenantService
             }
         }
 
-        var tenant = ApeContext.Mapper.Map<Tenant>(createUpdateTenantDtoDto);
+        var tenant = App.Mapper.MapTo<Tenant>(createUpdateTenantDtoDto);
         return await AddEntityAsync(tenant);
     }
 
@@ -103,7 +103,7 @@ public class TenantService : BaseServices<Tenant>, ITenantService
             }
         }
 
-        var tenant = ApeContext.Mapper.Map<Tenant>(createUpdateTenantDtoDto);
+        var tenant = App.Mapper.MapTo<Tenant>(createUpdateTenantDtoDto);
         return await UpdateEntityAsync(tenant, [nameof(Tenant.TenantId)]);
     }
 
@@ -126,13 +126,13 @@ public class TenantService : BaseServices<Tenant>, ITenantService
             Pagination = pagination,
             WhereLambda = whereExpression,
         };
-        return ApeContext.Mapper.Map<List<TenantDto>>(
+        return App.Mapper.MapTo<List<TenantDto>>(
             await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
     public async Task<List<TenantDto>> QueryAllAsync()
     {
-        return ApeContext.Mapper.Map<List<TenantDto>>(
+        return App.Mapper.MapTo<List<TenantDto>>(
             await Table.ToListAsync());
     }
 

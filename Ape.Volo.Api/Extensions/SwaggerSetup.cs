@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper.Serilog;
@@ -18,18 +19,19 @@ public static class SwaggerSetup
 {
     private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(SwaggerSetup));
 
-    public static void AddSwaggerSetup(this IServiceCollection services, Configs configs)
+    public static void AddSwaggerSetup(this IServiceCollection services)
     {
         if (services.IsNull()) throw new ArgumentNullException(nameof(services));
 
         var basePath = AppContext.BaseDirectory;
+        var options = App.GetOptions<SwaggerOptions>();
 
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc(configs.Swagger.Name, new OpenApiInfo
+            c.SwaggerDoc(options.Name, new OpenApiInfo
             {
-                Version = configs.Swagger.Version,
-                Title = configs.Swagger.Title + "    " + RuntimeInformation.FrameworkDescription
+                Version = options.Version,
+                Title = options.Title + "    " + RuntimeInformation.FrameworkDescription
             });
 
             try

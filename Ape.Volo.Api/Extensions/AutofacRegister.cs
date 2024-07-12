@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Ape.Volo.Api.Aop;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.DI;
 using Ape.Volo.Common.Global;
@@ -11,7 +12,6 @@ using Ape.Volo.Repository.UnitOfWork;
 using Autofac;
 using Autofac.Extras.DynamicProxy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Module = Autofac.Module;
 
 namespace Ape.Volo.Api.Extensions;
@@ -21,26 +21,19 @@ namespace Ape.Volo.Api.Extensions;
 /// </summary>
 public class AutofacRegister : Module
 {
-    private readonly IConfiguration _configuration;
-
-    public AutofacRegister(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
     protected override void Load(ContainerBuilder builder)
     {
-        var configs = _configuration.Get<Configs>();
+        var options = App.GetOptions<AopOptions>();
 
         //事务 缓存 AOP
         var registerType = new List<Type>();
-        if (configs.Aop.Tran.Enabled)
+        if (options.Tran.Enabled)
         {
             builder.RegisterType<TransactionAop>();
             registerType.Add(typeof(TransactionAop));
         }
 
-        if (configs.Aop.Cache.Enabled)
+        if (options.Cache.Enabled)
         {
             builder.RegisterType<CacheAop>();
             registerType.Add(typeof(CacheAop));
@@ -51,7 +44,8 @@ public class AutofacRegister : Module
         builder.RegisterGeneric(typeof(BaseServices<>)).As(typeof(IBaseServices<>)).InstancePerDependency();
 
         //注册业务层
-        builder.RegisterAssemblyTypes(GlobalData.GetBusinessAssembly())
+        builder
+            .RegisterTypes(GlobalType.BusinessTypes.ToArray())
             .AsImplementedInterfaces()
             .InstancePerDependency()
             .PropertiesAutowired()
@@ -59,7 +53,9 @@ public class AutofacRegister : Module
             .InterceptedBy(registerType.ToArray());
 
         // 注册仓储层
-        builder.RegisterAssemblyTypes(GlobalData.GetRepositoryAssembly())
+        builder
+            .RegisterTypes(GlobalType.RepositoryTypes
+                .ToArray()) //.RegisterAssemblyTypes(GlobalData.GetRepositoryAssembly())
             .AsImplementedInterfaces()
             .PropertiesAutowired()
             .InstancePerDependency();

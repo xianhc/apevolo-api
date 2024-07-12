@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Repository.UnitOfWork;
 using Castle.DynamicProxy;
 

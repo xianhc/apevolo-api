@@ -1,5 +1,4 @@
-﻿using Ape.Volo.Common.Model;
-using Ape.Volo.Entity.Base;
+﻿using Ape.Volo.Entity.Base;
 using SqlSugar;
 
 namespace Ape.Volo.Entity.Permission;

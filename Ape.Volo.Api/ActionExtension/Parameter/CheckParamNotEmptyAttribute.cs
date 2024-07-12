@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ape.Volo.Common.DI;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Ape.Volo.Api.ActionExtension.Parameter;
 
@@ -38,7 +38,7 @@ public class CheckParamNotEmptyAttribute : Attribute, IActionFilter
         }).ToList();
         if (needParamters.Count != 0)
         {
-            var service = AutofacHelper.GetService<IHttpContextAccessor>();
+            var service = filterContext.HttpContext.RequestServices.GetService<IHttpContextAccessor>();
             ActionResultVm res = new ActionResultVm
             {
                 Status = StatusCodes.Status400BadRequest,

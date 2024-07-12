@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.WebApp;
@@ -29,7 +30,6 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserService _userService;
     private readonly ISettingService _settingService;
-    private readonly ApeContext _apeContext;
     private readonly IBrowserDetector _browserDetector;
     private readonly ISearcher _ipSearcher;
     private readonly ITokenBlacklistService _tokenBlacklistService;
@@ -42,20 +42,17 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     /// <param name="permissionService"></param>
     /// <param name="userService"></param>
     /// <param name="settingService"></param>
-    /// <param name="apeContext"></param>
     /// <param name="browserDetector"></param>
     /// <param name="searcher"></param>
     /// <param name="tokenBlacklistService"></param>
     public PermissionHandler(IAuthenticationSchemeProvider schemes, IHttpContextAccessor httpContextAccessor,
         IPermissionService permissionService, IUserService userService, ISettingService settingService,
-        ApeContext apeContext, IBrowserDetector browserDetector, ISearcher searcher,
-        ITokenBlacklistService tokenBlacklistService)
+        IBrowserDetector browserDetector, ISearcher searcher, ITokenBlacklistService tokenBlacklistService)
     {
         _httpContextAccessor = httpContextAccessor;
         Schemes = schemes;
         _permissionService = permissionService;
         _settingService = settingService;
-        _apeContext = apeContext;
         _userService = userService;
         _browserDetector = browserDetector;
         _ipSearcher = searcher;
@@ -107,8 +104,8 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                         var nowTime = DateTime.Now.ToLocalTime();
                         if (expTime < nowTime)
                         {
-                            await _apeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.OnlineKey +
-                                                                _apeContext.HttpUser.JwtToken.ToMd5String16());
+                            await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.OnlineKey +
+                                                        App.HttpUser.JwtToken.ToMd5String16());
                             context.Fail();
                             return;
                         }
@@ -118,12 +115,12 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 
                     #region 用户缓存信息是否已过期
 
-                    var loginUserInfo = await _apeContext.Cache.GetAsync<LoginUserInfo>(
+                    var loginUserInfo = await App.Cache.GetAsync<LoginUserInfo>(
                         GlobalConstants.CachePrefix.OnlineKey +
-                        _apeContext.HttpUser.JwtToken.ToMd5String16());
+                        App.HttpUser.JwtToken.ToMd5String16());
                     if (loginUserInfo == null)
                     {
-                        var tokenMd5 = _apeContext.HttpUser.JwtToken.ToMd5String16();
+                        var tokenMd5 = App.HttpUser.JwtToken.ToMd5String16();
                         var tokenBlacklist = await _tokenBlacklistService.TableWhere(x => x.AccessToken == tokenMd5)
                             .FirstAsync();
                         if (tokenBlacklist.IsNotNull())
@@ -132,7 +129,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                             return;
                         }
 
-                        var netUser = await _userService.QueryByIdAsync(_apeContext.HttpUser.Id);
+                        var netUser = await _userService.QueryByIdAsync(App.HttpUser.Id);
                         if (netUser.IsNull())
                         {
                             context.Fail();
@@ -155,10 +152,10 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                             Version = _browserDetector.Browser?.Version,
                             LoginTime = DateTime.Now,
                             IsAdmin = netUser.IsAdmin,
-                            AccessToken = _apeContext.HttpUser.JwtToken
+                            AccessToken = App.HttpUser.JwtToken
                         };
                         var onlineKey = onlineUser.AccessToken.ToMd5String16();
-                        var isTrue = await _apeContext.Cache.SetAsync(
+                        var isTrue = await App.Cache.SetAsync(
                             GlobalConstants.CachePrefix.OnlineKey + onlineKey, onlineUser, TimeSpan.FromHours(2),
                             null);
                         if (!isTrue)
@@ -175,11 +172,11 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                     var value = await _settingService.GetSettingValue<bool>("IsAdminNotAuthentication");
                     if (value)
                     {
-                        // loginUserInfo = await _apeContext.Cache.GetAsync<LoginUserInfo>(
+                        // loginUserInfo = await App.Cache.GetAsync<LoginUserInfo>(
                         //     GlobalConstants.CacheKey.OnlineKey +
                         //     _apeContext.HttpUser.JwtToken.ToMd5String16());
                         //if (loginUserInfo.IsAdmin) //不想查数据库就使用登录信息
-                        var netUser = await _userService.QueryByIdAsync(_apeContext.HttpUser.Id);
+                        var netUser = await _userService.QueryByIdAsync(App.HttpUser.Id);
                         if (netUser.IsAdmin)
                         {
                             context.Succeed(requirement);
@@ -239,7 +236,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 
                     #region 验证用户权限
 
-                    var permissionVos = await _permissionService.GetPermissionVoAsync(_apeContext.HttpUser.Id);
+                    var permissionVos = await _permissionService.GetPermissionVoAsync(App.HttpUser.Id);
 
                     if (permissionVos.Count != 0 && !requestPath.IsNullOrEmpty())
                     {

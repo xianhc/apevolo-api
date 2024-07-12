@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ape.Volo.Common.DI;
 using Ape.Volo.Common.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
@@ -14,7 +13,7 @@ namespace Ape.Volo.Common.Caches.SqlSugar;
 /// </summary>
 public class SqlSugarDistributedCache : ICacheService
 {
-    private readonly Lazy<IDistributedCache> _caching = new(AutofacHelper.GetService<IDistributedCache>);
+    private readonly Lazy<IDistributedCache> _caching = new(App.GetService<IDistributedCache>());
     private IDistributedCache Caching => _caching.Value;
 
 

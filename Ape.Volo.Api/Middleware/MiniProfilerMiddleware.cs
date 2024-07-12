@@ -1,10 +1,9 @@
 ﻿using System;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Helper.Serilog;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace Ape.Volo.Api.Middleware;
@@ -22,8 +21,7 @@ public static class MiniProfilerMiddleware
             throw new ArgumentNullException(nameof(app));
         try
         {
-            var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
-            if (configs.Middleware.MiniProfiler.Enabled)
+            if (App.GetOptions<MiddlewareOptions>().MiniProfiler.Enabled)
             {
                 // 性能分析
                 app.UseMiniProfiler();

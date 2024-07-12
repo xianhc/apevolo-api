@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Ape.Volo.Api.Serilog;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Caches.SqlSugar;
 using Ape.Volo.Common.ConfigOptions;
-using Ape.Volo.Common.DI;
 using Ape.Volo.Common.Extensions;
-using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Helper.Serilog;
 using Ape.Volo.Common.Model;
 using Ape.Volo.Common.SnowflakeIdHelper;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Base;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,12 +28,14 @@ public static class SqlSugarSetup
 {
     private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(SqlSugarSetup));
 
-    public static void AddSqlSugarSetup(this IServiceCollection services, Configs configs)
+    public static void AddSqlSugarSetup(this IServiceCollection services)
     {
         if (services.IsNull())
             throw new ArgumentNullException(nameof(services));
-        var dataConnection = configs.DataConnection;
-        if (dataConnection.ConnectionItem.Count == 0)
+
+        var settingsOptions = App.GetOptions<SettingsOptions>();
+        var options = App.GetOptions<DataConnectionOptions>();
+        if (options.ConnectionItem.Count == 0)
         {
             throw new Exception("请确保配置数据库配置DataConnection无误;");
         }
@@ -43,15 +43,15 @@ public static class SqlSugarSetup
         // var connectionMaster =
         //     dataConnection.ConnectionItem.Where(x => x.ConnId == configs.DefaultDataBase && x.Enabled).ToList();
         var allConnectionItem =
-            dataConnection.ConnectionItem.Where(x => x.Enabled).ToList();
-        if (allConnectionItem.Count == 0 || allConnectionItem.All(x => x.ConnId != configs.DefaultDataBase))
+            options.ConnectionItem.Where(x => x.Enabled).ToList();
+        if (allConnectionItem.Count == 0 || allConnectionItem.All(x => x.ConnId != settingsOptions.DefaultDataBase))
         {
-            throw new Exception($"请确保主库ID:{configs.DefaultDataBase}的Enabled为true;");
+            throw new Exception($"请确保主库ID:{settingsOptions.DefaultDataBase}的Enabled为true;");
         }
 
-        if (allConnectionItem.All(x => x.ConnId != configs.LogDataBase))
+        if (allConnectionItem.All(x => x.ConnId != settingsOptions.LogDataBase))
         {
-            throw new Exception($"请确保日志库ID:{configs.LogDataBase}的Enabled为true;");
+            throw new Exception($"请确保日志库ID:{settingsOptions.LogDataBase}的Enabled为true;");
         }
 
 
@@ -62,14 +62,14 @@ public static class SqlSugarSetup
         {
             if (connectionItem.DbType == DbType.Sqlite)
             {
-                connectionItem.ConnectionString = "DataSource=" + Path.Combine(AppSettings.ContentRootPath,
+                connectionItem.ConnectionString = "DataSource=" + Path.Combine(App.WebHostEnvironment.ContentRootPath,
                     connectionItem.ConnectionString ?? string.Empty);
             }
 
             List<ConnectionItem> connectionSlaves = new List<ConnectionItem>();
-            if (configs.IsCqrs)
+            if (settingsOptions.IsCqrs)
             {
-                connectionSlaves = dataConnection.ConnectionItem
+                connectionSlaves = options.ConnectionItem
                     .Where(x => x.DbType == connectionItem.DbType && x.ConnId != connectionItem.ConnId && x.Enabled)
                     .ToList();
                 if (!connectionSlaves.Any())
@@ -78,7 +78,7 @@ public static class SqlSugarSetup
                 }
             }
 
-            if (configs.IsCqrs)
+            if (settingsOptions.IsCqrs)
             {
                 slaveDbs = new List<SlaveConnectionConfig>();
                 connectionSlaves.ForEach(db =>
@@ -106,7 +106,7 @@ public static class SqlSugarSetup
                 },
                 ConfigureExternalServices = new ConfigureExternalServices
                 {
-                    DataInfoCacheService = configs.CacheOption.RedisCacheSwitch.Enabled
+                    DataInfoCacheService = App.GetOptions<CacheOptions>().RedisCacheSwitch.Enabled
                         ? new SqlSugarRedisCache()
                         : new SqlSugarDistributedCache(),
                     EntityService = (c, p) =>
@@ -143,7 +143,7 @@ public static class SqlSugarSetup
         var sugar = new SqlSugarScope(allConnectionConfig,
             db =>
             {
-                allConnectionConfig.Where(x => x.ConfigId.ToString() != configs.LogDataBase).ForEach(
+                allConnectionConfig.Where(x => x.ConfigId.ToString() != settingsOptions.LogDataBase).ForEach(
                     config =>
                     {
                         var sugarScopeProvider = db.GetConnectionScope((string)config.ConfigId);
@@ -171,13 +171,13 @@ public static class SqlSugarSetup
 
                         sugarScopeProvider.Aop.OnLogExecuting = (sql, pars) => OnLogExecuting(sugarScopeProvider,
                             Enum.GetName(typeof(SugarActionType), sugarScopeProvider.SugarActionType), sql, pars,
-                            configs, config);
+                            config);
 
                         #endregion
 
                         #region 耗时
 
-                        sugarScopeProvider.Aop.OnLogExecuted = (_, _) => OnLogExecuted(configs, sugarScopeProvider.Ado);
+                        sugarScopeProvider.Aop.OnLogExecuted = (_, _) => OnLogExecuted(sugarScopeProvider.Ado);
 
                         #endregion
                     });
@@ -220,8 +220,7 @@ public static class SqlSugarSetup
                     break;
             }
 
-            var httpUser = AutofacHelper.GetService<IHttpUser>();
-            if (httpUser.IsNotNull() && !httpUser.Account.IsNullOrEmpty())
+            if (App.HttpUser.IsNotNull() && !App.HttpUser.Account.IsNullOrEmpty())
             {
                 switch (entityInfo.OperationType)
                 {
@@ -229,22 +228,22 @@ public static class SqlSugarSetup
                     {
                         if (baseEntity.CreateBy.IsNullOrEmpty())
                         {
-                            baseEntity.CreateBy = httpUser.Account;
+                            baseEntity.CreateBy = App.HttpUser.Account;
                         }
 
                         var tenant = baseEntity as ITenantEntity;
-                        if (tenant != null && httpUser.TenantId > 0)
+                        if (tenant != null && App.HttpUser.TenantId > 0)
                         {
                             if (tenant.TenantId == 0)
                             {
-                                tenant.TenantId = httpUser.TenantId;
+                                tenant.TenantId = App.HttpUser.TenantId;
                             }
                         }
 
                         break;
                     }
                     case DataFilterType.UpdateByObject:
-                        baseEntity.UpdateBy = httpUser.Account;
+                        baseEntity.UpdateBy = App.HttpUser.Account;
                         break;
                 }
             }
@@ -272,8 +271,7 @@ public static class SqlSugarSetup
                     break;
             }
 
-            var httpUser = AutofacHelper.GetService<IHttpUser>();
-            if (httpUser.IsNotNull() && !httpUser.Account.IsNullOrEmpty())
+            if (App.HttpUser.IsNotNull() && !App.HttpUser.Account.IsNullOrEmpty())
             {
                 switch (entityInfo.OperationType)
                 {
@@ -281,22 +279,22 @@ public static class SqlSugarSetup
                     {
                         if (baseEntityNoDataScope.CreateBy.IsNullOrEmpty())
                         {
-                            baseEntityNoDataScope.CreateBy = httpUser.Account;
+                            baseEntityNoDataScope.CreateBy = App.HttpUser.Account;
                         }
 
                         var tenant = baseEntityNoDataScope as ITenantEntity;
-                        if (tenant != null && httpUser.TenantId > 0)
+                        if (tenant != null && App.HttpUser.TenantId > 0)
                         {
                             if (tenant.TenantId == 0)
                             {
-                                tenant.TenantId = httpUser.TenantId;
+                                tenant.TenantId = App.HttpUser.TenantId;
                             }
                         }
 
                         break;
                     }
                     case DataFilterType.UpdateByObject:
-                        baseEntityNoDataScope.UpdateBy = httpUser.Account;
+                        baseEntityNoDataScope.UpdateBy = App.HttpUser.Account;
                         break;
                 }
             }
@@ -310,29 +308,32 @@ public static class SqlSugarSetup
     #region 日志
 
     private static void OnLogExecuting(ISqlSugarClient sqlSugar, string operate, string sql,
-        SugarParameter[] pars, Configs configs, ConnectionConfig connection)
+        SugarParameter[] pars, ConnectionConfig connection)
     {
         try
         {
-            if (!configs.SqlLog.Enabled)
+            var sqlLogOptions = App.GetOptions<SqlLogOptions>();
+            var settingsOptions = App.GetOptions<SettingsOptions>();
+            var middlewareOptions = App.GetOptions<MiddlewareOptions>();
+            if (!sqlLogOptions.Enabled)
             {
                 return;
             }
 
-            if (configs.IsQuickDebug && configs.Middleware.MiniProfiler.Enabled)
+            if (settingsOptions.IsQuickDebug && middlewareOptions.MiniProfiler.Enabled)
             {
                 MiniProfiler.Current.CustomTiming("SQL",
                     "【SQL参数】:\n" + GetParams(pars) + "【SQL语句】：\n" + sql);
             }
 
-            if (configs.SqlLog.ToDb.Enabled || configs.SqlLog.ToFile.Enabled || configs.SqlLog.ToConsole.Enabled)
+            if (sqlLogOptions.ToDb.Enabled || sqlLogOptions.ToFile.Enabled ||
+                sqlLogOptions.ToConsole.Enabled)
             {
-                var httpUser = AutofacHelper.GetService<IHttpUser>();
-                using (LoggerPropertyConfiguration.Create.AddAopSqlProperty(sqlSugar, configs.SqlLog))
+                using (LoggerPropertyConfiguration.Create.AddAopSqlProperty(sqlSugar, sqlLogOptions))
                 {
                     Log.Information(
                         "Executed Sql--> User:[{User}] Operate:[{Operate}] ConnId:[{ConnId}] {Sql}",
-                        httpUser?.Account, operate, connection.ConfigId, UtilMethods.GetNativeSql(sql, pars));
+                        App.HttpUser.Account, operate, connection.ConfigId, UtilMethods.GetNativeSql(sql, pars));
                 }
             }
         }
@@ -352,20 +353,24 @@ public static class SqlSugarSetup
         return pars.Aggregate("", (current, p) => current + $"{p.ParameterName}:{p.Value}\n");
     }
 
-    private static void OnLogExecuted(Configs configs, IAdo ado)
+    private static void OnLogExecuted(IAdo ado)
     {
-        if (!configs.SqlLog.Enabled)
+        var sqlLogOptions = App.GetOptions<SqlLogOptions>();
+        var settingsOptions = App.GetOptions<SettingsOptions>();
+        var middlewareOptions = App.GetOptions<MiddlewareOptions>();
+
+        if (!sqlLogOptions.Enabled)
         {
             return;
         }
 
-        if (configs.IsQuickDebug && configs.Middleware.MiniProfiler.Enabled)
+        if (settingsOptions.IsQuickDebug && middlewareOptions.MiniProfiler.Enabled)
         {
             MiniProfiler.Current.CustomTiming("SQL",
                 $"【Sql耗时】:{Math.Round(ado.SqlExecutionTime.TotalMilliseconds / 1000d, 4)}秒\r\n");
         }
 
-        if (configs.SqlLog.ToConsole.Enabled)
+        if (sqlLogOptions.ToConsole.Enabled)
         {
             if (ado.SqlExecutionTime.TotalMilliseconds > 5000)
             {
@@ -398,11 +403,9 @@ public static class SqlSugarSetup
     /// </summary>
     private static void ConfiguringTenantFilter(this SqlSugarScopeProvider db)
     {
-        var httpUser = AutofacHelper.GetService<IHttpUser>();
-
-        if (httpUser.IsNotNull() && httpUser.TenantId > 0)
+        if (App.HttpUser.IsNotNull() && App.HttpUser.TenantId > 0)
         {
-            db.QueryFilter.AddTableFilter<ITenantEntity>(it => it.TenantId == httpUser.TenantId);
+            db.QueryFilter.AddTableFilter<ITenantEntity>(it => it.TenantId == App.HttpUser.TenantId);
         }
     }
 
@@ -412,15 +415,14 @@ public static class SqlSugarSetup
     /// <param name="db"></param>
     private static void ConfiguringUserDataScopeFilter(this SqlSugarScopeProvider db)
     {
-        var httpUser = AutofacHelper.GetService<IHttpUser>();
-        if (httpUser.IsNull() || httpUser.Account.IsNullOrEmpty()) return;
-        var dataScopeService = AutofacHelper.GetService<IDataScopeService>();
+        if (App.HttpUser.IsNull() || App.HttpUser.Account.IsNullOrEmpty()) return;
+        var dataScopeService = App.GetService<IDataScopeService>();
         if (dataScopeService == null) return;
 
         try
         {
             var accounts = AsyncHelper.RunSync(() =>
-                dataScopeService.GetDataScopeAccountsAsync(httpUser.Id));
+                dataScopeService.GetDataScopeAccountsAsync(App.HttpUser.Id));
             if (accounts.Count > 0)
             {
                 if (accounts.Count == 1)
@@ -437,13 +439,13 @@ public static class SqlSugarSetup
             }
             else
             {
-                db.QueryFilter.AddTableFilter<ICreateByEntity>(it => it.CreateBy == httpUser.Account);
+                db.QueryFilter.AddTableFilter<ICreateByEntity>(it => it.CreateBy == App.HttpUser.Account);
             }
         }
         catch (Exception e)
         {
             Logger.Fatal("配置用户数据权限错误：\r\n" + ExceptionHelper.GetExceptionAllMsg(e));
-            db.QueryFilter.AddTableFilter<ICreateByEntity>(it => it.CreateBy == httpUser.Account);
+            db.QueryFilter.AddTableFilter<ICreateByEntity>(it => it.CreateBy == App.HttpUser.Account);
         }
     }
 }

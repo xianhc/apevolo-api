@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.Base;
 using Ape.Volo.Entity.System;
 using SqlSugar;

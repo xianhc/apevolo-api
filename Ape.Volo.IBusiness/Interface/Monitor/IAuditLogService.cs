@@ -18,9 +18,18 @@ public interface IAuditLogService : IBaseServices<AuditLog>
     /// <summary>
     /// 创建
     /// </summary>
-    /// <param name="auditInfo"></param>
+    /// <param name="auditLog"></param>
     /// <returns></returns>
-    Task<bool> CreateAsync(AuditLog auditInfo);
+    Task<bool> CreateAsync(AuditLog auditLog);
+
+
+    /// <summary>
+    /// 创建
+    /// </summary>
+    /// <param name="auditLogs"></param>
+    /// <returns></returns>
+    Task<bool> CreateListAsync(List<AuditLog> auditLogs);
+
 
     /// <summary>
     /// 查询
@@ -33,10 +42,9 @@ public interface IAuditLogService : IBaseServices<AuditLog>
     /// <summary>
     /// 查询(个人)
     /// </summary>
-    /// <param name="userName"></param>
     /// <param name="pagination"></param>
     /// <returns></returns>
-    Task<List<AuditLogDto>> QueryByCurrentAsync(string userName, Pagination pagination);
+    Task<List<AuditLogDto>> QueryByCurrentAsync(Pagination pagination);
 
     #endregion
 }

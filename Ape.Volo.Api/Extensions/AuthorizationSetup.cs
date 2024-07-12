@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Authentication.Jwt;
+using Ape.Volo.Common;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
@@ -20,7 +21,7 @@ namespace Ape.Volo.Api.Extensions;
 /// </summary>
 public static class AuthorizationSetup
 {
-    public static void AddAuthorizationSetup(this IServiceCollection services, Configs configs)
+    public static void AddAuthorizationSetup(this IServiceCollection services)
     {
         if (services.IsNull()) throw new ArgumentNullException(nameof(services));
 
@@ -28,7 +29,7 @@ public static class AuthorizationSetup
         services.AddScoped<IHttpUser, HttpUser>();
         services.AddScoped<ITokenService, TokenService>();
 
-        var jwtOptions = configs.JwtAuthOptions;
+        var jwtAuthOptions = App.GetOptions<JwtAuthOptions>();
 
         var permissionRequirement = new PermissionRequirement();
         // 自定义策略授权
@@ -54,13 +55,13 @@ public static class AuthorizationSetup
                     // RoleClaimType = AuthConstants.JwtClaimTypes.Role,
 
                     ValidateIssuer = true,
-                    ValidIssuer = jwtOptions.Issuer,
+                    ValidIssuer = jwtAuthOptions.Issuer,
 
                     ValidateAudience = true,
-                    ValidAudience = jwtOptions.Audience,
+                    ValidAudience = jwtAuthOptions.Audience,
 
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecurityKey)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.SecurityKey)),
                     LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken,
                         TokenValidationParameters validationParameters) =>
                     {

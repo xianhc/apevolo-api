@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Ape.Volo.Common.ClassLibrary;
-using Ape.Volo.Common.Global;
 
 namespace Ape.Volo.Common.Helper;
 
@@ -44,7 +43,7 @@ public static class LogHelper
     {
         try
         {
-            var path = Path.Combine(AppSettings.ContentRootPath, "Logs");
+            var path = Path.Combine(App.WebHostEnvironment.ContentRootPath, "Logs");
             path = folder.Aggregate(path, Path.Combine);
 
             if (!Directory.Exists(path))
@@ -91,7 +90,7 @@ public static class LogHelper
     {
         try
         {
-            var path = Path.Combine(AppSettings.ContentRootPath, "Logs", "Sql");
+            var path = Path.Combine(App.WebHostEnvironment.ContentRootPath, "Logs", "Sql");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);

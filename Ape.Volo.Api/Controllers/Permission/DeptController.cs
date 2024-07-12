@@ -9,7 +9,6 @@ using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
 using Ape.Volo.IBusiness.RequestModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ape.Volo.Api.Controllers.Permission;

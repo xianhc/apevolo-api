@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
@@ -10,7 +10,6 @@ using Ape.Volo.Common.Model;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.Vo;
-using SqlSugar;
 
 namespace Ape.Volo.Business.Permission;
 

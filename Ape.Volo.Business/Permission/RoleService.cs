@@ -4,13 +4,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Common.Enums;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.ExportModel.Permission;
@@ -31,7 +31,7 @@ public class RoleService : BaseServices<Role>, IRoleService
 
     #region 构造函数
 
-    public RoleService(ApeContext apeContext) : base(apeContext)
+    public RoleService()
     {
     }
 
@@ -58,7 +58,7 @@ public class RoleService : BaseServices<Role>, IRoleService
             throw new BadRequestException("数据权限为自定义,请至少选择一个部门!");
         }
 
-        var role = ApeContext.Mapper.Map<Role>(createUpdateRoleDto);
+        var role = App.Mapper.MapTo<Role>(createUpdateRoleDto);
         await AddEntityAsync(role);
 
         if (createUpdateRoleDto.DataScopeType == DataScopeType.Customize && createUpdateRoleDto.Depts.Count != 0)
@@ -95,7 +95,7 @@ public class RoleService : BaseServices<Role>, IRoleService
         }
 
         await VerificationUserRoleLevelAsync(createUpdateRoleDto.Level);
-        var role = ApeContext.Mapper.Map<Role>(createUpdateRoleDto);
+        var role = App.Mapper.MapTo<Role>(createUpdateRoleDto);
         await UpdateEntityAsync(role);
 
         //删除部门权限关联
@@ -110,8 +110,8 @@ public class RoleService : BaseServices<Role>, IRoleService
 
         foreach (var user in oldRole.Users)
         {
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserDataScopeById +
-                                               user.Id.ToString().ToMd5String16());
+            await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserDataScopeById +
+                                        user.Id.ToString().ToMd5String16());
         }
 
         return true;
@@ -157,7 +157,7 @@ public class RoleService : BaseServices<Role>, IRoleService
         var roleList =
             await SugarRepository.QueryPageListAsync(queryOptions);
 
-        return ApeContext.Mapper.Map<List<RoleDto>>(roleList);
+        return App.Mapper.MapTo<List<RoleDto>>(roleList);
     }
 
     /// <summary>
@@ -192,7 +192,7 @@ public class RoleService : BaseServices<Role>, IRoleService
     {
         var roleList = await TableWhere().Includes(x => x.MenuList).Includes(x => x.DepartmentList).ToListAsync();
 
-        return ApeContext.Mapper.Map<List<RoleDto>>(roleList);
+        return App.Mapper.MapTo<List<RoleDto>>(roleList);
     }
 
     public async Task<int> QueryUserRoleLevelAsync(HashSet<long> ids)
@@ -222,7 +222,7 @@ public class RoleService : BaseServices<Role>, IRoleService
                     JoinType.Left, r.Id == ur.RoleId
                 },
                 (r, ur) => r,
-                (r, ur) => ur.UserId == ApeContext.LoginUserInfo.UserId
+                (r, ur) => ur.UserId == App.HttpUser.Id
             );
         levels.AddRange(roles.Select(x => x.Level).ToList());
         int minLevel = levels.Min();
@@ -256,10 +256,10 @@ public class RoleService : BaseServices<Role>, IRoleService
         //删除用户缓存
         foreach (var user in role.Users)
         {
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionRoles +
-                                               user.Id.ToString().ToMd5String16());
-            await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
-                                               user.Id.ToString().ToMd5String16());
+            await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionRoles +
+                                        user.Id.ToString().ToMd5String16());
+            await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
+                                        user.Id.ToString().ToMd5String16());
         }
 
         return true;
@@ -289,10 +289,10 @@ public class RoleService : BaseServices<Role>, IRoleService
             //删除用户缓存
             foreach (var user in role.Users)
             {
-                await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionUrls +
-                                                   user.Id.ToString().ToMd5String16());
-                await ApeContext.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
-                                                   user.Id.ToString().ToMd5String16());
+                await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserPermissionUrls +
+                                            user.Id.ToString().ToMd5String16());
+                await App.Cache.RemoveAsync(GlobalConstants.CachePrefix.UserMenuById +
+                                            user.Id.ToString().ToMd5String16());
             }
         }
 

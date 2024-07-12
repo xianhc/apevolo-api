@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ape.Volo.Common.ConfigOptions;
 using Ape.Volo.Common.Extensions;
-using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 
 namespace Ape.Volo.Common.Caches.Redis;
@@ -11,39 +10,37 @@ namespace Ape.Volo.Common.Caches.Redis;
 public class RedisCache : ICache
 {
     private const int DefaultTimeout = 60 * 20;
-    private readonly Configs _configs;
 
     private static IDatabase _database;
     //private static ISubscriber _sub;
 
-    public RedisCache(IOptionsMonitor<Configs> configs)
+    public RedisCache()
     {
-        _configs = configs?.CurrentValue ?? new Configs();
-        if (!_configs.CacheOption.RedisCacheSwitch.Enabled)
+        if (!App.GetOptions<CacheOptions>().RedisCacheSwitch.Enabled)
         {
             throw new System.Exception("RedisCacheSwitch未开启,请检查！");
         }
 
-        var redisConfigs = _configs.Redis;
+        var redisOptions = App.GetOptions<RedisOptions>();
         ThreadPool.SetMinThreads(200, 200);
         var options = new ConfigurationOptions
         {
-            AbortOnConnectFail = redisConfigs.AbortOnConnectFail,
-            AllowAdmin = redisConfigs.AllowAdmin,
-            ConnectRetry = redisConfigs.ConnectRetry, //10,
-            ConnectTimeout = redisConfigs.ConnectTimeout,
-            KeepAlive = redisConfigs.KeepAlive,
-            SyncTimeout = redisConfigs.SyncTimeout,
-            EndPoints = { redisConfigs.Host + ":" + redisConfigs.Port },
-            ServiceName = redisConfigs.Name,
+            AbortOnConnectFail = redisOptions.AbortOnConnectFail,
+            AllowAdmin = redisOptions.AllowAdmin,
+            ConnectRetry = redisOptions.ConnectRetry, //10,
+            ConnectTimeout = redisOptions.ConnectTimeout,
+            KeepAlive = redisOptions.KeepAlive,
+            SyncTimeout = redisOptions.SyncTimeout,
+            EndPoints = { redisOptions.Host + ":" + redisOptions.Port },
+            ServiceName = redisOptions.Name,
         };
-        if (!string.IsNullOrWhiteSpace(redisConfigs.Password))
+        if (!string.IsNullOrWhiteSpace(redisOptions.Password))
         {
-            options.Password = redisConfigs.Password;
+            options.Password = redisOptions.Password;
         }
 
         var connection = ConnectionMultiplexer.Connect(options);
-        _database = connection.GetDatabase(redisConfigs.Index);
+        _database = connection.GetDatabase(redisOptions.Index);
     }
 
 

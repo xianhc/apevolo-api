@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Ape.Volo.Common.Global;
 using SqlSugar;
 
 namespace Ape.Volo.Common.Helper;
@@ -17,7 +16,7 @@ public static class TenantHelper
     {
         if (dbType == DbType.Sqlite)
         {
-            connection = "DataSource=" + Path.Combine(AppSettings.ContentRootPath,
+            connection = "DataSource=" + Path.Combine(App.WebHostEnvironment.ContentRootPath,
                 connection ?? string.Empty);
         }
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.IBusiness.Base;
 using Ape.Volo.Repository.SugarHandler;
 using SqlSugar;
@@ -28,18 +27,12 @@ namespace Ape.Volo.Business.Base
         /// </summary>
         public ISqlSugarClient SugarClient => SugarRepository.SugarClient;
 
-        /// <summary>
-        /// 当前上下文
-        /// </summary>
-        public ApeContext ApeContext { get; }
-
         #endregion
 
         #region 构造函数
 
-        public BaseServices(ApeContext apeContext = null, ISugarRepository<TEntity> sugarRepository = null)
+        public BaseServices(ISugarRepository<TEntity> sugarRepository = null)
         {
-            ApeContext = apeContext;
             SugarRepository = sugarRepository;
         }
 
@@ -112,6 +105,7 @@ namespace Ape.Volo.Business.Base
             return Table.WhereIF(whereExpression != null, whereExpression)
                 .OrderByIF(orderExpression != null, orderExpression, (OrderByType)orderByType);
         }
+
         #endregion
     }
 }

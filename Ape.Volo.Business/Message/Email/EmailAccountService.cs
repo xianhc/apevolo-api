@@ -4,11 +4,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Message.Email;
 using Ape.Volo.IBusiness.Dto.Message.Email;
 using Ape.Volo.IBusiness.ExportModel.Message.Email.Account;
@@ -21,7 +21,7 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
 {
     #region 构造函数
 
-    public EmailAccountService(ApeContext apeContext) : base(apeContext)
+    public EmailAccountService()
     {
     }
 
@@ -41,7 +41,7 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
             throw new BadRequestException($"邮箱账户=>{createUpdateEmailAccountDto.Email}=>已存在!");
         }
 
-        var emailAccount = ApeContext.Mapper.Map<EmailAccount>(createUpdateEmailAccountDto);
+        var emailAccount = App.Mapper.MapTo<EmailAccount>(createUpdateEmailAccountDto);
         return await AddEntityAsync(emailAccount);
     }
 
@@ -64,7 +64,7 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
             throw new BadRequestException($"邮箱账户=>{createUpdateEmailAccountDto.Email}=>已存在!");
         }
 
-        var emailAccount = ApeContext.Mapper.Map<EmailAccount>(createUpdateEmailAccountDto);
+        var emailAccount = App.Mapper.MapTo<EmailAccount>(createUpdateEmailAccountDto);
         return await UpdateEntityAsync(emailAccount);
     }
 
@@ -97,7 +97,7 @@ public class EmailAccountService : BaseServices<EmailAccount>, IEmailAccountServ
             Pagination = pagination,
             WhereLambda = whereExpression,
         };
-        return ApeContext.Mapper.Map<List<EmailAccountDto>>(
+        return App.Mapper.MapTo<List<EmailAccountDto>>(
             await SugarRepository.QueryPageListAsync(queryOptions));
     }
 

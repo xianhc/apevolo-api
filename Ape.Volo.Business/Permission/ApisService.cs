@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
@@ -16,7 +16,7 @@ namespace Ape.Volo.Business.Permission;
 
 public class ApisService : BaseServices<Apis>, IApisService
 {
-    public ApisService(ApeContext apeContext) : base(apeContext)
+    public ApisService()
     {
     }
 
@@ -27,7 +27,7 @@ public class ApisService : BaseServices<Apis>, IApisService
             throw new BadRequestException($"Url=>{createUpdateApisDto.Url}=>已存在!");
         }
 
-        var apis = ApeContext.Mapper.Map<Apis>(createUpdateApisDto);
+        var apis = App.Mapper.MapTo<Apis>(createUpdateApisDto);
         return await AddEntityAsync(apis);
     }
 
@@ -46,7 +46,7 @@ public class ApisService : BaseServices<Apis>, IApisService
             throw new BadRequestException($"Url=>{createUpdateApisDto.Url}=>已存在!");
         }
 
-        var apis = ApeContext.Mapper.Map<Apis>(createUpdateApisDto);
+        var apis = App.Mapper.MapTo<Apis>(createUpdateApisDto);
         return await UpdateEntityAsync(apis);
     }
 

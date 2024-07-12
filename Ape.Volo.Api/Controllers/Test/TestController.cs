@@ -2,10 +2,9 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.ActionExtension.Sign;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Common.Caches;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.SnowflakeIdHelper;
 using Ape.Volo.Entity.Test;
 using Ape.Volo.IBusiness.Interface.Test;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +19,7 @@ namespace Ape.Volo.Api.Controllers.Test;
 [Route("/api/test", Order = 999)]
 public class TestController : BaseApiController
 {
-    // private readonly IEmailScheduleTask _emailScheduleTask;
+    //private readonly IEmailScheduleTask _emailScheduleTask;
     //
     // //private readonly IEventBus _eventBus;
     // private readonly IRedisCacheService _redisCacheService;
@@ -97,7 +96,7 @@ public class TestController : BaseApiController
     // {
     //     try
     //     {
-    //         await _redisCacheService.ListLeftPushAsync(MqTopicNameKey.MailboxQueue, "123456789");
+    //         await _cache.GetDatabase().ListLeftPushAsync(MqTopicNameKey.MailboxQueue, "123456789");
     //     }
     //     catch
     //     {

@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Ape.Volo.Api.Controllers.Base;
-using Ape.Volo.Common.AttributeExt;
+using Ape.Volo.Common.Attributes;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.IBusiness.Interface.Monitor;
 using Microsoft.AspNetCore.Mvc;

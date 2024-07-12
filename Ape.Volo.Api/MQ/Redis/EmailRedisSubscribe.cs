@@ -1,10 +1,8 @@
 using System.Threading.Tasks;
-using Ape.Volo.Common.Caches.Redis.Attributes;
+using Ape.Volo.Common.Attributes.Redis;
 using Ape.Volo.Common.Caches.Redis.MessageQueue;
-using Ape.Volo.Common.Caches.Redis.Models;
-using Ape.Volo.Common.Helper.Serilog;
 using Ape.Volo.IBusiness.Interface.Message.Email;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Ape.Volo.Api.MQ.Redis;
 
@@ -12,16 +10,17 @@ public class EmailRedisSubscribe : IRedisSubscribe
 {
     #region Fields
 
-    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(EmailRedisSubscribe));
+    private readonly ILogger<EmailRedisSubscribe> _logger;
     private readonly IEmailScheduleTask _emailScheduleTask;
 
     #endregion
 
     #region Ctor
 
-    public EmailRedisSubscribe(IEmailScheduleTask emailScheduleTask)
+    public EmailRedisSubscribe(IEmailScheduleTask emailScheduleTask, ILogger<EmailRedisSubscribe> logger)
     {
         _emailScheduleTask = emailScheduleTask;
+        _logger = logger;
     }
 
     #endregion
@@ -29,8 +28,7 @@ public class EmailRedisSubscribe : IRedisSubscribe
     [Subscribe(MqTopicNameKey.MailboxQueue)]
     private async Task DoSub(long emailId)
     {
-        var text = $"EmailRedisSubscribe订阅者==》从Redis消息队列:{RedisChannels.ChangeMailbox}==》得到消费信息:{emailId}";
-        Logger.Information(text);
+        _logger.LogInformation($"消费ID：{emailId}");
         await _emailScheduleTask.ExecuteAsync(emailId);
         //发送失败是否需要重回队列？？？
         //   await Task.CompletedTask;

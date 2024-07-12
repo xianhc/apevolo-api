@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Monitor;
 using Ape.Volo.IBusiness.Dto.Monitor;
 using Ape.Volo.IBusiness.Interface.Monitor;
@@ -20,7 +20,7 @@ public class ExceptionLogService : BaseServices<ExceptionLog>, IExceptionLogServ
 {
     #region 构造函数
 
-    public ExceptionLogService(ApeContext apeContext) : base(apeContext)
+    public ExceptionLogService()
     {
     }
 
@@ -55,7 +55,7 @@ public class ExceptionLogService : BaseServices<ExceptionLog>, IExceptionLogServ
             IsSplitTable = true
         };
         var logs = await SugarRepository.QueryPageListAsync(queryOptions);
-        return ApeContext.Mapper.Map<List<ExceptionLogDto>>(logs);
+        return App.Mapper.MapTo<List<ExceptionLogDto>>(logs);
     }
 
     #endregion

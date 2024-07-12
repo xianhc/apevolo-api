@@ -4,11 +4,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Exception;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
+using Ape.Volo.Common.Helper;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.Permission;
 using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.ExportModel.Permission;
@@ -22,7 +23,7 @@ public class JobService : BaseServices<Job>, IJobService
 {
     #region 构造函数
 
-    public JobService(ApeContext apeContext) : base(apeContext)
+    public JobService()
     {
     }
 
@@ -37,7 +38,7 @@ public class JobService : BaseServices<Job>, IJobService
             throw new BadRequestException($"岗位名称=>{createUpdateJobDto.Name}=>已存在!");
         }
 
-        var job = ApeContext.Mapper.Map<Job>(createUpdateJobDto);
+        var job = App.Mapper.MapTo<Job>(createUpdateJobDto);
         return await AddEntityAsync(job);
     }
 
@@ -56,7 +57,7 @@ public class JobService : BaseServices<Job>, IJobService
             throw new BadRequestException($"岗位名称=>{createUpdateJobDto.Name}=>已存在!");
         }
 
-        var job = ApeContext.Mapper.Map<Job>(createUpdateJobDto);
+        var job = App.Mapper.MapTo<Job>(createUpdateJobDto);
         return await UpdateEntityAsync(job);
     }
 
@@ -85,7 +86,8 @@ public class JobService : BaseServices<Job>, IJobService
             Pagination = pagination,
             WhereLambda = whereExpression,
         };
-        return ApeContext.Mapper.Map<List<JobDto>>(
+
+        return App.Mapper.MapTo<List<JobDto>>(
             await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
@@ -114,7 +116,7 @@ public class JobService : BaseServices<Job>, IJobService
         Expression<Func<Job, bool>> whereExpression = x => x.Enabled;
 
 
-        return ApeContext.Mapper.Map<List<JobDto>>(await SugarRepository.QueryListAsync(whereExpression, x => x.Sort,
+        return App.Mapper.MapTo<List<JobDto>>(await SugarRepository.QueryListAsync(whereExpression, x => x.Sort,
             OrderByType.Asc));
     }
 

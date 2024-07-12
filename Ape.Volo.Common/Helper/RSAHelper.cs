@@ -25,16 +25,16 @@ public class RsaHelper
     /// 实例化RSAHelper
     /// </summary>
     /// <param name="rsaType">加密算法类型 RSA SHA1;RSA2 SHA256 密钥长度至少为2048</param>
-    /// <param name="rsa">rsa config</param>
-    public RsaHelper(Rsa rsa = null, RsaType rsaType = RsaType.Rsa)
+    /// <param name="rsaOptions">rsa config</param>
+    public RsaHelper(RsaOptions rsaOptions = null, RsaType rsaType = RsaType.Rsa)
     {
-        if (rsa == null)
+        if (rsaOptions == null)
         {
             throw new System.Exception("rsa配置对象读取失败,请检查");
         }
 
-        string privateKey = rsa.PrivateKey;
-        string publicKey = rsa.PublicKey;
+        string privateKey = rsaOptions.PrivateKey;
+        string publicKey = rsaOptions.PublicKey;
         if (!string.IsNullOrEmpty(privateKey))
         {
             _privateKeyRsaProvider = CreateRsaProviderFromPrivateKey(privateKey);

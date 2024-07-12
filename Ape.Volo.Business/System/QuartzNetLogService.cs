@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ape.Volo.Business.Base;
+using Ape.Volo.Common;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.Common.Global;
 using Ape.Volo.Common.Model;
-using Ape.Volo.Common.WebApp;
 using Ape.Volo.Entity.System;
 using Ape.Volo.IBusiness.Dto.System;
 using Ape.Volo.IBusiness.ExportModel.System;
@@ -23,7 +23,7 @@ public class QuartzNetLogService : BaseServices<QuartzNetLog>, IQuartzNetLogServ
 {
     #region 构造函数
 
-    public QuartzNetLogService(ApeContext apeContext) : base(apeContext)
+    public QuartzNetLogService()
     {
     }
 
@@ -45,7 +45,7 @@ public class QuartzNetLogService : BaseServices<QuartzNetLog>, IQuartzNetLogServ
             Pagination = pagination,
             WhereLambda = whereExpression,
         };
-        return ApeContext.Mapper.Map<List<QuartzNetLogDto>>(
+        return App.Mapper.MapTo<List<QuartzNetLogDto>>(
             await SugarRepository.QueryPageListAsync(queryOptions));
     }
 
