@@ -351,30 +351,6 @@ public class MenuService : BaseServices<Menu>, IMenuService
 
             var tempDtos = App.Mapper.MapTo<List<MenuDto>>(menus);
             menuDtoList = TreeHelper<MenuDto>.ListToTrees(tempDtos, "Id", "ParentId", 0);
-            foreach (var item in menuDtoList)
-            {
-                if (item.Children.Count == 0)
-                {
-                    item.Children = null;
-                }
-                else
-                {
-                    foreach (var item2 in item.Children)
-                    {
-                        if (item2.Children.Count == 0)
-                        {
-                            item2.Children = null;
-                        }
-                        else
-                        {
-                            foreach (var item3 in item2.Children.Where(item3 => item3.Children.Count == 0))
-                            {
-                                item3.Children = null;
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         return menuDtoList;
