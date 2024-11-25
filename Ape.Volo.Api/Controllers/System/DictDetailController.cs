@@ -43,7 +43,7 @@ public class DictDetailController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateDictDetailDto createUpdateDictDto)
     {
         if (!ModelState.IsValid)
@@ -65,7 +65,7 @@ public class DictDetailController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateDictDetailDto createUpdateDictDetailDto)
     {
         if (!ModelState.IsValid)
@@ -86,7 +86,7 @@ public class DictDetailController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete(long id)
+    public async Task<ActionResult> Delete(long id)
     {
         if (id.IsNullOrEmpty())
         {
@@ -105,7 +105,7 @@ public class DictDetailController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(string dictName)
+    public async Task<ActionResult> Query(string dictName)
     {
         var list = await _dictDetailService.QueryAsync(dictName);
         return JsonContent(new ActionResultVm<DictDetailDto>

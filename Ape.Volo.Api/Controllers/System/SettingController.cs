@@ -44,7 +44,7 @@ public class SettingController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateSettingDto createUpdateSettingDto)
     {
         if (!ModelState.IsValid)
@@ -65,7 +65,7 @@ public class SettingController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateSettingDto createUpdateSettingDto)
     {
         if (!ModelState.IsValid)
@@ -86,7 +86,7 @@ public class SettingController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -107,7 +107,7 @@ public class SettingController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(SettingQueryCriteria settingQueryCriteria, Pagination pagination)
+    public async Task<ActionResult> Query(SettingQueryCriteria settingQueryCriteria, Pagination pagination)
     {
         var settingList = await _settingService.QueryAsync(settingQueryCriteria, pagination);
 
@@ -127,11 +127,14 @@ public class SettingController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(SettingQueryCriteria settingQueryCriteria)
+    public async Task<ActionResult> Download(SettingQueryCriteria settingQueryCriteria)
     {
         var settingExports = await _settingService.DownloadAsync(settingQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(settingExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(settingExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
     #endregion

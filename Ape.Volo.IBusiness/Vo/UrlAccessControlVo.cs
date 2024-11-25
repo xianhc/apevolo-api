@@ -3,7 +3,7 @@
 /// <summary>
 /// 权限
 /// </summary>
-public class PermissionVo
+public class UrlAccessControlVo
 {
     /// <summary>
     /// 请求路径

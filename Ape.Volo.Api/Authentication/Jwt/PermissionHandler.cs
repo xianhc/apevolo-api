@@ -236,11 +236,11 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 
                     #region 验证用户权限
 
-                    var permissionVos = await _permissionService.GetPermissionVoAsync(App.HttpUser.Id);
+                    var urlAccessControlList = await _permissionService.GetUrlAccessControlAsync(App.HttpUser.Id);
 
-                    if (permissionVos.Count != 0 && !requestPath.IsNullOrEmpty())
+                    if (urlAccessControlList.Any() && !requestPath.IsNullOrEmpty())
                     {
-                        isMatchRole = permissionVos.Any(x =>
+                        isMatchRole = urlAccessControlList.Any(x =>
                             x.Url.Equals(requestPath, StringComparison.CurrentCultureIgnoreCase) &&
                             x.Method.Equals(requestMethod, StringComparison.CurrentCultureIgnoreCase));
                     }

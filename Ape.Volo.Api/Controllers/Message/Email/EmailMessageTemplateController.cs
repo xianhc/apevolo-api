@@ -43,7 +43,7 @@ public class EmailMessageTemplateController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto)
     {
         if (!ModelState.IsValid)
@@ -64,7 +64,7 @@ public class EmailMessageTemplateController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateEmailMessageTemplateDto createUpdateEmailMessageTemplateDto)
     {
         if (!ModelState.IsValid)
@@ -85,7 +85,7 @@ public class EmailMessageTemplateController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -106,7 +106,7 @@ public class EmailMessageTemplateController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(EmailMessageTemplateQueryCriteria messageTemplateQueryCriteria,
+    public async Task<ActionResult> Query(EmailMessageTemplateQueryCriteria messageTemplateQueryCriteria,
         Pagination pagination)
     {
         var emailMessageTemplateList =

@@ -46,7 +46,7 @@ public class UserController : BaseApiController
     [HttpPost]
     [Description("创建")]
     [Route("create")]
-    public async Task<ActionResult<object>> Create([FromBody] CreateUpdateUserDto createUpdateUserDto)
+    public async Task<ActionResult> Create([FromBody] CreateUpdateUserDto createUpdateUserDto)
     {
         if (!ModelState.IsValid)
         {
@@ -67,7 +67,7 @@ public class UserController : BaseApiController
     [HttpPut]
     [Description("编辑")]
     [Route("edit")]
-    public async Task<ActionResult<object>> Update([FromBody] CreateUpdateUserDto createUpdateUserDto)
+    public async Task<ActionResult> Update([FromBody] CreateUpdateUserDto createUpdateUserDto)
     {
         if (!ModelState.IsValid)
         {
@@ -87,7 +87,7 @@ public class UserController : BaseApiController
     [HttpDelete]
     [Description("删除")]
     [Route("delete")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -102,7 +102,7 @@ public class UserController : BaseApiController
     [HttpPut]
     [Route("update/center")]
     [Description("更新个人信息")]
-    public async Task<ActionResult<object>> UpdateCenterAsync([FromBody] UpdateUserCenterDto updateUserCenterDto)
+    public async Task<ActionResult> UpdateCenterAsync([FromBody] UpdateUserCenterDto updateUserCenterDto)
     {
         if (!ModelState.IsValid)
         {
@@ -117,7 +117,7 @@ public class UserController : BaseApiController
     [HttpPost]
     [Route("update/password")]
     [Description("更新密码")]
-    public async Task<ActionResult<object>> UpdatePasswordAsync([FromBody] UpdateUserPassDto updateUserPassDto)
+    public async Task<ActionResult> UpdatePasswordAsync([FromBody] UpdateUserPassDto updateUserPassDto)
     {
         if (!ModelState.IsValid)
         {
@@ -132,7 +132,7 @@ public class UserController : BaseApiController
     [HttpPost]
     [Route("update/email")]
     [Description("更新邮箱")]
-    public async Task<ActionResult<object>> UpdateEmail([FromBody] UpdateUserEmailDto updateUserEmailDto)
+    public async Task<ActionResult> UpdateEmail([FromBody] UpdateUserEmailDto updateUserEmailDto)
     {
         if (!ModelState.IsValid)
         {
@@ -147,7 +147,7 @@ public class UserController : BaseApiController
     [HttpPost, HttpOptions]
     [Route("update/avatar")]
     [Description("更新头像")]
-    public async Task<ActionResult<object>> UpdateAvatar([FromForm] IFormFile avatar) //多文件使用  IFormFileCollection
+    public async Task<ActionResult> UpdateAvatar([FromForm] IFormFile avatar) //多文件使用  IFormFileCollection
     {
         if (avatar == null)
         {
@@ -168,7 +168,7 @@ public class UserController : BaseApiController
     [HttpGet]
     [Description("查询")]
     [Route("query")]
-    public async Task<ActionResult<object>> Query(UserQueryCriteria userQueryCriteria,
+    public async Task<ActionResult> Query(UserQueryCriteria userQueryCriteria,
         Pagination pagination)
     {
         var list = await _userService.QueryAsync(userQueryCriteria, pagination);
@@ -187,19 +187,14 @@ public class UserController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(UserQueryCriteria userQueryCriteria)
+    public async Task<ActionResult> Download(UserQueryCriteria userQueryCriteria)
     {
         var userExports = await _userService.DownloadAsync(userQueryCriteria);
-
-        // var filepath = ExcelHelper.ExportData(exportRowModels, Localized.Get("User"));
-        //
-        // FileInfo fileInfo = new FileInfo(filepath);
-        // var ext = fileInfo.Extension;
-        // new FileExtensionContentTypeProvider().Mappings.TryGetValue(ext, out var contently);
-        // return File(await global::System.IO.File.ReadAllBytesAsync(filepath), contently ?? "application/octet-stream",
-        //     fileInfo.Name);
-        var data = new ExcelHelper().GenerateExcel(userExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(userExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
     #endregion

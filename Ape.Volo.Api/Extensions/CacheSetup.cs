@@ -18,24 +18,14 @@ public static class CacheSetup
     {
         if (services.IsNull())
             throw new ArgumentNullException(nameof(services));
-        //也可以增加MemoryCache选项，但是MemoryCache不支持异步操作，需要自行实现
+        services.AddDistributedMemoryCache(); //session需要
 
-        var options = App.GetOptions<CacheOptions>();
-        if (options.RedisCacheSwitch.Enabled)
+        if (App.GetOptions<SystemOptions>().UseRedisCache)
         {
-            //开启了redis就优先使用redis
             services.AddSingleton<ICache, RedisCache>();
+            return;
         }
-        else if (options.DistributedCacheSwitch.Enabled)
-        {
-            services.AddDistributedMemoryCache();
-            services.AddSingleton<ICache, DistributedCache>();
-        }
-        else
-        {
-            //都没有默认使用DistributedCache 防止异常
-            services.AddDistributedMemoryCache();
-            services.AddSingleton<ICache, DistributedCache>();
-        }
+
+        services.AddSingleton<ICache, DistributedCache>();
     }
 }

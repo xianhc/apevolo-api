@@ -44,7 +44,7 @@ public class AuditingController : BaseApiController
     [Route("query")]
     [Description("查询")]
     [NotAudit]
-    public async Task<ActionResult<object>> Query(LogQueryCriteria logQueryCriteria,
+    public async Task<ActionResult> Query(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
     {
         var auditInfos = await _auditInfoService.QueryAsync(logQueryCriteria, pagination);
@@ -66,7 +66,7 @@ public class AuditingController : BaseApiController
     [Route("current")]
     [Description("用户行为")]
     [NotAudit]
-    public async Task<ActionResult<object>> FindListByCurrent(Pagination pagination)
+    public async Task<ActionResult> FindListByCurrent(Pagination pagination)
     {
         var auditInfos = await _auditInfoService.QueryByCurrentAsync(pagination);
 

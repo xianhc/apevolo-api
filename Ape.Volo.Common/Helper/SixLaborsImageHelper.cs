@@ -90,7 +90,15 @@ public static class SixLaborsImageHelper
     }
 
 
-    public static (byte[] imgBytes, string code) BuildVerifyCode(int width = 111, int height = 36, int fontSize = 25)
+    /// <summary>
+    /// 获取验证码
+    /// </summary>
+    /// <param name="width">图像宽度</param>
+    /// <param name="height">图像高度</param>
+    /// <param name="fontSize">字体大小</param>
+    /// <param name="length">验证码长度，如果是0则使用算数验证码</param>
+    /// <returns></returns>
+    public static (byte[] imgBytes, string code) BuildVerifyCode(int width, int height, int fontSize, int length = 0)
     {
         Random rnd = new Random();
         string expression = "";
@@ -108,21 +116,29 @@ public static class SixLaborsImageHelper
             int operator1 = rnd.Next(0, 10);
             int operator2 = rnd.Next(0, 10);
 
-            ////随机组合运算顺序 + - * 
-            switch (rnd.Next(0, 3))
+            if (length > 0)
             {
-                case 0:
-                    mathResult = operator1 + operator2;
-                    expression = $"{operator1} + {operator2} = ?";
-                    break;
-                case 1:
-                    mathResult = operator1 - operator2;
-                    expression = $"{operator1} - {operator2} = ?";
-                    break;
-                default:
-                    mathResult = operator2 * operator1;
-                    expression = $"{operator1} x {operator2} = ?";
-                    break;
+                expression = CreateValidateCode(length);
+                mathResult = expression.ToInt();
+            }
+            else
+            {
+                // 随机组合运算顺序 + - * 
+                switch (rnd.Next(0, 3))
+                {
+                    case 0:
+                        mathResult = operator1 + operator2;
+                        expression = $"{operator1} + {operator2} = ?";
+                        break;
+                    case 1:
+                        mathResult = operator1 - operator2;
+                        expression = $"{operator1} - {operator2} = ?";
+                        break;
+                    default:
+                        mathResult = operator2 * operator1;
+                        expression = $"{operator1} x {operator2} = ?";
+                        break;
+                }
             }
 
             // 背景色

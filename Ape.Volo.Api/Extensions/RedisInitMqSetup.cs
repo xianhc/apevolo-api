@@ -17,11 +17,11 @@ public static class RedisInitMqSetup
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
 
-        var cacheOptions = App.GetOptions<CacheOptions>();
+        var systemOptions = App.GetOptions<SystemOptions>();
         var middlewareOptions = App.GetOptions<MiddlewareOptions>();
         var redisOptions = App.GetOptions<RedisOptions>();
         //启动redis消息队列 必须先启动redis缓存
-        if (cacheOptions.RedisCacheSwitch.Enabled && middlewareOptions.RedisMq.Enabled)
+        if (systemOptions.UseRedisCache && middlewareOptions.RedisMq.Enabled)
         {
             services.AddRedisMq(m =>
             {

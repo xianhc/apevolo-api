@@ -31,7 +31,7 @@ public class ExcelHelper
     /// </summary>
     public short? ExportTitleFontColor { get; set; }
 
-    public virtual byte[] GenerateExcel(List<ExportBase> exportRows, out string mimeType)
+    public virtual byte[] GenerateExcel(List<ExportBase> exportRows, out string mimeType, out string fileName)
     {
         mimeType = MimeTypes.TextXlsx; //默认xlsx
         ExportMaxCount = ExportMaxCount == 0 ? 10000 : (ExportMaxCount > 10000 ? 10000 : ExportMaxCount);
@@ -44,10 +44,15 @@ public class ExcelHelper
         //如果是1，直接下载Excel，如果是多个，下载ZIP包
         if (ExportExcelCount == 1)
         {
+            fileName = exportRows.FirstOrDefault()?.GetType().FullName + "_" +
+                       DateTime.Now.ToString("yyyyMMddHHmmssffff") +
+                       ".xlsx";
             return DownLoadExcel(exportRows);
         }
 
         mimeType = MimeTypes.ApplicationZip;
+        fileName = exportRows.FirstOrDefault()?.GetType().FullName + "_" + DateTime.Now.ToString("yyyyMMddHHmmssffff") +
+                   ".zip";
         return DownLoadZipPackage(exportRows);
     }
 

@@ -17,13 +17,13 @@ public class LoggerPropertyConfiguration : IDisposable
         _disposableStack.Push(disposable);
     }
 
-    public IDisposable AddAopSqlProperty(ISqlSugarClient db, SqlLogOptions sqlLogOptions)
+    public IDisposable AddAopSqlProperty(ISqlSugarClient db, SerilogOptions serilogOptions)
     {
-        AddStock(LogContext.PushProperty(LoggerProperty.RecordSqlLog, sqlLogOptions.Enabled));
-        AddStock(LogContext.PushProperty(LoggerProperty.ToDb, sqlLogOptions.ToDb.Enabled));
-        AddStock(LogContext.PushProperty(LoggerProperty.ToFile, sqlLogOptions.ToFile.Enabled));
-        AddStock(LogContext.PushProperty(LoggerProperty.ToConsole, sqlLogOptions.ToConsole.Enabled));
-        AddStock(LogContext.PushProperty(LoggerProperty.ToElasticsearch, sqlLogOptions.ToElasticsearch.Enabled));
+        AddStock(LogContext.PushProperty(LoggerProperty.RecordSqlLog, serilogOptions.RecordSqlEnabled));
+        AddStock(LogContext.PushProperty(LoggerProperty.ToDb, serilogOptions.ToDb.Enabled));
+        AddStock(LogContext.PushProperty(LoggerProperty.ToFile, serilogOptions.ToFile.Enabled));
+        AddStock(LogContext.PushProperty(LoggerProperty.ToConsole, serilogOptions.ToConsole.Enabled));
+        AddStock(LogContext.PushProperty(LoggerProperty.ToElasticsearch, serilogOptions.ToElasticsearch.Enabled));
         AddStock(LogContext.PushProperty(LoggerProperty.SugarActionType, db.SugarActionType));
         return this;
     }

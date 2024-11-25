@@ -1,0 +1,128 @@
+﻿<html lang="zh-CN">
+<head>
+  <title>登录 - ApeVolo接口文档</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="/swagger/login.css">
+</head>
+<body>
+<div class="ape">
+  <div class='control'>
+    <h1 style="padding-left: 32px;">
+      登录Ape.Volo Api文档<br/>
+    </h1>
+  </div>
+  <div class='control block-cube block-input'>
+    <input id="userName" name='userName' placeholder='请输入用户名' type='text'>
+    <div class='bg-top'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg-right'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg'>
+      <div class='bg-inner'></div>
+    </div>
+  </div>
+  <div class='control block-cube block-input'>
+    <input id="password" name='password' placeholder='请输入密码' type='password'>
+    <div class='bg-top'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg-right'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg'>
+      <div class='bg-inner'></div>
+    </div>
+  </div>
+  <button class='btn block-cube block-cube-hover' type='button' onclick="login();">
+    <div class='bg-top'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg-right'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='text'>
+      登 录
+    </div>
+  </button>
+</div>
+<div id="overlay" class="overlay">
+  <div class="loader"></div>
+</div>
+</body>
+
+<script src="/js/jquery-3.7.1.min.js" type="text/javascript"></script>
+<script src="/js/jsencrypt.min.js" type="text/javascript"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/jsencrypt@3.0.0-rc.1/bin/jsencrypt.min.js"></script>-->
+<script type="text/javascript">
+  function showOverlay() {
+    // 显示遮罩层
+    document.getElementById('overlay').style.display = 'flex';
+  }
+
+  function hideOverlay() {
+    // 隐藏遮罩层
+    document.getElementById('overlay').style.display = 'none';
+  }
+
+  function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return decodeURI(r[2]);
+    return null;
+  }
+
+  function login() {
+    showOverlay();
+    var userName = $("#userName").val()
+    var password = $("#password").val()
+    if (!userName) {
+      alert('请输入用户名！');
+      hideOverlay();
+      return
+    }
+    if (!password) {
+      alert('请输入密码');
+      hideOverlay();
+      return
+    }
+
+    var encrypt = new JSEncrypt();
+    var publicKey = `-----BEGIN PUBLIC KEY-----
+                     MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAYjJNTDWSTJ8RBnZ9hp7AS8eF\n
+                     JvxpuZYTqGjD8qak45DKkAhpi7SNXDNbfDXNbUFeH465hwQIznS5fHdWgUAoqByG\n
+                     jHoYu1jRhDx72EgKhuvDQ3sxwLJr0Ynx1f1Ny9yt8wtLaVc9KcJ8m/pHmmAGz+xf\n
+                     7rzZ8dJvnee+OHMkNwIDAQAB
+                     -----END PUBLIC KEY-----`;
+    encrypt.setPublicKey(publicKey);
+
+    let postData = {
+      "userName": userName,
+      "password": encrypt.encrypt(password),
+    };
+
+    $.ajax({
+      url: "/auth/swagger/login",
+      type: "POST",
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify(postData),
+      dataType: 'json',
+      success: function () {
+        let redirect = getQueryString("redirect");
+        if (redirect != null && redirect.length > 0) {
+          window.location.href = redirect;
+        } else {
+          window.location.href = "/swagger/api/index.html";
+        }
+      }, error: function () {
+        alert('用户名或密码错误')
+        hideOverlay();
+      }
+    });
+  }
+</script>

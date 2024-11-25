@@ -9,6 +9,7 @@ using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
 using Ape.Volo.IBusiness.RequestModel;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ape.Volo.Api.Controllers.Permission;
@@ -45,7 +46,7 @@ public class DeptController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateDepartmentDto createUpdateDepartmentDto)
     {
         if (!ModelState.IsValid)
@@ -67,7 +68,7 @@ public class DeptController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateDepartmentDto createUpdateDepartmentDto)
     {
         if (!ModelState.IsValid)
@@ -89,7 +90,7 @@ public class DeptController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -111,7 +112,7 @@ public class DeptController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(DeptQueryCriteria deptQueryCriteria,
+    public async Task<ActionResult> Query(DeptQueryCriteria deptQueryCriteria,
         Pagination pagination)
     {
         var deptList = await _departmentService.QueryAsync(deptQueryCriteria, pagination);
@@ -128,12 +129,12 @@ public class DeptController : BaseApiController
     [HttpGet]
     [Route("queryTree")]
     [Description("树形部门数据")]
-    public async Task<ActionResult<object>> QueryTree()
+    public async Task<ActionResult> QueryTree()
     {
         var deptList = await _departmentService.QueryAllAsync();
 
         var menuTree = TreeHelper<DepartmentDto>.ListToTrees(deptList, "Id", "ParentId", 0);
-        return menuTree.ToJson();
+        return Ok(menuTree);
     }
 
 
@@ -145,11 +146,14 @@ public class DeptController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(DeptQueryCriteria deptQueryCriteria)
+    public async Task<ActionResult> Download(DeptQueryCriteria deptQueryCriteria)
     {
         var deptExports = await _departmentService.DownloadAsync(deptQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(deptExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(deptExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
 
@@ -161,7 +165,7 @@ public class DeptController : BaseApiController
     [HttpGet]
     [Route("superior")]
     [Description("获取同级、父级部门")]
-    public async Task<ActionResult<object>> GetSuperior(long id)
+    public async Task<ActionResult> GetSuperior(long id)
     {
         if (id.IsNullOrEmpty())
         {

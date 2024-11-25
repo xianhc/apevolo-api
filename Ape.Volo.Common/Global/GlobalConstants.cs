@@ -18,6 +18,16 @@ public static class GlobalConstants
         public const string CaptchaId = "login:captcha:";
 
         /// <summary>
+        /// 登录失败阈值
+        /// </summary>
+        public const string Threshold = "login:threshold:";
+        
+        /// <summary>
+        /// 登录失败次数
+        /// </summary>
+        public const string Attempts = "login:attempts:";
+        
+        /// <summary>
         /// 邮箱验证码
         /// </summary>
         public const string EmailCaptcha = "email:captcha:";

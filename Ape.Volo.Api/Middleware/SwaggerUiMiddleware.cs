@@ -14,11 +14,11 @@ namespace Ape.Volo.Api.Middleware;
 /// <summary>
 /// Swagger UI 中间件
 /// </summary>
-public static class SwaggerMiddleware
+public static class SwaggerUiMiddleware
 {
-    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(SwaggerMiddleware));
+    private static readonly ILogger Logger = SerilogManager.GetLogger(typeof(SwaggerUiMiddleware));
 
-    public static void UseSwaggerMiddleware(this IApplicationBuilder app, Func<Stream> streamHtml)
+    public static void UseSwaggerUiMiddleware(this IApplicationBuilder app, Func<Stream> streamHtml)
     {
         if (app.IsNull())
             throw new ArgumentNullException(nameof(app));
@@ -42,7 +42,7 @@ public static class SwaggerMiddleware
             {
                 c.SwaggerEndpoint($"/swagger/{swaggerOptions.Name}/swagger.json",
                     swaggerOptions.Version);
-                c.RoutePrefix = "";
+                c.RoutePrefix = "swagger/api";
 
                 var stream = streamHtml?.Invoke();
                 if (stream == null)

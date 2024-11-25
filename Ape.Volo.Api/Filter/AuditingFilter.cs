@@ -75,49 +75,38 @@ public class AuditingFilter : IAsyncActionFilter
             //var action = context.ActionDescriptor as ControllerActionDescriptor;
             //var isTrue = action.MethodInfo.IsDefined(typeof(DescriptionAttribute), false);
             var saveDb = await _settingService.GetSettingValue<bool>("IsAuditLogSaveDB");
-            if (saveDb)
+            if (saveDb && resultContext.Result.IsNotNull())
             {
-                var result = resultContext.Result;
-                if (context.HttpContext.IsNotNull() && result.IsNotNull())
+                var auditInfo = CreateAuditLog(context);
+                auditInfo.ResponseData = resultContext.Result switch
                 {
-                    var auditInfo = CreateAuditLog(context);
-                    switch (result?.GetType().FullName)
-                    {
-                        case "Microsoft.AspNetCore.Mvc.ObjectResult":
-                        {
-                            var value = ((ObjectResult)result).Value;
-                            if (value != null)
-                                auditInfo.ResponseData = value.ToString();
-                            break;
-                        }
-                        case "Microsoft.AspNetCore.Mvc.FileContentResult":
-                            auditInfo.ResponseData = ((FileContentResult)result).FileDownloadName;
-                            break;
-                        default:
-                            auditInfo.ResponseData = ((ContentResult)result)?.Content;
-                            break;
-                    }
+                    ContentResult contentResult => contentResult.Content,
+                    OkObjectResult okResult => okResult.Value?.ToJson(),
+                    FileContentResult fileContentResult => GetFileContentResult(fileContentResult),
+                    ObjectResult objectResult => objectResult.Value?.ToJson(),
+                    _ => null // 处理其他未知类型
+                };
 
-                    //用时
-                    auditInfo.ExecutionDuration = Convert.ToInt32(sw.ElapsedMilliseconds);
 
-                    if (App.GetOptions<CacheOptions>().RedisCacheSwitch.Enabled &&
-                        App.GetOptions<MiddlewareOptions>().RedisMq.Enabled)
-                    {
-                        // 实时队列
-                        // await App.GetService<ICache>().GetDatabase()
-                        //     .ListLeftPushAsync(MqTopicNameKey.AuditLogQueue, auditInfo.ToJson());
+                //用时
+                auditInfo.ExecutionDuration = Convert.ToInt32(sw.ElapsedMilliseconds);
 
-                        //延迟队列
-                        var stopTimeStamp = DateTime.Now.AddSeconds(10).ToUnixTimeStampSecond();
-                        await App.GetService<ICache>().GetDatabase()
-                            .SortedSetAddAsync(MqTopicNameKey.AuditLogQueue, auditInfo.ToJson(), stopTimeStamp);
-                    }
-                    else
-                    {
-                        await Task.Factory.StartNew(() => _auditInfoService.CreateAsync(auditInfo))
-                            .ConfigureAwait(false);
-                    }
+                if (App.GetOptions<SystemOptions>().UseRedisCache &&
+                    App.GetOptions<MiddlewareOptions>().RedisMq.Enabled)
+                {
+                    // 实时队列
+                    // await App.GetService<ICache>().GetDatabase()
+                    //     .ListLeftPushAsync(MqTopicNameKey.AuditLogQueue, auditInfo.ToJson());
+
+                    //延迟队列
+                    var stopTimeStamp = DateTime.Now.AddSeconds(10).ToUnixTimeStampSecond();
+                    await App.GetService<ICache>().GetDatabase()
+                        .SortedSetAddAsync(MqTopicNameKey.AuditLogQueue, auditInfo.ToJson(), stopTimeStamp);
+                }
+                else
+                {
+                    await Task.Factory.StartNew(() => _auditInfoService.CreateAsync(auditInfo))
+                        .ConfigureAwait(false);
                 }
             }
         }
@@ -180,5 +169,20 @@ public class AuditingFilter : IAsyncActionFilter
         }
 
         return auditLog;
+    }
+
+    private string GetFileContentResult(FileContentResult fileContentResult)
+    {
+        using var md5 = System.Security.Cryptography.MD5.Create();
+        var hashBytes = md5.ComputeHash(fileContentResult.FileContents);
+        var hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+
+        return new
+        {
+            FileName = fileContentResult.FileDownloadName,
+            FileSize = fileContentResult.FileContents.Length,
+            ContentType = fileContentResult.ContentType,
+            FileHash = hashString
+        }.ToJson();
     }
 }

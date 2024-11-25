@@ -22,7 +22,7 @@ public class LoginAuthUser
     /// <summary>
     /// 验证码
     /// </summary>
-    [Required]
+    //[Required]
     public string Captcha { get; set; }
 
     /// <summary>
@@ -30,4 +30,22 @@ public class LoginAuthUser
     /// </summary>
     [Required]
     public string CaptchaId { get; set; }
+}
+
+/// <summary>
+/// Swagger登录用户
+/// </summary>
+public class SwaggerLoginAuthUser
+{
+    /// <summary>
+    /// 用户名
+    /// </summary>
+    [Required]
+    public string Username { get; set; }
+
+    /// <summary>
+    /// 密码
+    /// </summary>
+    [Required]
+    public string Password { get; set; }
 }

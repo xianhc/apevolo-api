@@ -16,7 +16,7 @@ public class RedisCache : ICache
 
     public RedisCache()
     {
-        if (!App.GetOptions<CacheOptions>().RedisCacheSwitch.Enabled)
+        if (!App.GetOptions<SystemOptions>().UseRedisCache)
         {
             throw new System.Exception("RedisCacheSwitch未开启,请检查！");
         }
@@ -32,7 +32,7 @@ public class RedisCache : ICache
             KeepAlive = redisOptions.KeepAlive,
             SyncTimeout = redisOptions.SyncTimeout,
             EndPoints = { redisOptions.Host + ":" + redisOptions.Port },
-            ServiceName = redisOptions.Name,
+            ServiceName = redisOptions.Name
         };
         if (!string.IsNullOrWhiteSpace(redisOptions.Password))
         {

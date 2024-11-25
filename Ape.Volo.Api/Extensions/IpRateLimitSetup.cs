@@ -1,7 +1,7 @@
 ﻿using System;
 using Ape.Volo.Common;
+using Ape.Volo.Common.ConfigOptions;
 using AspNetCoreRateLimit;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Ape.Volo.Api.Extensions;
@@ -14,34 +14,27 @@ public static class IpRateLimitSetup
     public static void AddIpStrategyRateLimitSetup(this IServiceCollection services)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
-        // 將速限計數器資料儲存在 Memory 中
-        services.AddMemoryCache();
-
-        // 從 appsettings.json 讀取 IpRateLimiting 設定 
-        //services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
         services.Configure<IpRateLimitOptions>(App.Configuration.GetSection("IpRateLimiting"));
-
-        // 從 appsettings.json 讀取 Ip Rule 設定
-        //services.Configure<IpRateLimitPolicies>(configuration.GetSection("IpRateLimitPolicies"));
         services.Configure<IpRateLimitPolicies>(App.Configuration.GetSection("IpRateLimitPolicies"));
 
-        // 注入 counter and IP Rules 
-        services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-        services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+        if (App.GetOptions<SystemOptions>().UseRedisCache)
+        {
+            var redisOptions = App.GetOptions<RedisOptions>();
+            services.AddStackExchangeRedisCache(option =>
+            {
+                option.Configuration = redisOptions.Host + ":" + redisOptions.Port;
+                option.InstanceName = "rateLimit:";
+            });
+            services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
+        }
+        else
+        {
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+        }
+
         services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
-        //如要使用redis 打开注释
-        // services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
-        // services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
-        // services.AddDistributedRedisCache(option =>
-        // {
-        //     option.Configuration = configuration["Redis:ConnectionString"];
-        //     option.InstanceName = configuration["Redis:InstanceName"];
-        // });
-
-        // the clientId/clientIp resolvers use it.
-        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-        // Rate Limit configuration 設定
         services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
     }
 }

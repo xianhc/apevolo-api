@@ -44,7 +44,7 @@ public class TenantController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateTenantDto createUpdateTenantDto)
     {
         if (!ModelState.IsValid)
@@ -65,7 +65,7 @@ public class TenantController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateTenantDto createUpdateTenantDto)
     {
         if (!ModelState.IsValid)
@@ -86,7 +86,7 @@ public class TenantController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -107,7 +107,7 @@ public class TenantController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(TenantQueryCriteria tenantQueryCriteria, Pagination pagination)
+    public async Task<ActionResult> Query(TenantQueryCriteria tenantQueryCriteria, Pagination pagination)
     {
         var tenantList = await _tenantService.QueryAsync(tenantQueryCriteria, pagination);
 
@@ -125,15 +125,15 @@ public class TenantController : BaseApiController
     [HttpGet]
     [Route("queryAll")]
     [Description("查询全部")]
-    public async Task<ActionResult<object>> QueryAll()
+    public async Task<ActionResult> QueryAll()
     {
         var tenantList = await _tenantService.QueryAllAsync();
 
-        return new ActionResultVm<TenantDto>
+        return JsonContent(new ActionResultVm<TenantDto>
         {
             Content = tenantList,
             TotalElements = tenantList.Count
-        }.ToJson();
+        });
     }
 
 
@@ -145,11 +145,14 @@ public class TenantController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(TenantQueryCriteria tenantQueryCriteria)
+    public async Task<ActionResult> Download(TenantQueryCriteria tenantQueryCriteria)
     {
         var tenantExports = await _tenantService.DownloadAsync(tenantQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(tenantExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(tenantExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
     #endregion

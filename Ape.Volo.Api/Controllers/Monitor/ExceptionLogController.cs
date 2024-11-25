@@ -44,7 +44,7 @@ public class ExceptionLogController : BaseApiController
     [Route("query")]
     [Description("查询")]
     [NotAudit]
-    public async Task<ActionResult<object>> Query(LogQueryCriteria logQueryCriteria,
+    public async Task<ActionResult> Query(LogQueryCriteria logQueryCriteria,
         Pagination pagination)
     {
         var exceptionLogs = await _exceptionLogService.QueryAsync(logQueryCriteria, pagination);

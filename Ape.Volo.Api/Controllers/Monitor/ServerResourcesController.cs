@@ -4,6 +4,7 @@ using Ape.Volo.Api.Controllers.Base;
 using Ape.Volo.Common.Attributes;
 using Ape.Volo.Common.Extensions;
 using Ape.Volo.IBusiness.Interface.Monitor;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ape.Volo.Api.Controllers.Monitor;
@@ -28,11 +29,11 @@ public class ServerResourcesController : BaseApiController
     [Route("resources/info")]
     [Description("服务器信息")]
     [NotAudit]
-    public async Task<ActionResult<object>> Query()
+    public async Task<ActionResult> Query()
     {
         var resourcesInfo = await _serverResourcesService.Query();
 
-        return resourcesInfo.ToJson();
+        return Ok(resourcesInfo);
     }
 
     #endregion

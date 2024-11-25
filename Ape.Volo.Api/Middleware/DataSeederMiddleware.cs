@@ -20,12 +20,12 @@ public static class DataSeederMiddleware
 
         try
         {
-            var settingsOptions = App.GetOptions<SettingsOptions>();
-            if (settingsOptions.IsInitTable)
+            var systemOptions = App.GetOptions<SystemOptions>();
+            if (systemOptions.IsInitTable)
             {
                 var dataContext = app.ApplicationServices.GetRequiredService<DataContext>();
-                DataSeeder.InitMasterDataAsync(dataContext, settingsOptions.IsInitData,
-                    settingsOptions.IsQuickDebug).Wait();
+                DataSeeder.InitMasterDataAsync(dataContext, systemOptions.IsInitData,
+                    systemOptions.IsQuickDebug).Wait();
                 Thread.Sleep(500); //保证顺序输出
                 DataSeeder.InitLogData(dataContext);
                 Thread.Sleep(500);

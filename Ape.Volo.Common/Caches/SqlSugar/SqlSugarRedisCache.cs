@@ -32,7 +32,9 @@ public class SqlSugarRedisCache : ICacheService
             {
                 AppSettings.GetValue<string>("Redis", "Host") + ":" + AppSettings.GetValue<int>("Redis", "Port")
             },
-            ServiceName = AppSettings.GetValue<string>("Redis", "Name") + "_SqlSugarCache",
+            ServiceName = AppSettings.GetValue<string>("Redis", "Name").IsNullOrEmpty()
+                ? null
+                : AppSettings.GetValue<string>("Redis", "Name") + "_SqlSugarCache"
         };
         if (!string.IsNullOrWhiteSpace(AppSettings.GetValue<string>("Redis", "Password")))
         {

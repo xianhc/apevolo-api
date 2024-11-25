@@ -16,7 +16,7 @@ public interface IPermissionService : IBaseServices<Role>
     /// </summary>
     /// <param name="userId">用户ID</param>
     /// <returns></returns>
-    Task<List<string>> GetPermissionRolesAsync(long userId);
+    Task<List<string>> GetPermissionIdentifierAsync(long userId);
 
 
     /// <summary>
@@ -24,5 +24,5 @@ public interface IPermissionService : IBaseServices<Role>
     /// </summary>
     /// <param name="userId">用户ID</param>
     /// <returns></returns>
-    Task<List<PermissionVo>> GetPermissionVoAsync(long userId);
+    Task<List<UrlAccessControlVo>> GetUrlAccessControlAsync(long userId);
 }

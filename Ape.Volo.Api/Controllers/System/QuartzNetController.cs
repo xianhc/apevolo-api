@@ -54,7 +54,7 @@ public class QuartzNetController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
         if (!ModelState.IsValid)
@@ -106,7 +106,7 @@ public class QuartzNetController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateQuartzNetDto createUpdateQuartzNetDto)
     {
         if (!ModelState.IsValid)
@@ -167,7 +167,7 @@ public class QuartzNetController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -198,7 +198,7 @@ public class QuartzNetController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(QuartzNetQueryCriteria quartzNetQueryCriteria,
+    public async Task<ActionResult> Query(QuartzNetQueryCriteria quartzNetQueryCriteria,
         Pagination pagination)
     {
         var quartzNetList = await _quartzNetService.QueryAsync(quartzNetQueryCriteria, pagination);
@@ -223,11 +223,14 @@ public class QuartzNetController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(QuartzNetQueryCriteria quartzNetQueryCriteria)
+    public async Task<ActionResult> Download(QuartzNetQueryCriteria quartzNetQueryCriteria)
     {
         var quartzNetExports = await _quartzNetService.DownloadAsync(quartzNetQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(quartzNetExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(quartzNetExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
 
@@ -239,7 +242,7 @@ public class QuartzNetController : BaseApiController
     [HttpPut]
     [Description("执行")]
     [Route("execute")]
-    public async Task<ActionResult<object>> Execute(long id)
+    public async Task<ActionResult> Execute(long id)
     {
         if (id.IsNullOrEmpty())
         {
@@ -282,7 +285,7 @@ public class QuartzNetController : BaseApiController
     [HttpPut]
     [Description("暂停")]
     [Route("pause")]
-    public async Task<ActionResult<object>> Pause(long id)
+    public async Task<ActionResult> Pause(long id)
     {
         if (id.IsNullOrEmpty())
         {
@@ -317,7 +320,7 @@ public class QuartzNetController : BaseApiController
     [HttpPut]
     [Description("恢复作业")]
     [Route("resume")]
-    public async Task<ActionResult<object>> Resume(long id)
+    public async Task<ActionResult> Resume(long id)
     {
         if (id.IsNullOrEmpty())
         {
@@ -354,7 +357,7 @@ public class QuartzNetController : BaseApiController
     [HttpGet]
     [Route("logs/query")]
     [Description("执行日志")]
-    public async Task<ActionResult<object>> QueryLog(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria,
+    public async Task<ActionResult> QueryLog(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria,
         Pagination pagination)
     {
         var quartzNetLogList = await _quartzNetLogService.QueryAsync(quartzNetLogQueryCriteria, pagination);
@@ -374,11 +377,14 @@ public class QuartzNetController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("logs/download")]
-    public async Task<ActionResult<object>> Download(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria)
+    public async Task<ActionResult> Download(QuartzNetLogQueryCriteria quartzNetLogQueryCriteria)
     {
         var quartzNetLogExports = await _quartzNetLogService.DownloadAsync(quartzNetLogQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(quartzNetLogExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(quartzNetLogExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
     #endregion

@@ -432,10 +432,11 @@ public class UserService : BaseServices<User>, IUserService
 
         if (userQueryCriteria.DeptId > 0)
         {
-            var depts = await _departmentService.QueryByPIdAsync(userQueryCriteria.DeptId);
-            userQueryCriteria.DeptIds = new List<long> { userQueryCriteria.DeptId };
-            userQueryCriteria.DeptIds.AddRange(depts.Select(d => d.Id));
-            whereExpression = whereExpression.AndAlso(u => userQueryCriteria.DeptIds.Contains(u.DeptId));
+            var allIds = await _departmentService.GetChildIds([userQueryCriteria.DeptId], null);
+            if (allIds.Any())
+            {
+                whereExpression = whereExpression.AndAlso(u => allIds.Contains(u.DeptId));
+            }
         }
 
         if (!userQueryCriteria.KeyWords.IsNullOrEmpty())

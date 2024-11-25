@@ -13,11 +13,6 @@ public class UserQueryCriteria : DateRange
     public long Id { get; set; }
 
     /// <summary>
-    /// 部门ID集合
-    /// </summary>
-    public List<long> DeptIds { get; set; }
-
-    /// <summary>
     /// 关键字
     /// </summary>
     public string KeyWords { get; set; }

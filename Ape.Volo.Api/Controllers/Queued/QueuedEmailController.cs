@@ -34,7 +34,7 @@ public class QueuedEmailController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto)
     {
         await _queuedEmailService.CreateAsync(createUpdateQueuedEmailDto);
@@ -49,7 +49,7 @@ public class QueuedEmailController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateQueuedEmailDto createUpdateQueuedEmailDto)
     {
         await _queuedEmailService.UpdateAsync(createUpdateQueuedEmailDto);
@@ -64,7 +64,7 @@ public class QueuedEmailController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -85,7 +85,7 @@ public class QueuedEmailController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(QueuedEmailQueryCriteria queuedEmailQueryCriteria,
+    public async Task<ActionResult> Query(QueuedEmailQueryCriteria queuedEmailQueryCriteria,
         Pagination pagination)
     {
         var queuedEmailDtoList = await _queuedEmailService.QueryAsync(queuedEmailQueryCriteria, pagination);

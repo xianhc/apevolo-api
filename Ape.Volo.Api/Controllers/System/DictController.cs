@@ -44,7 +44,7 @@ public class DictController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create([FromBody] CreateUpdateDictDto createUpdateDictDto)
+    public async Task<ActionResult> Create([FromBody] CreateUpdateDictDto createUpdateDictDto)
     {
         if (!ModelState.IsValid)
         {
@@ -65,7 +65,7 @@ public class DictController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update([FromBody] CreateUpdateDictDto createUpdateDictDto)
+    public async Task<ActionResult> Update([FromBody] CreateUpdateDictDto createUpdateDictDto)
     {
         if (!ModelState.IsValid)
         {
@@ -85,7 +85,7 @@ public class DictController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -106,7 +106,7 @@ public class DictController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(DictQueryCriteria dictQueryCriteria,
+    public async Task<ActionResult> Query(DictQueryCriteria dictQueryCriteria,
         Pagination pagination)
     {
         var list = await _dictService.QueryAsync(dictQueryCriteria, pagination);
@@ -126,11 +126,14 @@ public class DictController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(DictQueryCriteria dictQueryCriteria)
+    public async Task<ActionResult> Download(DictQueryCriteria dictQueryCriteria)
     {
         var dictExports = await _dictService.DownloadAsync(dictQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(dictExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(dictExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
     #endregion

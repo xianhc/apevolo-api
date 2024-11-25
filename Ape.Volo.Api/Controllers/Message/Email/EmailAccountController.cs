@@ -35,7 +35,7 @@ public class EmailAccountController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("增加")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateEmailAccountDto createUpdateEmailAccountDto)
     {
         if (!ModelState.IsValid)
@@ -56,7 +56,7 @@ public class EmailAccountController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateEmailAccountDto createUpdateEmailAccountDto)
     {
         if (!ModelState.IsValid)
@@ -77,7 +77,7 @@ public class EmailAccountController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -98,7 +98,7 @@ public class EmailAccountController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("列表")]
-    public async Task<ActionResult<object>> Query(EmailAccountQueryCriteria emailAccountQueryCriteria,
+    public async Task<ActionResult> Query(EmailAccountQueryCriteria emailAccountQueryCriteria,
         Pagination pagination)
     {
         var emailAccountList = await _emailAccountService.QueryAsync(emailAccountQueryCriteria, pagination);
@@ -119,10 +119,13 @@ public class EmailAccountController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(EmailAccountQueryCriteria emailAccountQueryCriteria)
+    public async Task<ActionResult> Download(EmailAccountQueryCriteria emailAccountQueryCriteria)
     {
         var emailAccountExports = await _emailAccountService.DownloadAsync(emailAccountQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(emailAccountExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(emailAccountExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 }

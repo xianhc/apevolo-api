@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:1818",
+      "applicationUrl": "http://localhost:8002/swagger/api/index.html",
       "sslPort": 0
     }
   },
@@ -14,8 +14,8 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:8002"
+      }//,
+      //"applicationUrl": "http://localhost:8002/swagger/api/index.html"
     },
     "IIS Express": {
       "commandName": "IISExpress",

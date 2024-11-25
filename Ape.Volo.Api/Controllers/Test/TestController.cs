@@ -40,7 +40,7 @@ public class TestController : BaseApiController
 
     // [HttpGet]
     // [AllowAnonymous]
-    // public async Task<ActionResult<object>> TestSecret()
+    // public async Task<ActionResult> TestSecret()
     // {
     //     //await _emailScheduleTask.ExecuteAsync();
     //     await Task.CompletedTask;
@@ -50,7 +50,7 @@ public class TestController : BaseApiController
 
     // [HttpPost]
     // [AllowAnonymous]
-    // public async Task<ActionResult<object>> AddApeVolo()
+    // public async Task<ActionResult> AddApeVolo()
     // {
     //     try
     //     {
@@ -76,7 +76,7 @@ public class TestController : BaseApiController
     [HttpPost]
     [AllowAnonymous]
     [VerifySignature]
-    public async Task<ActionResult<object>> TestSign()
+    public async Task<ActionResult> TestSign()
     {
         try
         {
@@ -92,7 +92,7 @@ public class TestController : BaseApiController
 
     // [HttpGet]
     // [AllowAnonymous]
-    // public async Task<ActionResult<object>> TestRedisMq()
+    // public async Task<ActionResult> TestRedisMq()
     // {
     //     try
     //     {
@@ -132,7 +132,7 @@ public class TestController : BaseApiController
     [Route("SearchOrder")]
     [Description("查询")]
     [NotAudit]
-    public async Task<ActionResult<object>> SearchOrder()
+    public async Task<ActionResult> SearchOrder()
     {
         // await _testOrderService.AddEntityAsync(new TestOrder()
         // {

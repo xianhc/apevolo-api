@@ -11,6 +11,7 @@ using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
 using Ape.Volo.IBusiness.RequestModel;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ape.Volo.Api.Controllers.Permission;
@@ -51,7 +52,7 @@ public class RoleController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create([FromBody] CreateUpdateRoleDto createUpdateRoleDto)
+    public async Task<ActionResult> Create([FromBody] CreateUpdateRoleDto createUpdateRoleDto)
     {
         if (!ModelState.IsValid)
         {
@@ -71,7 +72,7 @@ public class RoleController : BaseApiController
     [HttpPut]
     [Description("编辑")]
     [Route("edit")]
-    public async Task<ActionResult<object>> Update([FromBody] CreateUpdateRoleDto createUpdateRoleDto)
+    public async Task<ActionResult> Update([FromBody] CreateUpdateRoleDto createUpdateRoleDto)
     {
         if (!ModelState.IsValid)
         {
@@ -91,7 +92,7 @@ public class RoleController : BaseApiController
     [HttpDelete]
     [Description("删除")]
     [Route("delete")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -111,7 +112,7 @@ public class RoleController : BaseApiController
     [HttpGet]
     [Route("querySingle")]
     [Description("查看指定角色")]
-    public async Task<ActionResult<object>> QuerySingle(string id)
+    public async Task<ActionResult> QuerySingle(string id)
     {
         if (id.IsNullOrEmpty())
         {
@@ -121,7 +122,7 @@ public class RoleController : BaseApiController
         var newId = Convert.ToInt64(id);
         var role = await _roleService.TableWhere(x => x.Id == newId).Includes(x => x.MenuList).Includes(x => x.Apis)
             .Includes(x => x.DepartmentList).SingleAsync();
-        return App.Mapper.MapTo<RoleDto>(role).ToJson();
+        return Ok(App.Mapper.MapTo<RoleDto>(role));
     }
 
     /// <summary>
@@ -133,7 +134,7 @@ public class RoleController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(RoleQueryCriteria roleQueryCriteria,
+    public async Task<ActionResult> Query(RoleQueryCriteria roleQueryCriteria,
         Pagination pagination)
     {
         var roleList = await _roleService.QueryAsync(roleQueryCriteria, pagination);
@@ -153,11 +154,14 @@ public class RoleController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(RoleQueryCriteria roleQueryCriteria)
+    public async Task<ActionResult> Download(RoleQueryCriteria roleQueryCriteria)
     {
         var roleExports = await _roleService.DownloadAsync(roleQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(roleExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(roleExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
     /// <summary>
@@ -167,11 +171,11 @@ public class RoleController : BaseApiController
     [HttpGet]
     [Route("queryAll")]
     [Description("查询全部")]
-    public async Task<ActionResult<object>> QueryAll()
+    public async Task<ActionResult> QueryAll()
     {
         var allRoles = await _roleService.QueryAllAsync();
 
-        return allRoles.ToJson();
+        return Ok(allRoles);
     }
 
     /// <summary>
@@ -182,12 +186,16 @@ public class RoleController : BaseApiController
     [HttpGet]
     [Route("level")]
     [Description("当前用户等级")]
-    public async Task<ActionResult<object>> GetRoleLevel(int? level)
+    public async Task<ActionResult> GetRoleLevel(int? level)
     {
         var curLevel = await _roleService.VerificationUserRoleLevelAsync(level);
 
-        Dictionary<string, int> keyValuePairs = new Dictionary<string, int> { { "level", curLevel } };
-        return keyValuePairs.ToJson();
+        var response = new
+        {
+            level = curLevel
+        };
+
+        return Ok(response);
     }
 
     #endregion

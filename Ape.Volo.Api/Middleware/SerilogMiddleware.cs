@@ -27,26 +27,32 @@ public static class SerilogMiddleware
             logger.MinimumLevel.Override("System", LogEventLevel.Information);
 
 
-            var sqlLogOptions = App.GetOptions<SqlLogOptions>();
-            if (App.WebHostEnvironment.IsDevelopment() && sqlLogOptions.ToConsole.Enabled)
+            var serilogOptions = App.GetOptions<SerilogOptions>();
+            if (serilogOptions.ToConsole.Enabled)
             {
-                //开发模式下才输出到控制台
+                foreach (LogEventLevel logEvent in Enum.GetValues(typeof(LogEventLevel)))
+                {
+                    //输出到文件
+                    logger.WriteToFile(logEvent);
+                }
+            }
+
+            if (App.GetOptions<SystemOptions>().IsQuickDebug && serilogOptions.ToConsole.Enabled)
+            {
+                //输出到控制台
                 logger.WriteToConsole();
             }
 
-            foreach (LogEventLevel logEvent in Enum.GetValues(typeof(LogEventLevel)))
-            {
-                logger.WriteToFile(logEvent);
-            }
 
-            if (sqlLogOptions.Enabled && sqlLogOptions.ToDb.Enabled)
+            if (serilogOptions.ToDb.Enabled)
             {
+                //输出到数据库
                 logger.WriteToDb();
             }
 
-            var middlewareOptions = App.GetOptions<MiddlewareOptions>();
-            if (middlewareOptions.Elasticsearch.Enabled)
+            if (serilogOptions.ToElasticsearch.Enabled && App.GetOptions<MiddlewareOptions>().Elasticsearch.Enabled)
             {
+                //输出到Elasticsearch
                 //需要配置elasticsearch环境使用
                 //docker run --name elasticsearch -d -e ES_JAVA_OPTS="-Xms512m -Xmx512m" -e "discovery.type=single-node" -p 9200:9200 -p 9300:9300 elasticsearch:7.5.0
                 logger.WriteToElasticsearch();

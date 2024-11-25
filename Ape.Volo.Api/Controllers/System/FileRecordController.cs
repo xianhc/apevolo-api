@@ -50,7 +50,7 @@ public class FileRecordController : BaseApiController
     [Route("upload")]
     [Description("创建")]
     [CheckParamNotEmpty("description")]
-    public async Task<ActionResult<object>> Upload(string description,
+    public async Task<ActionResult> Upload(string description,
         [FromForm] IFormFile file)
     {
         if (file.IsNull())
@@ -58,7 +58,7 @@ public class FileRecordController : BaseApiController
             return Error("请选择一个文件再尝试!");
         }
 
-        var fileLimitSize = App.GetOptions<SettingsOptions>().FileLimitSize * 1024 * 1024;
+        var fileLimitSize = App.GetOptions<SystemOptions>().FileLimitSize * 1024 * 1024;
         if (file.Length > fileLimitSize)
         {
             return Error($"文件过大，请选择文件小于等于{fileLimitSize}MB的重新进行尝试!");
@@ -76,7 +76,7 @@ public class FileRecordController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateFileRecordDto createUpdateAppSecretDto)
     {
         if (!ModelState.IsValid)
@@ -97,7 +97,7 @@ public class FileRecordController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -119,7 +119,7 @@ public class FileRecordController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(FileRecordQueryCriteria fileRecordQueryCriteria,
+    public async Task<ActionResult> Query(FileRecordQueryCriteria fileRecordQueryCriteria,
         Pagination pagination)
     {
         var fileRecordList = await _fileRecordService.QueryAsync(fileRecordQueryCriteria, pagination);
@@ -140,11 +140,14 @@ public class FileRecordController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(FileRecordQueryCriteria fileRecordQueryCriteria)
+    public async Task<ActionResult> Download(FileRecordQueryCriteria fileRecordQueryCriteria)
     {
         var fileRecordExports = await _fileRecordService.DownloadAsync(fileRecordQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(fileRecordExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(fileRecordExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
     #endregion

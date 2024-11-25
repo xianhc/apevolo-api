@@ -30,7 +30,7 @@ public class EmailMessageTemplate : BaseEntity
     /// <summary>
     /// 内容
     /// </summary>
-    [SugarColumn(Length = 4000, IsNullable = false)]
+    [SugarColumn(ColumnDataType = "longtext,text,clob", IsNullable = false)]
     public string Body { get; set; }
 
     /// <summary>

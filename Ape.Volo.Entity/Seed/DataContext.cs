@@ -68,7 +68,7 @@ public class DataContext
     {
         var defaultConnectionItem =
             App.GetOptions<DataConnectionOptions>().ConnectionItem
-                .FirstOrDefault(x => x.ConnId == App.GetOptions<SettingsOptions>().DefaultDataBase);
+                .FirstOrDefault(x => x.ConnId == App.GetOptions<SystemOptions>().DefaultDataBase);
         if (defaultConnectionItem.IsNull())
         {
             throw new Exception("数据库配置出错，请检查！");

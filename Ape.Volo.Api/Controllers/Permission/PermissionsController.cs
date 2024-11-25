@@ -48,12 +48,12 @@ public class PermissionsController : BaseApiController
     [HttpGet]
     [Route("menus/query")]
     [Description("查询菜单")]
-    public async Task<ActionResult<object>> QueryAllMenus()
+    public async Task<ActionResult> QueryAllMenus()
     {
         var menus = await _menuService.QueryAllAsync();
 
         var menuTree = TreeHelper<MenuDto>.ListToTrees(menus, "Id", "ParentId", 0);
-        return menuTree.ToJson();
+        return Ok(menuTree);
     }
 
 
@@ -64,7 +64,7 @@ public class PermissionsController : BaseApiController
     [HttpGet]
     [Route("apis/query")]
     [Description("查询Apis")]
-    public async Task<ActionResult<object>> QueryAllApis()
+    public async Task<ActionResult> QueryAllApis()
     {
         List<ApisTree> apisTree = new List<ApisTree>();
         var apis = await _apisService.QueryAllAsync();
@@ -97,7 +97,7 @@ public class PermissionsController : BaseApiController
             });
         }
 
-        return apisTree.ToJson();
+        return Ok(apisTree);
     }
 
 
@@ -109,7 +109,7 @@ public class PermissionsController : BaseApiController
     [HttpPut]
     [Route("menus/edit")]
     [Description("编辑角色菜单")]
-    public async Task<ActionResult<object>> UpdateRolesMenus(CreateUpdateRoleDto createUpdateRoleDto)
+    public async Task<ActionResult> UpdateRolesMenus(CreateUpdateRoleDto createUpdateRoleDto)
     {
         await _roleService.UpdateRolesMenusAsync(createUpdateRoleDto);
         return NoContent();
@@ -123,7 +123,7 @@ public class PermissionsController : BaseApiController
     [HttpPut]
     [Route("apis/edit")]
     [Description("编辑角色Apis")]
-    public async Task<ActionResult<object>> UpdateRolesApis(CreateUpdateRoleDto createUpdateRoleDto)
+    public async Task<ActionResult> UpdateRolesApis([FromBody] CreateUpdateRoleDto createUpdateRoleDto)
     {
         await _roleService.UpdateRolesApisAsync(createUpdateRoleDto);
         return NoContent();

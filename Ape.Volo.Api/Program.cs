@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using Ape.Volo.Api.Extensions;
 using Ape.Volo.Api.Filter;
@@ -67,6 +68,12 @@ builder.Services.AddRabbitMqSetup();
 builder.Services.AddEventBusSetup();
 //services.AddLocalization(options => options.ResourcesPath = "Resources");
 //services.AddMultiLanguages(op => op.LocalizationType = typeof(Common.Language));
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // 设置会话过期时间
+    options.Cookie.HttpOnly = true; // 安全设置，防止客户端脚本访问
+    options.Cookie.IsEssential = true; // 确保在没有同意 Cookie 的情况下也能使用
+});
 builder.Services.AddControllers(options =>
     {
         // 异常过滤器
@@ -91,6 +98,7 @@ builder.Services.AddIpSearcherSetup();
 // 配置中间件
 var app = builder.Build();
 app.ConfigureApplication();
+app.ApplicationStartedNotifier();
 
 //实体映射配置
 var mapper = app.Services.GetRequiredService<IRegister>();
@@ -118,8 +126,14 @@ app.Use(next => context =>
 
 //autofac
 //AutofacHelper.Container = app.Services.GetAutofacRoot();
+
+app.UseSession();
+// // Swagger Auth
+app.UseSwaggerAuthorized();
 //Swagger UI
-app.UseSwaggerMiddleware(() => Assembly.GetExecutingAssembly().GetManifestResourceStream("Ape.Volo.Api.index.html"));
+app.UseSwaggerUiMiddleware(() => Assembly.GetExecutingAssembly().GetManifestResourceStream("Ape.Volo.Api.index.html"));
+
+
 // CORS跨域
 app.UseCors(App.GetOptions<CorsOptions>().Name);
 //静态文件
@@ -136,14 +150,14 @@ app.UseAuthorization();
 //性能监控
 app.UseMiniProfilerMiddleware();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-});
-
 //app.UseHttpMethodOverride();
+
+// app.UseEndpoints(endpoints =>
+// {
+//     endpoints.MapControllerRoute(
+//         name: "default",
+//         pattern: "{controller=Home}/{action=Index}/{id?}");
+// });
 
 //种子数据
 app.UseDataSeederMiddleware();
@@ -153,6 +167,9 @@ app.UseQuartzNetJobMiddleware();
 
 //事件总线配置订阅
 app.ConfigureEventBus();
+
+// 注册控制器路由
+app.MapControllers();
 
 // 运行
 app.Run();

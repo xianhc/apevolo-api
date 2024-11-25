@@ -23,17 +23,17 @@ public class PermissionService : BaseServices<Role>, IPermissionService
     /// <param name="userId"></param>
     /// <returns></returns>
     [UseCache(Expiration = 60, KeyPrefix = GlobalConstants.CachePrefix.UserPermissionRoles)]
-    public async Task<List<string>> GetPermissionRolesAsync(long userId)
+    public async Task<List<string>> GetPermissionIdentifierAsync(long userId)
     {
-        var permissionRoles = await SugarClient
+        var permissionIdentifierList = await SugarClient
             .Queryable<UserRole, RoleMenu, Menu>((ur, rm, m) => ur.RoleId == rm.RoleId && rm.MenuId == m.Id)
             .GroupBy((ur, rm, m) => m.Permission)
             .Where((ur, rm, m) => ur.UserId == userId && m.Type != MenuType.Catalog && m.Permission != null)
             .OrderBy((ur, rm, m) => m.Permission)
             .ClearFilter<ICreateByEntity>()
             .Select((ur, rm, m) => m.Permission).ToListAsync();
-        permissionRoles = permissionRoles.Where(x => !x.IsNullOrEmpty()).ToList();
-        return permissionRoles;
+        permissionIdentifierList = permissionIdentifierList.Where(x => !x.IsNullOrEmpty()).ToList();
+        return permissionIdentifierList;
     }
 
 
@@ -43,21 +43,21 @@ public class PermissionService : BaseServices<Role>, IPermissionService
     /// <param name="userId"></param>
     /// <returns></returns>
     [UseCache(Expiration = 60, KeyPrefix = GlobalConstants.CachePrefix.UserPermissionUrls)]
-    public async Task<List<PermissionVo>> GetPermissionVoAsync(long userId)
+    public async Task<List<UrlAccessControlVo>> GetUrlAccessControlAsync(long userId)
     {
-        var permissionVos = await SugarClient
+        var urlAccessControlList = await SugarClient
             .Queryable<UserRole, RoleApis, Apis>((ur, ra, a) => ur.RoleId == ra.RoleId && ra.ApisId == a.Id)
             .GroupBy((ur, ra, a) => new { a.Url, a.Method })
             .Where(ur => ur.UserId == userId)
             .OrderBy((ur, ra, a) => a.Url)
             .ClearFilter<ICreateByEntity>()
-            .Select((ur, ra, a) => new PermissionVo()
+            .Select((ur, ra, a) => new UrlAccessControlVo()
             {
                 Url = a.Url,
                 Method = a.Method
             }).ToListAsync();
-        permissionVos = permissionVos.Where(x => !x.IsNullOrEmpty()).ToList();
-        return permissionVos;
+        urlAccessControlList = urlAccessControlList.Where(x => !x.IsNullOrEmpty()).ToList();
+        return urlAccessControlList;
     }
 
     #endregion

@@ -9,6 +9,7 @@ using Ape.Volo.IBusiness.Dto.Permission;
 using Ape.Volo.IBusiness.Interface.Permission;
 using Ape.Volo.IBusiness.QueryModel;
 using Ape.Volo.IBusiness.RequestModel;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ape.Volo.Api.Controllers.Permission;
@@ -45,7 +46,7 @@ public class MenusController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateMenuDto createUpdateMenuDto)
     {
         if (!ModelState.IsValid)
@@ -66,7 +67,7 @@ public class MenusController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateMenuDto createUpdateMenuDto)
     {
         if (!ModelState.IsValid)
@@ -87,7 +88,7 @@ public class MenusController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -139,7 +140,7 @@ public class MenusController : BaseApiController
     [HttpGet]
     [Description("查询")]
     [Route("query")]
-    public async Task<ActionResult<object>> Query(MenuQueryCriteria menuQueryCriteria)
+    public async Task<ActionResult> Query(MenuQueryCriteria menuQueryCriteria)
     {
         var menuList = await _menuService.QueryAsync(menuQueryCriteria);
         return JsonContent(new ActionResultVm<MenuDto>
@@ -158,11 +159,14 @@ public class MenusController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(MenuQueryCriteria menuQueryCriteria)
+    public async Task<ActionResult> Download(MenuQueryCriteria menuQueryCriteria)
     {
         var menuExports = await _menuService.DownloadAsync(menuQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(menuExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(menuExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
     /// <summary>
@@ -187,7 +191,7 @@ public class MenusController : BaseApiController
     [HttpGet]
     [Description("获取所有子级菜单ID")]
     [Route("child")]
-    public async Task<ActionResult<object>> GetChild(long id)
+    public async Task<ActionResult> GetChild(long id)
     {
         if (id.IsNullOrEmpty())
         {
@@ -195,7 +199,7 @@ public class MenusController : BaseApiController
         }
 
         var menuIds = await _menuService.FindChildAsync(id);
-        return menuIds.ToJson();
+        return Ok(menuIds);
     }
 
     #endregion

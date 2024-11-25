@@ -34,7 +34,7 @@ public class OnlineUserController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(Pagination pagination)
+    public async Task<ActionResult> Query(Pagination pagination)
     {
         var onlineUserList = await _onlineUserService.QueryAsync(pagination);
 
@@ -53,7 +53,7 @@ public class OnlineUserController : BaseApiController
     [HttpDelete]
     [Route("out")]
     [Description("强退用户")]
-    public async Task<ActionResult<object>> DropOut([FromBody] IdCollectionString idCollection)
+    public async Task<ActionResult> DropOut([FromBody] IdCollectionString idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -73,11 +73,14 @@ public class OnlineUserController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download()
+    public async Task<ActionResult> Download()
     {
         var appSecretExports = await _onlineUserService.DownloadAsync();
-        var data = new ExcelHelper().GenerateExcel(appSecretExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(appSecretExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
     #endregion

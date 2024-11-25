@@ -43,7 +43,7 @@ public class AppSecretService : BaseServices<AppSecret>, IAppSecretService
         var id = IdHelper.GetId();
         createUpdateAppSecretDto.AppId = DateTime.Now.ToString("yyyyMMdd") + id[..8];
         createUpdateAppSecretDto.AppSecretKey =
-            (createUpdateAppSecretDto.AppId + id).ToHmacsha256String(App.GetOptions<SettingsOptions>().HmacSecret);
+            (createUpdateAppSecretDto.AppId + id).ToHmacsha256String(App.GetOptions<SystemOptions>().HmacSecret);
         var appSecret = App.Mapper.MapTo<AppSecret>(createUpdateAppSecretDto);
         return await AddEntityAsync(appSecret);
     }

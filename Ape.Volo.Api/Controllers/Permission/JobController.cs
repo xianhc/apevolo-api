@@ -44,7 +44,7 @@ public class JobController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateJobDto createUpdateJobDto)
     {
         if (!ModelState.IsValid)
@@ -65,7 +65,7 @@ public class JobController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateJobDto createUpdateJobDto)
     {
         if (!ModelState.IsValid)
@@ -86,7 +86,7 @@ public class JobController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -107,7 +107,7 @@ public class JobController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(JobQueryCriteria jobQueryCriteria, Pagination pagination)
+    public async Task<ActionResult> Query(JobQueryCriteria jobQueryCriteria, Pagination pagination)
     {
         var jobList = await _jobService.QueryAsync(jobQueryCriteria, pagination);
         return JsonContent(new ActionResultVm<JobDto>
@@ -124,15 +124,15 @@ public class JobController : BaseApiController
     [HttpGet]
     [Route("queryAll")]
     [Description("查询全部")]
-    public async Task<ActionResult<object>> QueryAll()
+    public async Task<ActionResult> QueryAll()
     {
         var jobList = await _jobService.QueryAllAsync();
 
-        return new ActionResultVm<JobDto>
+        return JsonContent(new ActionResultVm<JobDto>
         {
             Content = jobList,
             TotalElements = jobList.Count
-        }.ToJson();
+        });
     }
 
     /// <summary>
@@ -143,11 +143,14 @@ public class JobController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(JobQueryCriteria jobQueryCriteria)
+    public async Task<ActionResult> Download(JobQueryCriteria jobQueryCriteria)
     {
         var jobExports = await _jobService.DownloadAsync(jobQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(jobExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(jobExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
     #endregion

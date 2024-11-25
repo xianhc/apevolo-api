@@ -51,7 +51,7 @@ public class ApisController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateApisDto createUpdateApisDto)
     {
         if (!ModelState.IsValid)
@@ -72,7 +72,7 @@ public class ApisController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateApisDto createUpdateApisDto)
     {
         if (!ModelState.IsValid)
@@ -93,7 +93,7 @@ public class ApisController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -114,7 +114,7 @@ public class ApisController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(ApisQueryCriteria apisQueryCriteria, Pagination pagination)
+    public async Task<ActionResult> Query(ApisQueryCriteria apisQueryCriteria, Pagination pagination)
     {
         var apisList = await _apisService.QueryAsync(apisQueryCriteria, pagination);
         return JsonContent(new ActionResultVm<Apis>
@@ -134,7 +134,7 @@ public class ApisController : BaseApiController
     [HttpPost]
     [Route("refresh")]
     [Description("刷新")]
-    public async Task<ActionResult<object>> RefreshApis()
+    public async Task<ActionResult> RefreshApis()
     {
         List<Apis> apis = new List<Apis>();
         var allApis = await _apisService.QueryAllAsync();

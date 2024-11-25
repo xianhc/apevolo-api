@@ -44,7 +44,7 @@ public class AppSecretController : BaseApiController
     [HttpPost]
     [Route("create")]
     [Description("创建")]
-    public async Task<ActionResult<object>> Create(
+    public async Task<ActionResult> Create(
         [FromBody] CreateUpdateAppSecretDto createUpdateAppSecretDto)
     {
         if (!ModelState.IsValid)
@@ -65,7 +65,7 @@ public class AppSecretController : BaseApiController
     [HttpPut]
     [Route("edit")]
     [Description("编辑")]
-    public async Task<ActionResult<object>> Update(
+    public async Task<ActionResult> Update(
         [FromBody] CreateUpdateAppSecretDto createUpdateAppSecretDto)
     {
         if (!ModelState.IsValid)
@@ -86,7 +86,7 @@ public class AppSecretController : BaseApiController
     [HttpDelete]
     [Route("delete")]
     [Description("删除")]
-    public async Task<ActionResult<object>> Delete([FromBody] IdCollection idCollection)
+    public async Task<ActionResult> Delete([FromBody] IdCollection idCollection)
     {
         if (!ModelState.IsValid)
         {
@@ -107,7 +107,7 @@ public class AppSecretController : BaseApiController
     [HttpGet]
     [Route("query")]
     [Description("查询")]
-    public async Task<ActionResult<object>> Query(AppsecretQueryCriteria appsecretQueryCriteria,
+    public async Task<ActionResult> Query(AppsecretQueryCriteria appsecretQueryCriteria,
         Pagination pagination)
     {
         var appSecretList = await _appSecretService.QueryAsync(appsecretQueryCriteria, pagination);
@@ -128,11 +128,14 @@ public class AppSecretController : BaseApiController
     [HttpGet]
     [Description("导出")]
     [Route("download")]
-    public async Task<ActionResult<object>> Download(AppsecretQueryCriteria appsecretQueryCriteria)
+    public async Task<ActionResult> Download(AppsecretQueryCriteria appsecretQueryCriteria)
     {
         var appSecretExports = await _appSecretService.DownloadAsync(appsecretQueryCriteria);
-        var data = new ExcelHelper().GenerateExcel(appSecretExports, out var mimeType);
-        return File(data, mimeType);
+        var data = new ExcelHelper().GenerateExcel(appSecretExports, out var mimeType, out var fileName);
+        return new FileContentResult(data, mimeType)
+        {
+            FileDownloadName = fileName
+        };
     }
 
     #endregion

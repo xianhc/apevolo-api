@@ -33,7 +33,7 @@ public static class SqlSugarSetup
         if (services.IsNull())
             throw new ArgumentNullException(nameof(services));
 
-        var settingsOptions = App.GetOptions<SettingsOptions>();
+        var systemOptions = App.GetOptions<SystemOptions>();
         var options = App.GetOptions<DataConnectionOptions>();
         if (options.ConnectionItem.Count == 0)
         {
@@ -44,14 +44,14 @@ public static class SqlSugarSetup
         //     dataConnection.ConnectionItem.Where(x => x.ConnId == configs.DefaultDataBase && x.Enabled).ToList();
         var allConnectionItem =
             options.ConnectionItem.Where(x => x.Enabled).ToList();
-        if (allConnectionItem.Count == 0 || allConnectionItem.All(x => x.ConnId != settingsOptions.DefaultDataBase))
+        if (allConnectionItem.Count == 0 || allConnectionItem.All(x => x.ConnId != systemOptions.DefaultDataBase))
         {
-            throw new Exception($"请确保主库ID:{settingsOptions.DefaultDataBase}的Enabled为true;");
+            throw new Exception($"请确保主库ID:{systemOptions.DefaultDataBase}的Enabled为true;");
         }
 
-        if (allConnectionItem.All(x => x.ConnId != settingsOptions.LogDataBase))
+        if (allConnectionItem.All(x => x.ConnId != systemOptions.LogDataBase))
         {
-            throw new Exception($"请确保日志库ID:{settingsOptions.LogDataBase}的Enabled为true;");
+            throw new Exception($"请确保日志库ID:{systemOptions.LogDataBase}的Enabled为true;");
         }
 
 
@@ -67,7 +67,7 @@ public static class SqlSugarSetup
             }
 
             List<ConnectionItem> connectionSlaves = new List<ConnectionItem>();
-            if (settingsOptions.IsCqrs)
+            if (systemOptions.IsCqrs)
             {
                 connectionSlaves = options.ConnectionItem
                     .Where(x => x.DbType == connectionItem.DbType && x.ConnId != connectionItem.ConnId && x.Enabled)
@@ -76,10 +76,7 @@ public static class SqlSugarSetup
                 {
                     throw new Exception($"请确保数据库ID:{connectionItem.ConnId}对应的从库的Enabled为true;");
                 }
-            }
 
-            if (settingsOptions.IsCqrs)
-            {
                 slaveDbs = new List<SlaveConnectionConfig>();
                 connectionSlaves.ForEach(db =>
                 {
@@ -106,7 +103,7 @@ public static class SqlSugarSetup
                 },
                 ConfigureExternalServices = new ConfigureExternalServices
                 {
-                    DataInfoCacheService = App.GetOptions<CacheOptions>().RedisCacheSwitch.Enabled
+                    DataInfoCacheService = systemOptions.UseRedisCache
                         ? new SqlSugarRedisCache()
                         : new SqlSugarDistributedCache(),
                     EntityService = (c, p) =>
@@ -143,7 +140,7 @@ public static class SqlSugarSetup
         var sugar = new SqlSugarScope(allConnectionConfig,
             db =>
             {
-                allConnectionConfig.Where(x => x.ConfigId.ToString() != settingsOptions.LogDataBase).ForEach(
+                allConnectionConfig.Where(x => x.ConfigId.ToString() != systemOptions.LogDataBase).ForEach(
                     config =>
                     {
                         var sugarScopeProvider = db.GetConnectionScope((string)config.ConfigId);
@@ -167,17 +164,21 @@ public static class SqlSugarSetup
 
                         #endregion
 
-                        #region 日志
+                        #region 执行中
 
-                        sugarScopeProvider.Aop.OnLogExecuting = (sql, pars) => OnLogExecuting(sugarScopeProvider,
-                            Enum.GetName(typeof(SugarActionType), sugarScopeProvider.SugarActionType), sql, pars,
-                            config);
+                        // sugarScopeProvider.Aop.OnLogExecuting = (sql, pars) => OnLogExecuting(
+                        //     sugarScopeProvider,
+                        //     Enum.GetName(typeof(SugarActionType), sugarScopeProvider.SugarActionType), sql, pars,
+                        //     config.ConfigId.ToString());
 
                         #endregion
 
-                        #region 耗时
+                        #region 执行结束
 
-                        sugarScopeProvider.Aop.OnLogExecuted = (_, _) => OnLogExecuted(sugarScopeProvider.Ado);
+                        sugarScopeProvider.Aop.OnLogExecuted = (sql, pars) => OnLogExecuted(sugarScopeProvider.Ado,
+                            sugarScopeProvider,
+                            Enum.GetName(typeof(SugarActionType), sugarScopeProvider.SugarActionType), sql, pars,
+                            config.ConfigId.ToString());
 
                         #endregion
                     });
@@ -305,43 +306,7 @@ public static class SqlSugarSetup
 
     #endregion
 
-    #region 日志
-
-    private static void OnLogExecuting(ISqlSugarClient sqlSugar, string operate, string sql,
-        SugarParameter[] pars, ConnectionConfig connection)
-    {
-        try
-        {
-            var sqlLogOptions = App.GetOptions<SqlLogOptions>();
-            var settingsOptions = App.GetOptions<SettingsOptions>();
-            var middlewareOptions = App.GetOptions<MiddlewareOptions>();
-            if (!sqlLogOptions.Enabled)
-            {
-                return;
-            }
-
-            if (settingsOptions.IsQuickDebug && middlewareOptions.MiniProfiler.Enabled)
-            {
-                MiniProfiler.Current.CustomTiming("SQL",
-                    "【SQL参数】:\n" + GetParams(pars) + "【SQL语句】：\n" + sql);
-            }
-
-            if (sqlLogOptions.ToDb.Enabled || sqlLogOptions.ToFile.Enabled ||
-                sqlLogOptions.ToConsole.Enabled)
-            {
-                using (LoggerPropertyConfiguration.Create.AddAopSqlProperty(sqlSugar, sqlLogOptions))
-                {
-                    Log.Information(
-                        "Executed Sql--> User:[{User}] Operate:[{Operate}] ConnId:[{ConnId}] {Sql}",
-                        App.HttpUser.Account, operate, connection.ConfigId, UtilMethods.GetNativeSql(sql, pars));
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Log.Fatal("Error occured OnLogExecuting:" + e);
-        }
-    }
+    #region sql执行事件
 
     /// <summary>
     /// 参数拼接字符串
@@ -353,42 +318,95 @@ public static class SqlSugarSetup
         return pars.Aggregate("", (current, p) => current + $"{p.ParameterName}:{p.Value}\n");
     }
 
-    private static void OnLogExecuted(IAdo ado)
+    /// <summary>
+    /// 执行中
+    /// </summary>
+    /// <param name="sqlSugar"></param>
+    /// <param name="operate"></param>
+    /// <param name="sql"></param>
+    /// <param name="pars"></param>
+    /// <param name="configId"></param>
+    private static void OnLogExecuting(ISqlSugarClient sqlSugar, string operate, string sql,
+        SugarParameter[] pars, string configId)
     {
-        var sqlLogOptions = App.GetOptions<SqlLogOptions>();
-        var settingsOptions = App.GetOptions<SettingsOptions>();
-        var middlewareOptions = App.GetOptions<MiddlewareOptions>();
-
-        if (!sqlLogOptions.Enabled)
+        try
         {
-            return;
-        }
-
-        if (settingsOptions.IsQuickDebug && middlewareOptions.MiniProfiler.Enabled)
-        {
-            MiniProfiler.Current.CustomTiming("SQL",
-                $"【Sql耗时】:{Math.Round(ado.SqlExecutionTime.TotalMilliseconds / 1000d, 4)}秒\r\n");
-        }
-
-        if (sqlLogOptions.ToConsole.Enabled)
-        {
-            if (ado.SqlExecutionTime.TotalMilliseconds > 5000)
+            var serilogOptions = App.GetOptions<SerilogOptions>();
+            var systemOptions = App.GetOptions<SystemOptions>();
+            var middlewareOptions = App.GetOptions<MiddlewareOptions>();
+            if (!serilogOptions.RecordSqlEnabled)
             {
-                ConsoleHelper.WriteLine($"[Time]:{Math.Round(ado.SqlExecutionTime.TotalMilliseconds / 1000d, 4)}秒",
-                    ConsoleColor.DarkCyan);
-                ConsoleHelper.WriteLine($"[提示]:当前sql执行耗时较长,请检查进行优化\r\n",
-                    ConsoleColor.Red);
+                return;
             }
-            else
+
+            var sqlMsg =
+                $"执行DB--> 操作用户:[{App.HttpUser.Account}] 操作类型:[{operate}] 数据库ID:[{configId}] {UtilMethods.GetNativeSql(sql, pars)}";
+            if (systemOptions.IsQuickDebug && middlewareOptions.MiniProfiler.Enabled)
             {
-                ConsoleHelper.WriteLine($"[Time]:{Math.Round(ado.SqlExecutionTime.TotalMilliseconds / 1000d, 4)}秒\r\n",
-                    ConsoleColor.DarkCyan);
+                MiniProfiler.Current.CustomTiming("SQL", sqlMsg + "\r\n");
             }
+
+            using (LoggerPropertyConfiguration.Create.AddAopSqlProperty(sqlSugar, serilogOptions))
+            {
+                Log.Information(sqlMsg + "\r\n");
+            }
+        }
+        catch (Exception e)
+        {
+            Log.Fatal("Error occured OnLogExecuting:" + e);
+        }
+    }
+
+    /// <summary>
+    /// 执行结束
+    /// </summary>
+    /// <param name="ado"></param>
+    /// <param name="sqlSugar"></param>
+    /// <param name="operate"></param>
+    /// <param name="sql"></param>
+    /// <param name="pars"></param>
+    /// <param name="configId"></param>
+    private static void OnLogExecuted(IAdo ado, ISqlSugarClient sqlSugar, string operate, string sql,
+        SugarParameter[] pars, string configId)
+    {
+        try
+        {
+            var serilogOptions = App.GetOptions<SerilogOptions>();
+            var systemOptions = App.GetOptions<SystemOptions>();
+            var middlewareOptions = App.GetOptions<MiddlewareOptions>();
+            if (!serilogOptions.RecordSqlEnabled)
+            {
+                return;
+            }
+
+            var sqlMsg =
+                $"执行DB--> 操作用户:[{App.HttpUser.Account}] 操作类型:[{operate}] 数据库ID:[{configId}] {UtilMethods.GetNativeSql(sql, pars)}[耗时]:{ado.SqlExecutionTime.TotalMilliseconds}ms";
+            if (systemOptions.IsQuickDebug && middlewareOptions.MiniProfiler.Enabled)
+            {
+                MiniProfiler.Current.CustomTiming("SQL", sqlMsg + "\r\n");
+            }
+
+            using (LoggerPropertyConfiguration.Create.AddAopSqlProperty(sqlSugar, serilogOptions))
+            {
+                if (ado.SqlExecutionTime.TotalMilliseconds > 10)
+                {
+                    Log.Warning(sqlMsg + ",请检查并进行优化！" + "\r\n");
+                }
+                else
+                {
+                    Log.Information(sqlMsg + "\r\n");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Log.Fatal("Error occured OnLogExecuting:" + e);
         }
     }
 
     #endregion
 
+    #region 配置软删除过滤器
 
     /// <summary>
     /// 配置软删除过滤器
@@ -397,6 +415,10 @@ public static class SqlSugarSetup
     {
         db.QueryFilter.AddTableFilter<ISoftDeletedEntity>(it => it.IsDeleted == false);
     }
+
+    #endregion
+
+    #region 配置多租户过滤器
 
     /// <summary>
     /// 配置多租户过滤器
@@ -408,6 +430,10 @@ public static class SqlSugarSetup
             db.QueryFilter.AddTableFilter<ITenantEntity>(it => it.TenantId == App.HttpUser.TenantId);
         }
     }
+
+    #endregion
+
+    #region 配置用户数据权限
 
     /// <summary>
     /// 配置用户数据权限
@@ -448,4 +474,6 @@ public static class SqlSugarSetup
             db.QueryFilter.AddTableFilter<ICreateByEntity>(it => it.CreateBy == App.HttpUser.Account);
         }
     }
+
+    #endregion
 }
